@@ -170,21 +170,15 @@
             z-index: 4;
         }
 
-        /* SIMPLIFIED ANIMATION - More visible, more reliable */
         .historical-image {
             position: absolute;
             background-size: cover;
             background-position: center;
             border-radius: 12px;
-            /* INCREASED BASE OPACITY for visibility */
             opacity: 0.25;
             filter: grayscale(30%) contrast(1.2) brightness(1.1);
             box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
-            
-            /* SIMPLIFIED ANIMATION - Just fade and move */
             animation: imageFloat 20s ease-in-out infinite;
-            
-            /* Soft edges */
             -webkit-mask-image: radial-gradient(ellipse at center, 
                 rgba(0,0,0,1) 50%, 
                 rgba(0,0,0,0.6) 80%, 
@@ -195,7 +189,6 @@
                 rgba(0,0,0,0) 100%);
         }
 
-        /* SIMPLER FLOAT ANIMATION - Just up/down movement with fade */
         @keyframes imageFloat {
             0% {
                 transform: translateY(0px) scale(1);
@@ -217,98 +210,29 @@
             }
         }
 
-        /* Varied sizes */
-        .historical-image.size-small { 
-            width: 200px; 
-            height: 150px; 
-        }
+        .historical-image.size-small { width: 200px; height: 150px; }
+        .historical-image.size-medium { width: 280px; height: 210px; }
+        .historical-image.size-large { width: 360px; height: 270px; }
 
-        .historical-image.size-medium { 
-            width: 280px; 
-            height: 210px; 
-        }
-
-        .historical-image.size-large { 
-            width: 360px; 
-            height: 270px; 
-        }
-
-        /* Staggered delays for continuous motion */
-        .historical-image:nth-child(1) { 
-            top: 15%; 
-            left: 10%; 
-            animation-delay: 0s; 
-        }
-
-        .historical-image:nth-child(2) { 
-            top: 22%; 
-            right: 12%; 
-            animation-delay: -3s; 
-        }
-
-        .historical-image:nth-child(3) { 
-            top: 45%; 
-            left: 8%; 
-            animation-delay: -6s; 
-        }
-
-        .historical-image:nth-child(4) { 
-            top: 55%; 
-            right: 10%; 
-            animation-delay: -9s; 
-        }
-
-        .historical-image:nth-child(5) { 
-            top: 70%; 
-            left: 20%; 
-            animation-delay: -12s; 
-        }
-
-        .historical-image:nth-child(6) { 
-            top: 75%; 
-            right: 18%; 
-            animation-delay: -15s; 
-        }
-
-        .historical-image:nth-child(7) { 
-            top: 35%; 
-            left: 48%; 
-            animation-delay: -2s; 
-        }
-
-        .historical-image:nth-child(8) { 
-            top: 20%; 
-            left: 35%; 
-            animation-delay: -5s; 
-        }
-
-        .historical-image:nth-child(9) { 
-            top: 60%; 
-            right: 35%; 
-            animation-delay: -8s; 
-        }
-
-        .historical-image:nth-child(10) { 
-            top: 40%; 
-            right: 28%; 
-            animation-delay: -11s; 
-        }
-
-        .historical-image:nth-child(11) { 
-            top: 78%; 
-            left: 42%; 
-            animation-delay: -14s; 
-        }
-
-        .historical-image:nth-child(12) { 
-            top: 28%; 
-            right: 42%; 
-            animation-delay: -17s; 
-        }
+        .historical-image:nth-child(1) { top: 15%; left: 10%; animation-delay: 0s; }
+        .historical-image:nth-child(2) { top: 22%; right: 12%; animation-delay: -3s; }
+        .historical-image:nth-child(3) { top: 45%; left: 8%; animation-delay: -6s; }
+        .historical-image:nth-child(4) { top: 55%; right: 10%; animation-delay: -9s; }
+        .historical-image:nth-child(5) { top: 70%; left: 20%; animation-delay: -12s; }
+        .historical-image:nth-child(6) { top: 75%; right: 18%; animation-delay: -15s; }
+        .historical-image:nth-child(7) { top: 35%; left: 48%; animation-delay: -2s; }
+        .historical-image:nth-child(8) { top: 20%; left: 35%; animation-delay: -5s; }
+        .historical-image:nth-child(9) { top: 60%; right: 35%; animation-delay: -8s; }
+        .historical-image:nth-child(10) { top: 40%; right: 28%; animation-delay: -11s; }
+        .historical-image:nth-child(11) { top: 78%; left: 42%; animation-delay: -14s; }
+        .historical-image:nth-child(12) { top: 28%; right: 42%; animation-delay: -17s; }
 
         .rock-texture {
             position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             background-image: 
                 radial-gradient(circle at 15% 25%, rgba(85, 75, 68, 0.35) 0%, transparent 45%),
                 radial-gradient(circle at 82% 18%, rgba(70, 63, 58, 0.32) 0%, transparent 48%),
@@ -323,7 +247,8 @@
 
         .craggy-shadows {
             position: absolute;
-            width: 100%; height: 100%;
+            width: 100%;
+            height: 100%;
             background: 
                 radial-gradient(ellipse at 28% 22%, rgba(0, 0, 0, 0.45) 0%, transparent 32%),
                 radial-gradient(ellipse at 72% 38%, rgba(0, 0, 0, 0.38) 0%, transparent 28%),
@@ -337,7 +262,8 @@
 
         .hero-content {
             position: absolute;
-            top: 50%; left: 50%;
+            top: 50%;
+            left: 50%;
             transform: translate(-50%, -50%);
             z-index: 10;
             text-align: center;
@@ -361,8 +287,12 @@
         }
 
         @keyframes titleGlow {
-            0%, 100% { text-shadow: 0 0 25px rgba(255, 255, 255, 0.6), 0 0 50px rgba(255, 220, 130, 0.4), 3px 3px 12px rgba(0, 0, 0, 0.9); }
-            50% { text-shadow: 0 0 35px rgba(255, 255, 255, 0.9), 0 0 70px rgba(255, 230, 150, 0.6), 3px 3px 12px rgba(0, 0, 0, 0.9); }
+            0%, 100% {
+                text-shadow: 0 0 25px rgba(255, 255, 255, 0.6), 0 0 50px rgba(255, 220, 130, 0.4), 3px 3px 12px rgba(0, 0, 0, 0.9);
+            }
+            50% {
+                text-shadow: 0 0 35px rgba(255, 255, 255, 0.9), 0 0 70px rgba(255, 230, 150, 0.6), 3px 3px 12px rgba(0, 0, 0, 0.9);
+            }
         }
 
         .hero-content p {
@@ -426,7 +356,10 @@
 
         .vignette {
             position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             background: radial-gradient(ellipse at center, transparent 0%, rgba(0, 0, 0, 0.85) 100%);
             pointer-events: none;
             z-index: 5;
@@ -476,41 +409,105 @@
             text-align: center;
         }
 
-        /* TEST MODE - Make animations very obvious */
-        .debug-mode .historical-image {
-            opacity: 0.6 !important;
-            border: 2px solid red;
-        }
-
         @media (max-width: 768px) {
-            .tunnel-hero { min-height: 500px; }
-            .hero-content { padding: 30px 20px; max-width: 90%; }
-            .hero-content h1 { font-size: 2.2em; }
-            .hero-content p { font-size: 1.1em; }
-            .hero-content .tagline { font-size: 1.2em; }
-            .cta-buttons { flex-direction: column; align-items: center; }
-            .cta-button { width: 100%; max-width: 300px; }
-            .historical-image:nth-child(n+7) { display: none; }
-            .historical-image.size-large { width: 240px; height: 180px; }
-            .historical-image.size-medium { width: 200px; height: 150px; }
-            .tunnel-container { animation-duration: 35s; }
-            .video-background { opacity: 0.35; filter: blur(2px) brightness(0.5); }
-            .contact-section h2 { font-size: 2em; }
-            .contact-section p { font-size: 1.1em; }
-            .contact-email { font-size: 1.1em; padding: 15px 35px; }
+            .tunnel-hero {
+                min-height: 500px;
+            }
+
+            .hero-content {
+                padding: 30px 20px;
+                max-width: 90%;
+            }
+
+            .hero-content h1 {
+                font-size: 2.2em;
+            }
+
+            .hero-content p {
+                font-size: 1.1em;
+            }
+
+            .hero-content .tagline {
+                font-size: 1.2em;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .cta-button {
+                width: 100%;
+                max-width: 300px;
+            }
+
+            .historical-image:nth-child(n+7) {
+                display: none;
+            }
+
+            .historical-image.size-large {
+                width: 240px;
+                height: 180px;
+            }
+
+            .historical-image.size-medium {
+                width: 200px;
+                height: 150px;
+            }
+
+            .tunnel-container {
+                animation-duration: 35s;
+            }
+
+            .video-background {
+                opacity: 0.35;
+                filter: blur(2px) brightness(0.5);
+            }
+
+            .contact-section h2 {
+                font-size: 2em;
+            }
+
+            .contact-section p {
+                font-size: 1.1em;
+            }
+
+            .contact-email {
+                font-size: 1.1em;
+                padding: 15px 35px;
+            }
         }
 
         @media (max-width: 480px) {
-            .hero-content h1 { font-size: 1.8em; }
-            .hero-content p { font-size: 1em; }
-            .historical-image.size-small { width: 140px; height: 105px; }
-            .historical-image.size-medium { width: 170px; height: 127px; }
-            .video-background { display: none; }
+            .hero-content h1 {
+                font-size: 1.8em;
+            }
+
+            .hero-content p {
+                font-size: 1em;
+            }
+
+            .historical-image.size-small {
+                width: 140px;
+                height: 105px;
+            }
+
+            .historical-image.size-medium {
+                width: 170px;
+                height: 127px;
+            }
+
+            .video-background {
+                display: none;
+            }
         }
 
         @media (prefers-reduced-motion: reduce) {
-            .tunnel-container, .light-rays, .historical-image, .tunnel-light { 
-                animation: none !important; 
+            .tunnel-container,
+            .light-rays,
+            .historical-image,
+            .tunnel-light {
+                animation: none !important;
             }
         }
     </style>
@@ -583,7 +580,6 @@
     </footer>
 
     <script>
-        // Smooth scrolling
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
@@ -594,56 +590,36 @@
             });
         });
 
-        // Video handling
         const video = document.querySelector('.video-background');
         const fallback = document.querySelector('.video-fallback');
         
         if (video) {
             video.addEventListener('error', function() {
-                console.log('Video error - using fallback');
                 this.style.display = 'none';
                 if (fallback) fallback.style.opacity = '1';
             });
 
             video.addEventListener('loadeddata', function() {
-                console.log('Video loaded successfully');
                 if (fallback) fallback.style.opacity = '0';
             });
 
-            video.play().catch(e => {
-                console.log('Video autoplay prevented - will play on interaction');
-            });
+            video.play().catch(function() {});
         }
 
-        // Accessibility: Reduced motion
         if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-            console.log('Reduced motion preference detected - pausing animations');
-            document.querySelectorAll('.tunnel-container, .historical-image, .tunnel-light, .light-rays').forEach(el => {
+            document.querySelectorAll('.tunnel-container, .historical-image, .tunnel-light, .light-rays').forEach(function(el) {
                 el.style.animationPlayState = 'paused';
             });
             if (video) video.pause();
         }
 
-        // Performance: Pause when tab not visible
         document.addEventListener('visibilitychange', function() {
             if (document.hidden) {
                 if (video) video.pause();
             } else {
-                if (video) video.play().catch(() => {});
+                if (video) video.play().catch(function() {});
             }
         });
-
-        // Debug: Log animation status
-        console.log('VERITAS site loaded');
-        console.log('Historical images found:', document.querySelectorAll('.historical-image').length);
-        
-        // Check if animations are running
-        const testImage = document.querySelector('.historical-image');
-        if (testImage) {
-            const computed = window.getComputedStyle(testImage);
-            console.log('Animation status:', computed.animationPlayState);
-            console.log('Animation name:', computed.animationName);
-        }
     </script>
 
 </body>
