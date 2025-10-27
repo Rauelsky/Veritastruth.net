@@ -1,576 +1,973 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>VERITAS - Truth Verification Through Expert Analysis</title>
-  <meta name="description" content="VERITAS brings transparent, expert-driven truth verification to online information. See how experts think, not just what they conclude.">
-  
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
-      line-height: 1.6;
-      color: #333;
-      background: #ffffff;
-    }
-    
-    /* Header */
-    header {
-      background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
-      color: white;
-      padding: 20px 0;
-      position: fixed;
-      width: 100%;
-      top: 0;
-      z-index: 1000;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    }
-    
-    .header-content {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    
-    .logo {
-      font-size: 28px;
-      font-weight: 900;
-      letter-spacing: 2px;
-    }
-    
-    .tagline {
-      font-size: 14px;
-      opacity: 0.9;
-      margin-top: 4px;
-    }
-    
-    .contact-link {
-      background: rgba(255,255,255,0.2);
-      color: white;
-      padding: 10px 20px;
-      border-radius: 6px;
-      text-decoration: none;
-      font-weight: 600;
-      transition: all 0.3s ease;
-    }
-    
-    .contact-link:hover {
-      background: rgba(255,255,255,0.3);
-      transform: translateY(-2px);
-    }
-    
-    /* Hero Section */
-    .hero {
-      background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
-      color: white;
-      padding: 140px 20px 80px;
-      text-align: center;
-    }
-    
-    .hero-content {
-      max-width: 900px;
-      margin: 0 auto;
-    }
-    
-    h1 {
-      font-size: 56px;
-      font-weight: 900;
-      margin-bottom: 24px;
-      line-height: 1.2;
-      letter-spacing: -1px;
-    }
-    
-    .hero-subtitle {
-      font-size: 24px;
-      margin-bottom: 40px;
-      opacity: 0.95;
-      font-weight: 400;
-    }
-    
-    .status-badge {
-      display: inline-block;
-      background: rgba(255,255,255,0.2);
-      backdrop-filter: blur(10px);
-      padding: 16px 32px;
-      border-radius: 50px;
-      font-size: 18px;
-      font-weight: 600;
-      margin-top: 20px;
-      border: 2px solid rgba(255,255,255,0.3);
-    }
-    
-    /* Problem Section */
-    .problem-section {
-      padding: 80px 20px;
-      background: #f9f9f9;
-    }
-    
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-    
-    .section-title {
-      font-size: 42px;
-      font-weight: 900;
-      text-align: center;
-      margin-bottom: 20px;
-      color: #333;
-    }
-    
-    .section-subtitle {
-      font-size: 20px;
-      text-align: center;
-      color: #666;
-      margin-bottom: 60px;
-      max-width: 800px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-    
-    .problem-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 40px;
-      margin-top: 40px;
-    }
-    
-    .problem-card {
-      background: white;
-      padding: 32px;
-      border-radius: 12px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-      border-left: 4px solid #f44336;
-    }
-    
-    .problem-card h3 {
-      font-size: 24px;
-      margin-bottom: 16px;
-      color: #f44336;
-    }
-    
-    .problem-card p {
-      font-size: 16px;
-      line-height: 1.7;
-      color: #555;
-    }
-    
-    /* Solution Section */
-    .solution-section {
-      padding: 80px 20px;
-      background: white;
-    }
-    
-    .solution-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 40px;
-      margin-top: 60px;
-    }
-    
-    .solution-card {
-      text-align: center;
-      padding: 40px 24px;
-      background: #f9f9f9;
-      border-radius: 12px;
-      transition: all 0.3s ease;
-    }
-    
-    .solution-card:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 12px 40px rgba(33, 150, 243, 0.2);
-      background: white;
-    }
-    
-    .solution-icon {
-      font-size: 48px;
-      margin-bottom: 20px;
-    }
-    
-    .solution-card h3 {
-      font-size: 22px;
-      margin-bottom: 16px;
-      color: #2196F3;
-    }
-    
-    .solution-card p {
-      font-size: 15px;
-      line-height: 1.7;
-      color: #666;
-    }
-    
-    /* How It Works */
-    .how-it-works {
-      padding: 80px 20px;
-      background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
-    }
-    
-    .steps {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 40px;
-      margin-top: 60px;
-    }
-    
-    .step {
-      background: white;
-      padding: 32px;
-      border-radius: 12px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-      position: relative;
-    }
-    
-    .step-number {
-      position: absolute;
-      top: -20px;
-      left: 32px;
-      background: #2196F3;
-      color: white;
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 900;
-      font-size: 20px;
-    }
-    
-    .step h3 {
-      font-size: 20px;
-      margin-bottom: 16px;
-      margin-top: 8px;
-      color: #333;
-    }
-    
-    .step p {
-      font-size: 15px;
-      line-height: 1.7;
-      color: #666;
-    }
-    
-    /* CTA Section */
-    .cta-section {
-      padding: 80px 20px;
-      background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
-      color: white;
-      text-align: center;
-    }
-    
-    .cta-section h2 {
-      font-size: 42px;
-      font-weight: 900;
-      margin-bottom: 24px;
-    }
-    
-    .cta-section p {
-      font-size: 20px;
-      margin-bottom: 40px;
-      opacity: 0.95;
-    }
-    
-    .email-signup {
-      max-width: 500px;
-      margin: 0 auto;
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-    
-    .email-input {
-      flex: 1;
-      min-width: 250px;
-      padding: 16px 24px;
-      font-size: 16px;
-      border: none;
-      border-radius: 8px;
-      outline: none;
-    }
-    
-    .submit-btn {
-      padding: 16px 40px;
-      font-size: 16px;
-      font-weight: 700;
-      background: white;
-      color: #2196F3;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-    
-    .submit-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
-    }
-    
-    /* Footer */
-    footer {
-      background: #1a1a1a;
-      color: white;
-      padding: 60px 20px 40px;
-    }
-    
-    .footer-content {
-      max-width: 1200px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 40px;
-      margin-bottom: 40px;
-    }
-    
-    .footer-section h4 {
-      font-size: 18px;
-      margin-bottom: 16px;
-      color: #2196F3;
-    }
-    
-    .footer-section p {
-      font-size: 14px;
-      line-height: 1.7;
-      color: #aaa;
-    }
-    
-    .footer-section a {
-      color: #aaa;
-      text-decoration: none;
-      display: block;
-      margin-bottom: 8px;
-      transition: color 0.3s ease;
-    }
-    
-    .footer-section a:hover {
-      color: #2196F3;
-    }
-    
-    .footer-bottom {
-      text-align: center;
-      padding-top: 40px;
-      border-top: 1px solid #333;
-      color: #666;
-      font-size: 14px;
-    }
-    
-    /* Responsive */
-    @media (max-width: 768px) {
-      h1 {
-        font-size: 38px;
-      }
-      
-      .hero-subtitle {
-        font-size: 18px;
-      }
-      
-      .section-title {
-        font-size: 32px;
-      }
-      
-      .header-content {
-        flex-direction: column;
-        gap: 16px;
-      }
-      
-      .email-signup {
-        flex-direction: column;
-      }
-      
-      .email-input,
-      .submit-btn {
-        width: 100%;
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VERITAS - Truth Assessment for Digital Content</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #ffffff;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* MEASUREMENT GRID BACKGROUND */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(33, 150, 243, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(33, 150, 243, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* RULER MARKS ON EDGES */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 20px;
+            height: 100%;
+            background: repeating-linear-gradient(
+                to bottom,
+                transparent 0px,
+                transparent 18px,
+                rgba(33, 150, 243, 0.15) 18px,
+                rgba(33, 150, 243, 0.15) 20px
+            );
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .ruler-right {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 20px;
+            height: 100%;
+            background: repeating-linear-gradient(
+                to bottom,
+                transparent 0px,
+                transparent 18px,
+                rgba(76, 175, 80, 0.15) 18px,
+                rgba(76, 175, 80, 0.15) 20px
+            );
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Header */
+        header {
+            background: white;
+            color: #333;
+            padding: 1.5rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 60%;
+            height: 100%;
+            background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        header::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 60%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                90deg,
+                transparent 0px,
+                transparent 48px,
+                rgba(255, 255, 255, 0.05) 48px,
+                rgba(255, 255, 255, 0.05) 50px
+            );
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 1.8rem;
+            font-weight: bold;
+            letter-spacing: 2px;
+            background: white;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+        }
+
+        .logo img {
+            filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.1));
+        }
+
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+            background: white;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: #2196F3;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        nav {
+            display: flex;
+            gap: 2rem;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: white;
+            transition: width 0.3s;
+        }
+
+        nav a:hover::after {
+            width: 100%;
+        }
+
+        /* Hero Section with Background Image */
+        .hero {
+            background: 
+                linear-gradient(135deg, rgba(245, 245, 245, 0.90) 0%, rgba(227, 242, 253, 0.90) 100%),
+                url('https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=1200&q=80') center/cover;
+            padding: 6rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 800px;
+            height: 800px;
+            border: 2px solid rgba(33, 150, 243, 0.08);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 600px;
+            height: 600px;
+            border: 2px solid rgba(33, 150, 243, 0.08);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            color: #1976D2;
+            margin-bottom: 1.5rem;
+            position: relative;
+            z-index: 2;
+            text-shadow: 2px 2px 4px rgba(255,255,255,0.8);
+        }
+
+        .hero .subtitle {
+            font-size: 1.5rem;
+            color: #555;
+            margin-bottom: 2rem;
+            position: relative;
+            z-index: 2;
+            text-shadow: 1px 1px 2px rgba(255,255,255,0.8);
+        }
+
+        .hero .tagline {
+            font-size: 1.2rem;
+            color: #666;
+            max-width: 800px;
+            margin: 0 auto 3rem;
+            position: relative;
+            z-index: 2;
+            text-shadow: 1px 1px 2px rgba(255,255,255,0.8);
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: #4CAF50;
+            color: white;
+            padding: 1rem 3rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-size: 1.2rem;
+            font-weight: bold;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+            position: relative;
+            z-index: 2;
+        }
+
+        .cta-button:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        section {
+            padding: 5rem 2rem;
+            position: relative;
+        }
+
+        section h2 {
+            font-size: 2.5rem;
+            color: #1976D2;
+            margin-bottom: 2rem;
+            text-align: center;
+            position: relative;
+        }
+
+        section h2::after {
+            content: '';
+            display: block;
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, #2196F3, #4CAF50);
+            margin: 1rem auto 0;
+            border-radius: 2px;
+        }
+
+        /* Image Decorations */
+        .section-image {
+            position: absolute;
+            opacity: 0.20;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .section-image-left {
+            left: 5%;
+            top: 15%;
+            width: 250px;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        .section-image-right {
+            right: 5%;
+            bottom: 15%;
+            width: 300px;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 15px;
+            transform: rotate(5deg);
+        }
+
+        /* Problem Section */
+        .problem {
+            background: #fff;
+            position: relative;
+        }
+
+        .problem-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .problem-item {
+            background: linear-gradient(135deg, #ffebee 0%, #fff 100%);
+            padding: 2rem;
+            border-radius: 10px;
+            border-left: 4px solid #f44336;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .problem-item::before {
+            content: '!';
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 40px;
+            height: 40px;
+            background: #f44336;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            opacity: 0.2;
+        }
+
+        .problem-item h3 {
+            color: #d32f2f;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        /* Solution Section with Background Image */
+        .solution {
+            background: 
+                linear-gradient(135deg, rgba(232, 245, 233, 0.70) 0%, rgba(255, 255, 255, 0.70) 100%),
+                url('https://images.unsplash.com/photo-1532094349884-543bc11b234d?w=1200&q=80') center/cover;
+            position: relative;
+        }
+
+        .solution-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .solution-item {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-left: 4px solid #4CAF50;
+            position: relative;
+            transition: transform 0.3s;
+        }
+
+        .solution-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        }
+
+        .solution-item h3 {
+            color: #2E7D32;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        /* Scale Display */
+        .scale-display {
+            background: white;
+            padding: 3rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            margin: 3rem auto;
+            max-width: 900px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .scale-display::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 300px;
+            height: 300px;
+            border: 1px solid rgba(33, 150, 243, 0.08);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .scale-display h3 {
+            color: #1976D2;
+            font-size: 1.8rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .scale-bar {
+            height: 60px;
+            border-radius: 30px;
+            background: linear-gradient(to right, 
+                #d32f2f 0%, 
+                #f44336 10%, 
+                #FF9800 30%, 
+                #FFC107 45%, 
+                #9E9E9E 48%, 
+                #9E9E9E 52%, 
+                #8BC34A 55%, 
+                #4CAF50 70%, 
+                #2196F3 90%, 
+                #1976D2 100%);
+            position: relative;
+            margin: 2rem 0;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+
+        .scale-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1rem;
+            font-weight: bold;
+            position: relative;
+            z-index: 1;
+        }
+
+        .scale-label {
+            text-align: center;
+            flex: 1;
+        }
+
+        .scale-label-left { color: #d32f2f; }
+        .scale-label-center { color: #9E9E9E; }
+        .scale-label-right { color: #1976D2; }
+
+        /* How It Works */
+        .how-it-works {
+            background: 
+                linear-gradient(rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0.75)),
+                url('https://images.unsplash.com/photo-1509228468518-180dd4864904?w=1200&q=80') center/cover;
+            position: relative;
+        }
+
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .step {
+            text-align: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, #e3f2fd 0%, #fff 100%);
+            border-radius: 15px;
+            position: relative;
+            transition: transform 0.3s;
+        }
+
+        .step:hover {
+            transform: scale(1.05);
+        }
+
+        .step-number {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #2196F3, #1976D2);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin: 0 auto 1.5rem;
+            box-shadow: 0 4px 15px rgba(33, 150, 243, 0.3);
+        }
+
+        .step h3 {
+            color: #1976D2;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        /* Decorative Side Images */
+        .decorative-images {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.15;
+        }
+
+        .decorative-img {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
+        .decorative-img-1 {
+            top: 10%;
+            left: 2%;
+            width: 150px;
+            height: 150px;
+            transform: rotate(-10deg);
+        }
+
+        .decorative-img-2 {
+            top: 50%;
+            right: 3%;
+            width: 180px;
+            height: 180px;
+            transform: rotate(8deg);
+        }
+
+        .decorative-img-3 {
+            bottom: 15%;
+            left: 5%;
+            width: 160px;
+            height: 160px;
+            transform: rotate(5deg);
+        }
+
+        /* Signup Section */
+        .signup {
+            background: 
+                linear-gradient(135deg, rgba(25, 118, 210, 0.80) 0%, rgba(33, 150, 243, 0.80) 100%),
+                url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1200&q=80') center/cover;
+            color: white;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .signup::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 100px,
+                rgba(255, 255, 255, 0.03) 100px,
+                rgba(255, 255, 255, 0.03) 200px
+            );
+            pointer-events: none;
+        }
+
+        .signup h2 {
+            color: white;
+            position: relative;
+            z-index: 1;
+        }
+
+        .signup h2::after {
+            background: white;
+        }
+
+        .signup-form {
+            max-width: 600px;
+            margin: 3rem auto 0;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .signup-form input {
+            flex: 1;
+            min-width: 250px;
+            padding: 1rem 1.5rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+        }
+
+        .signup-form button {
+            padding: 1rem 3rem;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+        }
+
+        .signup-form button:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+        }
+
+        /* Footer */
+        footer {
+            background: #263238;
+            color: white;
+            padding: 3rem 2rem 1.5rem;
+            position: relative;
+        }
+
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: repeating-linear-gradient(
+                90deg,
+                transparent 0px,
+                transparent 98px,
+                rgba(255, 255, 255, 0.02) 98px,
+                rgba(255, 255, 255, 0.02) 100px
+            );
+            pointer-events: none;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .footer-section h3 {
+            color: #2196F3;
+            margin-bottom: 1.5rem;
+            font-size: 1.3rem;
+        }
+
+        .footer-section p, .footer-section a {
+            color: #B0BEC5;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 0.5rem;
+            transition: color 0.3s;
+        }
+
+        .footer-section a:hover {
+            color: #4CAF50;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid #37474F;
+            color: #78909C;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Image Attribution */
+        .attribution {
+            font-size: 0.75rem;
+            color: #999;
+            text-align: center;
+            padding: 1rem;
+            background: #f5f5f5;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            header::before {
+                width: 100%;
+                background: linear-gradient(180deg, white 0%, white 60%, #2196F3 60%, #1976D2 100%);
+            }
+
+            header::after {
+                width: 100%;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero .subtitle {
+                font-size: 1.2rem;
+            }
+
+            section h2 {
+                font-size: 2rem;
+            }
+
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .logo {
+                margin-bottom: 0.5rem;
+            }
+
+            nav {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 1rem;
+            }
+
+            .ruler-right {
+                display: none;
+            }
+
+            body::after {
+                display: none;
+            }
+
+            .section-image-left,
+            .section-image-right,
+            .decorative-images {
+                display: none;
+            }
+        }
+    </style>
 </head>
 <body>
-  <!-- Header -->
-  <header>
-    <div class="header-content">
-      <div>
-        <div class="logo">VERITAS</div>
-        <div class="tagline">Truth Through Transparency</div>
-      </div>
-      <a href="mailto:rauel@veritastruth.net" class="contact-link">Contact Us</a>
+    <!-- RULER ON RIGHT EDGE -->
+    <div class="ruler-right"></div>
+
+    <!-- HEADER -->
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <img src="veritas-logo-horizontal.png" alt="VERITAS LLC" style="height: 50px; width: auto;">
+            </div>
+            <nav>
+                <a href="#problem">The Problem</a>
+                <a href="#solution">Our Solution</a>
+                <a href="#how-it-works">How It Works</a>
+                <a href="#signup">Join Beta</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- HERO SECTION (Mathematical background) -->
+    <section class="hero">
+        <div class="container">
+            <h1>Truth in the Digital Age</h1>
+            <p class="subtitle">Bringing Clarity to Online Information</p>
+            <p class="tagline">VERITAS provides transparent, expert-backed assessments of digital content, helping you navigate the information landscape with confidence.</p>
+            <a href="#signup" class="cta-button">Join Our Beta Program</a>
+        </div>
+    </section>
+
+    <!-- PROBLEM SECTION -->
+    <section id="problem" class="problem">
+        <!-- Decorative historical image -->
+        <img src="https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=400&q=80" alt="" class="section-image section-image-left">
+        
+        <div class="container">
+            <h2>The Problem We're Solving</h2>
+            <div class="problem-grid">
+                <div class="problem-item">
+                    <h3>Information Overload</h3>
+                    <p>We're drowning in content with no reliable way to assess credibility. Every day brings thousands of articles, posts, and claims—but which ones can you trust?</p>
+                </div>
+                <div class="problem-item">
+                    <h3>Echo Chambers</h3>
+                    <p>Algorithms feed us what we want to hear, not what we need to know. We're increasingly isolated in our own information bubbles, missing important perspectives.</p>
+                </div>
+                <div class="problem-item">
+                    <h3>Trust Crisis</h3>
+                    <p>Traditional institutions have lost credibility, but no transparent alternatives exist. People don't know who or what to believe anymore.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SOLUTION SECTION (Science background) -->
+    <section id="solution" class="solution">
+        <!-- Decorative scientific image -->
+        <img src="https://images.unsplash.com/photo-1628595351029-c2bf17511435?w=400&q=80" alt="" class="section-image section-image-right">
+        
+        <div class="container">
+            <h2>Our Solution: Transparent Truth Assessment</h2>
+            <div class="solution-grid">
+                <div class="solution-item">
+                    <h3>🎯 Expert Verification</h3>
+                    <p>Crowdsourced assessments from verified domain experts, not anonymous crowds. Real credentials, real accountability.</p>
+                </div>
+                <div class="solution-item">
+                    <h3>📊 Clear Scale</h3>
+                    <p>Simple -10 to +10 rating system. No confusing metrics or hidden algorithms. Just clear, understandable assessments.</p>
+                </div>
+                <div class="solution-item">
+                    <h3>🔍 Full Transparency</h3>
+                    <p>See who assessed what and why. Every assessment is traceable, with expert credentials and reasoning clearly displayed.</p>
+                </div>
+                <div class="solution-item">
+                    <h3>🛡️ Independence</h3>
+                    <p>Non-profit structure ensures no corporate or political influence. Our only allegiance is to truth and accuracy.</p>
+                </div>
+            </div>
+
+            <div class="scale-display">
+                <h3>The VERITAS Assessment Scale</h3>
+                <p style="text-align: center; color: #666; margin-bottom: 2rem; position: relative; z-index: 1;">
+                    A simple, intuitive scale from -10 (completely false) to +10 (completely verified)
+                </p>
+                <div class="scale-bar"></div>
+                <div class="scale-labels">
+                    <div class="scale-label scale-label-left">
+                        <div style="font-size: 1.5rem;">-10</div>
+                        <div style="font-size: 0.9rem;">Completely False</div>
+                    </div>
+                    <div class="scale-label scale-label-center">
+                        <div style="font-size: 1.5rem;">0</div>
+                        <div style="font-size: 0.9rem;">Uncertain/Mixed</div>
+                    </div>
+                    <div class="scale-label scale-label-right">
+                        <div style="font-size: 1.5rem;">+10</div>
+                        <div style="font-size: 0.9rem;">Completely Verified</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- HOW IT WORKS SECTION (Astronomy background) -->
+    <section id="how-it-works" class="how-it-works">
+        <!-- Decorative images scattered throughout -->
+        <div class="decorative-images">
+            <img src="https://images.unsplash.com/photo-1635372722656-389f87a941b7?w=300&q=80" alt="" class="decorative-img decorative-img-1">
+            <img src="https://images.unsplash.com/photo-1596495577886-d920f1fb7238?w=300&q=80" alt="" class="decorative-img decorative-img-2">
+            <img src="https://images.unsplash.com/photo-1518133835878-5a93cc3f89e5?w=300&q=80" alt="" class="decorative-img decorative-img-3">
+        </div>
+
+        <div class="container">
+            <h2>How It Works</h2>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>Browse Normally</h3>
+                    <p>Install our browser extension and continue reading news, articles, and social media as usual.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>See Assessments</h3>
+                    <p>VERITAS indicators appear automatically on assessed content, showing credibility scores at a glance.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>Explore Details</h3>
+                    <p>Click any assessment to see expert analysis, credentials, methodology, and supporting evidence.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <h3>Make Informed Decisions</h3>
+                    <p>Use these insights to navigate information with confidence and understand different perspectives.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SIGNUP SECTION (Space/technology background) -->
+    <section id="signup" class="signup">
+        <div class="container">
+            <h2>Join the Beta Program</h2>
+            <p style="font-size: 1.2rem; margin-bottom: 2rem; position: relative; z-index: 1;">
+                Be among the first to experience transparent truth assessment
+            </p>
+            <form class="signup-form" onsubmit="event.preventDefault(); alert('Thank you! We will contact you when beta access becomes available.');">
+                <input type="email" placeholder="Enter your email address" required>
+                <button type="submit">Get Early Access</button>
+            </form>
+            <p style="margin-top: 2rem; opacity: 0.8; position: relative; z-index: 1;">
+                No spam. Just updates on our progress and beta launch.
+            </p>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>VERITAS</h3>
+                <p>Transparent truth assessment for the digital age. A non-profit initiative dedicated to information integrity.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <a href="#problem">The Problem</a>
+                <a href="#solution">Our Solution</a>
+                <a href="#how-it-works">How It Works</a>
+                <a href="#signup">Join Beta</a>
+            </div>
+            <div class="footer-section">
+                <h3>Contact</h3>
+                <p>📧 info@veritastruth.net</p>
+                <p>🌐 www.veritastruth.net</p>
+                <p>📍 Madison, Wisconsin</p>
+            </div>
+            <div class="footer-section">
+                <h3>Mission</h3>
+                <p>To restore trust in information through transparent, expert-driven content assessment—accessible to everyone, controlled by no one.</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 VERITAS LLC. All rights reserved. | A non-profit initiative for information integrity.</p>
+        </div>
+    </footer>
+
+    <!-- Image Attribution -->
+    <div class="attribution">
+        Background images from Unsplash: Mathematics (Hero), Science Equipment, Astronomy, Technology • Free to use under Unsplash License
     </div>
-  </header>
-  
-  <!-- Hero Section -->
-  <section class="hero">
-    <div class="hero-content">
-      <h1>The Truth Is Complex.<br>Your News Shouldn't Hide That.</h1>
-      <p class="hero-subtitle">Expert-driven truth verification that shows <strong>how</strong> experts think,<br>not just <strong>what</strong> they conclude.</p>
-      <div class="status-badge">🚀 Currently in Development - Launching Soon</div>
-    </div>
-  </section>
-  
-  <!-- Problem Section -->
-  <section class="problem-section">
-    <div class="container">
-      <h2 class="section-title">The Information Crisis Is Real</h2>
-      <p class="section-subtitle">Traditional fact-checking oversimplifies complex issues with binary TRUE/FALSE labels, hiding the nuance that matters most.</p>
-      
-      <div class="problem-grid">
-        <div class="problem-card">
-          <h3>🚫 Binary Thinking</h3>
-          <p>Most fact-checkers reduce complex issues to simple TRUE or FALSE verdicts, losing critical context and nuance in the process.</p>
-        </div>
-        
-        <div class="problem-card">
-          <h3>🔒 Hidden Methodology</h3>
-          <p>Readers rarely see <em>how</em> fact-checkers reached their conclusions, making it impossible to evaluate their reasoning.</p>
-        </div>
-        
-        <div class="problem-card">
-          <h3>📉 Declining Trust</h3>
-          <p>Public trust in fact-checking has eroded because the process feels opaque and the judgments feel absolute rather than honest.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-  
-  <!-- Solution Section -->
-  <section class="solution-section">
-    <div class="container">
-      <h2 class="section-title">The VERITAS Difference</h2>
-      <p class="section-subtitle">We're building a platform that respects the complexity of truth and the intelligence of readers.</p>
-      
-      <div class="solution-grid">
-        <div class="solution-card">
-          <div class="solution-icon">📊</div>
-          <h3>Nuanced Assessment</h3>
-          <p>-10 to +10 confidence scale instead of binary judgments. "Cannot Determine" (0) is a valid answer when evidence is insufficient.</p>
-        </div>
-        
-        <div class="solution-card">
-          <div class="solution-icon">👥</div>
-          <h3>Multiple Perspectives</h3>
-          <p>See assessments from multiple experts across different domains, complete with credentials and reasoning.</p>
-        </div>
-        
-        <div class="solution-card">
-          <div class="solution-icon">🔍</div>
-          <h3>Transparent Process</h3>
-          <p>Every assessment shows the methodology, evidence considered, and explicitly notes uncertainty factors.</p>
-        </div>
-        
-        <div class="solution-card">
-          <div class="solution-icon">🎯</div>
-          <h3>Honest Uncertainty</h3>
-          <p>We explicitly identify what we don't know and what would change our assessment with new evidence.</p>
-        </div>
-        
-        <div class="solution-card">
-          <div class="solution-icon">⚖️</div>
-          <h3>No Political Agenda</h3>
-          <p>Mission-driven nonprofit structure ensures focus on truth, not ideology or profit.</p>
-        </div>
-        
-        <div class="solution-card">
-          <div class="solution-icon">🔓</div>
-          <h3>Public Database</h3>
-          <p>All assessments publicly available through API, browser extension, and publisher partnerships.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-  
-  <!-- How It Works -->
-  <section class="how-it-works">
-    <div class="container">
-      <h2 class="section-title">How VERITAS Works</h2>
-      <p class="section-subtitle">A transparent process from start to finish</p>
-      
-      <div class="steps">
-        <div class="step">
-          <div class="step-number">1</div>
-          <h3>Article Submission</h3>
-          <p>Publishers, readers, or algorithms flag articles for assessment based on impact and controversy.</p>
-        </div>
-        
-        <div class="step">
-          <div class="step-number">2</div>
-          <h3>Expert Assignment</h3>
-          <p>Credentialed validators from relevant fields are assigned based on their expertise and track record.</p>
-        </div>
-        
-        <div class="step">
-          <div class="step-number">3</div>
-          <h3>Independent Assessment</h3>
-          <p>Each validator reviews the claims, evaluates evidence, and provides a detailed analysis with scoring.</p>
-        </div>
-        
-        <div class="step">
-          <div class="step-number">4</div>
-          <h3>Transparency Package</h3>
-          <p>Results published with full methodology, uncertainty factors, and what would change the assessment.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-  
-  <!-- CTA Section -->
-  <section class="cta-section">
-    <div class="container">
-      <h2>Join the Movement for Truth</h2>
-      <p>Be the first to know when VERITAS launches. Get early access to our browser extension and platform.</p>
-      
-      <form class="email-signup" action="#" method="POST">
-        <input type="email" class="email-input" placeholder="Enter your email" required>
-        <button type="submit" class="submit-btn">Get Early Access</button>
-      </form>
-    </div>
-  </section>
-  
-  <!-- Footer -->
-  <footer>
-    <div class="container">
-      <div class="footer-content">
-        <div class="footer-section">
-          <h4>About VERITAS</h4>
-          <p>VERITAS LLC is building the future of information verification through expert-driven, transparent truth assessment.</p>
-          <p style="margin-top: 16px;"><strong>Mission:</strong> Restore trust in information through epistemic humility and transparent methodology.</p>
-        </div>
-        
-        <div class="footer-section">
-          <h4>Platform</h4>
-          <p>Browser Extension (Coming Soon)<br>
-          Publisher API (In Development)<br>
-          Validator Dashboard (Beta)<br>
-          Public Assessment Database</p>
-        </div>
-        
-        <div class="footer-section">
-          <h4>Contact</h4>
-          <p><strong>Email:</strong><br>
-          <a href="mailto:rauel@veritastruth.net">rauel@veritastruth.net</a></p>
-          <p style="margin-top: 16px;"><strong>Website:</strong><br>
-          <a href="http://www.veritastruth.net">www.veritastruth.net</a></p>
-        </div>
-        
-        <div class="footer-section">
-          <h4>Legal</h4>
-          <p><strong>VERITAS LLC</strong><br>
-          Prairie du Sac, WI<br>
-          <br>
-          Privacy Policy (Coming Soon)<br>
-          Terms of Service (Coming Soon)</p>
-        </div>
-      </div>
-      
-      <div class="footer-bottom">
-        <p>© 2025 VERITAS LLC. All rights reserved. | Built with a commitment to truth and transparency.</p>
-      </div>
-    </div>
-  </footer>
 </body>
 </html>
