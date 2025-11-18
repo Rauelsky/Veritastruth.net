@@ -1,0 +1,788 @@
+/*Typography*/
+.authorcenter h1
+{
+    font-family: "Montserrat";
+    font-size: 1.875rem; /*30 px*/
+    font-weight: bold;
+    color: #000;
+    text-decoration: none;
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+.authorcenter h2, h2 a
+{
+    font-family: "Montserrat";
+    font-size: 1.5rem; /*24 px*/
+    font-weight: 600; /*semi-bold*/
+    color: #D43728; /*clay*/
+    text-decoration: none;
+    line-height: 1.6;
+    margin-bottom: 10px;
+}
+.authorcenter h3
+{
+    font-family: "Montserrat";
+    font-size: 1.25rem; /*20 px*/
+    font-weight: 600; /*semi-bold*/
+    color: #000;
+    text-decoration: none;
+    margin-bottom: 10px;
+}
+.authorcenter h4
+{
+    font-family: "Montserrat";
+    font-size: 1rem;
+    font-weight: bold;
+    color: #000;
+    margin-bottom: 1rem
+}
+
+.authorcenter paragraph {
+    font-size: 1.5rem; /*24 px*/
+    line-height: 1.6;
+    font-weight: 400;
+    font-family: "Open Sans";
+    color: #262626;
+}
+
+@media screen and (max-width: 768px) {
+    .authorcenter h1 {
+        font-size: 1.625rem; /*26 px*/
+    }
+    .authorcenter h2 {
+        font-size: 1.375rem; /*22 px*/
+        line-height: 1.6;
+    }
+}
+
+.rss h2 {
+    font-family: "Montserrat";
+    font-size: 1.5rem; /*24 px*/
+    font-weight: 600;
+}
+
+.rss h4 {
+    font-family: "Montserrat";
+    font-size: 1.25rem; /*20 px*/
+    font-weight: 700;
+}
+
+.subscriptions h3
+{
+    font-family: "Montserrat";
+    font-size: 1rem; /*16 px*/
+    font-weight: 600; /*semi-bold*/
+    color: #000;
+    text-decoration: none;
+    margin-bottom: 10px;
+}
+
+.footnote {
+    font-size: 0.75rem; /*12 px*/
+}
+
+.subs h2 {
+    color: #000;
+}
+
+/* Author Center menu mobile*/
+.menu-toggle-button {
+    background: #1C75BC;
+    color: #FFFFFF;
+    text-decoration: none;
+    font-size: 0.813rem; /*13 px*/
+    line-height: 16px;
+    padding: 8px 12px;
+    margin-bottom: 15px;
+    display: block;
+    text-align: center;
+}
+
+.check-btn input {
+    margin-right: 100px;
+}
+
+.check-btn label {
+    display: inline-block;
+}
+
+.check-btn input {
+    display: none;
+}
+
+.check-btn input:checked ~ .menu-toggle {
+    display: block;
+}
+
+@media (min-width: 992px) {
+    .check-btn label {
+        display: none;
+    }
+}
+@media (max-width: 991px) {
+    .menu-toggle {
+        display: none;
+    }
+}
+/* Homepage slideshow */
+.slideshow .card-slide__desc {
+    font-weight: 600;
+    font-size: 1.25rem; /*20 px*/
+}
+
+.slideshow a {
+    text-decoration: none;
+}
+
+/* Author Center --------------- */
+
+/*Accordion Widget*/
+
+.menu-ac {
+    margin: 0;
+    padding: 0 0 0 20px;
+    list-style: none;
+}
+
+.menu-ac > li {
+    margin-top: 5px;
+}
+
+.menu-ac > li > a {
+    color: #005A96;
+    text-decoration: none;
+    font-size: 0.938rem; /*15 px*/
+    font-weight: 500;
+    font-family: "Montserrat";
+}
+
+.menu-ac > li > a:hover {
+    text-decoration: underline;
+}
+
+.navlist-ac {
+    position: sticky;
+    top: 3rem;
+}
+
+/*Single column table*/
+
+.card-ac {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: #fff;
+    background-clip: border-box;
+    border: 1px solid #ddd;
+    margin-bottom: -1px;
+}
+
+.card-header-ac {
+    padding: .75rem 1.25rem;
+    margin: 0;
+    background-color: rgba(0, 0, 0, .03);
+    border-bottom: 1px solid #ddd;
+    font-size: 1.125rem; /*18 px*/
+}
+
+.card-body-ac {
+    flex: 1 1 auto;
+    min-height: 1px;
+    padding: 1.25rem;
+}
+
+.card-title-ac {
+    margin: 0 0 .75rem 0;
+    color: #D43728;
+}
+
+/*About Page 3x3 Cards*/
+
+.card-about {
+    text-align: center;
+    border: solid 2px #E0E0E0;
+    height: 200px;
+    box-shadow: 5px 10px 8px #E0E0E0;
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+.card-about:hover,
+.card-about:focus {
+    background: #1C75BC;
+    border-color: #1C75BC;
+}
+
+.card-about-link:hover {
+    text-decoration: none;
+}
+
+.card-about-title {
+    font-weight: 900;
+    margin-top: 40px;
+    padding-bottom: 20px;
+}
+
+.card-about-text {
+    margin-left: 0px;
+}
+
+.card-about:hover .card-about-title,
+.card-about:hover .card-about-text {
+    color: #ffffff;
+}
+
+/* Navigation overrides ----------------- */
+.navbar-light .navbar-nav .nav-link {
+    color: #0b0b0b;
+}
+.navbar-light .navbar-nav .nav-link:focus, 
+.navbar-light .navbar-nav .nav-link:hover {
+    color: rgba(0,0,0,.9);
+}
+
+/* Article style overrides  --------------- */
+.back-to-top__action__ring-bg {
+    stroke: #ddd;
+}
+
+section.simple-banner {
+    background: linear-gradient(0deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0)), url(/pb-assets/images/authors/author-center-banner-bg.png) no-repeat center !important;
+}
+
+/* Remove bullets from DO pub list */
+ul.do-pub-list {
+    list-style: none;
+    padding-left: 0;
+}
+
+/* Media Menu accordion styles */
+.media-menu {
+    padding-bottom: 30px;
+}
+.media-menu .author-center__side-menu {
+    background: #FFF;
+	padding: 0;
+}
+.media-menu .author-center__side-menu li {
+    margin-bottom: 10px;
+}
+.media-menu .author-center__side-menu__title:before {
+	display: none;
+}
+.media-menu .author-center__side-menu__title {
+    color: #CB5535;
+    margin: 0;
+    border: 1px solid #E0E0E0;
+    padding: 15px 20px;
+}
+.media-menu .author-center__side-menu .collapse.show,
+.media-menu .author-center__side-menu .collapsing {
+    border: 1px solid #E0E0E0;
+    margin-top: -1px;
+    padding: 10px 20px;
+}
+
+/* PITN/DEI Cards */
+.card-pitn {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    border: solid 1px #000;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+}
+.pitn-description {
+    padding: 20px;
+}
+.pitn-description h4 {
+    padding-bottom: 10px;
+}
+.bottom-align-text {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+}
+
+/* DEI multimedia*/
+#video-container {
+    position: relative;
+    padding-bottom: 56.25%;
+    height: 0;
+}
+.responsive-iframe {
+    max-width: 560px;
+    max-height: 315px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+.video-holder{
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+    max-width: 560px;
+    max-height: 315px;
+}
+
+/*EBM*/
+.ebm-list li {
+    line-height: 2;
+}
+
+/*RSS list*/
+.rss-list li {
+    line-height: 2;
+    list-style: none;
+}
+
+/*Subscription*/
+.btn-center-subs {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+}
+
+.well-subs {
+    min-height: 20px;
+    padding: 0 15px 0 15px;
+    margin-bottom: 20px;
+    background-color: #f5f5f5;
+    border: 1px solid #e3e3e3;
+    border-radius: 4px;
+    width: 100%;
+}
+
+/* Accordion widget - Subscriptions */
+.subs-menu .author-center__side-menu {
+	padding: 0;
+}
+.subs-menu .author-center__side-menu li {
+    margin-bottom: 10px;
+}
+.subs-menu .author-center__side-menu__title:before {
+	display: none;
+}
+
+/*Quick links - Subscriptions*/
+.subs-body h4 {
+        text-align: center;
+        margin-top: 20px;
+    }
+.subs-body i {
+    color: #000;
+}
+.card-subs {
+    text-align: center;
+    margin-bottom: 20px;
+    height: 100%;
+    overflow: hidden;
+    padding: 20px;
+}
+
+.card-subs-link:hover {
+    text-decoration: none;
+}
+
+.card-subs:hover h4,
+.card-subs:hover i {
+    color: #1C75BC;
+}
+
+/*Librarian Portal*/
+.card-librarian {
+        position: relative;
+        display: flex;
+    }
+.card-librarian_content {
+    margin: 0px;
+    padding-top: 20px;
+}
+.card-librarian_title {
+    padding-bottom: 20px;
+}
+
+/* -----------404--------------- */
+
+.message_404 h1 {
+    font-family: "Montserrat";
+    font-size: 1.875rem; /*30 px*/
+}
+.message_404 p {
+    font-family: "Open Sans";
+    font-size: 1.125rem; /*18 px*/
+}
+.periodic_square {
+    position: relative;
+    width: 75%;
+    border: 1.5px solid;
+    text-align: center;
+    display: flex;
+}
+.periodic_square:after {
+    content: "";
+    display: block;
+    padding-bottom: 100%;
+}
+.element {
+    position: absolute;
+    width: 100%;
+    padding: 10px;
+}
+.atomic_num {
+    font-family: "Montserrat";
+    font-size: 1rem; /*16 px*/
+    font-weight: 600;
+    text-align: left;
+}
+
+.atomic_name {
+    font-family: "Montserrat";
+    font-size: 0.75rem; /*12 px*/
+    font-weight: 600;
+    text-align: center;
+}
+
+.element_name {
+    font-family: "Montserrat";
+    font-size: 3rem; /*48 px*/
+    font-weight: 900;
+    text-align: center;
+}
+/* Brand colors for each periodic element */
+.nobelium .periodic_square {
+    border-color: #1C75BC;
+    }
+
+.nobelium .element_name, 
+.nobelium .atomic_name, 
+.nobelium .atomic_num {
+    color: #1C75BC; /* PNAS Blue */
+}
+    
+.protactinium .periodic_square {
+    border-color: #CB5535;
+    }
+ 
+.protactinium .element_name, 
+.protactinium .atomic_name, 
+.protactinium .atomic_num {
+    color: #CB5535; /* Clay */
+    }
+    
+.germanium .periodic_square {
+    border-color: #4C8C28;
+    }   
+
+.germanium .element_name,  
+.germanium .atomic_name,  
+.germanium .atomic_num{
+    color: #4C8C28; /* Forest */
+    }
+
+.fluorine .periodic_square {
+    border-color: #570081;
+    }   
+ 
+.fluorine .element_name, 
+.fluorine .atomic_name, 
+.fluorine .atomic_num{
+    color: #570081; /* Plum */
+    }
+    
+.oxygen .periodic_square {
+    border-color: #71695B;
+    }   
+
+.oxygen .element_name, 
+.oxygen .atomic_name, 
+.oxygen .atomic_num{
+    color: #71695B; /* Steel */
+    }
+    
+.uranium .periodic_square {
+    border-color: #A5002D;
+    }  
+
+.uranium .element_name, 
+.uranium .atomic_name, 
+.uranium .atomic_num{
+    color: #A5002D; /* Apple */
+    }
+    
+.neodymium .periodic_square {
+    border-color: #034231;
+    }  
+
+.neodymium .element_name, 
+.neodymium .atomic_name, 
+.neodymium .atomic_num{
+    color: #034231; /* Pine */
+    }
+
+@media (max-width: 767px) { /*mobile*/
+        .periodic_square {
+            width: 100%;    
+        }
+        .atomic_num {
+            display: none;
+        }
+        .atomic_weight {
+            display: none;
+        }
+        .atomic_name {
+            font-size: 0.5rem; /*8 px*/
+            display: flex;
+            justify-content: center;
+            padding-top: 5px;
+        }
+        .element_name {
+            font-size: 0.625rem; /*18 px*/
+        }
+        .element p {
+            margin-bottom: 0;
+            line-height: normal;
+        }
+        .message_404 h1 {
+            font-size: 1rem; /*16 px*/
+        }
+        .message_404 p {
+            font-size: 0.625rem; /*18 px*/
+        }
+    } 
+@media (min-width: 768px) and (max-width: 1024px) { /*tablet*/
+        .periodic_square {
+            width: 100%;    
+        }
+        .element_name {
+            font-size: 2.75rem; /*44 px*/
+        }
+        .element p {
+            margin-bottom: 0;
+            line-height: normal;
+        }
+    } 
+
+/* Sticky sidebar ad on TOC page */	
+@media (min-width: 768px) {
+   .content--toc .adplaceholder.exists {
+		position: sticky;
+		top: 100px;
+	} 
+}
+
+/* Image caption/credit on podcast posts */	
+@media (max-width: 767px) {
+figcaption.fig-align div {
+    flex-direction: column;
+}
+}
+
+/* Adding blockquotes for Updates blog post 
+article[typeof=BlogPosting] blockquote {
+    font-size: 1.75rem;
+    text-align: center;
+    font-weight: 600;
+    font-family: Montserrat,serif;
+    line-height: 2.375rem;
+    padding: 6.5rem 3rem;
+    position: relative;  
+} 
+article[typeof=BlogPosting] blockquote:before,
+article[typeof=BlogPosting] blockquote:after {
+content: "";
+   background: url(/pb-assets/images/digital-objects/quote.svg);
+   position: absolute;
+   left: 3rem;
+   top: 3.5rem;
+   height: 5.875rem;
+   width: 7.5rem;
+}
+article[typeof=BlogPosting] blockquote:after {
+    transform: rotate(180deg);
+    top: auto;
+    left: auto;
+    bottom: 3.5rem;
+    right: 3rem;
+}
+*/
+
+/* Fix issue of header turning black if viewport height is below 650px
+header .navbar-light.dark-header-nav {
+    background-color: #FFF!important;
+}
+*/
+
+/* Fix issue of sticky header being transparent*/
+/*header .navbar-fixed {
+    position: inherit!important;
+}*/
+
+/* Verse line styling on FM articles*/
+div.verse-group {
+    margin-left: 1rem;
+    font-style: italic;
+    font-size: 0.95rem;
+}
+
+div.core-attribution {
+    margin-left: 2rem;
+}
+
+/* Sidebar styling PLAT-1181 */
+.boxed-text[data-type="sidebar"] div[role="paragraph"] {
+  text-align: left;
+}
+
+/* podcast related items PLAT-1416 */
+p.podcast-related-item:last-of-type {
+    border-bottom:none!important;
+    padding:0!important;
+}
+
+/* special feature TOC PLAT-1473 */
+.special-feature__body .card:last-of-type {
+    border-bottom: none!important;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+/* classics borders PLAT-1480 */
+.card-classics .top-content .list-unstyled li:last-of-type .card {
+    border-bottom: 0px;
+}
+
+/* ack section headings PLAT-1541 */
+
+h2.reviewers {
+    margin-left: 0.5rem;
+}
+
+@media (min-width: 1200px) {
+    h2.reviewers {
+        margin-left: 1rem;
+    }
+}
+
+
+@media (min-width: 1250px) {
+    h2.reviewers {
+        margin-left: 2rem;
+    }
+}
+
+/* homepage trending widget PLAT-1511*/
+.tab-content-trending {
+	padding: 0rem 0!important;
+	white-space: normal;
+}
+
+/* PLAT-1598*/
+.updates-notice-box {
+    background-color: #f6f6f6;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    border-style: solid;
+    font-weight: 600;
+    margin: 0 0.5rem 1rem;
+}
+
+.article-container.alternative-rendering-do {
+    position: relative;
+}
+
+/* PLAT-1611 */
+.jc-inline-img-caption {
+    color: #666666;
+    letter-spacing: 0.02rem;
+    font-size: 0.75rem;
+    line-height: 2;
+    font-style: italic;
+}
+
+/* PLAT-1636 */
+.core-lede:nth-of-type(3) {
+    font-size: 0.875rem;
+}
+
+/* PLAT-1701 */
+p.update-reference {
+	line-height: 1.5;
+    font-size: .9rem;
+}
+
+/*PLAT-1828*/
+span.cozz-prize-authors {
+	font-size: .875rem;
+	font-style: italic;
+}
+
+/* PLAT-1812*/
+.blog-cover__figure::after {
+	position: relative; 
+	content: '';
+    background: none !important;
+    bottom: 0;
+    left: 0;
+    opacity: 0.5;
+    top: 0;
+    right: 0;
+}
+
+/* PLAT-1791 */
+.sdg-topic{
+    color: #48712c!important;
+    width: 15rem;
+    max-width: 100%;
+    font-size: 0.75rem !important;
+    margin-top: 3rem;
+	text-align: left;
+}
+
+@media (max-width: 1500px) {
+	.sdg-topic{
+		margin-right: 1rem;
+	}
+}	
+
+/* PNAS-2510*/
+#abstract h2[property="name"] {
+    text-align: left;
+}
+  
+  #abstract div[role="paragraph"] {
+    text-align: left;
+}
+  .signup-alert-ad__title {
+    text-align: left;
+}
+
+/* PLAT-1594 */
+  .sdg-goals {
+      width: 160px;
+      display: grid;
+  }
+   @media (max-width: 320px) {
+          .sdg-goals {
+              display: flex;
+              flex-wrap: wrap;
+              justify-content: center;
+          }
+  }
+
+/* PLAT-1846 */
+  .goal-label {
+	  background-color: white;
+      height: 9rem;
+      width: 160px;
+      box-sizing: border-box;
+	  padding: 10px 5px 20px 5px;
+	  font-weight: 600;
+	  font-size: 14px;
+ }
