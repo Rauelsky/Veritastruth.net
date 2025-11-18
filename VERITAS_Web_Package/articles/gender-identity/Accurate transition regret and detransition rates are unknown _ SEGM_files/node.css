@@ -1,0 +1,25 @@
+.node__paragraphs .field__items {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 56px;
+  margin-top: 56px;
+}
+.node__header {
+  margin-bottom: 30px;
+}
+.node__header .page-title {
+  margin: 0;
+}
+.node__header .pager-title h1 {
+  margin: 0;
+}
+.node__content__separator {
+  width: 99.3vw;
+  margin-left: 50%;
+  margin-bottom: 50px;
+  margin-top: 0;
+  transform: translateX(-50%);
+  height: 5px;
+  background-color: #0d8894;
+  border: none;
+}

@@ -1,0 +1,327 @@
+/*
+ * These are things that are probably old unused things, but before deleting them, let's declutter the main file.
+ */ 
+ 
+ 
+ 
+/* 
+ * I don't know what list-blk means, but it's only found in a dead file, an old page--front.
+ * Looking at https://web.archive.org/web/20221130232508/https://www.segm.org/, this appears to be the case.
+ * Legacy.
+ */
+
+section.list-blk .col-md-6:last-of-type ul:last-of-type:after {
+	/* v1, v2, v3, v4 */
+	border: none;
+}
+
+section.list-blk h2 {
+	/* v1, v2, v3, v4 */
+	text-align: left;
+	line-height: 1.5em;
+	font-size: 22px;
+}
+
+section.list-blk ul {
+	/* v1, v2, v3, v4 */
+	position: relative;
+}
+
+section.list-blk ul::after {
+	/* v1, v2, v3, v4 */
+	height: 9px;
+	width: 40%;
+	border-bottom: 3px solid #0D8894;
+	content: " ";
+	margin-left: 5em;
+	position: relative;
+	display: block;
+	margin-bottom: 2em;
+	padding: 1em 0 0 0;
+}
+
+section.list-blk ul:last-of-type:after {
+	/* v1, v2, v3, v4 */
+	display: none;
+}
+
+section.list-blk ul li {
+	/* v1, v2, v3, v4 */
+	list-style: outside none;
+	font-size: 16.4px;
+	line-height: 1.3em;
+	padding-bottom: 0.5em;
+	position: relative;
+}
+
+@media (max-width: 991px) {
+	
+	section.list-blk ul:last-of-type:after {
+		/* v1, v2, v3, v4 */
+		display: block;
+	}
+}
+
+
+
+/* Split from a combined selector with "section.content-1 ul li:before" */
+
+section.list-blk ul li:before {
+	/* v1, v2, v3, v4 */
+	content: " ";
+	display: inline-block;
+	width: 0.5em;
+	height: 0.7em;
+	position: absolute;
+	background-image: url(/themes/segm/images/disc.svg);
+	left: -1.1em;
+	background-size: contain;
+	background-repeat: no-repeat;
+	
+	/* v1, v3 */
+	top: 0.4em;
+	
+	/* v2, v4 */
+	top: 0.7em;
+}
+
+
+
+/* 
+ * No clue. No grep hits on either.
+ * Looking at https://web.archive.org/web/20221130232508/https://www.segm.org/, div-inline appears.
+ * Legacy?
+ */
+
+div.div-inline1:after {
+	/* v1, v2, v3, v4 */
+	width: 47%;
+	border-bottom: 3px solid #0D8894;
+	content: " ";
+	display: block;
+	height: 1px;
+	margin: 0 auto 2em;
+	padding-bottom: 3.3em;
+}
+
+div.div-inline input {
+	/* v1, v2, v3, v4 */
+	display: inline;
+}
+
+
+
+/* but-sur, I grep'd the themes, and I checked the node__bodies, no matches. Potentially dead? 
+ * Looking at https://web.archive.org/web/20221130232508/https://www.segm.org/, this appears to be the case.
+ * Legacy.
+ */
+
+label.but-sur {
+	/* v1, v2, v3, v4 */
+	display: inline-block;
+	background: #949494;
+	color: #fff;
+	font-size: 17px;
+	padding: 0.4em 0.4em;
+	margin: 0;
+	margin-left: 1.4em;
+	border-radius: 0.5em;
+	box-shadow: 0px 0 0 5px #fff, 0 0 0 10px #EBECEC;
+	border: none;
+	text-transform: uppercase;
+	font-weight: bolder;
+	line-height: 1em;
+	cursor: pointer;
+}
+
+
+
+/*
+ * No grep hits for "home-intro". Given the name, perhaps old homepage?
+ * Looking at https://web.archive.org/web/20221130232508/https://www.segm.org/, this appears to be the case.
+ * Legacy.
+ */
+
+section.home-intro {
+	/* v1, v2, v3, v4 */
+	padding: 37px 0 5px;
+	border-bottom: 5px solid #0D8894;
+	background-image: url(../images/shadow-light.png), url(../images/intro-bg.png);
+	background-position: center top, center top;
+	background-repeat: no-repeat, no-repeat;
+	background-size: contain, cover;
+	color: #4D4D4D;
+	padding: 4em 0 2em;
+}
+
+section.home-intro p {
+	/* v1, v2, v3, v4 */
+	font-size: 31px;
+	font-weight: bolder;
+	font-family: Myriad;
+}
+
+
+
+/* sm-1, I grep'd the themes, and I checked the node__bodies, no matches. Potentially dead? Legacy? */
+
+table.sm-1 {
+	/* v1, v2, v3, v4 */
+	font-size: 80%;
+}
+
+table.sm-1 td {
+	/* v1, v2, v3, v4 */
+	box-sizing: border-box;
+	padding: 0.5em 1em;
+}
+
+table.sm-1 p {
+	/* v1, v2, v3, v4 */
+	font-size: 100%;
+	margin: 0;
+	line-height: 1.3em;
+}
+
+
+
+/* o-o-o, I grep'd the themes, and I checked the node__bodies, no matches. Potentially dead? Legacy? */
+
+ol.o-o-o li {
+	/* v1, v2, v3, v4 */
+	margin-bottom: 0.5em;
+}
+
+ul.o-o-o li {
+	/* v1, v2, v3, v4 */
+	margin-bottom: 0.5em;
+}
+
+
+
+/*
+ * No grep hits for studies-text or studies-h. Legacy?
+ */
+
+.studies-text {
+	/* v1, v2, v3, v4 */
+	column-count: 1;
+	text-align: justify;
+	padding-bottom: 0.5em;
+}
+
+.studies-text p {	
+	/* v2 */
+}
+
+h2.studies-h {
+	/* v1, v2, v3, v4 */
+	text-align: left !important;
+}
+
+@media (max-width: 991px) {
+	
+	.studies-text {
+		/* v1, v2, v3, v4 */
+		column-count: 1;
+	}
+}
+
+
+
+/* No grep hits for this one */
+
+sup {
+	/* v1, v2, v3, v4 */
+	line-height: 1.5em;
+	display: block;
+}
+
+
+
+/* No grep hits for t-text-t. Legacy? */
+
+.t-text-t {
+	/* v1, v2, v3, v4 */
+	width: 100%;
+	height: 100%;
+	display: flex;
+	align-items: center;
+	position: absolute;
+	z-index: 0;
+	min-height: 20em;
+}
+
+
+.t-text-t>div {
+	/* v1, v2, v3, v4 */
+	width: 100%;
+	text-align: center;
+	padding: 0 7em;
+}
+
+@media (max-width: 991px) {
+	
+	.t-text-t>div {
+		/* v1, v2, v3, v4 */
+		padding: 0 0.5em
+	}
+}
+
+@media (max-width:767px) {
+	
+	.t-text-t {
+		/* v1, v2, v3, v4 */
+		position: relative;
+		min-height: 6em;
+	}
+}
+
+
+
+/* grep hit on themes/segm/templates/node--blog-post--teaser.html.twig for these three 
+ * artice-teaser appears in https://web.archive.org/web/20221130232508/https://www.segm.org/, but not segm.org
+ */
+
+.soc-links {
+	/* v1, v2, v3, v4 */
+	display: flex;
+	margin-bottom: 0.5em;
+}
+
+.article-teaser .soc-links {
+	/* v1, v2, v3, v4 */
+	display: none;
+}
+
+.print-soc {
+	/* v1, v2, v3, v4 */
+	display: inline-block;
+	width: 40px;
+	/*! height: 40px; */
+	background-image: url(../images/print.svg);
+	/*! transform: translateY(-1.2em); */
+	background-position: center;
+	background-size: contain;
+	background-repeat: no-repeat;
+	cursor: pointer;
+	margin-left: 3px;
+	align-content: center;
+}
+
+
+
+/* 
+ * No grep results for section-dark.
+ * section-dark appears in https://web.archive.org/web/20221130232508/https://www.segm.org/, but not segm.org
+ * Legacy?
+ */
+ 
+.section-dark {
+	/* v1, v2, v3, v4 */
+	background-color: #F6F6F6;
+	
+	/* v4 */
+	padding-top: 50px !important;
+}
+.tweet-but{align-content: center;}

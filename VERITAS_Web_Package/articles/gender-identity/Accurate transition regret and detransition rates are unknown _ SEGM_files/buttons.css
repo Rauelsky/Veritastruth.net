@@ -1,0 +1,171 @@
+button.segm-button,
+a.segm-button {
+  --primary-button-background: #1BACAF;
+  --primary-button-text: #FFFFFF;
+}
+button.segm-button--primary,
+a.segm-button--primary {
+  display: block;
+  max-width: -moz-fit-content;
+  max-width: fit-content;
+  margin: auto;
+  padding: 8px 20px;
+  transition: all 0.2s ease-in-out;
+  background-color: var(--primary-button-background);
+  color: var(--primary-button-text);
+  border-radius: 35px;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.2;
+  border: none;
+}
+@media (min-width: 991px) {
+  button.segm-button--primary,
+a.segm-button--primary {
+    font-size: 17px;
+  }
+}
+button.segm-button--primary:hover,
+a.segm-button--primary:hover {
+  text-decoration: none;
+  filter: brightness(0.8);
+  transition: all 0.2s ease-in-out;
+  color: var(--primary-button-text);
+}
+button.segm-button--primary--cyan,
+a.segm-button--primary--cyan {
+  background-color: #1BACAF;
+  color: #FFFFFF;
+  fill: #FFFFFF;
+  line-height: 32px;
+}
+button.segm-button--primary--cyan .icon svg,
+a.segm-button--primary--cyan .icon svg {
+  color: #FFFFFF;
+}
+button.segm-button--primary--dark-cyan,
+a.segm-button--primary--dark-cyan {
+  background-color: #0D8894;
+  color: #FFFFFF;
+  fill: #FFFFFF;
+  line-height: 32px;
+}
+button.segm-button--primary--dark-cyan .icon svg,
+a.segm-button--primary--dark-cyan .icon svg {
+  color: #FFFFFF;
+}
+button.segm-button--primary--dark-cyan:hover,
+a.segm-button--primary--dark-cyan:hover {
+  filter: none;
+  background-color: #1BACAF;
+  transition: all 0.2s ease-in-out;
+}
+button.segm-button--primary--orange,
+a.segm-button--primary--orange {
+  background-color: #F97253;
+  color: #FFFFFF;
+}
+button.segm-button--primary--light-cyan,
+a.segm-button--primary--light-cyan {
+  background-color: #D8EFEB;
+  transition: all 0.2s ease-in-out;
+  color: #FFFFFF;
+  line-height: 32px;
+}
+button.segm-button--primary--light-cyan:hover,
+a.segm-button--primary--light-cyan:hover {
+  background-color: #9FD6D6;
+  transition: all 0.2s ease-in-out;
+}
+button.segm-button--secondary,
+a.segm-button--secondary {
+  display: block;
+  max-width: -moz-max-content;
+  max-width: max-content;
+  margin: auto;
+  padding: 4px 16px;
+  transition: all 0.2s ease-in-out;
+  background-color: #D8EFEB;
+  color: #4D4D4D;
+  border-radius: 35px;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.2;
+}
+button.segm-button--secondary:hover,
+a.segm-button--secondary:hover {
+  text-decoration: none;
+  background-color: #9FD6D6;
+  transition: all 0.2s ease-in-out;
+}
+button.segm-button--secondary--our-response,
+a.segm-button--secondary--our-response {
+  margin-left: 10px;
+  margin-right: auto;
+  margin-bottom: 25px;
+  margin-top: 10px;
+}
+@media (min-width: 1200px) {
+  button.segm-button--secondary--our-response,
+a.segm-button--secondary--our-response {
+    margin-top: 0;
+  }
+}
+button.segm-button--search,
+a.segm-button--search {
+  padding: 4px 20px;
+}
+button.segm-button--text--small,
+a.segm-button--text--small {
+  display: block;
+  max-width: -moz-fit-content;
+  max-width: fit-content;
+  margin: auto;
+  padding: 0 15px;
+  background-color: transparent;
+  color: #4D4D4D;
+  border: 1px solid #4D4D4D;
+  transition: all 0.2s ease-in-out;
+  border-radius: 35px;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 32px;
+}
+@media (min-width: 991px) {
+  button.segm-button--text--small,
+a.segm-button--text--small {
+    font-size: 16px;
+  }
+}
+button.segm-button--text--small:hover,
+a.segm-button--text--small:hover {
+  text-decoration: none;
+  background-color: #D8EFEB;
+  transition: all 0.2s ease-in-out;
+}
+button.segm-button--download-link,
+a.segm-button--download-link {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 12px;
+  margin-bottom: 12px;
+}
+button.segm-button--download-link .segm-button--download-link__title,
+a.segm-button--download-link .segm-button--download-link__title {
+  font-size: 17px;
+  font-weight: bold;
+  line-height: 26px;
+}
+@media (min-width: 991px) {
+  button.segm-button--download-link .segm-button--download-link__title,
+a.segm-button--download-link .segm-button--download-link__title {
+    font-size: 19px;
+  }
+}
+button.segm-button--download-link .segm-button--download-link__icon,
+a.segm-button--download-link .segm-button--download-link__icon {
+  margin-top: -3px;
+}

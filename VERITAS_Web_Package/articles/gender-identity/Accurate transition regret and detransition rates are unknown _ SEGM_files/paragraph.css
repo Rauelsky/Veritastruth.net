@@ -1,0 +1,103 @@
+.paragraph__title {
+  font-weight: bold;
+  letter-spacing: 0;
+  line-height: 100%;
+  color: #4D4D4D;
+}
+.paragraph h2.paragraph__title {
+  margin-bottom: 32px;
+  font-size: 26px;
+}
+@media (min-width: 767px) {
+  .paragraph h2.paragraph__title {
+    font-size: 30px;
+  }
+}
+@media (min-width: 991px) {
+  .paragraph h2.paragraph__title {
+    font-size: 34px;
+  }
+}
+.paragraph h3.paragraph__title {
+  margin-bottom: 26px;
+  font-size: 24px;
+}
+@media (min-width: 767px) {
+  .paragraph h3.paragraph__title {
+    font-size: 30px;
+  }
+}
+@media (min-width: 991px) {
+  .paragraph h3.paragraph__title {
+    font-size: 32px;
+  }
+}
+.paragraph h4.paragraph__title {
+  margin-bottom: 24px;
+  font-size: 24px;
+}
+@media (min-width: 767px) {
+  .paragraph h4.paragraph__title {
+    font-size: 26px;
+  }
+}
+@media (min-width: 991px) {
+  .paragraph h4.paragraph__title {
+    font-size: 28px;
+  }
+}
+.paragraph h5.paragraph__title {
+  margin-bottom: 24px;
+  font-size: 21px;
+}
+@media (min-width: 767px) {
+  .paragraph h5.paragraph__title {
+    font-size: 23px;
+  }
+}
+@media (min-width: 991px) {
+  .paragraph h5.paragraph__title {
+    font-size: 24px;
+  }
+}
+.paragraph span.paragraph__title {
+  margin-bottom: 0;
+  font-size: 20px;
+}
+@media (min-width: 767px) {
+  .paragraph span.paragraph__title {
+    font-size: 21px;
+  }
+}
+@media (min-width: 991px) {
+  .paragraph span.paragraph__title {
+    font-size: 22px;
+  }
+}
+.paragraph .text-position--left {
+  text-align: left;
+}
+.paragraph .text-position--left h2.paragraph__title {
+  text-align: left;
+}
+.paragraph .text-position--left p {
+  text-align: left;
+}
+.paragraph .text-position--center {
+  text-align: center;
+}
+.paragraph .text-position--center h2.paragraph__title {
+  text-align: center;
+}
+.paragraph .text-position--center p {
+  text-align: center;
+}
+.paragraph .text-position--right {
+  text-align: right;
+}
+.paragraph .text-position--right h2.paragraph__title {
+  text-align: right;
+}
+.paragraph .text-position--right p {
+  text-align: right;
+}

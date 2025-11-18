@@ -1,0 +1,120 @@
+.sticky-block {
+  box-shadow: 0 -0.5rem 0.8rem -0.2rem rgba(0, 0, 0, 0.5);
+}
+.sticky-block.sticky {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  z-index: 10010;
+}
+.sticky-block.hidden {
+  display: none;
+}
+.sticky-block__wrapper {
+  background-color: var(--sticky-block--bar--color);
+  padding: 24px;
+}
+.sticky-block__text {
+  padding: 0px 0px;
+  max-width: 1144px;
+  margin: auto;
+  padding-right: 15px;
+}
+.sticky-block__text p {
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 30px;
+  color: var(--sticky-block--bar--text);
+  margin: 0;
+  padding: 0;
+  padding-right: 20px;
+}
+@media (min-width: 991px) {
+  .sticky-block__text p {
+    font-size: 18px;
+  }
+}
+.sticky-block__links {
+  width: 100%;
+  padding-right: 0;
+  display: flex;
+  flex-flow: row wrap;
+  gap: 12px;
+  -moz-column-gap: 96px;
+       column-gap: 96px;
+  justify-content: center;
+  align-items: baseline;
+  margin-top: 16px;
+}
+@media (min-width: 991px) {
+  .sticky-block__links {
+    padding-right: 72px;
+  }
+}
+.sticky-block__container {
+  margin: auto;
+}
+.sticky-block__close {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+@media (min-width: 767px) {
+  .sticky-block__close {
+    right: -40px;
+  }
+}
+@media (min-width: 991px) {
+  .sticky-block__close {
+    right: -60px;
+  }
+}
+@media (min-width: 1580px) {
+  .sticky-block__close {
+    right: 60px;
+  }
+}
+.sticky-block a.segm-button {
+  display: block;
+  max-width: -moz-fit-content;
+  max-width: fit-content;
+  margin: auto;
+  padding: 11px 25px;
+  border-radius: 25px;
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 26px;
+}
+@media (min-width: 991px) {
+  .sticky-block a.segm-button {
+    font-size: 20px;
+  }
+}
+.sticky-block a.segm-button--text {
+  font-weight: 400;
+  color: var(--sticky-block--link--text);
+  background-color: var(--sticky-block--link--background);
+  transition: all 0.2s ease-in-out;
+}
+.sticky-block a.segm-button--text--secondary:hover {
+  text-decoration: none;
+  background-color: var(--sticky-block--link--hover);
+  transition: all 0.2s ease-in-out;
+}
+.sticky-block a.segm-button--close {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--sticky-block--bar--text);
+  padding: 0;
+}
+.sticky-block a.segm-button--close svg {
+  width: 28px;
+  height: 28px;
+}
+.sticky-block a.segm-button--close:hover {
+  cursor: pointer;
+}

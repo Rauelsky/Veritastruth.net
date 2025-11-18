@@ -1,0 +1,85 @@
+/* 
+ * The Slogan is the first panel on the front page.
+ */
+
+/* 
+ * section.slogan-block
+ */
+ 
+ 
+section.slogan-block {
+	/* v4 */
+	background-color: #f5F5F5;
+	padding-top: 7.5em;
+	padding-bottom: 8.5em;
+	text-align: center;
+	font-size: 1.1rem;
+	background-size: cover;
+	position: relative;
+	z-index: 500;
+	font-weight: 500;
+	font-family: 'poppins';
+	background-image: url(../../images/petition_bg_1.jpg);
+	background-position: center;
+}
+
+section.slogan-block .container {
+	/* v4 */
+	font-size: inherit !important;
+	line-height: 1.6em;
+	/*! max-width: 1450px; */
+}
+
+section.slogan-block .container .col {
+	/* v4 */
+	background: radial-gradient(circle, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0.95) 20%, rgba(255, 255, 255, 0.95) 50%, rgba(255, 255, 255, 0.95) 80%, rgba(255, 255, 255, 0.85) 100%);
+	padding: 4rem 4rem;
+	position: relative;
+}
+
+section.slogan-block p {
+	/* v4 */
+	font-size: inherit;
+	line-height: 1.8em;
+}
+
+section.slogan-block .p-block p {
+	/* v4 */
+	font-size: 1.4rem;
+}
+
+section.slogan-block .p-block {
+	/* v4 */
+	padding-top: 0.9rem;
+}
+
+section.slogan-block .p-block::before {
+	/* v4 */
+	content: " ";
+	height: 1px;
+	width: 100%;
+	display: block;
+	position: relative;
+	border-top: 0.1rem solid #A5A5A5;
+	padding: 1.5rem 0 0 0;
+}
+
+section.slogan-block a.p-button {
+	/* v4 */
+	display: block;
+	position: absolute;
+	bottom: -2.5rem;
+	left: calc(50% - 14rem);
+	width: 28rem;
+	background-color: #0D8894;
+	color: #fff;
+	padding: 1.2rem 0;
+	border-radius: 3rem;
+}
+
+section.slogan-block a.p-button:hover {
+	/* v4 */
+	text-decoration: none;
+	color: #eee;
+	background-color: #1F9AA6;
+}

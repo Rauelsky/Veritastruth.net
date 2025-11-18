@@ -1,0 +1,62 @@
+/* 
+ * SEGM on Twitter is the fifth panel on the front page.
+ */
+
+/* 
+ * section.nblk-twr
+ */
+ 
+ 
+section.nblk-twr {
+	/* v4 */
+	/*! display: none; */
+	background-color: #03444a;
+} 
+
+section.nblk-twr .slider-title {
+	/* v4 */
+	color: #fff;
+	padding: 5rem 0;
+}
+
+section.nblk-twr .itc-slider {
+	/* v4 */
+	padding: 0 4rem;
+}
+
+section.nblk-twr .itc-slider .itc-slider__items {
+	/* v4 */
+	width: 25%;
+}
+
+section.nblk-twr .itc-slider .itc-slider__item {
+	/* WORKAROUND: THERE'S A RANDOM CHARACTER BREAKING THE CSS SELECTOR IN THE ORIGINAL, SO THESE HAVE BEEN COMMENTED OUT */
+	
+	/* v4 */
+	/* padding-right:2rem; */
+	/* align-self: auto; */
+}
+
+section.nblk-twr .itc-slider .itc-slider__item .item-twitter {
+	/* v4 */
+	width: 100%;
+}
+
+section.nblk-twr .twitter-item {
+	/* v4 */
+	padding-right:2rem;
+	align-self: center;
+}
+
+@media (max-width:800px){
+
+	section.nblk-twr .itc-slider .itc-slider__items {
+		/* v4 */
+		width: 100%;
+	}
+	
+	section.nblk-twr .itc-slider {
+		/* v4 */
+		padding: 0 3rem;
+	}
+}

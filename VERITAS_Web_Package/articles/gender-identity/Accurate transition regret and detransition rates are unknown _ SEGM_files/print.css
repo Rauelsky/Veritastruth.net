@@ -1,0 +1,15 @@
+.home-link img{
+max-width:30%;
+}
+.top-shadow.last{
+display:none;
+}
+.read-more-blog{
+display:none;
+}
+.hide-text{
+display:block;
+}
+.navbar-expand-lg{
+display:none;
+}

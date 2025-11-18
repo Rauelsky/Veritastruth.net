@@ -1,0 +1,249 @@
+/*
+ * SEGM in Media is the third panel on the home page.
+ */
+
+/*
+ * section.slider-block
+ * span.rot-quot (the " icon)
+ * h2.slider-title
+ * div.slider-items
+ * div.itc-slider && .slider-in-media
+ * div.itc-slider__wrapper
+ * div.itc-slider__items
+ * div.itc-slider__item
+ * div.media-item
+ * div.item-media
+ * div.item-media-content
+ * div.slider-item-body
+ * div.slider-item-image
+ * button.itc-slider__btn && itc-slider__btn_prev
+ * button.itc-slider__btn && itc-slider__btn_next
+ * ol.itc-slider__indicators
+ * li.itc-slider__indicator
+ */
+
+
+
+/*
+ * For some reason v4 had two identical ones of this pretty much next to each other.
+ * This is simply the little " above SEGM in media on the home page.
+ *
+ * grep in themes/segm/templates/:
+ *     templates/block/block--views-block--segm-in-media-block-1.html.twig
+ */
+
+.rot-quot {
+	/* v4 */
+	color: #fff;
+	display: inline-block;
+	font-size: 6rem;
+	font-family: Arial;
+	font-weight: bold;
+	line-height: 1em;
+	text-align: center;
+	height: 0.5em;
+	/*! position: absolute; */
+}
+
+
+
+/*
+ * The slider-block is the name for the "segm in media" block on the front page.
+ */
+
+section.slider-block {
+	/* v4 */
+	background-image: url(../../images/background_media.jpg);
+	padding: 5em 0 2em;
+	background-size: cover;
+	background-position: center;
+	position: relative;
+	box-shadow: -2px 1px 2rem 1px rgba(0, 0, 0, 0.6);
+	z-index: 498;
+}
+
+section.slider-block .slider-items {
+	/* v4 */
+	/*! display: flex; */
+	padding: 2.1em 0% 4em;
+	margin: auto;
+	width: 90%;
+}
+
+
+
+
+section.slider-block .slider-items .views-view--segm-in-media--block-1__rows {
+	/* I don't know if this actually does anything */
+	/* v4 */
+	display: flex;
+}
+
+section.slider-block .slider-title {
+	/* v4 */
+	color: #fff;
+	font-family: "poppins";
+	/*! padding-top: 1.5em; */
+	font-weight: 600;
+	text-align: center;
+	position: relative;
+	top: -1em;
+	margin-bottom: 0;
+}
+
+section.slider-block .item-media {
+	/* v4 */
+	display: flex;
+	position: relative;
+}
+
+section.slider-block .item-media p {
+	/* v4 */
+	font-size: 1rem;
+	margin-bottom: 1em;
+}
+
+section.slider-block .item-media-content {
+	/* v4 */
+	background-color: #fff;
+	padding: 4em 3em 6.5em 3em;
+	font-size: 0.7vw;
+}
+
+section.slider-block .item-media-content:hover {
+	/* v4 */
+	color: #0D8894;
+}
+
+section.slider-block .itc-slider__item {
+	/* v4 */
+	flex: 0 0 25% !important;
+	max-width: 25% !important;
+	padding: 0 1em;
+}
+
+section.slider-block .slider-item-image {
+	/* v4 */
+	position: absolute;
+	bottom: 4em;
+	right: 3em;
+}
+
+section.slider-block .slider-item-image img {
+	/* v4 */
+	max-height: 2.5em;
+	width: auto;
+}
+
+section.slider-block .itc-slider__indicator {
+	/* v4 */
+	background-color: rgba(255, 255, 255, 0.4) !important;
+}
+
+section.slider-block .itc-slider__indicator_active {
+	/* v4 */
+	background-color: rgba(255, 255, 255, 1) !important;
+}
+
+@media (max-width:600px) {
+
+	section.slider-block .slider-item-image img {
+		/* v4 */
+		width: 100%;
+		max-height: 16em;
+		height: 500px;
+		max-width: 39em;
+	}
+}
+
+
+
+section.slider-block .itc-slider {
+
+	/*
+	 * This is the container for the SEGM in Media slider, <div class="itc-slider itc-slider-in-media">
+	 * However, that is the only itc-slider-in-media, so why isn't it just .itc-slider-in-media?
+	 */
+
+	/* v4 */
+	padding: 0 3%;
+	max-width: 100%;
+	box-sizing: border-box;
+}
+
+section.slider-block .itc-slider__item {
+
+	/* v4 */
+	flex: 0 0 33.3333333% !important;
+	max-width: 33.3333333% !important;
+	padding: 0 1em;
+	display: flex;
+}
+
+section.slider-block .media-item {
+	/* v4 */
+	display: flex;
+}
+
+section.slider-block .itc-slider__indicators {
+	/* v4 */
+	position: relative;
+	padding-top: 1rem;
+}
+
+section.slider-block .itc-slider__indicator {
+	/* v4 */
+	width: 0.7rem;
+	height: 0.7rem;
+	border-radius: 50%;
+}
+
+section.slider-block .itc-slider__btn {
+	/* v4 */
+	/*! position: relative; */
+	/*! top: 20px; */
+	/*! left: 0; */
+	background-color: transparent;
+	width: 3rem;
+	height: 3rem;
+}
+
+section.slider-block .itc-slider__btn::before {
+	/* v4 */
+	width: 3rem;
+	height: 3rem;
+}
+
+
+
+@media (max-width:1000px) {
+
+	section.slider-block .itc-slider__item {
+		/* v4 */
+		flex: 0 0 50% !important;
+		max-width: 50% !important;
+		padding: 0 1em;
+		display: flex;
+	}
+}
+
+@media (max-width:800px) {
+
+	section.slider-block .itc-slider__item {
+		/* v4 */
+		flex: 0 0 100% !important;
+		max-width: 100% !important;
+		padding: 0 1em;
+		display: flex;
+	}
+
+	section.slider-block .itc-slider__btn_prev {
+		/* v4 */
+		left: -1em;
+	}
+
+	section.slider-block .itc-slider__btn_next {
+		/* v4 */
+		right: -1em;
+	}
+}

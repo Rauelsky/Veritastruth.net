@@ -1,0 +1,71 @@
+/*
+ * These are things that are just broken.
+ */
+
+
+
+/*
+ * I'm trying to figure out what is going on here.
+ * Sometimes the front page loads with the form having the id "stripe-examples-simple-checkout", and
+ * sometimes "stripe-examples-simple-checkout--2". In both cases, there's a little empty div below it.
+ * In the --2 case, the 120% font size results in this little white div being obscured.
+ * I have no clue what this is about.
+ * Okay, that's dev only.
+ * When the auth is correct, this div is turned into a card number, cvc, date & postal code (why postal code?)
+ *
+ * Okay, so on the very first load after a cache clear, a repetition on the front page causes a conflict
+ * which Drupal resolves by adding --2 to it. On every load after that, it's gone. So this only works once.
+ * Clearly broken.
+ */
+
+/* And v4 has some more stuff. */
+#stripe-examples-simple-checkout--2 {
+	/* v4 */
+}
+
+#stripe-examples-simple-checkout--2 input
+{
+	/* v4 */
+	font-size: 120%;
+}
+
+#edit-submit--2.button.js-form-submit:hover {
+	/* v4 */
+	background: #0d8894;
+	color: #fff !important;
+	border-color: #0d8894;
+}
+
+#edit-submit--2.button.js-form-submit {
+	/* v4 */
+	border: 2px solid #0d8894;
+	border-radius: 3em;
+	color: #0d8894 !important;
+	font-weight: 600;
+	padding: 0.5em 1.7em;
+	margin-left: 1.5em;
+	background-color: transparent;
+	text-transform: none;
+	margin-right: 0;
+	margin-top: 0;
+	margin-bottom: 0;
+	box-shadow: none;
+	font-size: 14pt;
+}
+
+
+
+/*
+ * p-donate is a <div> which on this one specific template wraps around the main navigation menu.
+ * donate-top is the "donate button" in that menu.
+ * However, it's an <a>, not a <button>. So this css does nothing. If I change it to a.donate-top,
+ * then it does what you'd expect it to do - hide the donate button when you're already on the donate page.
+ *
+ * grep in themes/segm/templates/:
+ *     templates/page--node--17.html.twig
+ */
+
+.p-donate button.donate-top {
+	/* v1, v2, v3, v4 */
+	visibility: hidden;
+}

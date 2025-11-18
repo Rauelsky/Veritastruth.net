@@ -1,0 +1,1648 @@
+body {
+  /* v1, v2, v3, v4 */
+  font-family: "Metropolis";
+
+  /* v4 */
+  /*! overflow: hidden; */
+}
+
+a {
+  /* v1, v3 */
+  color: #0d8894;
+}
+
+.h6,
+h6 {
+  /* v2, v4 */
+  margin-top: 1.7rem;
+  margin-bottom: 1.7rem;
+  font-weight: bold;
+  font-size: 1.1em;
+  line-height: 1.5em;
+}
+
+/*
+ * wrp is a <div> wrapper around page content.
+ *
+ * grep in themes/segm/templates/:
+ *     templates/page.html.twig
+ *     templates/page--node--6.html.twig
+ *     templates/page--node--7.html.twig
+ *     templates/page--node--9.html.twig
+ *     templates/page--node--17.html.twig
+ *     templates/page--node--40.html.twig
+ *     templates/page--node--76.html.twig
+ *     templates/page--node--77.html.twig
+ *     templates/page--node--81.html.twig
+ *     templates/page--node--96.html.twig
+ *     templates/page--node--102.html.twig
+ *     templates/page--node--petition.html.twig
+ *     templates/views/views-view-unformatted--new-blog-homepage.html.twig
+ */
+
+.wrp {
+  /* v1, v2, v3, v4 */
+  min-height: calc(100vh - 190px);
+
+  /* v4 */
+  padding: 4.5em 0;
+  font-family: "Inter", sans-serif;
+  line-height: 1.8em;
+}
+
+.wrp a:not(.segm-button) {
+  /* v4 */
+  color: #0d8894;
+}
+
+/*
+ * <footer> is a tag which for some reason is added in random places. No grep results for foot-brand.
+ *
+ * grep in themes/segm/templates/:
+ *     templates/page.html.twig
+ *     templates/page--front.html.twig
+ *     templates/page--node--7.html.twig
+ *     templates/page--node--9.html.twig
+ *     templates/page--node--17.html.twig
+ *     templates/page--node--40.html.twig
+ *     templates/page--node--76.html.twig
+ *     templates/page--node--77.html.twig
+ *     templates/page--node--81.html.twig
+ *     templates/page--node--96.html.twig
+ *     templates/page--node--102.html.twig
+ *     templates/page--user--login.html.twig
+ *     templates/node.html.twig
+ */
+
+footer {
+  /* v1, v2, v3, v4 */
+  border-top: 5px solid #0d8894;
+  content: " ";
+  min-height: 78px;
+  background-image: url(../images/footer.png);
+  background-size: cover;
+  color: #fff;
+  padding-top: 1em;
+}
+
+footer .foot-brand {
+  /* v1, v2, v3, v4 */
+  font-size: 42px;
+  font-weight: bold;
+  margin-top: 0.5em;
+}
+
+/*
+ * top-shadow is used on <section> to give them a little shadow at the top.
+ *
+ * grep (top-shadow) in themes/segm/templates/:
+ *     templates/page.html.twig
+ *     templates/page--node--6.html.twig
+ *     templates/page--node--7.html.twig
+ *     templates/page--node--9.html.twig
+ *     templates/page--node--17.html.twig
+ *     templates/page--node--40.html.twig
+ *     templates/page--node--96.html.twig
+ *     templates/page--front.html.twig
+ *     templates/page--user--login.html.twig
+ *
+ * grep for the other two returned only dead files (files Max has put _ at the end of)
+ */
+
+.top-shadow,
+.top-shadow-light {
+  /* v1, v2, v3, v4 */
+  background-image: url(../images/shadow.png);
+  background-repeat: no-repeat;
+  background-position: center top;
+  background-size: 100% auto;
+  border-top: 1px solid #575757;
+}
+
+.top-shadow.last {
+  /* v1, v2, v3, v4 */
+  background-image: url(../images/shadow.png),
+    url(../images/shadow-light_end.png);
+  background-position: center top, center bottom;
+
+  /* v2, v4 */
+  min-height: 590px;
+}
+
+.top-shadow-light {
+  /* v1, v2, v3, v4 */
+  background-image: url(../images/shadow-light.png);
+}
+
+/*
+ * content-1 is a <section> class used all over the place.
+ * Think of it as "main content".
+ *
+ * grep (content-1) in themes/segm/templates/:
+ *     templates/page.html.twig
+ *     templates/page--node--6.html.twig
+ *     templates/page--node--7.html.twig
+ *     templates/page--node--9.html.twig
+ *     templates/page--node--17.html.twig
+ *     templates/page--node--40.html.twig
+ *     templates/page--node--96.html.twig
+ *     templates/page--front.html.twig
+ *     templates/page--user--login.html.twig
+ */
+
+section.content-1 {
+  /* v1, v2, v3, v4 */
+  padding-top: 50px;
+  padding-bottom: 5px;
+  color: #4d4d4d;
+}
+
+section.content-1 strong {
+  /* v1, v2, v3, v4 */
+  color: #000;
+}
+
+section.content-1 h2 {
+  /* v1, v2, v3, v4 */
+  font-size: 25px;
+  font-weight: bolder;
+  text-align: center;
+  margin-bottom: 1em;
+}
+
+section.content-1 h2.about-c-title {
+  /* v1, v2, v3, v4 */
+  margin-bottom: 2.5em;
+  font-size: 30px;
+  font-weight: bolder;
+  color: #000;
+}
+
+section.content-1 p {
+  /* v1, v2, v3, v4 */
+  font-size: 16.7px;
+  line-height: 1.9em;
+  margin-bottom: 1.5em;
+}
+
+section.content-1 ul li {
+  /* v1, v2, v3, v4 */
+  position: relative;
+  list-style: outside none;
+
+  /* v2, v4 */
+  margin-bottom: 1em;
+}
+
+/* Split from a combined selector with (the legacy?) "section.list-blk ul li:before" */
+
+section.content-1 ul li:before {
+  /* v1, v2, v3, v4 */
+  content: " ";
+  display: inline-block;
+  width: 0.5em;
+  height: 0.7em;
+  position: absolute;
+  background-image: url(/themes/segm/images/disc.svg);
+  left: -1.1em;
+  background-size: contain;
+  background-repeat: no-repeat;
+
+  /* v1, v3 */
+  top: 0.4em;
+
+  /* v2, v4 */
+  top: 0.7em;
+}
+
+section.content-1 ul li::before {
+  /* v2, v4 */
+  top: 0.4em;
+}
+
+section.content-1 ul li > ul > li {
+  /* v4 */
+  font-size: 90%;
+  margin-bottom: 0.8em;
+}
+
+section.content-1 ul li > ul > li:first-of-type {
+  /* v4 */
+  margin-top: 0.6em;
+}
+
+/* No grep hits for smallest-text */
+
+section.content-1 p.smallest-text {
+  /* v1, v2, v3, v4 */
+  font-size: 11px;
+  line-height: 1.3em;
+  padding-top: 3em;
+}
+
+/* blog-full (as well as blog-full-date) appears in node--blog-text--full.html.twig */
+
+section.content-1 h2.blog-full {
+  /* v1, v2, v3, v4 */
+  text-align: left;
+  font-weight: normal;
+  font-size: 36px;
+  margin-bottom: 10px;
+}
+
+section.content-1 h2.blog-full ~ div h3 {
+  /* v1, v2, v3, v4 */
+  color: #0d8894 !important;
+}
+
+section.content-1:first-of-type {
+  /* v4 */
+  padding-top: 0;
+  padding-bottom: 5px;
+  color: #4d4d4d;
+  background-image: none;
+  border-top: 0;
+}
+
+section.content-1 img {
+  /* v4 */
+  max-width: 100%;
+  height: auto !important;
+}
+
+section.content-1.last {
+  /* v4 */
+  background-color: #f6f4f0;
+  padding-top: 4em;
+  color: #4f4e4e;
+  padding-bottom: 6em;
+}
+
+/* No grep hits for dtblock, nor archived front page. */
+
+section.content-1.last .dtblock {
+  /* v4 */
+  background: #fff;
+  padding: 2em;
+  box-shadow: 0 0 14px 0px #ddd;
+  text-align: center;
+}
+
+section.content-1.last progress {
+  /* v4 */
+  width: 90%;
+  margin: 0.5em 0;
+}
+
+section.content-1.last progress::-webkit-progress-value {
+  /* v4 */
+  background: red;
+}
+
+section.content-1.last progress::-moz-progress-bar {
+  /* v4 */
+  background: #0d8894;
+}
+
+.content-1.whitebl {
+  /* v4 */
+  padding: 4rem 0;
+}
+
+.content-1.whitebl .container.hwidth {
+  /* v4 */
+  /*! max-width: 1450px; */
+}
+
+/*
+ * Pers being person. This will all be under about_us.
+ *
+ * grep (about_pers) in themes/segm/templates/:
+ *     templates/paragraph--crew.html.twig
+ */
+
+.about_pers {
+  /* v1, v2, v3, v4 */
+  position: relative;
+  padding-bottom: 5em;
+}
+
+.about_pers:after {
+  /* v1, v2, v3, v4 */
+  display: block;
+  content: "";
+  position: relative;
+  width: 40%;
+  border-bottom: 3px solid #0d8894;
+  padding-top: 1.5em;
+  margin: auto;
+}
+
+.about_pers:last-of-type:after {
+  /* v1, v2, v3, v4 */
+  border-bottom: none;
+  padding-top: 0;
+}
+
+.about_pers .row {
+  /* v1, v2, v3, v4 */
+  flex-direction: row;
+}
+
+.about_pers:nth-child(2n) .row {
+  /* v1, v2, v3, v4 */
+  flex-direction: row-reverse;
+}
+
+.about_pers .picts {
+  /* v2 */
+}
+
+.about_pers .picts img {
+  /* v1, v2, v3, v4 */
+  width: 95%;
+  height: auto;
+}
+
+.about_pers .texts p {
+  /* v1, v2, v3, v4 */
+  line-height: 2.1em;
+  font-size: 21px;
+  text-align: justify !important;
+  text-justify: distribute;
+}
+
+.about_pers .texts h2 {
+  /* v1, v2, v3, v4 */
+  text-align: left;
+  font-weight: normal;
+}
+
+.about_pers:nth-child(2n) .texts h2 {
+  /* v1, v2, v3, v4 */
+  text-align: right;
+}
+
+@media (max-width: 767px) {
+  .about_pers .texts p {
+    /* v1, v2, v3, v4 */
+    text-align: initial !important;
+  }
+}
+
+@media (max-width: 991px) {
+  .about_pers .picts {
+    /* v1, v2, v3, v4 */
+    padding-bottom: 1.5em;
+    text-align: center;
+  }
+}
+
+/*
+ * As it's only found on node 6, which is about_us, this'll be to style the header that says "2024 Advisors".
+ *
+ * grep (top-page-s) in themes/segm/templates/:
+ *     templates/page--node--6.html.twig
+ */
+
+section.top-page-s {
+  /* v1, v2, v3, v4 */
+  /* background-color: #FBFBFB; */
+  border-bottom: 5px solid #0d8894;
+}
+
+section.top-page-s p {
+  /* v1, v2, v3, v4 */
+  text-align: justify !important;
+  line-height: 1.5em;
+  font-size: 17.5px;
+}
+
+@media (max-width: 767px) {
+  section.top-page-s p {
+    /* v1, v2, v3, v4 */
+    text-align: initial !important;
+  }
+}
+
+/*
+ * 7 and 9 are related to contact-forms. Wrappers. -cont holds the text at the top, -form holds the form.
+ *
+ * grep (contact-cont) in themes/segm/templates/:
+ *     templates/page--node--7.html.twig
+ *     templates/page--node--9.html.twig
+  *
+ * grep (contact-form) in themes/segm/templates/:
+ *     templates/page--node--7.html.twig
+ *     templates/page--node--9.html.twig
+ */
+
+section.contact-cont {
+  /* v1, v2, v3, v4 */
+  border-top: none;
+}
+
+section.contact-form {
+  /* v1, v2, v3, v4 */
+  border-top: none;
+}
+
+section.contact-cont p {
+  /* v1, v2, v3, v4 */
+  line-height: 1.4em;
+  font-size: 27px;
+  margin-bottom: 0.7em;
+}
+
+section.contact-cont p em {
+  /* v1, v2, v3, v4 */
+  font-size: 20.3px;
+  color: #4d4d4d;
+  font-weight: bold;
+}
+
+/*
+ * No clue, and no grep hits.
+ */
+
+a[href*="pop"] {
+  /* v1, v2, v3, v4 */
+  position: relative;
+  color: #0d8894;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+a span.pop {
+  /* v1, v2, v3, v4 */
+  display: none;
+  position: absolute;
+  font-size: 10px;
+  line-height: 1.3em;
+  width: 24.3em;
+  bottom: 2.5em;
+  background: #fff;
+  color: #4d4d4d;
+  padding: 1em;
+  left: 3em;
+  overflow: visible;
+  border: 3px solid #0d8894;
+  border-radius: 1.1em 1.1em 1.1em 0;
+  z-index: 1000;
+  text-align: left;
+}
+
+a:hover span.pop {
+  /* v1, v2, v3, v4 */
+  display: block;
+}
+
+/* own-text appears in themes/segm/js/script.js and in a form-element--field-group-own.html.twig */
+
+.own-text {
+  /* v1, v2, v3, v4 */
+  position: relative;
+  top: -2em;
+}
+
+/*
+ * This class is used both by the Spotlight list (the "...Read More" text) and the Zotero page, for different purposes.
+ */
+
+.read-more {
+  /* v1, v2, v3, v4 */
+  width: max-content;
+  text-transform: uppercase;
+  color: #0d8894;
+  font-weight: bold;
+  margin: 1em auto;
+  text-transform: capitalize;
+  border: 1px solid #0d8894;
+  padding: 0em 0.6em;
+  line-height: 2.3em;
+  border-radius: 0.3em;
+  cursor: pointer;
+  font-size: 130%;
+}
+
+.read-more:hover {
+  /* v1, v2, v3, v4 */
+  background-color: #0d8894;
+  color: #fff;
+}
+
+/* This also appears to be a screen-width dependent part of the Zotero library */
+
+@media (max-width: 991px) {
+  /* No grep hits for tab-mob */
+
+  table.tab-mob {
+    /* v3 */
+  }
+
+  table.tab-mob td {
+    /* v1, v2, v3, v4 */
+    display: block;
+    width: 100% !important;
+    padding: 0 !important;
+  }
+}
+
+/*
+ * These all seem to be form-related things.
+ *
+ * grep (contact-message) in /:
+ *     no hits
+ *
+ * grep (webform-submission) in /:
+ *     modules/webform/ - too many to list
+ */
+
+form#contact-message-register-form {
+  /* v1, v2, v3, v4 */
+  padding-bottom: 3em;
+}
+
+form#contact-message-register-form p.small-form-deskr {
+  /* v1, v2, v3, v4 */
+  font-size: 14px;
+  font-style: italic;
+}
+
+form.webform-submission-contact-us-new-form label,
+form#contact-message-register-form label {
+  /* v1, v2, v3, v4 */
+  margin: 0;
+  font-weight: bolder;
+  font-size: 23.2px;
+  line-height: 1.3em;
+  padding-bottom: 0.5em;
+}
+
+form.webform-submission-contact-us-new-form label .group-field,
+form#contact-message-register-form label.group-field {
+  /* v1, v2, v3, v4 */
+  font-size: 23.2px;
+  text-align: justify;
+  padding-bottom: 0.9em;
+}
+
+form.webform-submission-contact-us-new-form .stay-body label,
+form#contact-message-register-form .stay-body label {
+  /* v1, v2, v3, v4 */
+  font-size: 14px;
+  font-weight: normal;
+}
+
+form.webform-submission-contact-us-new-form .col-lg-6 > div,
+form#contact-message-register-form .col-lg-6 > div {
+  /* v1, v2, v3, v4 */
+  margin-bottom: 3em;
+}
+
+form#contact-message-register-form .col-lg-6 > div:last-of-type {
+  /* v1, v2, v3, v4 */
+  margin-bottom: 0.5em;
+}
+
+form#contact-message-register-form #edit-preview {
+  /* v1, v2, v3, v4 */
+  display: none;
+}
+
+form.webform-submission-contact-us-new-form #edit-actions-submit,
+form#contact-message-register-form #edit-submit {
+  /* v1, v2, v3, v4 */
+  background: #0d8894;
+  padding: 0.7em 2em;
+  color: #fff;
+  border: none;
+  border-radius: 0.5em;
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: 19.8px;
+}
+
+form.webform-submission-contact-us-new-form #edit-actions-submit {
+  /* v1, v2, v3, v4 */
+  margin-top: 1.5em;
+}
+
+#contact-message-subscribe-form {
+  /* v1, v2, v3, v4 */
+  padding: 1.3em 0.1em;
+}
+
+#contact-message-subscribe-form div {
+  /* v1, v2, v3, v4 */
+  display: inline;
+}
+
+#contact-message-subscribe-form div.row {
+  /* v1, v2, v3, v4 */
+  display: none;
+}
+
+#contact-message-subscribe-form input {
+  /* v1, v2, v3, v4 */
+  max-width: 50%;
+}
+
+form#user-login-form {
+  /* v1, v2, v3, v4 */
+  width: 15em;
+  max-width: 100%;
+}
+
+.article-teaser > p {
+  /* v1, v2, v3, v4 */
+  display: inline;
+}
+
+.article-teaser > div.readmore {
+  /* v1, v2, v3, v4 */
+  display: inline;
+}
+
+.article-content a {
+  /* v1, v2, v3, v4 */
+  color: #0d8894;
+}
+
+.read-more-blog {
+  /* v1, v2, v3, v4 */
+  font-size: 14px;
+}
+
+.read-more-blog a {
+  /* v3 */
+}
+
+.blog-date {
+  /* v1, v2, v3, v4 */
+  padding-bottom: 1.5em;
+}
+
+.blog-full-date {
+  /* v1, v2, v3, v4 */
+  padding-bottom: 2.5em;
+}
+
+.blog-text-body .hide-text {
+  /* v1, v2, v3, v4 */
+  margin: 2em 0em;
+}
+
+.blog-text-body .col.text-right {
+  /* v1, v2, v3, v4 */
+  margin: 0.5em 0 1em;
+}
+
+.blog-text-body li {
+  /* v1, v2, v3, v4 */
+  line-height: 1.9em;
+}
+
+.hide-text {
+  /* v1, v2, v3, v4 */
+  display: none;
+}
+
+.hide-text.show {
+  /* v1, v2, v3, v4 */
+  display: block;
+}
+
+/* eapps is the social media sharing widget on blog posts. However, this selector doesn't seem to exist. */
+
+#eapps-social-share-buttons-1 {
+  /* v1, v2, v3, v4 */
+  width: auto;
+}
+
+/*
+ * feed-icon is <a href="https://segm.org/blog/feed" class="feed-icon">Subscribe to Drupal blog posts</a> injected into the spotlight list (https://segm.org/news). It is a part of the theme segm inherits from.
+ */
+
+.feed-icon {
+  /* v1, v2, v3, v4 */
+  display: none;
+}
+
+/*
+ * StripeElement appears on the home page and the donate page, and comes from the Stripe module.
+ * It's a div around an iframe which loads the credit card box.
+ */
+
+.StripeElement {
+  /* v1, v2 */
+  height: 32px;
+
+  /* v3 */
+  border: 1px solid #ccc;
+  margin: 2px 0;
+  max-width: 100%;
+  box-sizing: border-box;
+
+  /* v4 */
+  height: auto;
+  font-size: 100%;
+  transform: scale(1.7, 1.7);
+  width: 59%;
+  transform-origin: left;
+  padding: 0rem;
+  padding: 4px 0 !important;
+}
+
+.StripeElement iframe {
+  /* v4 */
+  /*! height: 40px !important; */
+  background-color: #fff;
+  padding: 0.5em 0 !important;
+  transform: scale(2) !important;
+}
+
+.StripeElement iframe * {
+  /* v4 */
+  font-size: 200% !important;
+}
+
+/* No grep hits for no-mobile, but mobile-nojust appears a couple times. */
+
+@media (max-width: 767px) {
+  span.no-mobile {
+    /* v1, v2, v3, v4 */
+    display: none;
+  }
+
+  .mobile-nojust {
+    /* v1, v2, v3, v4 */
+    text-align: initial !important;
+  }
+}
+
+/* No grep hits. */
+
+@media (max-width: 991px) {
+  .col-lg-6.mobile-pad {
+    /* v1, v2, v3, v4 */
+    margin-top: 3em;
+  }
+}
+
+/* The following is a bit complicated, so I'll do them a bit different. These are the three different versions of this. */
+
+.donate-top,
+#stripe-examples-simple-checkout input[type="submit"] {
+  /* v1 */
+  background: #0d8894;
+  color: #fff;
+  font-size: 19px;
+  padding: 0.2em 1em;
+  margin: 0 0 0 1.4em;
+  border-radius: 0.5em;
+  box-shadow: 0px 0 0 5px #fff, 0 0 0 10px #ebecec;
+  border: none;
+  text-transform: uppercase;
+  font-weight: bolder;
+}
+
+.donate-top,
+[id^="stripe"] input[type="submit"],
+#stripe-examples-simple-checkout input[type="submit"] {
+  /* v2 */
+  border: 2px solid #0d8894;
+  border-radius: 3em;
+  color: #0d8894 !important;
+  font-weight: 600;
+  padding: 0.5em 1.7em;
+  margin-left: 1.5em;
+  background-color: transparent;
+  text-transform: none;
+  margin-right: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+  box-shadow: none;
+  font-size: 14pt;
+  clear: both;
+}
+
+.donate-top,
+#stripe-examples-simple-checkout input[type="submit"] {
+  /* v3, v4 */
+  /*! background: #0D8894; */
+  /*! color: #fff; */
+  /*! font-size: 19px; */
+  /*! padding: 0.2em 1em; */
+  /*! margin: 0 0 0 1.4em; */
+  /*! border-radius: 0.5em; */
+  /*! box-shadow: 0px 0 0 5px #fff, 0 0 0 10px #EBECEC; */
+  /*! border: none; */
+  /*! text-transform: uppercase; */
+  /*! font-weight: bolder; */
+}
+
+/* In addition, v2 has the following */
+
+[id^="stripe"] input[type="submit"],
+#stripe-examples-simple-checkout input[type="submit"]:hover {
+  background: #0d8894;
+  /* v2 */
+  color: #fff !important;
+  border-color: #0d8894;
+}
+
+[id^="stripe"] input[type="submit"] {
+  /* v2 */
+}
+
+/* v1, v3, and v4 have the following */
+
+#stripe-examples-simple-checkout input[type="submit"] {
+  /* v1, v3, v4 */
+  margin: 2em 0.5em 0.5em;
+  float: right;
+}
+
+#stripe-examples-simple-checkout label {
+  /* v1, v3, v4 */
+  padding-top: 1em;
+}
+
+/* v2 has added some more selectors */
+
+[id^="stripe"] input[type="submit"],
+#stripe-examples-simple-checkout input[type="submit"] {
+  /* v2 */
+  margin: 3em 0.5em 0.5em;
+  float: none;
+}
+
+[id^="stripe"] label,
+#stripe-examples-simple-checkout label {
+  /* v2 */
+  padding-top: 1em;
+}
+
+.stripe-examples-simple-checkout .form-item-email input {
+  /* v4 */
+  display: block;
+  width: 100%;
+  height: calc(1.5em + 0.75rem + 2px);
+  padding: 0.375rem 0.75rem;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #495057;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid #ced4da;
+  border-radius: 0.25rem;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+/* grep hits for block4 in the core module called "block" */
+
+h2 .block4-title {
+  /* v2, v4 */
+  font-size: 25px;
+  font-weight: bolder;
+  text-align: center;
+  margin-bottom: 1em;
+}
+
+/* No grep hits for item-list-home blog */
+
+.item-list-home-blog {
+  /* v2, v4 */
+  padding-top: 2em;
+  padding-bottom: 0em;
+  margin-bottom: 0;
+}
+
+.item-list-home-blog > ul {
+  /* v2, v4 */
+  padding-left: 0;
+  margin-bottom: 0;
+}
+
+/* grep hits for home-blog-item in views-view-list--homepage_blog.html.twig */
+
+.home-blog-item {
+  /* v2, v4 */
+  list-style: none;
+}
+
+.home-blog-item h2 {
+  /* v2, v4 */
+  font-size: 160%;
+}
+
+.home-blog-item .blog-subtilte {
+  /* v2, v4 */
+  font-size: 120%;
+}
+
+#block-readmorenews {
+  /* v2, v4 */
+  padding-bottom: 2em;
+  margin-top: -3em;
+}
+
+#block-views-block-before-of-dots-block-block-1 {
+  /* v2, v4 */
+  padding-bottom: 1em;
+}
+
+#block-views-block-end-of-dots-block-block-1 {
+  /* v2, v4 */
+  padding-top: 1em;
+}
+
+blockquote {
+  /* v2, v4 */
+  margin: auto 3.5rem;
+}
+
+/* However, there are differences here as well */
+
+#edit-stripe-card-element {
+  /* v2, v4 */
+  /*! height: calc(1.5em + .75rem + 5px); */
+  padding: 0.675rem 0.75rem 0.375rem 0.75rem;
+  border-radius: 0.25rem;
+  line-height: 1.5em;
+
+  /* v4 */
+  background-color: #fff;
+}
+
+/* Everything from here on is v4 only, with a twist down the line. */
+
+/* No clue what tags are. Could be Zotero tags, or a hundred other things. */
+
+.tags {
+  /* v4 */
+  padding-bottom: 2em;
+}
+
+.tags > div {
+  /* v4 */
+  display: block;
+  padding: 0.2em 1em;
+}
+
+.tags div div {
+  /* v4 */
+  display: inline-block;
+}
+
+.tags div a {
+  /* v4 */
+  font-size: 112%;
+  padding-top: 0.3em;
+  padding-bottom: 0.1em;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+  background-color: #0d8894;
+  color: #fff;
+  margin-right: 0.3em;
+  transition: all 0.3s;
+}
+
+.tags div a:hover {
+  /* v4 */
+  font-size: 112%;
+  text-decoration: underline;
+  color: #0d8894;
+  background: transparent;
+}
+
+.tags div aa:after {
+  /* v4 */
+  content: ",";
+  margin-right: 0.3em;
+}
+
+.tags div div:last-of-type a::after {
+  /* v4 */
+  content: "";
+}
+
+/* https://segm.org/faq, presumably */
+
+.faq-top {
+  /* v4 */
+  font-family: "Inter", sans-serif;
+}
+
+.faq-top > h1 {
+  /* v4 */
+  font-size: 2.5rem;
+  margin-bottom: 1.1em;
+  font-weight: bold;
+  text-align: center;
+  font-family: "Poppins", sans-serif;
+}
+
+.faq-top > h5 {
+  /* v4 */
+  color: #0d8894;
+  margin-bottom: 0.5em;
+  font-weight: 600;
+  text-align: center;
+  font-family: "Poppins", sans-serif;
+}
+
+/*
+ * g-recaptcha is from the recaptcha module.
+ */
+
+fieldset .captcha__title {
+  /* v4 */
+  display: none;
+}
+
+.g-recaptcha {
+  /* v4 */
+  display: inline-block;
+  text-align: center;
+  padding: 1.1em 0 0 0;
+}
+
+/* no hits on red-text, but red-more-news has one. mar50 has one on the same template. */
+
+.red-text {
+  /* v4 */
+  color: red;
+}
+
+.red-more-news {
+  /* v4 */
+  border: 2px solid #0d8894;
+  border-radius: 3em;
+  color: #0d8894 !important;
+  font-weight: 600;
+  padding: 0.6em 1.7em;
+  margin-left: 1.5em;
+  background-color: transparent;
+  text-transform: none;
+  margin-right: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+  box-shadow: none;
+  font-size: 14pt;
+  line-height: 1rem;
+}
+
+.mar50 {
+  /* v4 */
+  padding-top: 6em;
+}
+
+/* Don't know what these are. No grep hits. */
+
+.spn-form-left {
+  /* v4 */
+  padding-right: 2rem;
+}
+
+.spn-form-right {
+  /* v4 */
+  padding-left: 2rem;
+}
+
+@media (max-width: 576px) {
+  .spn-form-left {
+    /* v4 */
+    padding-right: 15px;
+  }
+
+  .spn-form-right {
+    /* v4 */
+    padding-left: 15px;
+  }
+}
+
+/* no grep hits for sign-email */
+
+input.sign-email {
+  /* v4 */
+  border: 2px solid #08494f;
+  border-radius: 0.3em;
+  /*! color: #fff; */
+  font-weight: 600;
+  /*! padding: 0.7em 2.1em; */
+  margin-left: 0.1em;
+  /*! background-color:	#08494f !important; */
+  /*! text-transform: none; */
+  /*! margin-right: 0; */
+  /*! margin-top: 0; */
+  /*! margin-bottom: 0; */
+  /*! box-shadow: none; */
+  font-size: 1.5rem;
+  transition: 0.5s;
+  display: inline-block;
+  /*! box-shadow: 3px 3px 5px 3px rgba(0,0,0,0.1); */
+  height: 4rem;
+}
+
+input.sign-email:focus {
+  /* v4 */
+  border: 2px solid #08494f;
+  box-shadow: none;
+  background-color: #fdffff;
+}
+
+form .confirm-signup {
+  /* v4 */
+  padding-top: 2.5rem;
+}
+
+/*
+ * No clue. No grep hits for home-sub.
+ */
+
+.home-subscribe-fset {
+  /* v4 */
+  text-align: center;
+}
+
+#webform-submission-civicrm-subscribe-node-83-add-form .fieldset-wrapper,
+.home-subscribe-fset .fieldset-wrapper {
+  /* v4 */
+  text-align: center;
+  display: flex;
+  width: min-content;
+  margin: auto;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+#webform-submission-civicrm-subscribe-node-83-add-form
+  .fieldset-wrapper
+  .form-item-civicrm-1-contact-1-email-email,
+.home-subscribe-fset .fieldset-wrapper .home-sub-email {
+  /* v4 */
+  display: inline-block;
+}
+#webform-submission-civicrm-subscribe-node-83-add-form
+  input#edit-civicrm-1-contact-1-email-email,
+#webform-submission-civicrm-subscribe-node-83-add-form
+  .fieldset-wrapper
+  .form-item-civicrm-1-contact-1-email-email
+  input,
+.home-subscribe-fset .fieldset-wrapper .home-sub-email input {
+  /* v4 */
+  width: auto;
+  position: relative;
+  border-radius: 1.5rem;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  border-right-width: 0;
+  z-index: 2;
+  padding: 0.5rem 0 0.5rem 2rem;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+  border-color: #08494f;
+}
+#webform-submission-civicrm-subscribe-node-83-add-form
+  .fieldset-wrapper
+  .form-item-civicrm-1-contact-1-email-email
+  input:focus,
+.home-subscribe-fset .fieldset-wrapper .home-sub-email input:focus {
+  /* v4 */
+  box-shadow: none;
+  border-color: #08494f;
+}
+
+#webform-submission-civicrm-subscribe-node-83-add-form #edit-actions,
+#webform-submission-civicrm-subscribe-node-83-add-form
+  .fieldset-wrapper
+  #edit-actions-submit,
+.home-subscribe-fset .fieldset-wrapper .home-sub-send {
+  /* v4 */
+  font-weight: 400;
+  line-height: 1.5;
+  color: #fff;
+  text-align: center;
+  /*! vertical-align: middle; */
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+  background-color: #08494f;
+  border: 1px solid #08494f;
+  padding: 0.3rem 1.5rem 0.1rem 0.8rem;
+  font-size: 1rem;
+  border-radius: 1.5rem;
+  transition: background-color 0.15s ease-in-out;
+  position: relative;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  border-left-width: 0;
+  /*! box-sizing: border-box; */
+}
+
+#webform-submission-civicrm-subscribe-node-83-add-form .fieldset-wrapper input {
+  padding-bottom: 1.1rem;
+}
+
+@media (max-width: 600px) {
+  .home-subscribe-fset .fieldset-wrapper .home-sub-send {
+    /* v4 */
+    padding-left: 0.6rem;
+    padding-right: 0.5rem;
+  }
+}
+
+@media (max-width: 800px) {
+  .home-subscribe-fset .fieldset-wrapper .home-sub-email input {
+    /* v4 */
+    max-width: 13em;
+  }
+}
+
+/*
+ * These were grouped, presumably for a reason. Most of them are explicitly named contact.
+ * I think all of them bar form-text might be dead.
+ * Legacy?
+ *
+ * grep (form-text) in /:
+ *     none in themes/segm/, but tons of hits elsewhere.
+ *
+ * grep (send-us-label) in /:
+ *     no hits.
+ *
+ * grep (contact-us) in /:
+ *     no hits.
+ */
+
+.form-text {
+  /* v4 */
+  margin-top: 0;
+}
+
+.send-us-label {
+  /* v4 */
+  margin: 0;
+  font-weight: bolder;
+  font-size: 23.2px;
+  line-height: 1.3em;
+  padding-bottom: 0.5em;
+}
+
+.contact-us-block-01 {
+  /* v4 */
+  margin-bottom: 2.5rem;
+}
+
+.cnt-us-submit-btn {
+  /* v4 */
+  margin-top: 3.1rem;
+}
+
+.cnt-us-submit-btn input {
+  /* v4 */
+  background: #0d8894;
+  padding: 0.7rem 2rem;
+  color: #fff;
+  border: none;
+  border-radius: 0.5em;
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: 1.6rem;
+}
+
+.contct-us-text {
+  /* v4 */
+  font-size: 2rem;
+}
+
+.contct-us-text * {
+  /* v4 */
+  font-size: 1.7rem;
+}
+
+.contct-us-text em {
+  /* v4 */
+  font-size: 1.3rem;
+}
+
+/*
+ * grep (field-sep) in /:
+ *     modules/custom/NYC2023/templates/login-form.html.twig
+ *     modules/spn/templates/spn-result--block.html.twig
+ *     modules/spn/templates/spn--form.html.twig
+ */
+
+.field-sep {
+  /* v4 */
+  padding-bottom: 0.5rem;
+}
+
+.field-sep .sign-cb {
+  /* v4 */
+  padding-left: 1.4rem;
+  padding-top: 1.2rem;
+}
+
+.field-sep .sign-cb label {
+  /* v4 */
+  color: red;
+}
+
+.field-sep .sign-cb input[type="checkbox"] {
+  /* v4 */
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.field-sep label {
+  /* v4 */
+  margin-bottom: 0;
+  font-size: 1.4rem;
+  font-weight: bold;
+}
+
+.field-sep label[for="edit-anonymous-sign"] {
+  /* v4 */
+  font-size: 1.5rem;
+  margin-top: 0rem;
+  margin-left: 1rem;
+  font-weight: normal;
+}
+
+.field-sep input.button--primary-loginform {
+  /* v4 */
+  border: 2px solid #0d8894;
+  border-radius: 3em;
+  color: #0d8894 !important;
+  font-weight: 600;
+  padding: 0.5em 1.7em;
+  margin-left: 1.5em;
+  background-color: transparent;
+  text-transform: none;
+  margin-right: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+  box-shadow: none;
+  font-size: 14pt;
+}
+
+.field-agree {
+  /* v4 */
+  padding: 0 1.6rem;
+}
+
+.field-agree input {
+  /* v4 */
+  font-size: 2rem;
+  margin-top: 0.5rem;
+  margin-left: -1.8rem;
+}
+
+.field-agree label {
+  /* v4 */
+  margin-bottom: 0;
+  font-weight: bold;
+}
+
+.field-agree .description {
+  /* v4 */
+}
+
+/*
+ * No grep hits for block-twitterblock. The other one belongs to a module, although I don't know if it's in use.
+ * No hits in view source on the home page. Legacy?
+ *
+ * grep (field-sep) in /:
+ *     modules/twitter_block/src/Plugin/Block/TwitterBlock.php
+ */
+
+#block-twitterblock {
+  /* v4 */
+  max-width: 1096px;
+  margin: auto;
+  padding-bottom: 2em;
+}
+
+.twitter-timeline {
+  /* v4 */
+  margin-bottom: 3em !important;
+}
+
+/* No clue, given this naming. No grep hits. No hits in view source on the home page. Legacy? */
+
+#block-views-block-homepage-blog-block-1:before {
+  /* v4 */
+  width: 100%;
+  height: 1px;
+  background-color: #cecece;
+  content: " ";
+  position: relative;
+  display: block;
+  margin: auto;
+  box-shadow: 0px 5px 5px 0px #cecece;
+}
+
+#block-views-block-homepage-blog-block-1 > h2 {
+  /* v4 */
+  margin: auto;
+  max-width: 1140px;
+  text-align: center;
+  font-size: 25px;
+  font-weight: bold;
+  padding-top: 2em;
+  padding-bottom: 1em;
+  width: 100%;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+}
+
+/*
+ * donate-top is a source of much headache.
+ */
+
+.donate-top {
+  /* v4 */
+  border: 2px solid #0d8894;
+  border-radius: 3em;
+  color: #0d8894 !important;
+  font-weight: 600;
+  padding: 0.5em 1.7em;
+  margin-left: 1.5em;
+  background-color: transparent;
+  text-transform: none;
+  margin-right: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+  box-shadow: none;
+  font-size: 14pt;
+}
+
+.donate-top:hover {
+  /* v1, v2, v3, v4 */
+  background-color: #3bb6c2;
+  border-color: #0d8894;
+}
+
+.donate-top:hover {
+  /* v4 */
+  background: #0d8894;
+  color: #fff !important;
+  border-color: #0d8894;
+}
+
+.donate-top {
+  /* v4 */
+  margin: -9em 0 0;
+}
+
+@media (max-width: 1100px) {
+  .donate-top {
+    /* v4 */
+    position: absolute;
+  }
+}
+
+@media (max-width: 800px) {
+  .donate-top {
+    /* v4 */
+    position: relative;
+    margin: 0;
+  }
+}
+
+@media (max-width: 991px) {
+  .donate-top {
+    /* v1, v2, v3, v4 */
+    display: block;
+  }
+}
+
+/* The final thing is the itc-slider. However, we already include /itc-slider.css - there will be conflicts there. */
+
+/*
+ * itcSlider is the carousel, where you click left or right to see more items, tweets, segm-in-media, etc.
+ * There are rules defined for it both here and in itc-slider.css
+ *
+ * This is all very messy, so I'll be outlining the structures from the home page here.
+ *
+ * Latest from SEGM ("itc-slider-in-media"), which is under <section class="new-home-blog" .../>
+ * <div class="itc-slider itc-slider-in-news">
+ *   <div class="itc-slider__wrapper">
+ *     <div class="itc-slider__items">
+ *       <div class="itc-slider__item itc-slider__item_active" .../>
+ *         (specific...)
+ *         <div class="itc-slider__item-in-news-wrp">
+ *           <div class="itc-slider__item-in-news-content">
+ *       <div class="itc-slider__item itc-slider__item_active" .../>
+ *       <div class="itc-slider__item" .../>
+ *       <div class="itc-slider__item" .../>
+ *     </div>
+ *     <button class="itc-slider__btn itc-slider__btn_prev itc-slider__btn_hide" .../>
+ *     <button class=itc-slider__btn itc-slider__btn_next" .../>
+ *   </div>
+ * </div>
+ *
+ * Okay, so this makes sense so far, you have:
+ * - an outer wrapper (just "itc-slider"), with a custom class for this specific use ("-in-news")
+ * - an inner wrapper (shortened here to "__wrapper")
+ * - yet another wrapper around the items ("__items")
+ * - a bunch of items ("__item" which, when visible, are marked as "itc-slider__item_active")
+ * - a base class for buttons ("__btn"), combined with "_prev/_next" and "_hide" when at either end.
+ *
+ * SEGM in Media ("itc-slider-in-media") has the same structure, but has a series of round indicators as well. It's under <section class="slider-block" .../>
+ *
+ * <ol class="itc-slider__indicators">
+ *   <li class="itc-slider__indicator itc-slider__indicator_active" .../>
+ *   <li class="itc-slider__indicator itc-slider__indicator_active" .../>
+ *   <li class="itc-slider__indicator itc-slider__indicator_active" .../>
+ *   <li class="itc-slider__indicator" .../>
+ *   <li class="itc-slider__indicator" .../>
+ *   <li class="itc-slider__indicator" .../>
+ * </ol>
+ *
+ * It also has a different item structure, instead of itc-slider__item-in-news-wrp...
+ * <div class="item-media">
+ *   <div class="item-media-content">
+ *     <div class="slider-item-body">
+ * ...and so on.
+ *
+ * SEGM on Twitter has the same structure, with the indicators.
+ * The content classes are "twitter-item views-row", "item-twitter", "item-twitter-content", "slider-item-body", "twitter-tweet twitter-tweet-rendered"...
+ *
+ * A note when reading CSS below:
+ * .aselector.likethis requires both in one object, e.g. <div class="aselector likethis">
+ * .aselector .likethis means a parent and a child, e.g. <div class="aselector"><div class="likethis"></div></div>
+ *
+ * The main issue here is that... well, itc-slider is defined in a million different places.
+ *
+ /*style for green H1-h6, span*/
+
+.article-content h1.darkgreen {
+  color: #064a4d;
+}
+.article-content h2.darkgreen {
+  color: #064a4d;
+}
+.article-content h3.darkgreen {
+  color: #064a4d !important;
+}
+.article-content h4.darkgreen {
+  color: #064a4d;
+}
+.article-content h5.darkgreen {
+  color: #064a4d;
+}
+.article-content h6.darkgreen {
+  color: #064a4d;
+}
+.article-content span.darkgreen {
+  color: #064a4d;
+}
+.article-content a.button {
+  border: 2px solid #d9dada;
+  display: inline-block;
+  width: max-content;
+  padding: 0.1em 0.5em 0.1em 0.5em;
+  border-radius: 0.3em;
+  margin-top: 0em;
+  font-size: 1rem;
+  margin-right: 0.9em;
+  cursor: pointer;
+  position: relative;
+}
+.article-content a.button:hover {
+  background-color: #eee;
+  text-decoration: none;
+}
+section.content-1 p,
+section.content-1 ul,
+section.content-1 ol {
+  font-size: 1.3rem;
+  line-height: 1.9em;
+}
+section.content-1 ol {
+  counter-reset: item;
+  list-style-type: none;
+}
+section.content-1 ol li:not(.itc-slider__indicator):before {
+  content: counter(item) ". ";
+  counter-increment: item;
+  color: #064a4d;
+  position: relative;
+  margin-left: -1.2em;
+}
+
+/* CME */
+div.CME24_paragraph ul li {
+  line-height: 1.8em;
+  font-size: 1rem;
+}
+div.CME24_paragraph p {
+  line-height: 1.8em;
+  font-size: 1rem;
+}

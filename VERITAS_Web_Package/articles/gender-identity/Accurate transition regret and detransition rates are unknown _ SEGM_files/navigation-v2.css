@@ -1,0 +1,48 @@
+@import "navigation.css";
+.menu__item--level-0 {
+  position: relative;
+}
+@media (min-width: 991px) {
+  .menu__item--level-0:hover > .menu__item__submenu {
+    display: block;
+  }
+}
+.menu__item__submenu {
+  display: block;
+  width: unset;
+  min-width: unset;
+  position: unset;
+  background: unset;
+  padding: 0 20px;
+  border-radius: unset;
+  box-shadow: none;
+  z-index: unset;
+}
+@media (min-width: 991px) {
+  .menu__item__submenu {
+    display: none;
+    width: -moz-max-content;
+    width: max-content;
+    min-width: 170px;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: white;
+    padding: 10px 0;
+    border-radius: 4px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    z-index: 501;
+  }
+}
+.menu__item__submenu .menu__item {
+  padding: 0;
+}
+@media (min-width: 991px) {
+  .menu__item__submenu .menu__item {
+    padding: 7px 7px;
+  }
+}
+
+section.top-nav nav a {
+  padding: 0 0.6em;
+}

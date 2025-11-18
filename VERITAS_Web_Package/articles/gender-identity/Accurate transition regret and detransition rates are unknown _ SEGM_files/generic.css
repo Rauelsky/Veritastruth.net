@@ -1,0 +1,34 @@
+hr {
+        margin-top: 4rem;
+        margin-bottom: 3rem;
+        border-top: 2px solid #03444A;
+        border-bottom: 0px;
+}
+
+hr.full {
+        width: 100%;
+}
+
+hr.semi {
+        width: 50%;
+}
+
+hr.quarter {
+        width: 25%;
+}
+
+
+
+/* Quick tools for widescreen vs mobile */
+
+@media (max-width: 800px) {
+	.hide-when-narrow {
+		display: none;		
+	}
+}
+
+@media (min-width: 800px) {
+	.hide-when-wide {
+		display: none;
+	}
+}

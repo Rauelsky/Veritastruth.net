@@ -1,0 +1,1128 @@
+/*
+ * These are things I believe relate to the Zotero module.
+ *
+ * Note:
+ * The Zotero module does not have the concept of nested folders (despite mapping onto Zotero).
+ * You have "collection_col", which are top level, and you have "sub_col", which are one layer deeper.
+ * The main CSS file features the class "read-more", which is used by both the Spotlight list and the Studies page.
+ */
+
+
+/*
+ * collection_col is a wrapper around each top-level collection.
+ * It has two children: collection_name and collection_hidden.
+ * When collection_name is clicked, it toggles the class "show" on itself.
+ * collection_hidden is then toggled via CSS sibling rules. Because of course.
+ */
+
+.collection_col {
+  /* v1, v2, v3, v4 */
+  padding: 0.5em 0;
+}
+
+.collection_col .collection_name {
+  /* v1, v2, v3, v4 */
+  font-size: 130%;
+  cursor: pointer;
+  color: #fff;
+  padding: 0.5em 0 0.5em 1em;
+  background-color: #0D8894;
+  margin: 0 0 1.5em 0;
+  font-weight: bold;
+}
+
+.collection_col .collection_name.ishid {
+  /* v1, v2, v3, v4 */
+  cursor: initial;
+}
+
+.collection_col .collection_name:before {
+  /* v1, v2, v3, v4 */
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  background-image: url(../images/close_o_w_1.svg);
+  content: "";
+  background-position: 0 83%;
+  background-repeat: no-repeat;
+  background-size: 80% 70%;
+  margin-right: 0.3em;
+}
+
+.collection_col .collection_name.ishid:before {
+  /* v1, v2, v3, v4 */
+  opacity: 0;
+}
+
+.collection_col .collection_name.show:before {
+  /* v1, v2, v3, v4 */
+  background-image: url(../images/close_i_w_1.svg);
+  background-position: 0 114%;
+}
+
+.collection_col .collection_hidden {
+  /* v1, v2, v3, v4 */
+  padding-left: 0;
+}
+
+.collection_col .collection_hidden a.subreadmore {
+  /* v1, v2, v3, v4 */
+  display: none;
+}
+
+.collection_col .collection_hidden .collection_items {
+  /* v1, v2, v3, v4 */
+  display: none;
+  transition: all 3s;
+}
+
+.collection_col .collection_name.show ~ .collection_hidden .collection_items {
+  /* v1, v2, v3, v4 */
+  display: block;
+}
+
+.collection_col .collection_hidden .sub_col {
+  /* v1, v2, v3, v4 */
+  display: none;
+}
+
+.collection_col .collection_name.show ~ .collection_hidden .sub_col {
+  /* v1, v2, v3, v4 */
+  display: block;
+}
+
+.collection_col .collection_hidden .sub_col ~ .collection_items {
+  /* v1, v2, v3, v4 */
+  display: none !important;
+}
+
+@media (max-width: 991px) {
+
+  .collection_col .collection_name {
+    /* v1, v2, v3, v4 */
+    font-size: 1.1rem;
+  }
+
+
+  .collection_col .collection_hidden {
+    /* v3 */
+  }
+}
+
+@media (max-width: 400px) {
+
+  .sub_col .sub_name {
+    /* v1, v2, v3, v4 */
+    font-size: 1rem;
+  }
+}
+
+
+/* sub_name is the div which holds the sub-collection title, e.g. "Bone health complications" */
+
+.sub_col .sub_name {
+
+
+  /* v1, v2, v3, v4 */
+  font-size: 124%;
+  cursor: pointer;
+  line-height: 1.7em;
+  font-weight: bold;
+  margin: 0.8em 0;
+  padding: 0.1em;
+}
+
+.sub_col .sub_name:before {
+
+  /* This puts the little down arrow before the sub-collection title "Bone health complications" */
+
+  /* v1, v2, v3, v4 */
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  background-image: url(../images/close_oo.svg);
+  content: "";
+  background-position: center 66%;
+  background-repeat: no-repeat;
+  background-size: 61% auto;
+}
+
+.sub_col .sub_name.show:before {
+
+  /* This overrides? (via specificity?) the little down arrow to be a right-pointing one.
+
+  /* v1, v2, v3, v4 */
+  background-image: url(../images/close_io.svg);
+  background-position: 0 83%;
+  background-size: auto 61%;
+}
+
+
+.sub_col .sub_hidden {
+  /* v1, v2, v3, v4 */
+  display: none;
+  padding-left: 2em;
+}
+
+.sub_col > .sub_name.show ~ .sub_hidden {
+  /* v1, v2, v3, v4 */
+  display: block;
+}
+
+
+/*
+ * bib_ appears to be used by
+ */
+
+
+.bib_read_more {
+  /* v1, v2, v3, v4 */
+  font-weight: normal;
+  color: #000;
+  float: right;
+  font-weight: lighter;
+  border-bottom: 1px solid;
+  line-height: 1.2em;
+  padding-bottom: 1px;
+}
+
+.bib_read_more .round {
+  /* v1, v2, v3, v4 */
+  display: inline-block;
+  padding: 1px;
+  margin-right: 0.5em;
+  border-radius: 50%;
+  border: 1px solid;
+  width: 1em;
+  text-align: center;
+  height: 1em;
+  line-height: 0.8em;
+  font-weight: bold;
+}
+
+.show .bib_read_more {
+  /* v1, v2, v3, v4 */
+  opacity: 1;
+}
+
+.show .bib_read_more:after {
+  /* v3 */
+}
+
+.bib_read_less {
+  /* v1, v2, v3, v4 */
+  font-weight: normal;
+  color: #000;
+  float: right;
+  display: none;
+  font-size: 100%;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+
+.items .ite_title .bib_read_more {
+  /* v3 */
+}
+
+.items .ite_title .bib_read_less {
+  /* v3 */
+}
+
+.items .ite_title.show .bib_read_more {
+  /* v1, v2, v3, v4 */
+  display: none;
+}
+
+.items .ite_title.show .bib_read_less {
+  /* v1, v2, v3, v4 */
+  float: right;
+  display: block;
+  font-size: 100%;
+}
+
+.items .ite_title.show ~ .hide_ite .bib_read_less {
+  /* v1, v2, v3, v4 */
+  display: block;
+}
+
+
+/*
+ * I don't know if rmf is used.
+ */
+
+.read-more.rf {
+  /* v1, v2, v3, v4 */
+  display: none;
+}
+
+.read-more.rmf {
+  /* v1, v2, v3, v4 */
+  display: block
+}
+
+
+/*
+ * csl- is some kind of div wrapper.
+ */
+
+.csl-bib-body, .csl-entry, .bib_read_more {
+  /* v1, v2, v3, v4 */
+  display: inline;
+}
+
+
+/*
+ * items should be called "item" - it's a wrapper for each individual item.
+ */
+
+.items {
+  /* v1, v2, v3, v4 */
+  margin: 0 0 0;
+  padding: 0.4em 1.5em 1.5em 1.5em;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.items:hover {
+  /* v1, v2, v3, v4 */
+  background: #f8f8f8;
+}
+
+
+.items a {
+  /* v1, v2, v3, v4 */
+  color: #222;
+  font-weight: lighter;
+  border-bottom: 1px solid;
+  padding-bottom: 1px;
+  position: relative;
+}
+
+.items a:hover {
+  /* v1, v2, v3, v4 */
+  text-decoration: none;
+}
+
+
+/* ite_title is a part of the wrapper around individual items.
+ * It's not just the title, but also contains the journal abstract, segm analysis and full text buttons
+ * The main other part is the the "hide_ite", a wrapper around all the parts that are hidden by default.
+ */
+
+.items .ite_title {
+  /* v1, v2, v3, v4 */
+  padding-bottom: 0.5em;
+  color: #000;
+  font-size: 115.5%;
+  display: inline-block;
+  width: calc(100% - 5.5em);
+  vertical-align: top;
+  margin-left: 1em;
+  box-sizing: border-box;
+  border-top: 1px solid #ddd;
+  padding-top: 0.3em;
+}
+
+.items_del .ite_title:before {
+  /* v1, v2, v3, v4 */
+  display: block;
+  width: 1em;
+  height: 1em;
+  background-image: url(../images/close_o.svg);
+  content: "";
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 80% auto;
+  position: absolute;
+  left: 2em;
+}
+
+.sub_hidden .items .ite_title::before {
+  /* v1, v2, v3, v4 */
+  left: 4em;
+}
+
+.items .ite_title.show:before {
+  /* v1, v2, v3, v4 */
+  background-image: url(../images/close_i.svg);
+}
+
+
+/*
+ * hide_ite should probably be read as "hidden items".
+ */
+
+.items .hide_ite {
+  /* v1, v2, v3, v4 */
+  font-size: 1rem;
+  width: 100%;
+  padding-left: 6em;
+  display: none;
+  position: relative;
+}
+
+.items.segm_show .hide_ite {
+  /* v1, v2, v3, v4 */
+  display: block;
+}
+
+.items.journal_show .hide_ite {
+  /* v1, v2, v3, v4 */
+  display: block;
+}
+
+
+/*
+ * hidden_hiden is a div that holds the items that are hidden by default, that show up when you click more.
+ */
+
+.hidden_hiden {
+  /* v1, v2, v3, v4 */
+  display: none;
+}
+
+/*
+ * show34 is a class which is added to and removed from a collection_items div when you click more/fewer.
+ */
+
+.show34 .hidden_hiden {
+  /* v1, v2, v3, v4 */
+  display: block;
+}
+
+.show34 .read-more.rm {
+  /* v1, v2, v3, v4 */
+  display: none;
+}
+
+.show34 .read-more.rf {
+  /* v1, v2, v3, v4 */
+  display: block
+}
+
+.show34 .read-more {
+  /* v1, v2, v3, v4 */
+  margin-bottom: 1.3em;
+}
+
+
+/*
+ * summay is a wrapper within the <div> .col .col-segm, which is the "segm analysis" or "segm summary" concept.
+ * sum_item appears to be another wrapper within summay.
+ */
+
+.summay {
+  /* v1, v2, v3, v4 */
+  border-left: 1px solid #0D8894;
+  padding-left: 1em;
+  margin-left: 1em;
+}
+
+@media (max-width: 991px) {
+
+  .summay {
+    /* v1, v2, v3, v4 */
+    margin-left: 0;
+  }
+}
+
+.sum_item span.seg_color {
+  /* v1, v2, v3, v4 */
+  display: block;
+  font-size: 140%;
+  margin-top: 0.3em;
+  margin-bottom: 0.4em;
+  color: #0D8894;
+  font-weight: normal;
+}
+
+
+/*
+ * segm_analyse is a div which holds the segm analysis looking glass.
+ * its visibility is toggled on/off with the segm_en/segm_de
+ */
+
+.items .segm_analyse {
+  /* v1, v2, v3, v4 */
+  width: 3.5em;
+  padding: 0;
+  background-position: center center;
+  background-size: 100% auto;
+  background-repeat: no-repeat;
+  margin: 0em 1em 0 0;
+  min-height: 3.5em;
+  display: inline-block;
+}
+
+.items .segm_analyse.segm_en {
+  /* v1, v2, v3, v4 */
+  background-image: url(../images/segm_analysis.svg);
+  transition: transform 0.5s 0s;
+}
+
+.items .more-segm.segm_de {
+  /* v1, v2, v3, v4 */
+  display: none;
+}
+
+@media (max-width: 400px) {
+
+  .items .segm_analyse {
+    /* v1, v2, v3, v4 */
+    display: none;
+  }
+}
+
+
+/*
+ * more-jour is a div under ite_title which corresponds to the "Journal Abstract" button.
+ * It appears to use both the "segm_de" and the "journal_de" classes to toggle it.
+ * However, the only definition for segm_de applies exclusively to more-segm?
+ */
+
+.items .more-jour {
+  /* v1, v2, v3, v4 */
+  border: 2px solid #D9DADA;
+  display: inline-block;
+  width: max-content;
+  padding: 0.1em 0.3em 0.1em 1.5em;
+  border-radius: 0.3em;
+  margin-top: 0.9em;
+  font-size: 1rem;
+  margin-right: 0.9em;
+  cursor: pointer;
+  position: relative;
+}
+
+.items .more-jour:before {
+  /* v1, v2, v3, v4 */
+  content: " ";
+  width: 0.9em;
+  height: 0.9em;
+  display: block;
+  position: absolute;
+  left: 0.3em;
+  background-image: url(../images/ja_act.svg);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  top: 0.4em;
+}
+
+.items.journal_show .more-jour:before {
+  /* no hits for journal_show */
+
+  /* v1, v2, v3, v4 */
+  transform: rotate(100grad);
+}
+
+.items .more-jour.journal_de {
+  /* v1, v2, v3, v4 */
+  cursor: inherit;
+  color: #D9DADA;
+}
+
+.items .more-jour.journal_de::before {
+  /* v1, v2, v3, v4 */
+  background-image: url(../images/ja_dis.svg);
+}
+
+
+/*
+ * more-freetext is the "Full Text" button.
+ * there's a definition for full_disable, but not full_disable despite that class being injected.
+ */
+
+.items .more-freetext {
+  /* v2, v4 */
+  border: 2px solid #D9DADA;
+  display: inline-block;
+  width: max-content;
+  padding: 0.1em 0.5em 0.1em 0.5em;
+  border-radius: 0.3em;
+  margin-top: 0.9em;
+  font-size: 1rem;
+  margin-right: 0.9em;
+  cursor: pointer;
+  position: relative;
+}
+
+.items .more-freetext.full_disable {
+  /* v2, v4 */
+  display: none;
+}
+
+
+/*
+ * more-segm is the "SEGM Analysis" button
+ */
+
+.items .more-segm {
+  /* v1, v2, v3, v4 */
+  border: 2px solid #D9DADA;
+  display: inline-block;
+  width: max-content;
+  padding: 0.1em 0.3em 0.1em 1.5em;
+  border-radius: 0.3em;
+  color: #0D8894;
+  margin-top: 0.9em;
+  font-size: 1rem;
+  cursor: pointer;
+  position: relative;
+
+  /* v2, v4 */
+  margin-right: 0.8em;
+}
+
+.items .more-segm:before {
+  /* v1, v2, v3, v4 */
+  content: " ";
+  width: 0.9em;
+  height: 0.9em;
+  display: block;
+  position: absolute;
+  left: 0.3em;
+  background-image: url(../images/sa_act.svg);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  top: 0.4em;
+}
+
+.items.segm_show .more-segm:before {
+  /* v1, v2, v3, v4 */
+  transform: rotate(100grad);
+}
+
+
+.items.journal_show .hide_ite .col-abstr {
+  /* v1, v2, v3, v4 */
+  display: block;
+}
+
+.items .hide_ite .hide_atach {
+  /* v1, v2, v3, v4 */
+  display: none;
+}
+
+.items .hide_ite .hide-all {
+  /* v1, v2, v3, v4 */
+  position: absolute;
+  bottom: -0.9em;
+  right: calc(42.5%);
+  border: 2px solid #C3C4C4;
+  padding: 0.3em 2.6em 0.2em 2.6em;
+  font-size: 1.3rem;
+  border-radius: 0.3em;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+@media (max-width: 991px) {
+
+  .items .hide_ite .hide-all {
+    /* v1, v2, v3, v4 */
+    font-size: 1rem;
+  }
+}
+
+
+.items .hide_ite .col-abstr {
+  /* v1, v2, v3, v4 */
+  display: none;
+  font-size: 1rem;
+  color: #000;
+}
+
+.items .hide_ite .col-segm {
+  /* v1, v2, v3, v4 */
+  display: block;
+  padding: 0;
+  min-width: 50%;
+  content: " ";
+}
+
+.items .hide_ite .col-segm.segm_dis {
+  /* v1, v2, v3, v4 */
+  display: none;
+}
+
+.items .hide_ite .col-segm p {
+  /* v1, v2, v3, v4 */
+  font-size: 1rem;
+  padding: 0;
+  margin: 0.6em 0;
+  line-height: 149%;
+  color: #000;
+}
+
+.items .hide_ite .col-segm li {
+  font-size: 1rem;
+  line-height: 149%;
+}
+
+
+.hide_ite .hide_atach {
+  /* v1, v2, v3, v4 */
+  padding-bottom: 0.5em;
+}
+
+.hide_ite .bibl {
+  /* v1, v2, v3, v4 */
+  padding-bottom: 0.5em;
+  font-style: italic;
+}
+
+.hide_ite .note {
+  /* v1, v2, v3, v4 */
+  display: flex;
+  padding-top: 0.6em;
+  clear: both;
+  padding-bottom: 3em;
+}
+
+.hide_ite .note .note-title {
+  /* v1, v2, v3, v4 */
+  display: block;
+  font-size: 140%;
+  margin-top: 0.3em;
+  margin-bottom: 0.4em;
+}
+
+.hide_ite ul {
+  /* v3 */
+}
+
+.items .ite_title.show ~ .hide_ite {
+  /* v1, v2, v3, v4 */
+  display: block;
+}
+
+.items .ite_title.show ~ .hide_ite .col-abstr {
+  /* v1, v2, v3, v4 */
+  display: block;
+  color: #000;
+  margin-top: 0.2em;
+  margin-bottom: 0.4em;
+}
+
+.items .ite_title.show ~ .hide_ite .hide_atach {
+  /* v1, v2, v3, v4 */
+  display: block;
+}
+
+
+@media (max-width: 400px) {
+
+  .items .ite_title {
+    /* v1, v2, v3, v4 */
+    width: 100%;
+    margin: 0;
+    font-size: 1rem;
+  }
+
+  .items .hide_ite .col-segm {
+    /* v1, v2, v3, v4 */
+    width: 100%;
+  }
+
+  .items.segm_show .hide_ite {
+    /* v1, v2, v3, v4 */
+    padding: 0;
+  }
+
+  .hide_ite .note {
+    /* v1, v2, v3, v4 */
+    display: flex;
+    width: 100%;
+    flex-direction: column-reverse;
+  }
+
+  .items.journal_show .hide_ite {
+    /* v1, v2, v3, v4 */
+    padding: 0;
+  }
+
+  .items .hide_ite .col-segm p {
+    /* v1, v2, v3, v4 */
+    font-size: 1rem;
+  }
+}
+
+/* I believe most of the following relate to the Zotero library - note read-more may not? */
+
+.items:hover .segm_analyse.segm_en, .items.journal_show .segm_analyse.segm_en, .items.segm_show .segm_analyse.segm_en {
+  /* v1, v2, v3, v4 */
+  transform: scale(1.8);
+}
+
+
+.zotero-collections {
+  > .views-field-name {
+    font-size: 130%;
+    cursor: pointer;
+    color: #fff;
+    padding: 0.5em 0 0.5em 1em;
+    background-color: #0D8894;
+    font-weight: bold;
+    margin: 0.5em 0 1.5em;
+
+    &::before {
+      display: inline-block;
+      width: 1em;
+      height: 1em;
+      background-image: url(../images/close_o_w_1.svg);
+      background-position: 0 83%;
+      content: "";
+      background-repeat: no-repeat;
+      background-size: 80% 70%;
+      margin-right: 0.3em;
+    }
+
+    &.active {
+      &::before {
+        background-image: url(../images/close_i_w_1.svg);
+        background-position: 0 114%;
+
+      }
+    }
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    li {
+      &.hide {
+        display: none;
+      }
+
+      &.show {
+        display: block;
+        margin-bottom: 0;
+        padding: 0.4em 1.5em 1.5em 1.5em;
+      }
+
+      &::before {
+        all: unset !important;
+      }
+
+      > div {
+        display: flex;
+        align-items: start;
+
+        @media (max-width: 480px) {
+          padding: 0;
+        }
+
+        &:hover {
+          .segm_analyse {
+            transform: scale(1.4);
+          }
+        }
+
+        .col-a {
+          flex: 0 0 10%;
+          max-width: 10%;
+
+          @media (max-width: 480px) {
+            max-width: 20%;
+          }
+
+          .segm_analyse {
+            background: url(../images/segm_analysis.svg) center center no-repeat;
+            background-size: 60% auto;
+            transition: transform 0.5s;
+            display: inline-block;
+            width: 100px;
+            min-height: 100px;
+            margin-top: 25px;
+
+            @media (min-width: 481px) and (max-width: 991px) {
+              display: none;
+            }
+
+            @media (max-width: 480px) {
+              display: inline-block;
+              width: 80px;
+            }
+
+            &.hide {
+              background: unset;
+            }
+          }
+        }
+
+        .col-b {
+          flex-grow: 1;
+          font-size: 18px;
+          line-height: 28px;
+          border-top: 1px solid #ddd;
+          padding-top: 10px;
+          padding-right: 10px;
+          color: #000;
+
+          > a {
+            color: #000;
+            text-decoration: underline;
+            word-break: break-all;
+          }
+
+          .buttons {
+            .btn {
+              border: 2px solid #D9DADA;
+              display: inline-block;
+              width: max-content;
+              padding: 0.1em 0.3em 0.1em 1.5em;
+              border-radius: 0.3em;
+              margin-top: 0.9em;
+              font-size: 1rem;
+              margin-right: 0.9em;
+              cursor: pointer;
+              position: relative;
+
+              &::before {
+                content: " ";
+                width: 0.9em;
+                height: 0.9em;
+                display: block;
+                position: absolute;
+                left: 0.3em;
+                background-image: url(../images/ja_act.svg);
+                background-position: center;
+                background-repeat: no-repeat;
+                background-size: contain;
+                top: 0.4em;
+              }
+
+              &.journal {
+                color: #000;
+              }
+
+              &.analysis {
+                &::before {
+                  background-image: url(../images/sa_act.svg);
+                }
+              }
+
+              &.active {
+                &::before {
+                  transform: rotate(90deg);
+                  transform-origin: center;
+                }
+              }
+
+              &.full-text {
+                padding: 0.1em 0.3em;
+                color: #000;
+
+                &::before {
+                  all: unset !important;
+                }
+              }
+
+              &.disabled {
+                pointer-events: none;
+                opacity: 0.5;
+                cursor: default;
+              }
+            }
+
+            .zotero-btn:hover {
+              background: #0b6f77;
+            }
+          }
+
+          .hidden-section {
+            margin-top: 1em;
+            display: flex;
+            flex-direction: row;
+            gap: 30px;
+            font-size: 1rem;
+            color: #000;
+            @media (max-width: 480px) {
+              flex-wrap: wrap;
+            }
+
+            > div {
+              display: none;
+              font-size: 1rem;
+              color: #000;
+              line-height: 24px;
+
+              .note-title {
+                display: block;
+                font-size: 140%;
+                margin-top: 0.3em;
+                margin-bottom: 0.4em;
+              }
+
+              .note-title-segm {
+                display: block;
+                font-size: 140%;
+                margin-top: 0.3em;
+                margin-bottom: 0.4em;
+                color: #0D8894;
+                font-weight: normal;
+              }
+
+              p {
+                font-size: 1rem;
+                line-height: 28px;
+                color: #000;
+                padding: 0;
+                margin: 0.6em 0;
+              }
+
+              a {
+                color: #000;
+                text-decoration: underline;
+              }
+
+              &.show ~ .show {
+                position: relative;
+
+                &::after {
+                  content: " ";
+                  position: absolute;
+                  top: 0;
+                  bottom: 0;
+                  left: -15px;
+                  width: 1px;
+                  background: #0D8894;
+                  @media (max-width: 480px) {
+                    background: unset;
+                  }
+                }
+              }
+
+              &.show {
+                display: unset;
+                flex-grow: 1;
+                flex-basis: 50%;
+                line-height: 28px;
+              }
+
+              ul {
+                margin-left: 2rem;
+
+                li {
+                  position: relative;
+                  font-size: 1rem;
+                  line-height: 24px;
+                  color: #000;
+
+                  ::before {
+                    content: " ";
+                    display: inline-block;
+                    width: 0.5em;
+                    height: 0.7em;
+                    position: absolute;
+                    background-image: url(/themes/segm/images/disc.svg);
+                    left: -1.1em;
+                    background-size: contain;
+                    background-repeat: no-repeat;
+                    top: 0.7em;
+                  }
+
+
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .zotero-list-toggle {
+    width: max-content;
+    display: block;
+    color: #0d8894;
+    font-weight: bold;
+    margin: 1.4em auto;
+    text-transform: capitalize;
+    border: 1px solid #0d8894;
+    background: none;
+    padding: 0em 0.6em;
+    line-height: 2.3em;
+    border-radius: 0.3em;
+    cursor: pointer;
+    font-size: 130%;
+
+    &:hover {
+      background: #0d8894;
+      color: #fff;
+    }
+  }
+}
+
+.zotero-items {
+  &.hide {
+    display: none;
+  }
+
+  &.show {
+    display: block;
+  }
+
+}
+
+.zotero-sub-items {
+  .views-element-container {
+    padding-bottom: 5px;
+  }
+
+  &.hide {
+    display: none;
+  }
+
+  .views-field-name {
+    font-size: 124%;
+    cursor: pointer;
+    line-height: 1.7em;
+    font-weight: bold;
+    margin: 0.8em 0;
+    padding: 0.1em;
+
+
+    &::before {
+      display: inline-block;
+      width: 1em;
+      height: 1em;
+      background-image: url(../images/close_oo.svg);
+      content: "";
+      background-position: center 66%;
+      background-repeat: no-repeat;
+      background-size: 61% auto;
+    }
+
+    &.active {
+      &::before {
+        transform: rotate(90deg);
+        transform-origin: center;
+      }
+    }
+  }
+
+  .views-field-nothing {
+
+    &.hide {
+      display: none;
+    }
+
+    &.show {
+      display: unset;
+    }
+  }
+
+}
+
+.zotero-redirect-selected-item > div {
+  background-color: #D8EFEB;
+  -webkit-transition: all .3s ease-in-out;
+  -o-transition: all .3s ease-in-out;
+  transition: all .3s ease-in-out;
+}

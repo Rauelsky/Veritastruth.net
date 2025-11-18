@@ -1,0 +1,55 @@
+/* 
+ * Treatment of Gender-Diverse Youth is the sixth panel on the home page.
+ */
+ 
+/*
+ * section.nblk-1
+ *   div.block-benefits
+ *     (title and subtitle are both h2, one is inner-wrapped in <strong>)
+ */
+ 
+ 
+section.nblk-1 {
+	/* v4 */
+	background-color: #03444a;
+	padding: 10rem 0
+}
+
+section.nblk-1 .container.hwidth {
+	/* v4 */
+	/*! max-width: 1450px; */
+	background-color: #ffffff;
+	padding: 3rem 6.5rem;
+	font-size: 1.1rem;
+}
+
+section.nblk-1 .container.hwidth h2 {
+	/* v4 */
+	color: #03444a;
+	font-family: "poppins";
+	text-align: center;
+	max-width: 41rem;
+	margin-left: auto;
+	margin-right: auto;
+	font-weight: bold;
+	margin-bottom: 2.5rem;
+	margin-top: 2.5rem;
+}
+
+section.nblk-1 .container.hwidth p {
+	/* v4 */
+	line-height: 1.9em;
+}
+
+@media (max-width:600px) {
+	
+	section.nblk-1 .container.hwidth {
+		/* v4 */
+		padding: 1rem;
+	}
+	
+	section.nblk-1 {
+		/* v4 */
+		padding: 1rem;
+	}
+}

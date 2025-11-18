@@ -1,0 +1,102 @@
+/*
+ * These are related to the GoFundMe thing on the front page and the donate page.
+ */
+
+/* 
+ * This is related to the GoFundMe widget thing. No grep hit for "hide-for-large"
+ *
+ * grep (gfm-embed) in themes/segm/templates/: 
+ *     templates/page--front.html.twig
+ *     templates/page--node--17.html.twig
+ */
+
+.gfm-embed {
+	position: relative;
+}
+
+.gfm-embed:hover {
+	filter: grayscale(0%);
+}
+
+.gfm-embed iframe {
+	/* v1, v3 */
+	position: relative;
+	z-index: 100;
+}
+
+.gfm-embed .hide-for-large {
+	/* v2, v4 */
+	display: none;
+}
+
+
+/* 
+ * This is also related to the GoFundMe widget thing. No grep hits for cta-title, progress, or progress-bar.
+ *
+ * grep (em-progress) in themes/segm/templates/: 
+ *     templates/page--front.html.twig
+ *     templates/page--node--17.html.twig
+ */
+
+.em-progress {
+	/* v1, v3 */
+	padding-bottom: 0.5em;
+	/* v2, v4 */
+	padding-bottom: 0;
+}
+
+.em-progress .cta-title {
+	/* v1, v2, v3, v4 */
+	text-align: left;
+	padding-bottom: 0.5em;
+}
+
+.em-progress .cta-title>* {
+	/* v1, v2, v3, v4 */
+	font-size: 1.6rem;
+}
+
+.em-progress .cta-title h2 {
+	/* v1, v2, v3, v4 */
+	display: inline;
+	padding-right: 0.1em;
+}
+
+.em-progress .cta-title span {
+	/* v1, v2, v3, v4 */
+	font-size: 1.2rem;
+}
+
+.em-progress .progress {
+	/* v3 */
+}
+
+.em-progress .progress-bar {
+	/* v4 */
+	background-color: #0D8894;
+}
+
+.em-title {
+	/* v1, v2, v3, v4 */
+	box-sizing: border-box;
+	color: rgb(51.51, 51);
+	cursor: pointer;
+	display: block;
+	font-family: Lato, Trebuchet, Arial, sans-serif;
+	font-size: 24px;
+	font-weight: 900;
+	line-height: 28.88px;
+	margin-bottom: 8px;
+	margin-top: 8px;
+}
+
+.em-progress h2 {
+	/* v2, v4 */
+	margin-bottom: 0.6em !important;
+	font-size: 120% !important;
+}
+
+progress {
+	/* v2, v4 */
+	width: 100%;
+}

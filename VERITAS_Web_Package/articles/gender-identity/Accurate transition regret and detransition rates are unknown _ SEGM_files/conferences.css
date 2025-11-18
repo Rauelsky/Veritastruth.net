@@ -1,0 +1,92 @@
+article.conference-teaser {
+	margin: 0em 0em 2em 0em;
+}
+
+article.conference-teaser-upcoming {
+}
+
+article.conference-teaser hr {
+	display: none;
+}
+
+div.conference-teaser-upcoming-alert {
+	text-align: center;
+	background-color: #0D889411;
+	font-weight: bold;
+}
+
+div.conference-teaser-container {
+	display: flex;
+	flex-direction: row;
+	width: 100%;
+	max-width: 100%;
+}
+
+article.conference-teaser-upcoming div.conference-teaser-container {
+	flex-direction: row-reverse;
+}
+
+div.conference-teaser-details {
+	margin: auto;
+	flex: 0 0 66%;
+	padding: 0em;
+	vertical-align: top;
+}
+
+div.conference-teaser-details h2.conference-teaser-header {
+	text-align: left;
+}
+
+div.conference-teaser-image-container { 
+	max-width: 512px;	
+	padding: 1em;
+	text-align: right;
+	vertical-align: middle;
+}
+
+img.conference-teaser-image {
+	border: 0px solid #0D8894;
+	box-shadow: 0 0 2px #0D8894;
+	filter: grayscale(60%);
+}
+
+@media (max-width: 800px) {
+	article.conference-teaser-upcoming div.conference-teaser-container {
+		flex-direction: column-reverse;
+	}
+	
+	div.conference-teaser-container {
+		flex-direction: column-reverse;
+	}
+
+	div.conference-teaser-image-container {
+		margin-bottom: 2em;
+	}
+
+	article.conference-teaser hr {
+		display: block;
+	}
+}
+
+
+h4.conference-title {
+	font-weight: 600;
+	font-style: italic;
+	text-align: center;
+	margin: 0em 0em 0.2em 0em;	
+}
+
+div.conference-subheaders {
+	margin: 0em 0em 2em 0em;
+	text-align: center;
+}
+
+@media (min-width: 800px) {
+	h5.conference-subheader:first-of-type::after {
+		content: ' - ';
+	}
+
+	h5.conference-subheader {
+		display: inline;
+	}
+}

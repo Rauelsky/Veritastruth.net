@@ -1,0 +1,138 @@
+/* 
+ * Latest from SEGM is the second panel on the home page.
+ */
+
+/* 
+ * section.new-home-blog
+ * itc-slider-in-news
+ * itc-slider__item-in-news-wrp
+ * itc-slider__item-in-news-content
+ */
+
+
+/* new-home-blog is used on page--front.html.twig */
+
+section.new-home-blog {
+	/* v4 */
+	padding-top: 4rem;
+	padding-bottom: 3rem;
+	padding-left: 2rem;
+	padding-right: 2rem;
+	background-image: linear-gradient(180deg, rgba(230, 230, 230, 0.5) 0%, rgba(230, 230, 230, 0.3) 45%,rgb(255, 255, 255) 46%, rgba(255,255,255,0) 100%);
+}
+
+section.new-home-blog h2 {
+	/* v4 */
+	padding: 2rem 0 2rem 2.5rem;
+	color: #0D8894;
+	font-family: "Poppins";
+	font-weight: normal;
+}
+
+
+section.new-home-blog .itc-slider__item {
+	/* v4 */
+	flex: 0 0 50%;
+}
+
+.itc-slider__item-in-news-wrp {
+	/* v4 */
+	padding: 1rem 2.6rem;
+	height: 100%;
+}
+
+section.new-home-blog .itc-slider__btn_prev {
+	/* v4 */
+	left: -3rem;
+}
+
+section.new-home-blog .itc-slider__btn_next {
+	/* v4 */
+	right: -3rem;
+}
+
+section.new-home-blog itc-slider__btn {
+	/* v4 */
+	z-index: 10000;
+}
+
+.itc-slider__item-in-news-content {
+	/* v4 */
+	box-shadow: 0.5rem 0.5rem 1.2rem 0rem rgba(0,0,0,0.3);
+	padding: 3rem 3rem;
+	height: 100%;
+	font-size: 1.4rem;
+	background-color: #fff;
+}
+
+section.new-home-blog .news-time {
+	/* v4 */
+	color:#0D8894;
+	font-size: 1.1rem;
+	padding-bottom: 0.5em;
+	font-family: "Poppins";
+}
+
+section.new-home-blog .news-title {
+	/* v4 */
+	font-weight: 700;
+	font-size: 1.6rem;
+	line-height: 1.4;
+}
+
+section.new-home-blog .news-title a {
+	/* v4 */
+	color: #0D8894;
+	font-family: "Poppins";
+}
+
+section.new-home-blog .news-title a::hover {
+	/* v4 */
+	font-size: 1.1rem;
+	line-height: 1.7em;
+}
+
+section.new-home-blog .news-subtitle {
+	/* v4 */
+	font-size: 1.4rem;
+	color: #7C7676;
+	font-style: italic;
+	margin-bottom: 0.5em;
+}
+
+section.new-home-blog .news-body {
+	/* v4 */
+	font-size: 1.1rem;
+	line-height: 1.7em;
+}
+
+section.new-home-blog .new-home-blog-center {
+	z-index: 10000;
+}
+
+@media (max-width:800px){
+	
+	section.new-home-blog .itc-slider__item {
+		/* v4 */
+		flex: 0 0 100%;
+	}
+}
+
+@media (max-width:600px) {
+	
+	.itc-slider__item-in-news-wrp {
+		/* v4 */
+		padding: 0
+	}
+	
+	.itc-slider__item-in-news-content {
+		/* v4 */
+		padding: 0.5rem;
+		box-shadow: 0 0;
+	}
+	
+	.itc-slider__item-in-news-content {
+		/* v4 */
+		background: transparent;
+	}
+}
