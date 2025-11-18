@@ -36,11 +36,15 @@
       align-items: center;
     }
     
-    .logo {
-      font-size: 32px;
-      font-weight: 800;
-      color: #2196F3;
-      letter-spacing: 2px;
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .logo-image {
+      height: 50px;
+      width: auto;
     }
     
     .tagline {
@@ -52,7 +56,7 @@
     
     .header-links {
       display: flex;
-      gap: 30px;
+      gap: 20px;
       align-items: center;
     }
     
@@ -60,22 +64,28 @@
       color: white;
       text-decoration: none;
       font-weight: 500;
-      transition: opacity 0.3s ease;
+      transition: all 0.3s ease;
+      padding: 8px 16px;
+      border-radius: 6px;
     }
     
     .header-links a:hover {
-      opacity: 0.8;
+      background: rgba(255,255,255,0.2);
     }
     
     .demo-link {
       background: rgba(255,255,255,0.2);
-      padding: 8px 20px;
+      padding: 10px 24px;
       border-radius: 6px;
       font-weight: 600;
+      border: 2px solid rgba(255,255,255,0.3);
     }
     
     .demo-link:hover {
       background: rgba(255,255,255,0.3);
+      border-color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     }
     
     /* Hero Section */
@@ -279,19 +289,19 @@
       background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
       color: white;
       border-radius: 50%;
-      display: flex;
+      display: inline-flex;
       align-items: center;
       justify-content: center;
       font-size: 24px;
       font-weight: 700;
-      margin: 0 auto 20px;
+      margin-bottom: 20px;
       box-shadow: 0 4px 15px rgba(33, 150, 243, 0.3);
     }
     
     .step h3 {
-      font-size: 22px;
-      margin-bottom: 12px;
+      font-size: 20px;
       color: #2c3e50;
+      margin-bottom: 12px;
     }
     
     .step p {
@@ -306,7 +316,7 @@
     
     .features-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
       gap: 30px;
       margin-top: 40px;
     }
@@ -320,82 +330,68 @@
     
     .feature-card:hover {
       border-color: #2196F3;
+      box-shadow: 0 6px 20px rgba(33, 150, 243, 0.15);
       transform: translateY(-5px);
-      box-shadow: 0 8px 25px rgba(0,0,0,0.1);
     }
     
     .feature-icon {
-      font-size: 40px;
-      margin-bottom: 16px;
+      font-size: 48px;
+      margin-bottom: 20px;
     }
     
     .feature-card h3 {
-      font-size: 20px;
-      margin-bottom: 12px;
+      font-size: 22px;
       color: #2c3e50;
+      margin-bottom: 12px;
     }
     
     .feature-card p {
       color: #666;
-      line-height: 1.7;
+      line-height: 1.8;
     }
     
     /* CTA Section */
     .cta-section {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
       color: white;
       text-align: center;
       padding: 80px 20px;
     }
     
     .cta-section h2 {
-      color: white;
       font-size: 42px;
+      font-weight: 700;
       margin-bottom: 20px;
     }
     
     .cta-section p {
       font-size: 20px;
-      opacity: 0.95;
       margin-bottom: 40px;
+      opacity: 0.95;
     }
     
     .email-signup {
       display: flex;
-      gap: 12px;
-      max-width: 500px;
-      margin: 0 auto;
-      flex-wrap: wrap;
       justify-content: center;
+      gap: 12px;
+      max-width: 600px;
+      margin: 0 auto;
     }
     
     .email-input {
       flex: 1;
-      min-width: 250px;
-      padding: 16px 20px;
+      padding: 16px 24px;
       font-size: 16px;
-      border: 2px solid white;
+      border: none;
       border-radius: 8px;
-      background: rgba(255,255,255,0.15);
-      color: white;
-      transition: all 0.3s ease;
-    }
-    
-    .email-input::placeholder {
-      color: rgba(255,255,255,0.7);
-    }
-    
-    .email-input:focus {
       outline: none;
-      background: rgba(255,255,255,0.25);
-      border-color: white;
     }
     
     .submit-btn {
       padding: 16px 40px;
       font-size: 16px;
       font-weight: 600;
-      background: white;
+      background: #fff;
       color: #2196F3;
       border: none;
       border-radius: 8px;
@@ -404,48 +400,44 @@
     }
     
     .submit-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.2);
     }
     
     /* Footer */
     footer {
       background: #1a1a1a;
-      color: white;
-      padding: 60px 20px 40px;
+      color: #ccc;
+      padding: 60px 20px 30px;
     }
     
     .footer-content {
-      max-width: 1200px;
-      margin: 0 auto;
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
       gap: 40px;
-      margin-bottom: 40px;
+      max-width: 1200px;
+      margin: 0 auto 40px;
     }
     
     .footer-section h4 {
+      color: white;
       font-size: 18px;
       margin-bottom: 16px;
-      color: #2196F3;
     }
     
     .footer-section p {
-      font-size: 14px;
-      line-height: 1.7;
-      color: #aaa;
+      line-height: 1.8;
+      color: #999;
     }
     
     .footer-section a {
-      color: #aaa;
+      color: #2196F3;
       text-decoration: none;
-      display: block;
-      margin-bottom: 8px;
       transition: color 0.3s ease;
     }
     
     .footer-section a:hover {
-      color: #2196F3;
+      color: #64B5F6;
     }
     
     .footer-bottom {
@@ -476,7 +468,13 @@
       }
       
       .header-links {
-        gap: 20px;
+        gap: 15px;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      
+      .logo-image {
+        height: 40px;
       }
       
       .solution-content {
@@ -498,12 +496,11 @@
   <!-- Header -->
   <header>
     <div class="header-content">
-      <div>
-        <div class="logo">VERITAS</div>
-        <div class="tagline">Truth Through Transparency</div>
+      <div class="logo-container">
+        <img src="veritas-logo-horizontal.png" alt="VERITAS LLC" class="logo-image">
       </div>
       <nav class="header-links">
-        <a href="demo.html" class="demo-link">🚀 Try Demo</a>
+        <a href="VERITAS_Web_Package/VERITAS_Interactive_Demo_Web.html" class="demo-link">🚀 Interactive Demo</a>
         <a href="mailto:rauel@veritastruth.net">Contact</a>
       </nav>
     </div>
@@ -515,7 +512,7 @@
       <h1>Truth Verification Through Expert Analysis</h1>
       <p class="hero-subtitle">VERITAS brings transparent, expert-driven truth verification to online information. See <strong>how</strong> experts think, not just <strong>what</strong> they conclude.</p>
       <div class="cta-buttons">
-        <a href="demo.html" class="cta-btn cta-primary">Try Browser Extension Demo</a>
+        <a href="VERITAS_Web_Package/VERITAS_Interactive_Demo_Web.html" class="cta-btn cta-primary">Try Interactive Demo</a>
         <a href="#how-it-works" class="cta-btn cta-secondary">Learn More</a>
       </div>
     </div>
@@ -537,7 +534,7 @@
         <div class="problem-card">
           <div class="problem-icon">🎭</div>
           <h3>Trust Has Collapsed</h3>
-          <p>People don't trust fact-checkers because they hide their reasoning and pretend perfect objectivity.</p>
+          <p>People don't trust fact-checkers because they hide their reasoning and pretend perfection objectivity.</p>
         </div>
         
         <div class="problem-card">
@@ -683,7 +680,7 @@
       </form>
       
       <div style="margin-top: 30px;">
-        <a href="demo.html" style="color: white; text-decoration: underline; font-size: 18px; font-weight: 600;">Or try our demo extension now →</a>
+        <a href="VERITAS_Web_Package/VERITAS_Interactive_Demo_Web.html" style="color: white; text-decoration: underline; font-size: 18px; font-weight: 600;">Or try our interactive demo now →</a>
       </div>
     </div>
   </section>
@@ -700,7 +697,7 @@
         
         <div class="footer-section">
           <h4>Platform</h4>
-          <p><a href="demo.html">Browser Extension Demo</a><br>
+          <p><a href="VERITAS_Web_Package/VERITAS_Interactive_Demo_Web.html">Interactive Demo</a><br>
           Publisher API (In Development)<br>
           Validator Dashboard (Beta)<br>
           Public Assessment Database</p>
@@ -717,7 +714,8 @@
         <div class="footer-section">
           <h4>Legal</h4>
           <p><strong>VERITAS LLC</strong><br>
-          Prairie du Sac, WI<br>
+          460 4th Street<br>
+          Prairie du Sac, WI 53578<br>
           <br>
           Privacy Policy (Coming Soon)<br>
           Terms of Service (Coming Soon)</p>
@@ -725,7 +723,7 @@
       </div>
       
       <div class="footer-bottom">
-        <p>© 2025 VERITAS LLC. All rights reserved. | Built with a commitment to truth and transparency.</p>
+        <p>&copy; 2025 VERITAS LLC. All rights reserved.</p>
       </div>
     </div>
   </footer>
