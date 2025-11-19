@@ -1515,20 +1515,22 @@
         }
 
         .splash-logo {
-            font-size: 72px;
-            font-weight: 800;
-            letter-spacing: 8px;
-            margin-bottom: 10px;
-            background: linear-gradient(135deg, #4a9eff 0%, #00d4ff 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .splash-logo img {
+            height: 80px;
+            width: auto;
+            filter: brightness(0) invert(1);
         }
 
         .splash-tagline {
-            font-size: 24px;
+            font-size: 22px;
             color: #4a9eff;
-            margin-bottom: 60px;
+            margin-bottom: 40px;
             font-weight: 300;
             letter-spacing: 2px;
         }
@@ -1536,13 +1538,13 @@
         .splash-subtitle {
             font-size: 18px;
             color: rgba(255, 255, 255, 0.8);
-            margin-bottom: 50px;
+            margin-bottom: 35px;
             line-height: 1.6;
         }
 
         .acronym-section {
-            margin: 50px 0;
-            padding: 30px;
+            margin: 35px 0;
+            padding: 25px;
             background: rgba(74, 158, 255, 0.1);
             border-radius: 8px;
             border: 1px solid rgba(74, 158, 255, 0.3);
@@ -1647,7 +1649,9 @@
     <!-- Splash Overlay -->
     <div class="splash-overlay" id="splashOverlay">
         <div class="splash-content">
-            <div class="splash-logo">VERITAS</div>
+            <div class="splash-logo">
+                <img src="veritas-logo.png" alt="VERITAS">
+            </div>
             <div class="splash-tagline">Truth in Context</div>
             
             <div class="splash-subtitle">
