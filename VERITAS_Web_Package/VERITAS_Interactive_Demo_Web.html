@@ -1498,7 +1498,7 @@
         .splash-content {
             text-align: center;
             max-width: 900px;
-            padding: 40px;
+            padding: 112px 40px;
             color: white;
             animation: fadeIn 1.5s ease-in;
         }
@@ -1515,22 +1515,20 @@
         }
 
         .splash-logo {
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        
-        .splash-logo img {
-            height: 80px;
-            width: auto;
-            filter: brightness(0) invert(1);
+            font-size: 72px;
+            font-weight: 800;
+            letter-spacing: 8px;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #4a9eff 0%, #00d4ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .splash-tagline {
-            font-size: 22px;
+            font-size: 24px;
             color: #4a9eff;
-            margin-bottom: 40px;
+            margin-bottom: 42px;
             font-weight: 300;
             letter-spacing: 2px;
         }
@@ -1538,13 +1536,13 @@
         .splash-subtitle {
             font-size: 18px;
             color: rgba(255, 255, 255, 0.8);
-            margin-bottom: 35px;
+            margin-bottom: 50px;
             line-height: 1.6;
         }
 
         .acronym-section {
-            margin: 35px 0;
-            padding: 25px;
+            margin: 50px 0;
+            padding: 30px;
             background: rgba(74, 158, 255, 0.1);
             border-radius: 8px;
             border: 1px solid rgba(74, 158, 255, 0.3);
@@ -1592,9 +1590,10 @@
 
         .instruction-hint {
             margin-top: 60px;
-            font-size: 14px;
-            color: rgba(255, 255, 255, 0.6);
+            font-size: 20px;
+            color: rgba(255, 255, 255, 0.8);
             animation: pulse 2s ease-in-out infinite;
+            font-weight: 500;
         }
 
         .hover-indicator {
@@ -1615,6 +1614,90 @@
 
         .hidden {
             display: none;
+        }
+
+        /* Instructions Overlay - appears after splash */
+        .instructions-overlay {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #1a1a2e 0%, #0f3460 100%);
+            border: 2px solid #4a9eff;
+            border-radius: 16px;
+            padding: 40px 50px;
+            max-width: 600px;
+            z-index: 2500;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease-in;
+        }
+
+        .instructions-overlay.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .instructions-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #4a9eff;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .instructions-list {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 16px;
+            line-height: 1.8;
+            text-align: left;
+        }
+
+        .instructions-list .step {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .instructions-list .step-number {
+            background: #4a9eff;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+
+        .instructions-list .step-text {
+            padding-top: 3px;
+        }
+
+        .instructions-dismiss {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .instructions-dismiss button {
+            background: linear-gradient(135deg, #4a9eff 0%, #00d4ff 100%);
+            color: white;
+            border: none;
+            padding: 14px 40px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .instructions-dismiss button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(74, 158, 255, 0.4);
         }
 
         /* End Demo Button in Sidebar */
@@ -1649,9 +1732,7 @@
     <!-- Splash Overlay -->
     <div class="splash-overlay" id="splashOverlay">
         <div class="splash-content">
-            <div class="splash-logo">
-                <img src="veritas-logo-horizontal.png" alt="VERITAS">
-            </div>
+            <img src="veritas-logo.png" style="width: 200px; height: auto; margin-bottom: 20px;">
             <div class="splash-tagline">Truth in Context</div>
             
             <div class="splash-subtitle">
@@ -1682,17 +1763,41 @@
                     — The Little Prince, Antoine de Saint-Exupéry
                 </div>
 
-                <div class="quote">
-                    "Sunday. Forever."
-                </div>
-                <div class="quote-author">
-                    — Sunday in the Park with George, Stephen Sondheim
-                </div>
             </div>
 
             <div class="instruction-hint">
                 Click anywhere to begin<span class="hover-indicator">→</span>
             </div>
+        </div>
+    </div>
+
+    <!-- Instructions Overlay -->
+    <div class="instructions-overlay" id="instructionsOverlay">
+        <div class="instructions-title">How to Use This Demo</div>
+        <div class="instructions-list">
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-text">Hover near the <strong>left edge</strong> of the screen to open the topic menu</div>
+            </div>
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-text">Select a topic to view articles from different perspectives</div>
+            </div>
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-text">Click any article to read it - a VERITAS badge will appear</div>
+            </div>
+            <div class="step">
+                <div class="step-number">4</div>
+                <div class="step-text">Click the VERITAS badge to toggle between the original article and our assessment</div>
+            </div>
+            <div class="step">
+                <div class="step-number">5</div>
+                <div class="step-text">Click "View Full Assessment" to see detailed analysis</div>
+            </div>
+        </div>
+        <div class="instructions-dismiss">
+            <button onclick="closeInstructions()">Got It!</button>
         </div>
     </div>
 
@@ -1866,7 +1971,7 @@
 
     <!-- ORIGINAL ARTICLE VIEW - EF2 (Step 2 - NEW) -->
     <div class="webpage-container" id="originalArticleEF2" style="padding: 0; z-index: 10;">
-        <iframe src="https://electionfraud.heritage.org/" style="width: 100%; height: 100%; border: none;"></iframe>
+        <iframe src="articles/election-fraud/Heritage_Database___Election_Fraud_Map___The_Heritage_Foundation.htm" style="width: 100%; height: 100%; border: none;"></iframe>
     </div>
 
     <!-- READING OVERVIEW - EF2 (Step 3) -->
@@ -1956,7 +2061,7 @@
 
     <!-- ORIGINAL ARTICLE VIEW - EF3 (Step 2 - NEW) -->
     <div class="webpage-container" id="originalArticleEF3" style="padding: 0; z-index: 10;">
-        <iframe src="https://www.npr.org/2024/12/02/g-s1-36527/dinesh-dsouza-2000-mules-apology" style="width: 100%; height: 100%; border: none;"></iframe>
+        <iframe src="articles/election-fraud/Dinesh_D_Souza_apologizes_to_man_accused_of_fraud_in__2000_Mules____NPR.htm" style="width: 100%; height: 100%; border: none;"></iframe>
     </div>
 
     <!-- READING OVERVIEW - EF3 (Step 3) -->
@@ -4820,17 +4925,30 @@
             sidebar.classList.remove('active');
         }
 
+        function closeInstructions() {
+            const instructionsOverlay = document.getElementById('instructionsOverlay');
+            instructionsOverlay.classList.remove('visible');
+            
+            // Show Election Fraud topic by default after instructions close
+            setTimeout(function() {
+                showTopic('election-fraud');
+            }, 500);
+        }
+
         // Initialize - show Election Fraud by default
         document.addEventListener('DOMContentLoaded', function() {
             // Splash overlay - click anywhere to dismiss
             const splashOverlay = document.getElementById('splashOverlay');
+            const instructionsOverlay = document.getElementById('instructionsOverlay');
             
             splashOverlay.addEventListener('click', function() {
                 splashOverlay.classList.add('fade-out');
                 setTimeout(function() {
                     splashOverlay.classList.add('hidden');
-                    // Show Election Fraud topic by default
-                    showTopic('election-fraud');
+                    // Show instructions overlay after splash fades
+                    setTimeout(function() {
+                        instructionsOverlay.classList.add('visible');
+                    }, 300);
                 }, 1500); // Wait for fade out animation to complete
             });
             
