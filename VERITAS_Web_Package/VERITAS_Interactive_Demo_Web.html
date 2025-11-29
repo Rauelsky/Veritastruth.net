@@ -5234,15 +5234,15 @@
                 document.getElementById('genderIdentityBtn').classList.add('active');
             }
             
-            // Hide all article panels
+            // Hide all article panels and clear hidden-for-reading
             const ef_panel = document.getElementById('articlesPanel-election-fraud');
             const imm_panel = document.getElementById('articlesPanel-immigration');
             const nd_panel = document.getElementById('articlesPanel-national-debt');
             const gi_panel = document.getElementById('articlesPanel-gender-identity');
-            ef_panel.classList.remove('open');
-            imm_panel.classList.remove('open');
-            nd_panel.classList.remove('open');
-            gi_panel.classList.remove('open');
+            ef_panel.classList.remove('open', 'hidden-for-reading');
+            imm_panel.classList.remove('open', 'hidden-for-reading');
+            nd_panel.classList.remove('open', 'hidden-for-reading');
+            gi_panel.classList.remove('open', 'hidden-for-reading');
             
             // Show appropriate panel
             if (topic === 'election-fraud') {
