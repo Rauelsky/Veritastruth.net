@@ -5215,6 +5215,9 @@
         function showTopic(topic) {
             currentTopic = topic;
             
+            // Ensure sidebar stays visible on mobile when topic is clicked
+            document.querySelector('.veritas-sidebar').classList.add('active');
+            
             // Update button states
             document.getElementById('electionFraudBtn').classList.remove('active');
             document.getElementById('immigrationBtn').classList.remove('active');
@@ -5484,70 +5487,77 @@
                 });
             });
             
-            // Keep sidebar visible when hovering over it
-            sidebar.addEventListener('mouseenter', function() {
-                sidebar.classList.add('active');
-                if (articlesOpen && !assessmentOpen) {
-                    if (currentTopic === 'election-fraud') {
-                        document.getElementById('articlesPanel-election-fraud').classList.remove('hidden-for-reading');
-                    } else if (currentTopic === 'immigration') {
-                        document.getElementById('articlesPanel-immigration').classList.remove('hidden-for-reading');
-                    } else if (currentTopic === 'national-debt') {
-                        document.getElementById('articlesPanel-national-debt').classList.remove('hidden-for-reading');
-                    } else if (currentTopic === 'gender-identity') {
-                        document.getElementById('articlesPanel-gender-identity').classList.remove('hidden-for-reading');
-                    }
-                }
-            });
-
-            sidebar.addEventListener('mouseleave', function() {
-                // Always allow sidebar to recede when mouse leaves
-                sidebar.classList.remove('active');
-            });
+            // Keep sidebar visible when hovering over it (DESKTOP ONLY)
+            // Check if this is a touch device
+            const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
             
-            // Articles panel mouse handling
+            if (!isTouchDevice) {
+                sidebar.addEventListener('mouseenter', function() {
+                    sidebar.classList.add('active');
+                    if (articlesOpen && !assessmentOpen) {
+                        if (currentTopic === 'election-fraud') {
+                            document.getElementById('articlesPanel-election-fraud').classList.remove('hidden-for-reading');
+                        } else if (currentTopic === 'immigration') {
+                            document.getElementById('articlesPanel-immigration').classList.remove('hidden-for-reading');
+                        } else if (currentTopic === 'national-debt') {
+                            document.getElementById('articlesPanel-national-debt').classList.remove('hidden-for-reading');
+                        } else if (currentTopic === 'gender-identity') {
+                            document.getElementById('articlesPanel-gender-identity').classList.remove('hidden-for-reading');
+                        }
+                    }
+                });
+
+                sidebar.addEventListener('mouseleave', function() {
+                    // Always allow sidebar to recede when mouse leaves (DESKTOP ONLY)
+                    sidebar.classList.remove('active');
+                });
+            }
+            
+            // Articles panel mouse handling (DESKTOP ONLY)
             const articlesPanelEF = document.getElementById('articlesPanel-election-fraud');
             const articlesPanelIMM = document.getElementById('articlesPanel-immigration');
             const articlesPanelND = document.getElementById('articlesPanel-national-debt');
             const articlesPanelGI = document.getElementById('articlesPanel-gender-identity');
             
-            [articlesPanelEF, articlesPanelIMM, articlesPanelND, articlesPanelGI].forEach(panel => {
-                panel.addEventListener('mouseenter', function() {
-                    sidebar.classList.add('active');
-                    if (articlesOpen && !assessmentOpen) {
-                        panel.classList.remove('hidden-for-reading');
-                    }
-                });
-                
-                panel.addEventListener('mouseleave', function(e) {
-                    // Remove sidebar active state when leaving panel
-                    sidebar.classList.remove('active');
+            if (!isTouchDevice) {
+                [articlesPanelEF, articlesPanelIMM, articlesPanelND, articlesPanelGI].forEach(panel => {
+                    panel.addEventListener('mouseenter', function() {
+                        sidebar.classList.add('active');
+                        if (articlesOpen && !assessmentOpen) {
+                            panel.classList.remove('hidden-for-reading');
+                        }
+                    });
                     
-                    if (articlesOpen && !assessmentOpen) {
-                        if (e.clientX > panel.offsetWidth + 100) {
-                            panel.classList.add('hidden-for-reading');
+                    panel.addEventListener('mouseleave', function(e) {
+                        // Remove sidebar active state when leaving panel
+                        sidebar.classList.remove('active');
+                        
+                        if (articlesOpen && !assessmentOpen) {
+                            if (e.clientX > panel.offsetWidth + 100) {
+                                panel.classList.add('hidden-for-reading');
+                            }
                         }
-                    }
+                    });
                 });
-            });
 
-            // Hide articles when hovering over webpage
-            const webpages = document.querySelectorAll('.webpage-container');
-            webpages.forEach(function(webpage) {
-                webpage.addEventListener('mouseenter', function() {
-                    if (articlesOpen && !assessmentOpen) {
-                        if (currentTopic === 'election-fraud') {
-                            articlesPanelEF.classList.add('hidden-for-reading');
-                        } else if (currentTopic === 'immigration') {
-                            articlesPanelIMM.classList.add('hidden-for-reading');
-                        } else if (currentTopic === 'national-debt') {
-                            articlesPanelND.classList.add('hidden-for-reading');
-                        } else if (currentTopic === 'gender-identity') {
-                            articlesPanelGI.classList.add('hidden-for-reading');
+                // Hide articles when hovering over webpage (DESKTOP ONLY)
+                const webpages = document.querySelectorAll('.webpage-container');
+                webpages.forEach(function(webpage) {
+                    webpage.addEventListener('mouseenter', function() {
+                        if (articlesOpen && !assessmentOpen) {
+                            if (currentTopic === 'election-fraud') {
+                                articlesPanelEF.classList.add('hidden-for-reading');
+                            } else if (currentTopic === 'immigration') {
+                                articlesPanelIMM.classList.add('hidden-for-reading');
+                            } else if (currentTopic === 'national-debt') {
+                                articlesPanelND.classList.add('hidden-for-reading');
+                            } else if (currentTopic === 'gender-identity') {
+                                articlesPanelGI.classList.add('hidden-for-reading');
+                            }
                         }
-                    }
+                    });
                 });
-            });
+            }
         });
 
         function showSidebar() {
