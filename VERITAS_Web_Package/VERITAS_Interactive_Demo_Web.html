@@ -100,17 +100,29 @@
 
         .favicon-click-label {
             position: absolute;
-            bottom: -20px;
+            bottom: -32px;
             left: 50%;
             transform: translateX(-50%);
             white-space: nowrap;
-            font-size: 10px;
-            color: #666;
+            font-size: 9px;
+            color: #444;
             background: white;
-            padding: 2px 6px;
-            border-radius: 3px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+            padding: 4px 8px;
+            border-radius: 4px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
             z-index: 1000;
+            border: 1px solid #e0e0e0;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .favicon-click-label:hover {
+            background: #f5f5f5;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.25);
+        }
+        
+        .veritas-favicon img {
+            cursor: pointer;
         }
 
         /* Hover trigger area at left edge */
@@ -2143,78 +2155,78 @@
     <!-- VERITAS Favicon Badges -->
     <!-- Topic 1: Election Fraud Favicons -->
     <div class="veritas-favicon" id="faviconEF1" style="display: none;">
-        <img src="veritas-logo.png" alt="VERITAS" style="width: 50px; height: 50px; object-fit: contain; cursor: pointer;" onclick="showAssessment('EF1')" title="Click to view VERITAS Assessment">
+        <img src="veritas-logo.png" alt="VERITAS" style="width: 50px; height: 50px; object-fit: contain;" onclick="showAssessment('EF1')" title="Click to view VERITAS Assessment">
         <div class="favicon-rating rating-high">+9</div>
-        <div class="favicon-click-label" onclick="event.stopPropagation(); toggleView('EF1')" style="cursor: pointer; z-index: 1000; position: relative;" title="Toggle between original article and VERITAS overview">Click for Review</div>
+        <div class="favicon-click-label" onclick="event.stopPropagation(); toggleView('EF1')" title="Toggle between original article and VERITAS overview">Click for Review</div>
     </div>
 
     <div class="veritas-favicon" id="faviconEF2" style="display: none;">
-        <img src="veritas-logo.png" alt="VERITAS" style="width: 50px; height: 50px; object-fit: contain; cursor: pointer;" onclick="showAssessment('EF2')" title="Click to view VERITAS Assessment">
+        <img src="veritas-logo.png" alt="VERITAS" style="width: 50px; height: 50px; object-fit: contain;" onclick="showAssessment('EF2')" title="Click to view VERITAS Assessment">
         <div class="favicon-rating rating-medium">+2</div>
-        <div class="favicon-click-label" onclick="event.stopPropagation(); toggleView('EF2')" style="cursor: pointer;" title="Toggle between original article and VERITAS overview">Click for Review</div>
+        <div class="favicon-click-label" onclick="event.stopPropagation(); toggleView('EF2')" title="Toggle between original article and VERITAS overview">Click for Review</div>
     </div>
 
     <div class="veritas-favicon" id="faviconEF3" style="display: none;">
-        <img src="veritas-logo.png" alt="VERITAS" style="width: 50px; height: 50px; object-fit: contain; cursor: pointer;" onclick="showAssessment('EF3')" title="Click to view VERITAS Assessment">
+        <img src="veritas-logo.png" alt="VERITAS" style="width: 50px; height: 50px; object-fit: contain;" onclick="showAssessment('EF3')" title="Click to view VERITAS Assessment">
         <div class="favicon-rating rating-low">-8</div>
-        <div class="favicon-click-label" onclick="event.stopPropagation(); toggleView('EF3')" style="cursor: pointer;" title="Toggle between original article and VERITAS overview">Click for Review</div>
+        <div class="favicon-click-label" onclick="event.stopPropagation(); toggleView('EF3')" title="Toggle between original article and VERITAS overview">Click for Review</div>
     </div>
 
     <!-- Topic 2: Immigration Favicons -->
     <div class="veritas-favicon" id="favicon1" style="display: none;">
-        <img src="veritas-logo.png" alt="VERITAS" style="width: 50px; height: 50px; object-fit: contain; cursor: pointer;" onclick="showAssessment('1')" title="Click to view VERITAS Assessment">
+        <img src="veritas-logo.png" alt="VERITAS" style="width: 50px; height: 50px; object-fit: contain;" onclick="showAssessment('1')" title="Click to view VERITAS Assessment">
         <div class="favicon-rating rating-high">+8</div>
-        <div class="favicon-click-label" onclick="event.stopPropagation(); toggleView('1')" style="cursor: pointer;" title="Toggle between original article and VERITAS overview">Click for Review</div>
+        <div class="favicon-click-label" onclick="event.stopPropagation(); toggleView('1')" title="Toggle between original article and VERITAS overview">Click for Review</div>
     </div>
 
     <div class="veritas-favicon" id="favicon2" style="display: none;">
-        <img src="veritas-logo.png" alt="VERITAS" style="width: 50px; height: 50px; object-fit: contain; cursor: pointer;" onclick="showAssessment('2')" title="Click to view VERITAS Assessment">
+        <img src="veritas-logo.png" alt="VERITAS" style="width: 50px; height: 50px; object-fit: contain;" onclick="showAssessment('2')" title="Click to view VERITAS Assessment">
         <div class="favicon-rating rating-medium">+4</div>
-        <div class="favicon-click-label" onclick="event.stopPropagation(); toggleView('2')" style="cursor: pointer;" title="Toggle between original article and VERITAS overview">Click for Review</div>
+        <div class="favicon-click-label" onclick="event.stopPropagation(); toggleView('2')" title="Toggle between original article and VERITAS overview">Click for Review</div>
     </div>
 
     <div class="veritas-favicon" id="favicon3" style="display: none;">
-        <img src="veritas-logo.png" alt="VERITAS" style="width: 50px; height: 50px; object-fit: contain; cursor: pointer;" onclick="showAssessment('3')" title="Click to view VERITAS Assessment">
+        <img src="veritas-logo.png" alt="VERITAS" style="width: 50px; height: 50px; object-fit: contain;" onclick="showAssessment('3')" title="Click to view VERITAS Assessment">
         <div class="favicon-rating rating-low">-9</div>
-        <div class="favicon-click-label" onclick="event.stopPropagation(); toggleView('3')" style="cursor: pointer;" title="Toggle between original article and VERITAS overview">Click for Review</div>
+        <div class="favicon-click-label" onclick="event.stopPropagation(); toggleView('3')" title="Toggle between original article and VERITAS overview">Click for Review</div>
     </div>
 
     <!-- Topic 3: National Debt Favicons -->
     <div class="veritas-favicon" id="faviconND1" style="display: none;">
-        <img src="veritas-logo.png" alt="VERITAS" style="width: 50px; height: 50px; object-fit: contain; cursor: pointer;" onclick="showAssessment('ND1')" title="Click to view VERITAS Assessment">
+        <img src="veritas-logo.png" alt="VERITAS" style="width: 50px; height: 50px; object-fit: contain;" onclick="showAssessment('ND1')" title="Click to view VERITAS Assessment">
         <div class="favicon-rating rating-high">+8</div>
-        <div class="favicon-click-label" onclick="event.stopPropagation(); toggleView('ND1')" style="cursor: pointer;" title="Toggle between original article and VERITAS overview">Click for Review</div>
+        <div class="favicon-click-label" onclick="event.stopPropagation(); toggleView('ND1')" title="Toggle between original article and VERITAS overview">Click for Review</div>
     </div>
 
     <div class="veritas-favicon" id="faviconND2" style="display: none;">
-        <img src="veritas-logo.png" alt="VERITAS" style="width: 50px; height: 50px; object-fit: contain; cursor: pointer;" onclick="showAssessment('ND2')" title="Click to view VERITAS Assessment">
+        <img src="veritas-logo.png" alt="VERITAS" style="width: 50px; height: 50px; object-fit: contain;" onclick="showAssessment('ND2')" title="Click to view VERITAS Assessment">
         <div class="favicon-rating rating-medium">+5</div>
-        <div class="favicon-click-label" onclick="event.stopPropagation(); toggleView('ND2')" style="cursor: pointer;" title="Toggle between original article and VERITAS overview">Click for Review</div>
+        <div class="favicon-click-label" onclick="event.stopPropagation(); toggleView('ND2')" title="Toggle between original article and VERITAS overview">Click for Review</div>
     </div>
 
     <div class="veritas-favicon" id="faviconND3" style="display: none;">
-        <img src="veritas-logo.png" alt="VERITAS" style="width: 50px; height: 50px; object-fit: contain; cursor: pointer;" onclick="showAssessment('ND3')" title="Click to view VERITAS Assessment">
+        <img src="veritas-logo.png" alt="VERITAS" style="width: 50px; height: 50px; object-fit: contain;" onclick="showAssessment('ND3')" title="Click to view VERITAS Assessment">
         <div class="favicon-rating rating-low">-7</div>
-        <div class="favicon-click-label" onclick="event.stopPropagation(); toggleView('ND3')" style="cursor: pointer;" title="Toggle between original article and VERITAS overview">Click for Review</div>
+        <div class="favicon-click-label" onclick="event.stopPropagation(); toggleView('ND3')" title="Toggle between original article and VERITAS overview">Click for Review</div>
     </div>
 
     <!-- Gender Identity Favicons -->
     <div class="veritas-favicon" id="faviconGI1" style="display: none;">
-        <img src="veritas-logo.png" alt="VERITAS" style="width: 50px; height: 50px; object-fit: contain; cursor: pointer;" onclick="showAssessment('GI1')" title="Click to view VERITAS Assessment">
+        <img src="veritas-logo.png" alt="VERITAS" style="width: 50px; height: 50px; object-fit: contain;" onclick="showAssessment('GI1')" title="Click to view VERITAS Assessment">
         <div class="favicon-rating rating-high">+8</div>
-        <div class="favicon-click-label" onclick="event.stopPropagation(); toggleView('GI1')" style="cursor: pointer;" title="Toggle between original article and VERITAS overview">Click for Review</div>
+        <div class="favicon-click-label" onclick="event.stopPropagation(); toggleView('GI1')" title="Toggle between original article and VERITAS overview">Click for Review</div>
     </div>
 
     <div class="veritas-favicon" id="faviconGI2" style="display: none;">
-        <img src="veritas-logo.png" alt="VERITAS" style="width: 50px; height: 50px; object-fit: contain; cursor: pointer;" onclick="showAssessment('GI2')" title="Click to view VERITAS Assessment">
+        <img src="veritas-logo.png" alt="VERITAS" style="width: 50px; height: 50px; object-fit: contain;" onclick="showAssessment('GI2')" title="Click to view VERITAS Assessment">
         <div class="favicon-rating rating-medium">+4</div>
-        <div class="favicon-click-label" onclick="event.stopPropagation(); toggleView('GI2')" style="cursor: pointer;" title="Toggle between original article and VERITAS overview">Click for Review</div>
+        <div class="favicon-click-label" onclick="event.stopPropagation(); toggleView('GI2')" title="Toggle between original article and VERITAS overview">Click for Review</div>
     </div>
 
     <div class="veritas-favicon" id="faviconGI3" style="display: none;">
-        <img src="veritas-logo.png" alt="VERITAS" style="width: 50px; height: 50px; object-fit: contain; cursor: pointer;" onclick="showAssessment('GI3')" title="Click to view VERITAS Assessment">
+        <img src="veritas-logo.png" alt="VERITAS" style="width: 50px; height: 50px; object-fit: contain;" onclick="showAssessment('GI3')" title="Click to view VERITAS Assessment">
         <div class="favicon-rating rating-low">-6</div>
-        <div class="favicon-click-label" onclick="event.stopPropagation(); toggleView('GI3')" style="cursor: pointer;" title="Toggle between original article and VERITAS overview">Click for Review</div>
+        <div class="favicon-click-label" onclick="event.stopPropagation(); toggleView('GI3')" title="Toggle between original article and VERITAS overview">Click for Review</div>
     </div>
 
 
@@ -5445,19 +5457,25 @@
                 });
             }
             
-            // Mobile right edge tab - toggles assessment panel
+            // Mobile right edge tab - opens assessment for current article
             const mobileAssessmentTab = document.getElementById('mobileAssessmentTab');
             if (mobileAssessmentTab) {
                 mobileAssessmentTab.addEventListener('click', function(e) {
                     e.preventDefault();
                     e.stopPropagation();
-                    toggleMobileAssessment();
+                    // Open assessment for current webpage
+                    if (currentWebpage) {
+                        showAssessment(currentWebpage);
+                    }
                 });
                 
                 mobileAssessmentTab.addEventListener('touchend', function(e) {
                     e.preventDefault();
                     e.stopPropagation();
-                    toggleMobileAssessment();
+                    // Open assessment for current webpage
+                    if (currentWebpage) {
+                        showAssessment(currentWebpage);
+                    }
                 });
             }
             
@@ -5786,8 +5804,10 @@
         function closeAssessment() {
             assessmentOpen = false;
             
-            // Restore sidebar
-            document.querySelector('.veritas-sidebar').classList.remove('hidden-for-assessment');
+            // Restore sidebar and make it visible on mobile
+            const sidebar = document.querySelector('.veritas-sidebar');
+            sidebar.classList.remove('hidden-for-assessment');
+            sidebar.classList.add('active');
             
             // Close all assessments
             const assessmentIds = ['assessmentEF1', 'assessmentEF2', 'assessmentEF3', 'assessmentIMM1', 'assessmentIMM2', 'assessmentIMM3', 'assessmentND1', 'assessmentND2', 'assessmentND3', 'assessmentGI1', 'assessmentGI2', 'assessmentGI3'];
