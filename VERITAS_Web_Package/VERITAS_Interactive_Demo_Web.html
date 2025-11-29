@@ -5501,24 +5501,32 @@
                 const panel = document.getElementById('articlesPanel-election-fraud');
                 panel.classList.remove('open');
                 articlesOpen = false;
+                // Also hide Topics sidebar on mobile
+                document.querySelector('.veritas-sidebar').classList.remove('active');
             });
             
             document.getElementById('articlesCollapseBtn-immigration').addEventListener('click', function() {
                 const panel = document.getElementById('articlesPanel-immigration');
                 panel.classList.remove('open');
                 articlesOpen = false;
+                // Also hide Topics sidebar on mobile
+                document.querySelector('.veritas-sidebar').classList.remove('active');
             });
             
             document.getElementById('articlesCollapseBtn-national-debt').addEventListener('click', function() {
                 const panel = document.getElementById('articlesPanel-national-debt');
                 panel.classList.remove('open');
                 articlesOpen = false;
+                // Also hide Topics sidebar on mobile
+                document.querySelector('.veritas-sidebar').classList.remove('active');
             });
             
             document.getElementById('articlesCollapseBtn-gender-identity').addEventListener('click', function() {
                 const panel = document.getElementById('articlesPanel-gender-identity');
                 panel.classList.remove('open');
                 articlesOpen = false;
+                // Also hide Topics sidebar on mobile
+                document.querySelector('.veritas-sidebar').classList.remove('active');
             });
             
             // Article card interactions
