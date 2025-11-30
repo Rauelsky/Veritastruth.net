@@ -406,9 +406,10 @@
       position: relative;
       margin-bottom: 40px;
       padding-left: 30px;
+      cursor: pointer;
     }
 
-    .timeline-item a.timeline-link {
+    .timeline-item .timeline-link {
       text-decoration: none;
       color: inherit;
       display: block;
@@ -418,12 +419,12 @@
       transition: all 0.3s ease;
     }
 
-    .timeline-item a.timeline-link:hover {
+    .timeline-item:hover .timeline-link {
       background: #f8fafc;
       transform: translateX(4px);
     }
 
-    .timeline-item a.timeline-link:hover .timeline-title {
+    .timeline-item:hover .timeline-title {
       color: #3b82f6;
     }
 
@@ -1071,5 +1072,158 @@
     <p class="tagline">Truth, Transparently</p>
     <div class="vulcan">🖖</div>
   </footer>
+
+  <!-- PDF Modal -->
+  <div class="pdf-modal-overlay" id="pdfModal">
+    <div class="pdf-modal-connector" id="modalConnector"></div>
+    <div class="pdf-modal">
+      <div class="pdf-modal-header">
+        <div>
+          <span class="pdf-modal-phase" id="modalPhase">Phase 1</span>
+          <span class="pdf-modal-title" id="modalTitle">Genesis & Formation</span>
+        </div>
+        <button class="pdf-modal-close" onclick="closePdfModal()">✕</button>
+      </div>
+      <div class="pdf-modal-body">
+        <iframe id="pdfFrame" src="" title="PDF Viewer"></iframe>
+      </div>
+      <div class="pdf-modal-footer">
+        <p>📖 Click to read the story of this phase</p>
+        <a href="#" id="pdfDownload" class="story-btn" target="_blank">
+          ⬇️ Open PDF in New Tab
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Store reference to the clicked timeline item for connector line
+    let activeTimelineItem = null;
+    
+    function openPdfModal(phase, title, pdfFile) {
+      const modal = document.getElementById('pdfModal');
+      const connector = document.getElementById('modalConnector');
+      const phaseEl = document.getElementById('modalPhase');
+      const titleEl = document.getElementById('modalTitle');
+      const iframe = document.getElementById('pdfFrame');
+      const downloadLink = document.getElementById('pdfDownload');
+      
+      // Find the clicked timeline item
+      const timelineItems = document.querySelectorAll('.timeline-item');
+      timelineItems.forEach(item => {
+        if (item.querySelector('.timeline-phase').textContent === phase) {
+          activeTimelineItem = item;
+        }
+      });
+      
+      // Set modal content
+      phaseEl.textContent = phase;
+      titleEl.textContent = title;
+      iframe.src = pdfFile;
+      downloadLink.href = pdfFile;
+      
+      // Show modal
+      modal.classList.add('active');
+      setTimeout(() => {
+        modal.classList.add('visible');
+        updateConnectorLine();
+      }, 10);
+      
+      // Prevent body scroll
+      document.body.style.overflow = 'hidden';
+    }
+    
+    function closePdfModal() {
+      const modal = document.getElementById('pdfModal');
+      const iframe = document.getElementById('pdfFrame');
+      
+      modal.classList.remove('visible');
+      setTimeout(() => {
+        modal.classList.remove('active');
+        iframe.src = '';
+        activeTimelineItem = null;
+      }, 300);
+      
+      // Restore body scroll
+      document.body.style.overflow = '';
+    }
+    
+    function updateConnectorLine() {
+      const connector = document.getElementById('modalConnector');
+      const modalEl = document.querySelector('.pdf-modal');
+      
+      if (!activeTimelineItem || !modalEl) {
+        connector.style.display = 'none';
+        return;
+      }
+      
+      const itemRect = activeTimelineItem.getBoundingClientRect();
+      const modalRect = modalEl.getBoundingClientRect();
+      
+      // Calculate positions
+      const startX = itemRect.right;
+      const startY = itemRect.top + itemRect.height / 2;
+      const endX = modalRect.left;
+      const endY = modalRect.top + 60; // Near top of modal
+      
+      // Create SVG line
+      const width = Math.abs(endX - startX) + 40;
+      const height = Math.abs(endY - startY) + 40;
+      const minX = Math.min(startX, endX) - 20;
+      const minY = Math.min(startY, endY) - 20;
+      
+      connector.style.display = 'block';
+      connector.style.position = 'fixed';
+      connector.style.left = minX + 'px';
+      connector.style.top = minY + 'px';
+      connector.style.width = width + 'px';
+      connector.style.height = height + 'px';
+      connector.style.pointerEvents = 'none';
+      connector.style.zIndex = '999';
+      
+      const localStartX = startX - minX;
+      const localStartY = startY - minY;
+      const localEndX = endX - minX;
+      const localEndY = endY - minY;
+      
+      connector.innerHTML = `
+        <svg width="${width}" height="${height}" style="overflow: visible;">
+          <defs>
+            <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+              <polygon points="0 0, 10 3.5, 0 7" fill="#2196F3" />
+            </marker>
+          </defs>
+          <path d="M ${localStartX} ${localStartY} 
+                   C ${localStartX + 50} ${localStartY}, 
+                     ${localEndX - 50} ${localEndY}, 
+                     ${localEndX} ${localEndY}" 
+                stroke="#2196F3" 
+                stroke-width="3" 
+                fill="none" 
+                stroke-dasharray="8,4"
+                marker-end="url(#arrowhead)"
+                style="filter: drop-shadow(0 2px 4px rgba(33, 150, 243, 0.3));" />
+          <circle cx="${localStartX}" cy="${localStartY}" r="6" fill="#2196F3" />
+        </svg>
+      `;
+    }
+    
+    // Close modal on overlay click
+    document.getElementById('pdfModal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        closePdfModal();
+      }
+    });
+    
+    // Close modal on Escape key
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        closePdfModal();
+      }
+    });
+    
+    // Update connector on window resize
+    window.addEventListener('resize', updateConnectorLine);
+  </script>
 </body>
 </html>

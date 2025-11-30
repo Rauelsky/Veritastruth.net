@@ -100,7 +100,7 @@
       position: relative;
       width: 100%;
       height: 0;
-      padding-bottom: 31.25%; /* 1920x600 aspect ratio (600/1920) */
+      padding-bottom: 29.17%; /* 1920x560 aspect ratio (560/1920) */
       overflow: hidden;
       background: #0a0a12;
     }
@@ -435,26 +435,26 @@
     }
 
     .architecture-diagram {
-      max-width: 900px;
-      margin: 0 auto 50px;
       background: white;
       border-radius: 16px;
-      padding: 40px 30px;
+      padding: 40px;
       box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      max-width: 900px;
+      margin: 0 auto 60px;
     }
 
     .arch-layer {
       text-align: center;
-      padding: 20px;
-      margin: 12px 0;
-      border-radius: 10px;
+      padding: 24px;
+      margin: 16px 0;
+      border-radius: 12px;
       transition: transform 0.3s ease;
       display: block;
       text-decoration: none;
     }
 
     .arch-layer:hover {
-      transform: translateY(-2px);
+      transform: translateY(-3px);
     }
 
     a.arch-layer {
@@ -477,18 +477,18 @@
     }
 
     .arch-layer-label {
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 700;
       letter-spacing: 2px;
       text-transform: uppercase;
       opacity: 0.7;
-      margin-bottom: 4px;
+      margin-bottom: 6px;
     }
 
     .arch-layer-title {
-      font-size: 20px;
+      font-size: 1.4rem;
       font-weight: 700;
-      margin-bottom: 4px;
+      margin-bottom: 6px;
     }
 
     .arch-layer-down .arch-layer-title {
@@ -496,7 +496,7 @@
     }
 
     .arch-layer-subtitle {
-      font-size: 14px;
+      font-size: 0.95rem;
       opacity: 0.8;
     }
 
@@ -504,11 +504,11 @@
       display: inline-block;
       background: #dcfce7;
       color: #166534;
-      padding: 2px 10px;
+      padding: 3px 12px;
       border-radius: 12px;
       font-size: 12px;
       font-weight: 600;
-      margin-left: 8px;
+      margin-left: 10px;
     }
 
     .arch-layer-down .arch-status {
@@ -519,15 +519,15 @@
     .arch-foundations {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 12px;
-      margin: 16px 0;
+      gap: 16px;
+      margin: 20px 0;
     }
 
     .arch-wall {
       background: white;
       border: 2px solid #3b82f6;
-      border-radius: 8px;
-      padding: 16px 12px;
+      border-radius: 10px;
+      padding: 20px 16px;
       text-align: center;
       transition: all 0.3s ease;
       text-decoration: none;
@@ -536,8 +536,8 @@
 
     .arch-wall:hover {
       background: #eff6ff;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(59, 130, 246, 0.15);
     }
 
     a.arch-wall {
