@@ -408,6 +408,25 @@
       padding-left: 30px;
     }
 
+    .timeline-item a.timeline-link {
+      text-decoration: none;
+      color: inherit;
+      display: block;
+      padding: 16px;
+      margin: -16px;
+      border-radius: 12px;
+      transition: all 0.3s ease;
+    }
+
+    .timeline-item a.timeline-link:hover {
+      background: #f8fafc;
+      transform: translateX(4px);
+    }
+
+    .timeline-item a.timeline-link:hover .timeline-title {
+      color: #3b82f6;
+    }
+
     .timeline-marker {
       position: absolute;
       left: -32px;
@@ -445,6 +464,7 @@
       font-weight: 700;
       color: #1e3a5f;
       margin-bottom: 4px;
+      transition: color 0.3s ease;
     }
 
     .timeline-date {
@@ -456,6 +476,48 @@
     .timeline-description {
       color: #475569;
       line-height: 1.7;
+    }
+
+    .timeline-read-more {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 10px;
+      font-size: 0.9rem;
+      color: #3b82f6;
+      font-weight: 500;
+    }
+
+    .timeline-cta {
+      text-align: center;
+      margin-top: 50px;
+      padding-top: 30px;
+      border-top: 2px solid #e2e8f0;
+    }
+
+    .timeline-cta p {
+      color: #64748b;
+      margin-bottom: 16px;
+    }
+
+    .story-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 16px 32px;
+      background: linear-gradient(135deg, #1e3a5f 0%, #0f172a 100%);
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(30, 58, 95, 0.3);
+    }
+
+    .story-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(30, 58, 95, 0.4);
     }
 
     /* Quote Section */
@@ -785,51 +847,65 @@
       <div class="timeline">
         <div class="timeline-item">
           <div class="timeline-marker"></div>
-          <div class="timeline-phase">Phase 0</div>
-          <div class="timeline-title">Formation</div>
-          <div class="timeline-date">Pre-October 2025</div>
-          <p class="timeline-description">Concept development from 23 years of IT training experience. Decision to build with AI as genuine collaborative partner. Corruption-resistance precepts and First Contact Protocol established.</p>
+          <a href="VERITAS_Story_Phase1_Genesis.pdf" class="timeline-link" target="_blank">
+            <div class="timeline-phase">Phase 0-1</div>
+            <div class="timeline-title">Genesis & Formation</div>
+            <div class="timeline-date">Pre-October – October 2025</div>
+            <p class="timeline-description">When "police reports lie" revealed the crisis. Concept development from 23 years of IT training experience. Decision to build with AI as genuine collaborative partner. LLC formation, website launch, browser extension prototype.</p>
+            <span class="timeline-read-more">📖 Read the story →</span>
+          </a>
         </div>
 
         <div class="timeline-item">
           <div class="timeline-marker"></div>
-          <div class="timeline-phase">Phase 1</div>
-          <div class="timeline-title">Foundation</div>
-          <div class="timeline-date">October 2025</div>
-          <p class="timeline-description">LLC formation. Website launch. Browser extension prototype v2.0. Framework v5→v7. Business infrastructure (EIN, banking, domain). Crisis evidence research across 8 controversial events.</p>
+          <a href="VERITAS_Story_Phase2_Foundation.pdf" class="timeline-link" target="_blank">
+            <div class="timeline-phase">Phase 2</div>
+            <div class="timeline-title">Foundation Building</div>
+            <div class="timeline-date">Early November 2025</div>
+            <p class="timeline-description">Why everything we've tried has failed—and what VERITAS does differently. The fact-checking paradox. Hybrid AI-first model developed, reducing assessment costs from ~$750 to ~$25.</p>
+            <span class="timeline-read-more">📖 Read the story →</span>
+          </a>
         </div>
 
         <div class="timeline-item">
           <div class="timeline-marker"></div>
-          <div class="timeline-phase">Phase 2</div>
-          <div class="timeline-title">Methodology Refinement</div>
-          <div class="timeline-date">Early November 2025</div>
-          <p class="timeline-description">Hybrid AI-first model developed—reducing assessment costs from ~$750 to ~$25. Framework v7.2. Partnership materials for Anthropic. Investor pitch development. Funding strategy ($50-75K seed).</p>
+          <a href="VERITAS_Story_Phase3_Development.pdf" class="timeline-link" target="_blank">
+            <div class="timeline-phase">Phase 3</div>
+            <div class="timeline-title">Framework Development</div>
+            <div class="timeline-date">Mid-November 2025</div>
+            <p class="timeline-description">The Sunday that changed everything. Building VERITAS with Claude—not just using AI, but partnering with it. The Epistemological Integrity breakthrough and the Three Truth Distortion Patterns.</p>
+            <span class="timeline-read-more">📖 Read the story →</span>
+          </a>
         </div>
 
         <div class="timeline-item">
           <div class="timeline-marker"></div>
-          <div class="timeline-phase">Phase 3</div>
-          <div class="timeline-title">Proof of Concept</div>
-          <div class="timeline-date">Mid-November 2025</div>
-          <p class="timeline-description">12 rigorous assessments across 4 contested topics. Interactive demo. Political neutrality demonstrated. Veracity Engine v2.8 with Amplified Assessment feature.</p>
-        </div>
-
-        <div class="timeline-item">
-          <div class="timeline-marker"></div>
-          <div class="timeline-phase">Phase 4</div>
-          <div class="timeline-title">Philosophical Deepening</div>
-          <div class="timeline-date">Late November 2025</div>
-          <p class="timeline-description">Epistemological Bedrock v1.0. Star Chart v1.0. All Four Foundations complete. Framework v7.3 complete. 3D architecture articulated. Phase Structure documented.</p>
+          <a href="VERITAS_Story_Phase4_Validation.pdf" class="timeline-link" target="_blank">
+            <div class="timeline-phase">Phase 4</div>
+            <div class="timeline-title">Testing & Validation</div>
+            <div class="timeline-date">Late November 2025</div>
+            <p class="timeline-description">How VERITAS actually works. The -10 to +10 confidence scale. The formula that changes everything: Final Confidence = Evidence Quality × Integrity Multiplier. Community validation and economic breakthrough.</p>
+            <span class="timeline-read-more">📖 Read the story →</span>
+          </a>
         </div>
 
         <div class="timeline-item">
           <div class="timeline-marker current"></div>
-          <div class="timeline-phase">Phase 5+</div>
-          <div class="timeline-title">Implementation & Scale</div>
-          <div class="timeline-date">December 2025 → Future</div>
-          <p class="timeline-description">Funding ($50-75K seed). Partnerships (Anthropic, Knight Foundation). Validator network development. Platform scaling. Sustainable operations.</p>
+          <a href="VERITAS_Story_Phase5_Launch.pdf" class="timeline-link" target="_blank">
+            <div class="timeline-phase">Phase 5+</div>
+            <div class="timeline-title">Launch & Implementation</div>
+            <div class="timeline-date">December 2025 → Future</div>
+            <p class="timeline-description">The path forward. Three-phase roadmap. Partnership opportunities with Anthropic, Knight Foundation, and investors. The choice before us: watch democracy fracture, or build something different.</p>
+            <span class="timeline-read-more">📖 Read the story →</span>
+          </a>
         </div>
+      </div>
+
+      <div class="timeline-cta">
+        <p>Want the complete narrative? Read the full story of how VERITAS was built.</p>
+        <a href="VERITAS_The_Story.pdf" class="story-btn" target="_blank">
+          📖 Read "The Complete Story" (PDF)
+        </a>
       </div>
     </div>
   </section>
