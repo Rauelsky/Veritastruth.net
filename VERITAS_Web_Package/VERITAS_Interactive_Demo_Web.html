@@ -911,7 +911,8 @@
         /* RESPONSIVE DESIGN */
         
         /* Tablets (768px - 1024px) */
-        @media (max-width: 1024px) {
+        /* Tablets and Small Desktops (1025px - 1440px) */
+        @media (min-width: 1025px) and (max-width: 1440px) {
             .veritas-sidebar {
                 width: 80px;
                 padding: 15px 8px;
@@ -1080,7 +1081,8 @@
         }
 
         /* Mobile Portrait (320px - 567px) */
-        @media (max-width: 567px) {
+        /* Mobile & Tablet Portrait - Touch-friendly narrow sidebar layout */
+        @media (max-width: 1024px) {
             body {
                 font-size: 14px;
             }
@@ -1556,7 +1558,8 @@
         /* ============================================ */
         /* MOBILE EDGE TABS (simpler approach)         */
         /* ============================================ */
-        @media (max-width: 567px) {
+        /* Apply to phones AND tablets for touch-friendly interface */
+        @media (max-width: 1024px) {
             /* Left Edge Tab - Topics */
             .mobile-edge-tab-left {
                 position: fixed;
@@ -1746,8 +1749,8 @@
             }
         }
 
-        /* Hide mobile elements on desktop */
-        @media (min-width: 568px) {
+        /* Hide mobile elements on desktop (larger than tablets) */
+        @media (min-width: 1025px) {
             .mobile-edge-tab-left,
             .mobile-edge-tab-right,
             .mobile-topics-panel,
@@ -1948,8 +1951,8 @@
             pointer-events: auto;
         }
 
-        /* Mobile adjustments for instructions */
-        @media (max-width: 567px) {
+        /* Mobile & Tablet adjustments for instructions */
+        @media (max-width: 1024px) {
             .instructions-overlay {
                 width: 92%;
                 max-width: none;
@@ -5194,7 +5197,7 @@
     </div>
 
     <!-- Right Edge Tab - Assessment -->
-    <div class="mobile-edge-tab-right" id="mobileAssessmentTab" onclick="toggleMobileAssessment()">
+    <div class="mobile-edge-tab-right" id="mobileAssessmentTab">
         <span class="tab-icon">✓</span>
         <span class="tab-label">ASSESS</span>
     </div>
@@ -5845,8 +5848,6 @@
                 giPanel.classList.add('open');
             }
         }
-    </script>
-
     </script>
 
 </body>
