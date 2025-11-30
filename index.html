@@ -95,12 +95,44 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     }
     
-    /* Hero Section */
+    /* Hero Section - Video Background */
     .hero {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      position: relative;
+      width: 100%;
+      height: 0;
+      padding-bottom: 56.25%; /* 16:9 aspect ratio */
+      overflow: hidden;
+      background: #0a0a12;
+    }
+    
+    .hero-video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    /* Tagline Bar - Below Hero */
+    .hero-tagline-bar {
+      background: linear-gradient(135deg, #1e3a5f 0%, #0f172a 100%);
       color: white;
-      padding: 120px 20px;
+      padding: 20px;
       text-align: center;
+    }
+    
+    .hero-tagline-bar p {
+      font-size: 20px;
+      margin: 0;
+      opacity: 0.95;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    
+    .hero-tagline-bar strong {
+      color: #60a5fa;
     }
     
     h1 {
@@ -279,77 +311,82 @@
     .star-chart-quote {
       text-align: center;
       max-width: 700px;
-      margin: 0 auto 50px;
-      padding: 30px;
+      margin: 0 auto 30px;
+      padding: 24px;
       background: rgba(255,255,255,0.05);
       border-radius: 12px;
       border: 1px solid rgba(255,255,255,0.1);
     }
 
     .star-chart-quote blockquote {
-      font-size: 22px;
+      font-size: 20px;
       font-style: italic;
       color: rgba(255,255,255,0.9);
-      margin-bottom: 16px;
-      line-height: 1.6;
+      margin-bottom: 12px;
+      line-height: 1.5;
     }
 
     .star-chart-quote cite {
-      font-size: 16px;
+      font-size: 15px;
       color: rgba(255,255,255,0.6);
       font-style: normal;
+    }
+
+    /* Spacer to let Orion's belt show through */
+    .orion-viewing-area {
+      height: 180px;
     }
 
     .three-stars {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 30px;
-      margin: 50px 0;
+      gap: 20px;
+      margin: 30px 0 20px;
     }
 
     .star-card {
-      background: rgba(255,255,255,0.05);
+      background: rgba(255,255,255,0.08);
       border: 1px solid rgba(255,255,255,0.15);
-      border-radius: 16px;
-      padding: 35px 25px;
+      border-radius: 12px;
+      padding: 20px 16px;
       text-align: center;
       transition: all 0.3s ease;
     }
 
     .star-card:hover {
-      background: rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.12);
       border-color: rgba(255,255,255,0.3);
-      transform: translateY(-5px);
+      transform: translateY(-3px);
     }
 
     .star-icon {
-      font-size: 48px;
-      margin-bottom: 20px;
+      font-size: 32px;
+      margin-bottom: 10px;
       display: block;
     }
 
     .star-card h3 {
-      font-size: 24px;
-      margin-bottom: 8px;
+      font-size: 20px;
+      margin-bottom: 6px;
       color: white;
     }
 
     .star-card .challenge {
-      font-size: 14px;
+      font-size: 13px;
       color: #60a5fa;
-      margin-bottom: 16px;
+      margin-bottom: 10px;
       font-style: italic;
     }
 
     .star-card p {
       color: rgba(255,255,255,0.75);
-      font-size: 15px;
-      line-height: 1.7;
+      font-size: 14px;
+      line-height: 1.6;
     }
 
     .star-chart-cta {
       text-align: center;
-      margin-top: 50px;
+      margin-top: 25px;
     }
 
     .star-chart-cta p {
@@ -1040,6 +1077,11 @@
         font-size: 18px;
       }
       
+      .hero-tagline-bar p {
+        font-size: 16px;
+        padding: 0 10px;
+      }
+      
       .section-title {
         font-size: 32px;
       }
@@ -1150,10 +1192,27 @@
       /* Star Chart responsive */
       .three-stars {
         grid-template-columns: 1fr;
+        gap: 15px;
       }
 
       .star-chart-quote blockquote {
         font-size: 18px;
+      }
+
+      .orion-viewing-area {
+        height: 100px;
+      }
+
+      .star-card {
+        padding: 16px 14px;
+      }
+
+      .star-card h3 {
+        font-size: 18px;
+      }
+
+      .star-card p {
+        font-size: 13px;
       }
 
       .star-chart-cta-top {
@@ -1184,13 +1243,17 @@
     </div>
   </header>
   
-  <!-- Hero Section -->
+  <!-- Hero Section - Video Background -->
   <section class="hero">
-    <div class="container">
-      <h1>Truth Verification Through Expert Analysis</h1>
-      <p class="hero-subtitle">VERITAS brings transparent, expert-driven truth verification to online information. See <strong>how</strong> experts think, not just <strong>what</strong> they conclude.</p>
-    </div>
+    <video class="hero-video" autoplay muted loop playsinline>
+      <source src="Welcome_to_Veritas_Loop.mp4" type="video/mp4">
+    </video>
   </section>
+  
+  <!-- Tagline Bar -->
+  <div class="hero-tagline-bar">
+    <p>VERITAS brings transparent, expert-driven truth verification to online information. See <strong>how</strong> experts think, not just <strong>what</strong> they conclude.</p>
+  </div>
 
   <!-- ============================================ -->
   <!-- STAR CHART SECTION - NEW -->
@@ -1212,6 +1275,13 @@
       <div class="star-chart-quote">
         <blockquote>"It is only with the heart that one can see rightly; what is essential is invisible to the eye."</blockquote>
         <cite>— Antoine de Saint-Exupéry, The Little Prince</cite>
+      </div>
+
+      <!-- Clear space to view Orion's belt -->
+      <div class="orion-viewing-area"></div>
+
+      <div class="star-chart-cta">
+        <p>We went to the moon because we decided it was worth doing. The stars are still there. The choice is still available.</p>
       </div>
 
       <div class="three-stars">
@@ -1237,8 +1307,7 @@
         </div>
       </div>
 
-      <div class="star-chart-cta">
-        <p>We went to the moon because we decided it was worth doing. The stars are still there. The choice is still available.</p>
+      <div style="text-align: center; margin-top: 25px;">
         <a href="VERITAS_Star_Chart_v1.pdf" class="star-chart-btn" download>
           ⬇️ Download the Star Chart
         </a>
