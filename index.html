@@ -231,36 +231,13 @@
     /* STAR CHART SECTION - NEW */
     /* ============================================ */
     .star-chart {
-      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      background: url('orion-2942260_1280.png') center center / cover no-repeat;
+      background-color: #0a0a12; /* Fallback dark color */
       color: white;
       position: relative;
       overflow: hidden;
-    }
-
-    .star-chart::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-image: 
-        radial-gradient(2px 2px at 20px 30px, rgba(255,255,255,0.3), transparent),
-        radial-gradient(2px 2px at 40px 70px, rgba(255,255,255,0.2), transparent),
-        radial-gradient(1px 1px at 90px 40px, rgba(255,255,255,0.4), transparent),
-        radial-gradient(2px 2px at 130px 80px, rgba(255,255,255,0.2), transparent),
-        radial-gradient(1px 1px at 160px 120px, rgba(255,255,255,0.3), transparent),
-        radial-gradient(2px 2px at 200px 50px, rgba(255,255,255,0.25), transparent),
-        radial-gradient(1px 1px at 250px 160px, rgba(255,255,255,0.35), transparent),
-        radial-gradient(2px 2px at 300px 90px, rgba(255,255,255,0.2), transparent);
-      background-size: 350px 200px;
-      animation: twinkle 8s ease-in-out infinite;
-      pointer-events: none;
-    }
-
-    @keyframes twinkle {
-      0%, 100% { opacity: 0.6; }
-      50% { opacity: 1; }
+      border-top: 5px solid #2196F3;
+      border-bottom: 5px solid #2196F3;
     }
 
     .star-chart .section-title {
@@ -274,6 +251,29 @@
     .star-chart-content {
       position: relative;
       z-index: 1;
+    }
+
+    .star-chart-cta-top {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 50px;
+      padding-top: 10px;
+    }
+
+    .star-chart-cta-top .cta-btn {
+      padding: 14px 28px;
+      font-size: 16px;
+    }
+
+    .star-chart-cta-top .cta-secondary {
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(10px);
+    }
+
+    .star-chart-cta-top .cta-secondary:hover {
+      background: rgba(255,255,255,0.2);
     }
 
     .star-chart-quote {
@@ -1155,6 +1155,17 @@
       .star-chart-quote blockquote {
         font-size: 18px;
       }
+
+      .star-chart-cta-top {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .star-chart-cta-top .cta-btn {
+        width: 100%;
+        max-width: 280px;
+        justify-content: center;
+      }
     }
   </style>
 </head>
@@ -1178,22 +1189,6 @@
     <div class="container">
       <h1>Truth Verification Through Expert Analysis</h1>
       <p class="hero-subtitle">VERITAS brings transparent, expert-driven truth verification to online information. See <strong>how</strong> experts think, not just <strong>what</strong> they conclude.</p>
-      <div class="cta-buttons">
-        <a href="VERITAS_Web_Package/VERITAS_Interactive_Demo_Web.html" class="cta-btn cta-primary">Try Interactive Demo</a>
-        <a href="#how-it-works" class="cta-btn cta-secondary">Learn More</a>
-      </div>
-      
-      <!-- New Media Buttons -->
-      <div class="hero-media-buttons">
-        <button class="media-btn" onclick="openVideoModal()">
-          <span class="btn-icon">🎬</span>
-          What is VERITAS?
-        </button>
-        <button class="media-btn" onclick="openStoryModal()">
-          <span class="btn-icon">📖</span>
-          Our Story
-        </button>
-      </div>
     </div>
   </section>
 
@@ -1202,6 +1197,15 @@
   <!-- ============================================ -->
   <section class="star-chart">
     <div class="container star-chart-content">
+      
+      <!-- CTA Buttons - Moved from Hero -->
+      <div class="star-chart-cta-top">
+        <a href="VERITAS_Web_Package/VERITAS_Interactive_Demo_Web.html" class="cta-btn cta-primary">Try Interactive Demo</a>
+        <a href="#how-it-works" class="cta-btn cta-secondary">Learn More</a>
+        <button class="cta-btn cta-secondary" onclick="openVideoModal()">🎬 What is VERITAS?</button>
+        <button class="cta-btn cta-secondary" onclick="openStoryModal()">📖 Our Story</button>
+      </div>
+      
       <h2 class="section-title">The Stars We're Reaching For</h2>
       <p class="section-subtitle">VERITAS isn't just a tool—it's a direction. Here's where we're headed.</p>
 
