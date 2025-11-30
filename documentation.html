@@ -575,6 +575,150 @@
       margin-top: 12px;
     }
 
+    /* PDF Modal */
+    .pdf-modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 2000;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .pdf-modal-overlay.active {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .pdf-modal-overlay.visible {
+      opacity: 1;
+    }
+
+    .pdf-modal {
+      position: relative;
+      width: 90%;
+      max-width: 900px;
+      height: 85vh;
+      background: white;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 25px 80px rgba(0, 0, 0, 0.5);
+      transform: scale(0.9) translateY(20px);
+      transition: transform 0.3s ease;
+    }
+
+    .pdf-modal-overlay.visible .pdf-modal {
+      transform: scale(1) translateY(0);
+    }
+
+    .pdf-modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 24px;
+      background: linear-gradient(135deg, #1e3a5f 0%, #0f172a 100%);
+      color: white;
+    }
+
+    .pdf-modal-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .pdf-modal-phase {
+      background: rgba(255,255,255,0.2);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+
+    .pdf-modal-close {
+      background: rgba(255,255,255,0.1);
+      border: none;
+      color: white;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      font-size: 24px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .pdf-modal-close:hover {
+      background: rgba(255,255,255,0.2);
+      transform: scale(1.1);
+    }
+
+    .pdf-modal-body {
+      height: calc(100% - 130px);
+      background: #f1f5f9;
+    }
+
+    .pdf-modal-body iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .pdf-modal-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 24px;
+      background: #f8fafc;
+      border-top: 1px solid #e2e8f0;
+    }
+
+    .pdf-modal-footer p {
+      color: #64748b;
+      font-size: 0.9rem;
+      margin: 0;
+    }
+
+    .pdf-download-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      background: #22c55e;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: all 0.2s ease;
+    }
+
+    .pdf-download-btn:hover {
+      background: #16a34a;
+      transform: translateY(-2px);
+    }
+
+    /* Connection arrow from timeline */
+    .pdf-modal-connector {
+      position: absolute;
+      left: -30px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 0;
+      height: 0;
+      border-top: 20px solid transparent;
+      border-bottom: 20px solid transparent;
+      border-right: 30px solid white;
+    }
+
     /* Responsive */
     @media (max-width: 768px) {
       header {
@@ -845,59 +989,59 @@
       <p class="section-subtitle">Four phases complete. The foundation is built. Now we implement.</p>
 
       <div class="timeline">
-        <div class="timeline-item">
+        <div class="timeline-item" onclick="openPdfModal('Phase 0-1', 'Genesis & Formation', 'VERITAS_Story_Phase1_Genesis.pdf')">
           <div class="timeline-marker"></div>
-          <a href="VERITAS_Story_Phase1_Genesis.pdf" class="timeline-link" target="_blank">
+          <div class="timeline-link">
             <div class="timeline-phase">Phase 0-1</div>
             <div class="timeline-title">Genesis & Formation</div>
             <div class="timeline-date">Pre-October – October 2025</div>
             <p class="timeline-description">When "police reports lie" revealed the crisis. Concept development from 23 years of IT training experience. Decision to build with AI as genuine collaborative partner. LLC formation, website launch, browser extension prototype.</p>
             <span class="timeline-read-more">📖 Read the story →</span>
-          </a>
+          </div>
         </div>
 
-        <div class="timeline-item">
+        <div class="timeline-item" onclick="openPdfModal('Phase 2', 'Foundation Building', 'VERITAS_Story_Phase2_Foundation.pdf')">
           <div class="timeline-marker"></div>
-          <a href="VERITAS_Story_Phase2_Foundation.pdf" class="timeline-link" target="_blank">
+          <div class="timeline-link">
             <div class="timeline-phase">Phase 2</div>
             <div class="timeline-title">Foundation Building</div>
             <div class="timeline-date">Early November 2025</div>
             <p class="timeline-description">Why everything we've tried has failed—and what VERITAS does differently. The fact-checking paradox. Hybrid AI-first model developed, reducing assessment costs from ~$750 to ~$25.</p>
             <span class="timeline-read-more">📖 Read the story →</span>
-          </a>
+          </div>
         </div>
 
-        <div class="timeline-item">
+        <div class="timeline-item" onclick="openPdfModal('Phase 3', 'Framework Development', 'VERITAS_Story_Phase3_Development.pdf')">
           <div class="timeline-marker"></div>
-          <a href="VERITAS_Story_Phase3_Development.pdf" class="timeline-link" target="_blank">
+          <div class="timeline-link">
             <div class="timeline-phase">Phase 3</div>
             <div class="timeline-title">Framework Development</div>
             <div class="timeline-date">Mid-November 2025</div>
             <p class="timeline-description">The Sunday that changed everything. Building VERITAS with Claude—not just using AI, but partnering with it. The Epistemological Integrity breakthrough and the Three Truth Distortion Patterns.</p>
             <span class="timeline-read-more">📖 Read the story →</span>
-          </a>
+          </div>
         </div>
 
-        <div class="timeline-item">
+        <div class="timeline-item" onclick="openPdfModal('Phase 4', 'Testing & Validation', 'VERITAS_Story_Phase4_Validation.pdf')">
           <div class="timeline-marker"></div>
-          <a href="VERITAS_Story_Phase4_Validation.pdf" class="timeline-link" target="_blank">
+          <div class="timeline-link">
             <div class="timeline-phase">Phase 4</div>
             <div class="timeline-title">Testing & Validation</div>
             <div class="timeline-date">Late November 2025</div>
             <p class="timeline-description">How VERITAS actually works. The -10 to +10 confidence scale. The formula that changes everything: Final Confidence = Evidence Quality × Integrity Multiplier. Community validation and economic breakthrough.</p>
             <span class="timeline-read-more">📖 Read the story →</span>
-          </a>
+          </div>
         </div>
 
-        <div class="timeline-item">
+        <div class="timeline-item" onclick="openPdfModal('Phase 5+', 'Launch & Implementation', 'VERITAS_Story_Phase5_Launch.pdf')">
           <div class="timeline-marker current"></div>
-          <a href="VERITAS_Story_Phase5_Launch.pdf" class="timeline-link" target="_blank">
+          <div class="timeline-link">
             <div class="timeline-phase">Phase 5+</div>
             <div class="timeline-title">Launch & Implementation</div>
             <div class="timeline-date">December 2025 → Future</div>
             <p class="timeline-description">The path forward. Three-phase roadmap. Partnership opportunities with Anthropic, Knight Foundation, and investors. The choice before us: watch democracy fracture, or build something different.</p>
             <span class="timeline-read-more">📖 Read the story →</span>
-          </a>
+          </div>
         </div>
       </div>
 
