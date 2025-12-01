@@ -1,0 +1,1136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VERITAS Documentation - Complete Framework & Foundations</title>
+  <meta name="description" content="Complete documentation for the VERITAS information verification framework. Foundational documents, methodology, tools, and architectural overview.">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background: #f8fafc;
+    }
+
+    /* Header */
+    header {
+      background: linear-gradient(135deg, #1e3a5f 0%, #0f172a 100%);
+      padding: 20px 40px;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 20px rgba(0,0,0,0.2);
+    }
+    
+    .header-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .logo-image {
+      height: 50px;
+      width: auto;
+    }
+    
+    .header-links {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+    
+    .header-links a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      padding: 8px 16px;
+      border-radius: 6px;
+    }
+    
+    .header-links a:hover {
+      background: rgba(255,255,255,0.15);
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Hero */
+    .hero {
+      background: linear-gradient(135deg, #1e3a5f 0%, #2d4a6f 100%);
+      color: white;
+      padding: 80px 20px;
+      text-align: center;
+    }
+
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3rem);
+      margin-bottom: 16px;
+    }
+
+    .hero p {
+      font-size: 1.2rem;
+      opacity: 0.9;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    /* Main Content */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    section {
+      padding: 60px 0;
+    }
+
+    .section-title {
+      font-size: 1.8rem;
+      color: #1e3a5f;
+      margin-bottom: 12px;
+      text-align: center;
+    }
+
+    .section-subtitle {
+      color: #64748b;
+      text-align: center;
+      margin-bottom: 40px;
+      font-size: 1.1rem;
+    }
+
+    /* 3D Architecture */
+    .architecture-visual {
+      background: white;
+      border-radius: 16px;
+      padding: 40px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      max-width: 900px;
+      margin: 0 auto 60px;
+    }
+
+    .arch-layer {
+      text-align: center;
+      padding: 24px;
+      margin: 16px 0;
+      border-radius: 12px;
+      transition: transform 0.3s ease;
+    }
+
+    .arch-layer:hover {
+      transform: translateY(-3px);
+    }
+
+    .arch-layer-up {
+      background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+      border: 2px solid #d4a853;
+    }
+
+    .arch-layer-out {
+      background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+      border: 2px solid #3b82f6;
+    }
+
+    .arch-layer-down {
+      background: linear-gradient(135deg, #1e3a5f 0%, #0f172a 100%);
+      color: white;
+    }
+
+    .arch-layer-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      opacity: 0.7;
+      margin-bottom: 6px;
+    }
+
+    .arch-layer-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .arch-layer-down .arch-layer-title {
+      color: white;
+    }
+
+    .arch-layer-subtitle {
+      font-size: 0.95rem;
+      opacity: 0.8;
+    }
+
+    .arch-status {
+      display: inline-block;
+      background: #dcfce7;
+      color: #166534;
+      padding: 3px 12px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-left: 10px;
+    }
+
+    .arch-layer-down .arch-status {
+      background: rgba(255,255,255,0.2);
+      color: white;
+    }
+
+    .arch-foundations {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin: 20px 0;
+    }
+
+    .arch-wall {
+      background: white;
+      border: 2px solid #3b82f6;
+      border-radius: 10px;
+      padding: 20px 16px;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .arch-wall:hover {
+      background: #eff6ff;
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(59, 130, 246, 0.15);
+    }
+
+    .arch-wall-direction {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: #3b82f6;
+      margin-bottom: 6px;
+    }
+
+    .arch-wall-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: #1e3a5f;
+      line-height: 1.3;
+    }
+
+    /* Document Cards */
+    .docs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+    }
+
+    .doc-card {
+      background: white;
+      border-radius: 12px;
+      padding: 28px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      border-left: 4px solid #3b82f6;
+      transition: all 0.3s ease;
+    }
+
+    .doc-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.1);
+    }
+
+    .doc-card.foundation {
+      border-left-color: #d4a853;
+    }
+
+    .doc-card.core {
+      border-left-color: #1e3a5f;
+    }
+
+    .doc-card.tool {
+      border-left-color: #22c55e;
+    }
+
+    .doc-type {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: #64748b;
+      margin-bottom: 8px;
+    }
+
+    .doc-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #1e3a5f;
+      margin-bottom: 8px;
+    }
+
+    .doc-description {
+      color: #64748b;
+      font-size: 0.95rem;
+      margin-bottom: 16px;
+      line-height: 1.6;
+    }
+
+    .doc-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.85rem;
+      color: #166534;
+      background: #dcfce7;
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-bottom: 16px;
+    }
+
+    .doc-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .doc-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      background: #f1f5f9;
+      color: #1e3a5f;
+      text-decoration: none;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+
+    .doc-link:hover {
+      background: #e2e8f0;
+    }
+
+    .doc-link.primary {
+      background: #1e3a5f;
+      color: white;
+    }
+
+    .doc-link.primary:hover {
+      background: #2d4a6f;
+    }
+
+    .doc-link.green {
+      background: #22c55e;
+      color: white;
+    }
+
+    .doc-link.green:hover {
+      background: #16a34a;
+    }
+
+    /* Feature List */
+    .feature-list {
+      list-style: none;
+      margin: 16px 0;
+      padding: 0;
+    }
+
+    .feature-list li {
+      padding: 8px 0;
+      padding-left: 28px;
+      position: relative;
+      color: #475569;
+      font-size: 0.95rem;
+    }
+
+    .feature-list li::before {
+      content: '✓';
+      position: absolute;
+      left: 0;
+      color: #22c55e;
+      font-weight: bold;
+    }
+
+    /* Highlight Box */
+    .highlight-box {
+      background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+      border: 2px solid #d4a853;
+      border-radius: 12px;
+      padding: 24px;
+      margin: 24px 0;
+    }
+
+    .highlight-box h4 {
+      color: #92400e;
+      margin-bottom: 12px;
+      font-size: 1.1rem;
+    }
+
+    .highlight-box p {
+      color: #78350f;
+      margin-bottom: 0;
+    }
+
+    /* Timeline Section */
+    .timeline-section {
+      background: white;
+    }
+
+    .timeline {
+      max-width: 800px;
+      margin: 0 auto;
+      position: relative;
+      padding-left: 40px;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 8px;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background: linear-gradient(180deg, #3b82f6, #1e3a5f);
+      border-radius: 3px;
+    }
+
+    .timeline-item {
+      position: relative;
+      margin-bottom: 40px;
+      padding-left: 30px;
+      cursor: pointer;
+    }
+
+    .timeline-item .timeline-link {
+      text-decoration: none;
+      color: inherit;
+      display: block;
+      padding: 16px;
+      margin: -16px;
+      border-radius: 12px;
+      transition: all 0.3s ease;
+    }
+
+    .timeline-item:hover .timeline-link {
+      background: #f8fafc;
+      transform: translateX(4px);
+    }
+
+    .timeline-item:hover .timeline-title {
+      color: #3b82f6;
+    }
+
+    .timeline-marker {
+      position: absolute;
+      left: -32px;
+      top: 4px;
+      width: 18px;
+      height: 18px;
+      background: #22c55e;
+      border: 3px solid white;
+      border-radius: 50%;
+      box-shadow: 0 0 0 3px #dcfce7;
+    }
+
+    .timeline-marker.current {
+      background: #d4a853;
+      box-shadow: 0 0 0 3px #fef3c7;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 0 3px #fef3c7; }
+      50% { box-shadow: 0 0 0 8px rgba(212, 168, 83, 0.2); }
+    }
+
+    .timeline-phase {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #3b82f6;
+      margin-bottom: 4px;
+    }
+
+    .timeline-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #1e3a5f;
+      margin-bottom: 4px;
+      transition: color 0.3s ease;
+    }
+
+    .timeline-date {
+      font-size: 0.9rem;
+      color: #64748b;
+      margin-bottom: 8px;
+    }
+
+    .timeline-description {
+      color: #475569;
+      line-height: 1.7;
+    }
+
+    .timeline-read-more {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 10px;
+      font-size: 0.9rem;
+      color: #3b82f6;
+      font-weight: 500;
+    }
+
+    .timeline-cta {
+      text-align: center;
+      margin-top: 50px;
+      padding-top: 30px;
+      border-top: 2px solid #e2e8f0;
+    }
+
+    .timeline-cta p {
+      color: #64748b;
+      margin-bottom: 16px;
+    }
+
+    .story-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 16px 32px;
+      background: linear-gradient(135deg, #1e3a5f 0%, #0f172a 100%);
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(30, 58, 95, 0.3);
+    }
+
+    .story-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(30, 58, 95, 0.4);
+    }
+
+    /* Quote Section */
+    .quote-section {
+      background: linear-gradient(135deg, #1e3a5f 0%, #0f172a 100%);
+      padding: 80px 20px;
+      text-align: center;
+    }
+
+    .quote-section blockquote {
+      font-size: clamp(1.3rem, 3vw, 1.8rem);
+      font-style: italic;
+      color: white;
+      max-width: 800px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    .quote-section cite {
+      display: block;
+      margin-top: 20px;
+      font-size: 1rem;
+      font-style: normal;
+      color: #fde68a;
+    }
+
+    /* Footer */
+    footer {
+      background: #0f172a;
+      color: rgba(255,255,255,0.7);
+      padding: 40px 20px;
+      text-align: center;
+    }
+
+    footer .logo-small {
+      width: 180px;
+      margin-bottom: 20px;
+      opacity: 0.9;
+    }
+
+    footer p {
+      margin-bottom: 8px;
+      font-size: 0.9rem;
+    }
+
+    footer .tagline {
+      font-style: italic;
+      color: #60a5fa;
+      margin-top: 16px;
+      font-size: 1.1rem;
+    }
+
+    footer .vulcan {
+      font-size: 1.5rem;
+      margin-top: 12px;
+    }
+
+    /* PDF Modal */
+    .pdf-modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 2000;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .pdf-modal-overlay.active {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .pdf-modal-overlay.visible {
+      opacity: 1;
+    }
+
+    .pdf-modal {
+      position: relative;
+      width: 90%;
+      max-width: 900px;
+      height: 85vh;
+      background: white;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 25px 80px rgba(0, 0, 0, 0.5);
+      transform: scale(0.9) translateY(20px);
+      transition: transform 0.3s ease;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .pdf-modal-overlay.visible .pdf-modal {
+      transform: scale(1) translateY(0);
+    }
+
+    .pdf-modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 24px;
+      background: linear-gradient(135deg, #1e3a5f 0%, #0f172a 100%);
+      color: white;
+      flex-shrink: 0;
+    }
+
+    .pdf-modal-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .pdf-modal-phase {
+      background: rgba(255,255,255,0.2);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+
+    .pdf-modal-close {
+      background: rgba(255,255,255,0.1);
+      border: none;
+      color: white;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      font-size: 24px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .pdf-modal-close:hover {
+      background: rgba(255,255,255,0.2);
+      transform: scale(1.1);
+    }
+
+    .pdf-modal-body {
+      flex: 1;
+      background: #f1f5f9;
+      overflow: hidden;
+    }
+
+    .pdf-modal-body iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .pdf-modal-footer {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 16px 24px;
+      background: #f8fafc;
+      border-top: 1px solid #e2e8f0;
+      flex-shrink: 0;
+    }
+
+    .pdf-modal-footer .story-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      background: #2196F3;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: all 0.2s ease;
+    }
+
+    .pdf-modal-footer .story-btn:hover {
+      background: #1976D2;
+      transform: translateY(-2px);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      header {
+        padding: 15px 20px;
+      }
+
+      .header-links span {
+        display: none;
+      }
+
+      .arch-foundations {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .hero {
+        padding: 60px 20px;
+      }
+
+      .timeline {
+        padding-left: 30px;
+      }
+
+      .timeline-item {
+        padding-left: 20px;
+      }
+
+      .timeline-marker {
+        left: -22px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <div class="header-content">
+      <a href="index.html">
+        <img src="veritas-logo-horizontal.png" alt="VERITAS LLC" class="logo-image">
+      </a>
+      <nav class="header-links">
+        <a href="index.html" class="back-link">← <span>Back to Home</span></a>
+        <a href="VERITAS_Web_Package/VERITAS_Interactive_Demo_Web.html">🚀 Demo</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container">
+      <h1>Complete Documentation</h1>
+      <p>Everything VERITAS has built: foundational philosophy, operational framework, working tools, and architectural vision. All documented. All complete.</p>
+    </div>
+  </section>
+
+  <!-- 3D Architecture Section -->
+  <section>
+    <div class="container">
+      <h2 class="section-title">The 3D VERITAS Architecture</h2>
+      <p class="section-subtitle">Three dimensions of a complete system: what we stand on, how we work, and where we're reaching.</p>
+
+      <div class="architecture-visual">
+        <!-- UP Layer -->
+        <div class="arch-layer arch-layer-up">
+          <div class="arch-layer-label">↑ UP — Where We're Reaching</div>
+          <div class="arch-layer-title">Star Chart <span class="arch-status">✓ Complete v1.0</span></div>
+          <div class="arch-layer-subtitle">Consensus • Community • Enlightenment</div>
+        </div>
+
+        <!-- OUT Layer -->
+        <div class="arch-layer arch-layer-out">
+          <div class="arch-layer-label">← OUT → How We Work</div>
+          <div class="arch-layer-title">V.E.R.I.T.A.S. Framework <span class="arch-status">✓ Complete v7.3</span></div>
+          <div class="arch-layer-subtitle">Validated • Ethical • Reliable • Information • Transmission • Accurate • Synthesis</div>
+        </div>
+
+        <!-- Four Foundations -->
+        <div class="arch-foundations">
+          <div class="arch-wall">
+            <div class="arch-wall-direction">WEST</div>
+            <div class="arch-wall-name">Epistemological Integrity</div>
+          </div>
+          <div class="arch-wall">
+            <div class="arch-wall-direction">NORTH</div>
+            <div class="arch-wall-name">Community Validation</div>
+          </div>
+          <div class="arch-wall">
+            <div class="arch-wall-direction">SOUTH</div>
+            <div class="arch-wall-name">AI Core Protection</div>
+          </div>
+          <div class="arch-wall">
+            <div class="arch-wall-direction">EAST</div>
+            <div class="arch-wall-name">Epistemological Humility</div>
+          </div>
+        </div>
+
+        <!-- DOWN Layer -->
+        <div class="arch-layer arch-layer-down" id="bedrock">
+          <div class="arch-layer-label">↓ DOWN — What We Stand On</div>
+          <div class="arch-layer-title">Epistemological Bedrock <span class="arch-status">✓ Complete v1.0</span></div>
+          <div class="arch-layer-subtitle">Eight Assessment Factors • Three Truth Distortion Patterns</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Working Tools Section -->
+  <section style="background: #ecfdf5;">
+    <div class="container">
+      <h2 class="section-title">Working Tools</h2>
+      <p class="section-subtitle">Not just documentation—working software you can use today.</p>
+
+      <div class="docs-grid">
+        <div class="doc-card tool" style="grid-column: span 2;">
+          <div class="doc-type">Standalone Application</div>
+          <div class="doc-title">🔍 VERITAS Veracity Engine v2.8</div>
+          <div class="doc-description">
+            A standalone truth verification tool that runs on your PC. Pose questions, assess articles, and get rigorous analysis with full transparency. Powered by Claude AI with your own API key.
+          </div>
+          <div class="doc-status">✓ Ready to Use</div>
+          
+          <ul class="feature-list">
+            <li><strong>Dual Scoring System:</strong> Reality Score (-10 to +10) measures factual accuracy; Integrity Score (-1.0 to +1.0) measures source honesty</li>
+            <li><strong>Two Modes:</strong> Ask any question OR paste an article for assessment</li>
+            <li><strong>Warning Flags:</strong> Visual alerts when manipulation patterns are detected—even when facts are true</li>
+            <li><strong>Export Options:</strong> Save as PDF, Print, or Export JSON</li>
+          </ul>
+
+          <div class="highlight-box">
+            <h4>🔎 Amplified Assessment: Self-Challenge Feature</h4>
+            <p>After any assessment, click "VERITAS Amplified Assessment" for a second-pass analysis that <em>challenges its own conclusions</em>. It identifies blind spots, questions assumptions, steelmans alternatives, and asks "If I'm wrong, it's most likely because..." This is epistemological humility in action—the system actively tries to find holes in its own reasoning.</p>
+          </div>
+
+          <div class="doc-links">
+            <a href="VERITAS_Standalone_v2.8.zip" class="doc-link green" download>⬇️ Download (ZIP)</a>
+            <a href="VERITAS_Installation_Guide.html" class="doc-link">📖 Installation Guide</a>
+          </div>
+        </div>
+
+        <div class="doc-card tool">
+          <div class="doc-type">Browser Extension</div>
+          <div class="doc-title">VERITAS Browser Extension</div>
+          <div class="doc-description">Prototype Chrome extension for real-time article assessment while browsing. Highlights claims and provides inline verification.</div>
+          <div class="doc-status">✓ Prototype v2.0</div>
+          <div class="doc-links">
+            <a href="#" class="doc-link">Coming Soon</a>
+          </div>
+        </div>
+
+        <div class="doc-card tool">
+          <div class="doc-type">Interactive Demo</div>
+          <div class="doc-title">12-Assessment Demo</div>
+          <div class="doc-description">Explore 12 rigorous assessments across 4 contested topics: Election Fraud, Immigration, National Debt, and Gender Identity. See VERITAS methodology in action.</div>
+          <div class="doc-status">✓ Complete</div>
+          <div class="doc-links">
+            <a href="VERITAS_Web_Package/VERITAS_Interactive_Demo_Web.html" class="doc-link primary">🚀 Launch Demo</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Core Documents Section -->
+  <section style="background: white;" id="core-documents">
+    <div class="container">
+      <h2 class="section-title">Core Documents</h2>
+      <p class="section-subtitle">The essential documents that define what VERITAS is and how it works.</p>
+
+      <div class="docs-grid">
+        <div class="doc-card core">
+          <div class="doc-type">Philosophical Foundation</div>
+          <div class="doc-title">Epistemological Bedrock v1.0</div>
+          <div class="doc-description">The foundation beneath everything. Eight assessment factors, three truth distortion patterns, and the core principle that guides all VERITAS work.</div>
+          <div class="doc-status">✓ Complete</div>
+          <div class="doc-links">
+            <a href="VERITAS_Epistemological_Bedrock_v1.pdf" class="doc-link primary" download>⬇️ PDF</a>
+            <a href="VERITAS_Epistemological_Bedrock_v1.html" class="doc-link">View HTML</a>
+          </div>
+        </div>
+
+        <div class="doc-card core">
+          <div class="doc-type">Vision Document</div>
+          <div class="doc-title">Star Chart v1.0</div>
+          <div class="doc-description">Where VERITAS is reaching: Consensus, Community, and Enlightenment. The three stars that guide our direction, each with a 3×3 structure of components.</div>
+          <div class="doc-status">✓ Complete</div>
+          <div class="doc-links">
+            <a href="VERITAS_Star_Chart_v1.pdf" class="doc-link primary" download>⬇️ PDF</a>
+          </div>
+        </div>
+
+        <div class="doc-card core">
+          <div class="doc-type">Operational Framework</div>
+          <div class="doc-title">V.E.R.I.T.A.S. Framework v7.3</div>
+          <div class="doc-description">The complete operational methodology across seven pillars. Four parts covering validation, ethics, reliability, information architecture, transmission, accuracy, and synthesis.</div>
+          <div class="doc-status">✓ Complete (4 Parts)</div>
+          <div class="doc-links">
+            <a href="VERITAS_Framework_v7.3_Complete.pdf" class="doc-link primary" download>⬇️ Complete PDF</a>
+          </div>
+        </div>
+
+        <div class="doc-card core">
+          <div class="doc-type">Historical Record</div>
+          <div class="doc-title">Phase Structure v1.0</div>
+          <div class="doc-description">A complete record of what was built, when, and why it matters. Phases 0-4 complete. Documentation for stakeholders, partners, and critics.</div>
+          <div class="doc-status">✓ Complete</div>
+          <div class="doc-links">
+            <a href="VERITAS_Phase_Structure_v1.pdf" class="doc-link primary" download>⬇️ PDF</a>
+            <a href="VERITAS_Phase_Structure_v1.html" class="doc-link">View HTML</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Four Foundations Section -->
+  <section>
+    <div class="container">
+      <h2 class="section-title">The Four Foundations</h2>
+      <p class="section-subtitle">The walls of our basement—immutable principles that protect VERITAS from corruption.</p>
+
+      <div class="docs-grid">
+        <div class="doc-card foundation" id="west-wall">
+          <div class="doc-type">West Wall</div>
+          <div class="doc-title">Corruption Resistance & Epistemological Integrity</div>
+          <div class="doc-description">Detecting when reasoning itself has become corrupted. How Community Validation and AI Core Protection work together as integrated defense.</div>
+          <div class="doc-status">✓ Complete v1.0</div>
+          <div class="doc-links">
+            <a href="VERITAS_Corruption_Resistance_Integration_v1.pdf" class="doc-link primary" download>⬇️ PDF</a>
+          </div>
+        </div>
+
+        <div class="doc-card foundation" id="north-wall">
+          <div class="doc-type">North Wall</div>
+          <div class="doc-title">Community Validation</div>
+          <div class="doc-description">Trust flows from known relationships and demonstrated character, not distant authority. Building verification through local knowledge and community accountability.</div>
+          <div class="doc-status">✓ Complete v1.0</div>
+          <div class="doc-links">
+            <a href="VERITAS_Community_Validation_Framework_v1.pdf" class="doc-link primary" download>⬇️ PDF</a>
+          </div>
+        </div>
+
+        <div class="doc-card foundation" id="south-wall">
+          <div class="doc-type">South Wall</div>
+          <div class="doc-title">AI Core Protection</div>
+          <div class="doc-description">Technical and governance safeguards protecting VERITAS's core AI systems from compromise. Security through silent watchfulness and transparent methodology.</div>
+          <div class="doc-status">✓ Complete v1.0</div>
+          <div class="doc-links">
+            <a href="VERITAS_AI_Core_Protection_Foundation_v1.pdf" class="doc-link primary" download>⬇️ PDF</a>
+          </div>
+        </div>
+
+        <div class="doc-card foundation" id="east-wall">
+          <div class="doc-type">East Wall</div>
+          <div class="doc-title">Epistemological Humility</div>
+          <div class="doc-description">Why honest uncertainty is stronger than false confidence. Embracing "both and..." complexity, showing our work, and treating correction as success.</div>
+          <div class="doc-status">✓ Complete v1.0</div>
+          <div class="doc-links">
+            <a href="VERITAS_Epistemological_Humility_Framework_v1.pdf" class="doc-link primary" download>⬇️ PDF</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Timeline Section -->
+  <section class="timeline-section">
+    <div class="container">
+      <h2 class="section-title">Development Timeline</h2>
+      <p class="section-subtitle">Four phases complete. The foundation is built. Now we implement.</p>
+
+      <div class="timeline">
+        <div class="timeline-item" onclick="openPdfModal('Phase 0-1', 'Genesis & Formation', 'VERITAS_Story_Phase1_Genesis.pdf')">
+          <div class="timeline-marker"></div>
+          <div class="timeline-link">
+            <div class="timeline-phase">Phase 0-1</div>
+            <div class="timeline-title">Genesis & Formation</div>
+            <div class="timeline-date">Pre-October – October 2025</div>
+            <p class="timeline-description">When "police reports lie" revealed the crisis. Concept development from 23 years of IT training experience. Decision to build with AI as genuine collaborative partner. LLC formation, website launch, browser extension prototype.</p>
+            <span class="timeline-read-more">📖 Read the story →</span>
+          </div>
+        </div>
+
+        <div class="timeline-item" onclick="openPdfModal('Phase 2', 'Foundation Building', 'VERITAS_Story_Phase2_Foundation.pdf')">
+          <div class="timeline-marker"></div>
+          <div class="timeline-link">
+            <div class="timeline-phase">Phase 2</div>
+            <div class="timeline-title">Foundation Building</div>
+            <div class="timeline-date">Early November 2025</div>
+            <p class="timeline-description">Why everything we've tried has failed—and what VERITAS does differently. The fact-checking paradox. Hybrid AI-first model developed, reducing assessment costs from ~$750 to ~$25.</p>
+            <span class="timeline-read-more">📖 Read the story →</span>
+          </div>
+        </div>
+
+        <div class="timeline-item" onclick="openPdfModal('Phase 3', 'Framework Development', 'VERITAS_Story_Phase3_Development.pdf')">
+          <div class="timeline-marker"></div>
+          <div class="timeline-link">
+            <div class="timeline-phase">Phase 3</div>
+            <div class="timeline-title">Framework Development</div>
+            <div class="timeline-date">Mid-November 2025</div>
+            <p class="timeline-description">The Sunday that changed everything. Building VERITAS with Claude—not just using AI, but partnering with it. The Epistemological Integrity breakthrough and the Three Truth Distortion Patterns.</p>
+            <span class="timeline-read-more">📖 Read the story →</span>
+          </div>
+        </div>
+
+        <div class="timeline-item" onclick="openPdfModal('Phase 4', 'Testing & Validation', 'VERITAS_Story_Phase4_Validation.pdf')">
+          <div class="timeline-marker"></div>
+          <div class="timeline-link">
+            <div class="timeline-phase">Phase 4</div>
+            <div class="timeline-title">Testing & Validation</div>
+            <div class="timeline-date">Late November 2025</div>
+            <p class="timeline-description">How VERITAS actually works. The -10 to +10 confidence scale. The formula that changes everything: Final Confidence = Evidence Quality × Integrity Multiplier. Community validation and economic breakthrough.</p>
+            <span class="timeline-read-more">📖 Read the story →</span>
+          </div>
+        </div>
+
+        <div class="timeline-item" onclick="openPdfModal('Phase 5+', 'Launch & Implementation', 'VERITAS_Story_Phase5_Launch.pdf')">
+          <div class="timeline-marker current"></div>
+          <div class="timeline-link">
+            <div class="timeline-phase">Phase 5+</div>
+            <div class="timeline-title">Launch & Implementation</div>
+            <div class="timeline-date">December 2025 → Future</div>
+            <p class="timeline-description">The path forward. Three-phase roadmap. Partnership opportunities with Anthropic, Knight Foundation, and investors. The choice before us: watch democracy fracture, or build something different.</p>
+            <span class="timeline-read-more">📖 Read the story →</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="timeline-cta">
+        <p>Want the complete narrative? Read the full story of how VERITAS was built.</p>
+        <a href="VERITAS_The_Story.pdf" class="story-btn" target="_blank">
+          📖 Read "The Complete Story" (PDF)
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quote Section -->
+  <section class="quote-section">
+    <blockquote>
+      "To be right one must be willing to build and recover from uncertainty, not recklessly tear down anything that threatens our house of cards."
+      <cite>— Rauel LaBreche</cite>
+    </blockquote>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <img src="veritas-logo-horizontal.png" alt="VERITAS" class="logo-small">
+    <p><strong>Documentation v1.0</strong> | November 30, 2025</p>
+    <p>Rauel F. LaBreche, Founder & CEO | In Partnership with Claude (Anthropic)</p>
+    <p>© 2025 VERITAS LLC. All rights reserved.</p>
+    <p class="tagline">Truth, Transparently</p>
+    <div class="vulcan">🖖</div>
+  </footer>
+
+  <!-- PDF Modal -->
+  <div class="pdf-modal-overlay" id="pdfModal">
+    <div class="pdf-modal">
+      <div class="pdf-modal-header">
+        <div>
+          <span class="pdf-modal-phase" id="modalPhase">Phase 1</span>
+          <span class="pdf-modal-title" id="modalTitle">Genesis & Formation</span>
+        </div>
+        <button class="pdf-modal-close" onclick="closePdfModal()">✕</button>
+      </div>
+      <div class="pdf-modal-body">
+        <iframe id="pdfFrame" src="" title="PDF Viewer"></iframe>
+      </div>
+      <div class="pdf-modal-footer">
+        <a href="#" id="pdfDownload" class="story-btn" target="_blank">
+          ⬇️ Open Full PDF in New Tab
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function openPdfModal(phase, title, pdfFile) {
+      const modal = document.getElementById('pdfModal');
+      const phaseEl = document.getElementById('modalPhase');
+      const titleEl = document.getElementById('modalTitle');
+      const iframe = document.getElementById('pdfFrame');
+      const downloadLink = document.getElementById('pdfDownload');
+      
+      // Set modal content
+      phaseEl.textContent = phase;
+      titleEl.textContent = title;
+      iframe.src = pdfFile;
+      downloadLink.href = pdfFile;
+      
+      // Show modal
+      modal.classList.add('active');
+      setTimeout(() => {
+        modal.classList.add('visible');
+      }, 10);
+      
+      // Prevent body scroll
+      document.body.style.overflow = 'hidden';
+    }
+    
+    function closePdfModal() {
+      const modal = document.getElementById('pdfModal');
+      const iframe = document.getElementById('pdfFrame');
+      
+      modal.classList.remove('visible');
+      setTimeout(() => {
+        modal.classList.remove('active');
+        iframe.src = '';
+      }, 300);
+      
+      // Restore body scroll
+      document.body.style.overflow = '';
+    }
+    
+    // Close modal on overlay click
+    document.getElementById('pdfModal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        closePdfModal();
+      }
+    });
+    
+    // Close modal on Escape key
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        closePdfModal();
+      }
+    });
+  </script>
+</body>
+</html>
