@@ -157,25 +157,7 @@ For Stakeholders
 Evaluate VERITAS platform potential
 See proof-of-concept across controversial topics
 Assess methodology and approach
-📖 Documentation
-DEPLOYMENT_CHECKLIST.md - Website upload guide
-QUICK_REFERENCE.md - Presentation scripts and talking points
-Website - Full VERITAS platform information
-🏢 About VERITAS LLCVERITAS LLC is building the future of information verification through expert-driven, transparent truth assessment. Our mission is to restore trust in democratic discourse by acknowledging genuine uncertainty while providing rigorous, transparent analysis.Core Principles
 
-Epistemic Humility: "Cannot Determine" is a valid answer
-Transparent Methodology: Show how experts think, not just what they conclude
-Non-Partisan Analysis: Evaluate evidence quality, not ideological alignment
-Expert Validation: Combine AI efficiency with human expert oversight
-Contact
-
-Email: rauel@veritastruth.net
-Website: www.veritastruth.net
-Address: 460 4th Street, Prairie du Sac, WI 53578
-🤝 ContributingThis is a demonstration repository showcasing the VERITAS methodology. For inquiries about the full VERITAS platform, partnership opportunities, or validator applications, please contact us at rauel@veritastruth.net.📜 License© 2025 VERITAS LLC. All rights reserved.This demonstration is provided for educational and evaluation purposes. The VERITAS framework, methodology, and assessment content are proprietary to VERITAS LLC.🔗 Links
-Live Demo: veritastruth.net/VERITAS_Web_Package
-Company Website: veritastruth.net
-Contact: rauel@veritastruth.net
 🌟 Project StatusPhase 3 Complete: 12 assessments across 4 contested topics demonstrating proof-of-conceptCurrent Focus: Stakeholder presentations for partnership and funding discussionsNext Phase: Platform development, expert network building, assessment library expansion📊 Demo Statistics
 Topics Covered: 4
 Articles Assessed: 12
