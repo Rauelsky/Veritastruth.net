@@ -80,6 +80,15 @@
       background: rgba(255,255,255,0.2);
     }
     
+    .header-links button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    
+    .header-links button:disabled:hover {
+      background: transparent;
+    }
+    
     .demo-link {
       background: rgba(255,255,255,0.2) !important;
       padding: 10px 24px !important;
@@ -194,6 +203,16 @@
       background: rgba(255,255,255,0.25);
     }
     
+    .cta-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    
+    .cta-btn:disabled:hover {
+      transform: none;
+      box-shadow: none;
+    }
+    
     /* Story & Video Buttons in Hero */
     .hero-media-buttons {
       display: flex;
@@ -260,7 +279,7 @@
     }
 
     /* ============================================ */
-    /* STAR CHART SECTION - NEW */
+    /* STAR CHART SECTION */
     /* ============================================ */
     .star-chart {
       background: url('orion-2942260_1280.png') center center / cover no-repeat;
@@ -418,7 +437,7 @@
       box-shadow: 0 8px 25px rgba(59, 130, 246, 0.5);
     }
     
-    /* ARCHITECTURE SECTION - NEW */
+    /* ARCHITECTURE SECTION */
     .architecture {
       background: linear-gradient(180deg, #f8fafc 0%, #e2e8f0 100%);
       padding: 80px 20px;
@@ -1127,6 +1146,12 @@
         border-color: #1976D2 !important;
       }
       
+      .header-links button:disabled {
+        background: #90CAF9 !important;
+        border-color: #90CAF9 !important;
+        opacity: 0.7;
+      }
+      
       .demo-link {
         background: #1976D2 !important;
         border: 2px solid #1976D2 !important;
@@ -1244,9 +1269,10 @@
         <img src="veritas-logo-horizontal.png" alt="VERITAS LLC" class="logo-image">
       </div>
       <nav class="header-links">
-        <button onclick="openVideoModal()">🎬 Watch Video</button>
         <button onclick="openStoryModal()">📖 Our Story</button>
-        <a href="VERITAS_Web_Package/VERITAS_Interactive_Demo_Web.html" class="demo-link">🚀 Interactive Demo</a>
+        <a href="#how-it-works">⚙️ How It Works</a>
+        <a href="/assess.html" class="demo-link">🔍 Try Live Assessment</a>
+        <button disabled title="Coming Soon">🎬 Watch Video</button>
       </nav>
     </div>
   </header>
@@ -1264,17 +1290,17 @@
   </div>
 
   <!-- ============================================ -->
-  <!-- STAR CHART SECTION - NEW -->
+  <!-- STAR CHART SECTION -->
   <!-- ============================================ -->
   <section class="star-chart">
     <div class="container star-chart-content">
       
-      <!-- CTA Buttons - Moved from Hero -->
+      <!-- CTA Buttons -->
       <div class="star-chart-cta-top">
-        <a href="VERITAS_Web_Package/VERITAS_Interactive_Demo_Web.html" class="cta-btn cta-primary">Try Interactive Demo</a>
-        <a href="#how-it-works" class="cta-btn cta-secondary">Learn More</a>
-        <button class="cta-btn cta-secondary" onclick="openVideoModal()">🎬 What is VERITAS?</button>
         <button class="cta-btn cta-secondary" onclick="openStoryModal()">📖 Our Story</button>
+        <a href="#how-it-works" class="cta-btn cta-secondary">⚙️ How VERITAS Works</a>
+        <a href="/assess.html" class="cta-btn cta-primary">🔍 Try Live Assessment</a>
+        <button class="cta-btn cta-secondary" disabled title="Coming Soon">🎬 Watch Video</button>
       </div>
       
       <h2 class="section-title">The Stars We're Reaching For</h2>
@@ -1323,7 +1349,7 @@
     </div>
   </section>
 
-  <!-- ARCHITECTURE SECTION - NEW -->
+  <!-- ARCHITECTURE SECTION -->
   <section class="architecture">
     <div class="container">
       <h2 class="section-title">The 3D VERITAS Architecture</h2>
@@ -1547,7 +1573,7 @@
       </form>
       
       <div style="margin-top: 30px;">
-        <a href="VERITAS_Web_Package/VERITAS_Interactive_Demo_Web.html" style="color: white; text-decoration: underline; font-size: 18px; font-weight: 600;">Or try our interactive demo now →</a>
+        <a href="/assess.html" style="color: white; text-decoration: underline; font-size: 18px; font-weight: 600;">Or try our live assessment tool now →</a>
       </div>
     </div>
   </section>
@@ -1564,9 +1590,9 @@
         
         <div class="footer-section">
           <h4>Platform</h4>
-          <p><a href="VERITAS_Web_Package/VERITAS_Interactive_Demo_Web.html">Interactive Demo</a><br>
+          <p><a href="/assess.html">Live Assessment Tool</a><br>
+          <a href="VERITAS_Web_Package/VERITAS_Interactive_Demo_Web.html">Interactive Demo</a><br>
           <a href="#" onclick="openStoryModal(); return false;">Our Story</a><br>
-          <a href="#" onclick="openVideoModal(); return false;">What is VERITAS?</a><br>
           <a href="VERITAS_Star_Chart_v1.pdf" download>Star Chart (PDF)</a><br>
           Publisher API (In Development)</p>
         </div>
@@ -1574,7 +1600,7 @@
         <div class="footer-section">
           <h4>Contact</h4>
           <p><strong>Email:</strong><br>
-          <a href="/cdn-cgi/l/email-protection#2b594a5e4e476b5d4e59425f4a585f595e5f4305454e5f"><span class="__cf_email__" data-cfemail="d3a1b2a6b6bf93a5b6a1baa7b2a0a7a1a6a7bbfdbdb6a7">[email&#160;protected]</span></a></p>
+          <a href="mailto:info@veritastruth.net">info@veritastruth.net</a></p>
           <p style="margin-top: 16px;"><strong>Website:</strong><br>
           <a href="http://www.veritastruth.net">www.veritastruth.net</a></p>
         </div>
@@ -1643,7 +1669,7 @@
   <!-- ============================================ -->
   <!-- JAVASCRIPT FOR MODALS -->
   <!-- ============================================ -->
-  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  <script>
     // PDF file path
     const STORY_PDF_PATH = 'VERITAS_The_Story.pdf';
     let pdfLoaded = false;
@@ -1726,4 +1752,16 @@
     });
 
     document.getElementById('videoModal').addEventListener('click', function(e) {
-      if (e.target =
+      if (e.target === this) closeVideoModal();
+    });
+
+    // Close on Escape key
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        closeStoryModal();
+        closeVideoModal();
+      }
+    });
+  </script>
+</body>
+</html>
