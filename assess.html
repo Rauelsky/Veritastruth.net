@@ -119,7 +119,6 @@
             margin-bottom: 28px;
         }
         .score-card {
-            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
             border-radius: 12px;
             padding: 24px;
             text-align: center;
@@ -152,8 +151,6 @@
         .score-card.integrity .score-value {
             color: #92400e;
         }
-        
-        /* Formatted Assessment Sections */
         .assessment-section {
             background: #f8fafc;
             border-radius: 12px;
@@ -165,60 +162,38 @@
             color: #1e3a5f;
             font-size: 1.1rem;
             margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
         }
-        .assessment-section p, .assessment-section ul {
+        .assessment-section p {
             color: #475569;
             line-height: 1.8;
             font-size: 0.95rem;
         }
-        .assessment-section ul {
-            margin-left: 20px;
-            margin-top: 8px;
-        }
-        .assessment-section li {
-            margin-bottom: 6px;
-        }
-        
-        /* Section-specific colors */
         .section-truth { border-left-color: #10b981; }
         .section-truth h3 { color: #065f46; }
-        
         .section-assessment { border-left-color: #3b82f6; }
         .section-assessment h3 { color: #1e40af; }
-        
         .section-claim { border-left-color: #8b5cf6; }
         .section-claim h3 { color: #5b21b6; }
-        
         .section-evidence { border-left-color: #f59e0b; }
         .section-evidence h3 { color: #92400e; }
-        
         .section-distortion { border-left-color: #ef4444; }
         .section-distortion h3 { color: #b91c1c; }
-        
         .section-confident { border-left-color: #10b981; }
         .section-confident h3 { color: #065f46; }
-        
         .section-uncertain { border-left-color: #6b7280; }
         .section-uncertain h3 { color: #374151; }
-        
         .section-bottom { 
             border-left-color: #1e3a5f; 
             background: linear-gradient(135deg, #e0f2fe 0%, #dbeafe 100%);
         }
         .section-bottom h3 { color: #1e3a5f; }
-        
         .section-lessons { border-left-color: #8b5cf6; }
         .section-lessons h3 { color: #5b21b6; }
-        
         .section-sources { 
             border-left-color: #64748b; 
             background: #f1f5f9;
         }
         .section-sources h3 { color: #475569; }
-        
         .error {
             background: #fef2f2;
             border: 1px solid #fecaca;
@@ -297,58 +272,40 @@
         .back-link:hover {
             color: white;
         }
-        
         @media (max-width: 600px) {
-            .scores {
-                grid-template-columns: 1fr;
-            }
-            .header h1 {
-                font-size: 1.8rem;
-            }
-            .card {
-                padding: 20px;
-            }
+            .scores { grid-template-columns: 1fr; }
+            .header h1 { font-size: 1.8rem; }
+            .card { padding: 20px; }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <a href="/" class="back-link">← Back to VERITAS Home</a>
-        
         <div class="header">
             <h1>🔍 VERITAS Live Assessment</h1>
             <p>AI-powered truth verification with web search and epistemological analysis</p>
         </div>
-
         <div class="card">
             <div class="error" id="errorBox"></div>
-            
             <div class="form-group">
                 <label for="question">Question or Claim to Assess</label>
                 <input type="text" id="question" placeholder="e.g., Is climate change primarily caused by human activity?">
             </div>
-
             <div class="form-group">
                 <label for="articleText">Article Text (Optional)</label>
                 <textarea id="articleText" placeholder="Paste article text here for analysis, or leave blank to assess just the question above..."></textarea>
             </div>
-
             <details class="api-key-section">
                 <summary>🔑 Use Your Own API Key (Optional)</summary>
                 <p>Get unlimited assessments by using your own Anthropic API key. Without a key, you get 5 free assessments per day.</p>
                 <input type="text" id="apiKey" placeholder="sk-ant-...">
             </details>
-
-            <button class="btn btn-primary" id="assessBtn" onclick="assessClaim()">
-                🔍 Assess with VERITAS
-            </button>
-
+            <button class="btn btn-primary" id="assessBtn" onclick="assessClaim()">🔍 Assess with VERITAS</button>
             <p class="free-tier-note">5 free assessments per day • Powered by Claude with web search</p>
         </div>
-
         <div class="card results" id="results">
             <h2>📊 Assessment Results</h2>
-            
             <div class="scores">
                 <div class="score-card reality">
                     <div class="score-label">Reality Score</div>
@@ -359,28 +316,206 @@
                     <div class="score-value" id="integrityScore">—</div>
                 </div>
             </div>
-
             <div id="formattedAssessment"></div>
-
-            <button class="btn btn-amplify" id="amplifyBtn" onclick="amplifyAssessment()">
-                🔬 Amplify Assessment — Deeper Analysis
-            </button>
-
+            <button class="btn btn-amplify" id="amplifyBtn" onclick="amplifyAssessment()">🔬 Amplify Assessment</button>
             <div class="amplified-results" id="amplifiedResults">
                 <h3>🔬 Amplified Analysis</h3>
                 <div id="formattedAmplified"></div>
             </div>
         </div>
     </div>
+<script>
+let lastAssessment = null;
 
-    <script>
-        let lastAssessment = null;
+function formatAssessment(text) {
+    const sections = [
+        { pattern: /\*\*UNDERLYING TRUTH\*\*/i, title: '🎯 Underlying Truth', cls: 'section-truth' },
+        { pattern: /\*\*VERITAS ASSESSMENT\*\*/i, title: '⚖️ VERITAS Assessment', cls: 'section-assessment' },
+        { pattern: /\*\*CLAIM BEING TESTED\*\*/i, title: '🔎 Claim Being Tested', cls: 'section-claim' },
+        { pattern: /\*\*EVIDENCE ANALYSIS\*\*/i, title: '📋 Evidence Analysis', cls: 'section-evidence' },
+        { pattern: /\*\*TRUTH DISTORTION ANALYSIS\*\*/i, title: '⚠️ Truth Distortion Analysis', cls: 'section-distortion' },
+        { pattern: /\*\*WHAT WE CAN BE CONFIDENT ABOUT\*\*/i, title: '✅ What We Can Be Confident About', cls: 'section-confident' },
+        { pattern: /\*\*WHAT REMAINS GENUINELY UNCERTAIN\*\*/i, title: '❓ What Remains Uncertain', cls: 'section-uncertain' },
+        { pattern: /\*\*BOTTOM LINE\*\*/i, title: '💡 Bottom Line', cls: 'section-bottom' },
+        { pattern: /\*\*LESSONS FOR INFORMATION ASSESSMENT\*\*/i, title: '📚 Lessons', cls: 'section-lessons' },
+        { pattern: /\*\*KEY SOURCES REFERENCED\*\*/i, title: '📖 Sources', cls: 'section-sources' }
+    ];
+    
+    let cleanText = text
+        .replace(/\*\*REALITY SCORE:\s*\[?[+-]?\d+(?:\.\d+)?\]?\*\*/gi, '')
+        .replace(/\*\*EPISTEMOLOGICAL INTEGRITY SCORE:\s*\[?[+-]?\d+(?:\.\d+)?\]?\*\*/gi, '');
+    
+    let html = '';
+    
+    for (let i = 0; i < sections.length; i++) {
+        const section = sections[i];
+        const match = cleanText.match(section.pattern);
+        if (match) {
+            const startIdx = match.index + match[0].length;
+            let endIdx = cleanText.length;
+            
+            for (let j = i + 1; j < sections.length; j++) {
+                const nextMatch = cleanText.substring(startIdx).match(sections[j].pattern);
+                if (nextMatch) {
+                    endIdx = startIdx + nextMatch.index;
+                    break;
+                }
+            }
+            
+            let content = cleanText.substring(startIdx, endIdx).trim();
+            content = content.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+            content = content.replace(/\n/g, '<br>');
+            
+            if (content) {
+                html += '<div class="assessment-section ' + section.cls + '"><h3>' + section.title + '</h3><p>' + content + '</p></div>';
+            }
+        }
+    }
+    
+    if (!html) {
+        html = '<div class="assessment-section"><p>' + text.replace(/\n/g, '<br>') + '</p></div>';
+    }
+    
+    return html;
+}
 
-        function formatAssessment(text) {
-            const sections = [
-                { pattern: /\*\*UNDERLYING TRUTH\*\*\s*/i, title: '🎯 Underlying Truth', class: 'section-truth' },
-                { pattern: /\*\*VERITAS ASSESSMENT\*\*\s*/i, title: '⚖️ VERITAS Assessment', class: 'section-assessment' },
-                { pattern: /\*\*CLAIM BEING TESTED\*\*\s*/i, title: '🔎 Claim Being Tested', class: 'section-claim' },
-                { pattern: /\*\*EVIDENCE ANALYSIS\*\*\s*/i, title: '📋 Evidence Analysis', class: 'section-evidence' },
-                { pattern: /\*\*TRUTH DISTORTION ANALYSIS\*\*\s*/i, title: '⚠️ Truth Distortion Analysis', class: 'section-distortion' },
-                { pattern: /\*\*WHAT WE CAN BE
+function formatAmplified(text) {
+    const sections = [
+        { pattern: /\*\*AMPLIFICATION SUMMARY\*\*/i, title: '📝 Summary' },
+        { pattern: /\*\*MISSING PERSPECTIVES\*\*/i, title: '👁️ Missing Perspectives' },
+        { pattern: /\*\*ALTERNATIVE FRAMINGS\*\*/i, title: '🔄 Alternative Framings' },
+        { pattern: /\*\*WHAT WOULD CHANGE THE ASSESSMENT\*\*/i, title: '⚡ What Would Change It' },
+        { pattern: /\*\*EPISTEMIC HUMILITY CHECK\*\*/i, title: '🤔 Humility Check' },
+        { pattern: /\*\*BOTTOM LINE\*\*/i, title: '💡 Bottom Line' }
+    ];
+    
+    let html = '';
+    
+    for (let i = 0; i < sections.length; i++) {
+        const section = sections[i];
+        const match = text.match(section.pattern);
+        if (match) {
+            const startIdx = match.index + match[0].length;
+            let endIdx = text.length;
+            
+            for (let j = i + 1; j < sections.length; j++) {
+                const nextMatch = text.substring(startIdx).match(sections[j].pattern);
+                if (nextMatch) {
+                    endIdx = startIdx + nextMatch.index;
+                    break;
+                }
+            }
+            
+            let content = text.substring(startIdx, endIdx).trim();
+            content = content.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+            content = content.replace(/\n/g, '<br>');
+            
+            if (content) {
+                html += '<div class="amplified-section"><h4>' + section.title + '</h4><p>' + content + '</p></div>';
+            }
+        }
+    }
+    
+    if (!html) {
+        html = '<div class="amplified-section"><p>' + text.replace(/\n/g, '<br>') + '</p></div>';
+    }
+    
+    return html;
+}
+
+async function assessClaim() {
+    const question = document.getElementById('question').value.trim();
+    const articleText = document.getElementById('articleText').value.trim();
+    const userApiKey = document.getElementById('apiKey').value.trim();
+    const btn = document.getElementById('assessBtn');
+    const errorBox = document.getElementById('errorBox');
+    const results = document.getElementById('results');
+
+    if (!question && !articleText) {
+        errorBox.textContent = 'Please enter a question or paste article text.';
+        errorBox.classList.add('visible');
+        return;
+    }
+
+    errorBox.classList.remove('visible');
+    btn.disabled = true;
+    btn.innerHTML = '⏳ Analyzing...';
+    results.classList.remove('visible');
+    document.getElementById('amplifiedResults').classList.remove('visible');
+    document.getElementById('amplifyBtn').style.display = 'block';
+
+    try {
+        const response = await fetch('/api/assess', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ question: question, articleText: articleText, userApiKey: userApiKey })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error || data.message || 'Assessment failed');
+        }
+
+        document.getElementById('realityScore').textContent = data.realityScore !== null ? data.realityScore : '—';
+        document.getElementById('integrityScore').textContent = data.integrityScore !== null ? data.integrityScore.toFixed(1) : '—';
+        document.getElementById('formattedAssessment').innerHTML = formatAssessment(data.assessment);
+        results.classList.add('visible');
+
+        lastAssessment = {
+            question: question || 'Article Assessment',
+            assessment: data.assessment
+        };
+
+        results.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    } catch (err) {
+        errorBox.textContent = 'Error: ' + err.message;
+        errorBox.classList.add('visible');
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = '🔍 Assess with VERITAS';
+    }
+}
+
+async function amplifyAssessment() {
+    if (!lastAssessment) return;
+
+    const btn = document.getElementById('amplifyBtn');
+    const userApiKey = document.getElementById('apiKey').value.trim();
+
+    btn.disabled = true;
+    btn.innerHTML = '⏳ Amplifying...';
+
+    try {
+        const response = await fetch('/api/amplify', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                question: lastAssessment.question,
+                assessment: lastAssessment.assessment,
+                userApiKey: userApiKey
+            })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error || data.message || 'Amplification failed');
+        }
+
+        document.getElementById('formattedAmplified').innerHTML = formatAmplified(data.amplified);
+        document.getElementById('amplifiedResults').classList.add('visible');
+        btn.style.display = 'none';
+        
+        document.getElementById('amplifiedResults').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    } catch (err) {
+        alert('Amplification error: ' + err.message);
+        btn.disabled = false;
+        btn.innerHTML = '🔬 Amplify Assessment';
+    }
+}
+</script>
+</body>
+</html>
