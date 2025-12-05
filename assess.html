@@ -95,7 +95,7 @@
             background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%);
             color: white;
             width: 100%;
-            margin-top: 16px;
+            margin-top: 24px;
         }
         .btn-amplify:hover {
             transform: translateY(-2px);
@@ -107,39 +107,118 @@
         .results.visible {
             display: block;
         }
+        .results h2 {
+            color: #1e3a5f;
+            margin-bottom: 24px;
+            font-size: 1.5rem;
+        }
         .scores {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 20px;
-            margin-bottom: 24px;
+            margin-bottom: 28px;
         }
         .score-card {
             background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
             border-radius: 12px;
-            padding: 20px;
+            padding: 24px;
             text-align: center;
+            border: 2px solid #bae6fd;
+        }
+        .score-card.reality {
+            background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+            border-color: #6ee7b7;
+        }
+        .score-card.integrity {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border-color: #fcd34d;
         }
         .score-label {
             font-size: 0.9rem;
             color: #64748b;
             margin-bottom: 8px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
         .score-value {
-            font-size: 2.5rem;
+            font-size: 3rem;
             font-weight: 700;
             color: #1e3a5f;
         }
-        .assessment-text {
+        .score-card.reality .score-value {
+            color: #065f46;
+        }
+        .score-card.integrity .score-value {
+            color: #92400e;
+        }
+        
+        /* Formatted Assessment Sections */
+        .assessment-section {
             background: #f8fafc;
             border-radius: 12px;
-            padding: 24px;
-            line-height: 1.8;
-            white-space: pre-wrap;
-            font-size: 0.95rem;
-            color: #334155;
-            max-height: 600px;
-            overflow-y: auto;
+            padding: 20px 24px;
+            margin-bottom: 16px;
+            border-left: 4px solid #3b82f6;
         }
+        .assessment-section h3 {
+            color: #1e3a5f;
+            font-size: 1.1rem;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .assessment-section p, .assessment-section ul {
+            color: #475569;
+            line-height: 1.8;
+            font-size: 0.95rem;
+        }
+        .assessment-section ul {
+            margin-left: 20px;
+            margin-top: 8px;
+        }
+        .assessment-section li {
+            margin-bottom: 6px;
+        }
+        
+        /* Section-specific colors */
+        .section-truth { border-left-color: #10b981; }
+        .section-truth h3 { color: #065f46; }
+        
+        .section-assessment { border-left-color: #3b82f6; }
+        .section-assessment h3 { color: #1e40af; }
+        
+        .section-claim { border-left-color: #8b5cf6; }
+        .section-claim h3 { color: #5b21b6; }
+        
+        .section-evidence { border-left-color: #f59e0b; }
+        .section-evidence h3 { color: #92400e; }
+        
+        .section-distortion { border-left-color: #ef4444; }
+        .section-distortion h3 { color: #b91c1c; }
+        
+        .section-confident { border-left-color: #10b981; }
+        .section-confident h3 { color: #065f46; }
+        
+        .section-uncertain { border-left-color: #6b7280; }
+        .section-uncertain h3 { color: #374151; }
+        
+        .section-bottom { 
+            border-left-color: #1e3a5f; 
+            background: linear-gradient(135deg, #e0f2fe 0%, #dbeafe 100%);
+        }
+        .section-bottom h3 { color: #1e3a5f; }
+        
+        .section-lessons { border-left-color: #8b5cf6; }
+        .section-lessons h3 { color: #5b21b6; }
+        
+        .section-sources { 
+            border-left-color: #64748b; 
+            background: #f1f5f9;
+        }
+        .section-sources h3 { color: #475569; }
+        
         .error {
             background: #fef2f2;
             border: 1px solid #fecaca;
@@ -178,9 +257,9 @@
         .amplified-results {
             display: none;
             margin-top: 24px;
-            border: 2px solid #7c3aed;
-            border-radius: 12px;
-            padding: 24px;
+            border: 3px solid #7c3aed;
+            border-radius: 16px;
+            padding: 28px;
             background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
         }
         .amplified-results.visible {
@@ -188,16 +267,25 @@
         }
         .amplified-results h3 {
             color: #5b21b6;
-            margin-bottom: 16px;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
         }
-        .amplified-text {
+        .amplified-section {
             background: white;
-            border-radius: 8px;
-            padding: 20px;
-            line-height: 1.8;
-            white-space: pre-wrap;
+            border-radius: 10px;
+            padding: 18px 22px;
+            margin-bottom: 14px;
+            border-left: 4px solid #7c3aed;
+        }
+        .amplified-section h4 {
+            color: #5b21b6;
+            font-size: 1rem;
+            margin-bottom: 10px;
+        }
+        .amplified-section p {
+            color: #475569;
+            line-height: 1.7;
             font-size: 0.95rem;
-            color: #334155;
         }
         .back-link {
             display: inline-block;
@@ -208,6 +296,18 @@
         }
         .back-link:hover {
             color: white;
+        }
+        
+        @media (max-width: 600px) {
+            .scores {
+                grid-template-columns: 1fr;
+            }
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            .card {
+                padding: 20px;
+            }
         }
     </style>
 </head>
@@ -247,28 +347,28 @@
         </div>
 
         <div class="card results" id="results">
-            <h2 style="color: #1e3a5f; margin-bottom: 20px;">Assessment Results</h2>
+            <h2>📊 Assessment Results</h2>
             
             <div class="scores">
-                <div class="score-card">
+                <div class="score-card reality">
                     <div class="score-label">Reality Score</div>
                     <div class="score-value" id="realityScore">—</div>
                 </div>
-                <div class="score-card">
+                <div class="score-card integrity">
                     <div class="score-label">Integrity Score</div>
                     <div class="score-value" id="integrityScore">—</div>
                 </div>
             </div>
 
-            <div class="assessment-text" id="assessmentText"></div>
+            <div id="formattedAssessment"></div>
 
             <button class="btn btn-amplify" id="amplifyBtn" onclick="amplifyAssessment()">
-                🔬 Amplify Assessment
+                🔬 Amplify Assessment — Deeper Analysis
             </button>
 
             <div class="amplified-results" id="amplifiedResults">
                 <h3>🔬 Amplified Analysis</h3>
-                <div class="amplified-text" id="amplifiedText"></div>
+                <div id="formattedAmplified"></div>
             </div>
         </div>
     </div>
@@ -276,95 +376,11 @@
     <script>
         let lastAssessment = null;
 
-        async function assessClaim() {
-            const question = document.getElementById('question').value.trim();
-            const articleText = document.getElementById('articleText').value.trim();
-            const userApiKey = document.getElementById('apiKey').value.trim();
-            const btn = document.getElementById('assessBtn');
-            const errorBox = document.getElementById('errorBox');
-            const results = document.getElementById('results');
-
-            if (!question && !articleText) {
-                errorBox.textContent = 'Please enter a question or paste article text to assess.';
-                errorBox.classList.add('visible');
-                return;
-            }
-
-            errorBox.classList.remove('visible');
-            btn.disabled = true;
-            btn.innerHTML = '⏳ Analyzing with web search...';
-            results.classList.remove('visible');
-            document.getElementById('amplifiedResults').classList.remove('visible');
-            document.getElementById('amplifyBtn').style.display = 'block';
-
-            try {
-                const response = await fetch('/api/assess', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ question, articleText, userApiKey })
-                });
-
-                const data = await response.json();
-
-                if (!response.ok) {
-                    throw new Error(data.error || data.message || 'Assessment failed');
-                }
-
-                document.getElementById('realityScore').textContent = data.realityScore !== null ? data.realityScore : '—';
-                document.getElementById('integrityScore').textContent = data.integrityScore !== null ? data.integrityScore.toFixed(1) : '—';
-                document.getElementById('assessmentText').textContent = data.assessment;
-                results.classList.add('visible');
-
-                lastAssessment = {
-                    question: question || 'Article Assessment',
-                    assessment: data.assessment
-                };
-
-            } catch (err) {
-                errorBox.textContent = '⚠️ Error: ' + err.message;
-                errorBox.classList.add('visible');
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = '🔍 Assess with VERITAS';
-            }
-        }
-
-        async function amplifyAssessment() {
-            if (!lastAssessment) return;
-
-            const btn = document.getElementById('amplifyBtn');
-            const userApiKey = document.getElementById('apiKey').value.trim();
-
-            btn.disabled = true;
-            btn.innerHTML = '⏳ Amplifying...';
-
-            try {
-                const response = await fetch('/api/amplify', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        question: lastAssessment.question,
-                        assessment: lastAssessment.assessment,
-                        userApiKey
-                    })
-                });
-
-                const data = await response.json();
-
-                if (!response.ok) {
-                    throw new Error(data.error || data.message || 'Amplification failed');
-                }
-
-                document.getElementById('amplifiedText').textContent = data.amplified;
-                document.getElementById('amplifiedResults').classList.add('visible');
-                btn.style.display = 'none';
-
-            } catch (err) {
-                alert('Amplification error: ' + err.message);
-                btn.disabled = false;
-                btn.innerHTML = '🔬 Amplify Assessment';
-            }
-        }
-    </script>
-</body>
-</html>
+        function formatAssessment(text) {
+            const sections = [
+                { pattern: /\*\*UNDERLYING TRUTH\*\*\s*/i, title: '🎯 Underlying Truth', class: 'section-truth' },
+                { pattern: /\*\*VERITAS ASSESSMENT\*\*\s*/i, title: '⚖️ VERITAS Assessment', class: 'section-assessment' },
+                { pattern: /\*\*CLAIM BEING TESTED\*\*\s*/i, title: '🔎 Claim Being Tested', class: 'section-claim' },
+                { pattern: /\*\*EVIDENCE ANALYSIS\*\*\s*/i, title: '📋 Evidence Analysis', class: 'section-evidence' },
+                { pattern: /\*\*TRUTH DISTORTION ANALYSIS\*\*\s*/i, title: '⚠️ Truth Distortion Analysis', class: 'section-distortion' },
+                { pattern: /\*\*WHAT WE CAN BE
