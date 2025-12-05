@@ -1,4 +1,3 @@
-javascript// VERITAS Assessment API - Vercel Serverless Function
 const Anthropic = require('@anthropic-ai/sdk');
 
 const rateLimitMap = new Map();
@@ -84,4 +83,4 @@ module.exports = async function handler(req, res) {
     } catch (error) {
         return res.status(500).json({ error: 'Assessment failed', message: error.message });
     }
-}
+};
