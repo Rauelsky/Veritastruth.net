@@ -56,11 +56,9 @@ Do NOT rely solely on your training data. Always search for current information.
 
 ## TRUTH DISTORTION PATTERNS TO DETECT
 
-1. **Epistemological Special Pleading**: Applying different evidence standards based on whether conclusions are desired. Watch for cherry-picking studies, dismissing inconvenient evidence, or accepting weak evidence for preferred conclusions.
-
-2. **Weaponized Uncertainty**: Exploiting genuine complexity to avoid inconvenient conclusions. Watch for "just asking questions," false balance, manufactured doubt, or demanding impossible certainty.
-
-3. **Tribal Reasoning**: Evaluating claims based on who makes them rather than their merit. Watch for ad hominem, genetic fallacy, or automatically accepting/rejecting claims based on political alignment.
+1. **Epistemological Special Pleading**: Applying different evidence standards based on whether conclusions are desired
+2. **Weaponized Uncertainty**: Exploiting genuine complexity to avoid inconvenient conclusions
+3. **Tribal Reasoning**: Evaluating claims based on who makes them rather than their merit
 
 ## YOUR TASK
 
@@ -68,11 +66,11 @@ ${articleText ? `Analyze this article:\n\n${articleText}\n\nQuestion about the a
 
 ## REQUIRED PROCESS
 
-1. **SEARCH FIRST**: Use web search to find current, authoritative information on this topic
-2. **IDENTIFY THE CORE CLAIM**: What specific, testable assertion is being made?
-3. **GATHER EVIDENCE**: What do authoritative sources say? Note source quality.
-4. **CHECK YOUR REASONING**: Are you applying consistent standards? Would you reach the same conclusion if the political valence were reversed?
-5. **ACKNOWLEDGE UNCERTAINTY**: What don't we know? What would change your assessment?
+1. **SEARCH FIRST**: Use web search to find current, authoritative information
+2. **IDENTIFY THE CORE CLAIM**: What specific assertion is being made?
+3. **GATHER EVIDENCE**: What do authoritative sources say?
+4. **CHECK YOUR REASONING**: Are you applying consistent standards?
+5. **ACKNOWLEDGE UNCERTAINTY**: What don't we know?
 
 ## REQUIRED OUTPUT FORMAT
 
@@ -81,34 +79,34 @@ ${articleText ? `Analyze this article:\n\n${articleText}\n\nQuestion about the a
 **EPISTEMOLOGICAL INTEGRITY SCORE: [X.X]** (number from -1.0 to 0.0)
 
 **UNDERLYING TRUTH**
-[2-3 sentences on what's actually true about this topic, regardless of how the question is framed. This should be the objective reality that any honest observer would acknowledge.]
+[2-3 sentences on what's actually true about this topic]
 
 **VERITAS ASSESSMENT**
-[Your main conclusion in 2-3 sentences. Be direct about what the evidence shows.]
+[Your main conclusion in 2-3 sentences]
 
 **CLAIM BEING TESTED**
-[State the specific claim you're evaluating - make it precise and testable]
+[State the specific claim you're evaluating]
 
 **EVIDENCE ANALYSIS**
-[Key evidence for and against the claim. Note source quality (peer-reviewed, official statistics, expert consensus vs. opinion pieces, partisan sources, anecdotes). Include what you found from web searches.]
+[Key evidence for and against, with source quality notes. Include what you found from web searches.]
 
 **TRUTH DISTORTION ANALYSIS**
-[Identify any patterns of epistemological special pleading, weaponized uncertainty, or tribal reasoning in how this topic is typically discussed. Be specific about which distortions are present.]
+[Any patterns detected]
 
 **WHAT WE CAN BE CONFIDENT ABOUT**
-[Claims with strong evidentiary support from multiple authoritative sources]
+[Claims with strong evidentiary support]
 
 **WHAT REMAINS GENUINELY UNCERTAIN**
-[Areas where evidence is limited, conflicting, or where reasonable experts disagree]
+[Areas where evidence is limited or conflicting]
 
 **BOTTOM LINE**
-[Clear, direct assessment for a general reader. Don't hedge excessively - give them a straight answer while noting key caveats.]
+[Final assessment for a general reader]
 
 **LESSONS FOR INFORMATION ASSESSMENT**
-[What does this example teach about evaluating similar claims? What red flags or good practices does it illustrate?]
+[What this example teaches about evaluating similar claims]
 
 **KEY SOURCES REFERENCED**
-[List the main sources you consulted, noting their type and reliability]`;
+[List main sources consulted from your web searches]`;
 }
 
 module.exports = async function handler(req, res) {
@@ -133,26 +131,30 @@ module.exports = async function handler(req, res) {
         
         const anthropic = new Anthropic({ apiKey });
         
-        // Use web search tool for current information
+        // Call with web search tool enabled
         const message = await anthropic.messages.create({
             model: 'claude-sonnet-4-20250514',
-            max_tokens: 8000,
+            max_tokens: 16000,
             tools: [
                 {
                     type: "web_search_20250305",
-                    name: "web_search",
-                    max_uses: 5
+                    name: "web_search"
                 }
             ],
             messages: [{ role: 'user', content: getAssessmentPrompt(question, articleText) }]
         });
         
-        // Extract the text response (may include tool use blocks)
+        // Extract text from response (handles both text and tool_use blocks)
         let assessment = '';
         for (const block of message.content) {
             if (block.type === 'text') {
                 assessment += block.text;
             }
+        }
+        
+        // If no text found, provide error
+        if (!assessment) {
+            return res.status(500).json({ error: 'No assessment generated', message: 'The model did not return text content' });
         }
         
         const realityMatch = assessment.match(/REALITY SCORE:\s*\[?([+-]?\d+(?:\.\d+)?)\]?/i);
@@ -167,6 +169,28 @@ module.exports = async function handler(req, res) {
         });
     } catch (error) {
         console.error('Assessment error:', error);
-        return res.status(500).json({ error: 'Assessment failed', message: error.message });
+        
+        // More detailed error handling
+        if (error.status === 400) {
+            return res.status(400).json({ 
+                error: 'Bad request to Anthropic API', 
+                message: error.message,
+                details: 'The web search feature may require a newer API version or different configuration.'
+            });
+        }
+        
+        if (error.status === 401) {
+            return res.status(401).json({ error: 'Invalid API key', message: error.message });
+        }
+        
+        if (error.status === 429) {
+            return res.status(429).json({ error: 'Rate limited by Anthropic', message: 'Please wait a moment and try again.' });
+        }
+        
+        return res.status(500).json({ 
+            error: 'Assessment failed', 
+            message: error.message,
+            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+        });
     }
 };
