@@ -20,7 +20,7 @@
     
     /* Header */
     header {
-      background: linear-gradient(to right, white 0%, white 50%, #2196F3 50%, #2196F3 100%);
+      background: linear-gradient(to right, white 0%, white 35%, #2196F3 35%, #2196F3 100%);
       padding: 20px 40px;
       box-shadow: 0 2px 10px rgba(0,0,0,0.1);
       position: sticky;
@@ -56,8 +56,10 @@
     
     .header-links {
       display: flex;
-      gap: 12px;
+      gap: 8px;
       align-items: center;
+      margin-left: auto;
+      padding-left: 40px;
     }
     
     .header-links a,
@@ -66,13 +68,14 @@
       text-decoration: none;
       font-weight: 500;
       transition: all 0.3s ease;
-      padding: 8px 16px;
+      padding: 8px 14px;
       border-radius: 6px;
       background: transparent;
       border: none;
       cursor: pointer;
-      font-size: 16px;
+      font-size: 15px;
       font-family: inherit;
+      white-space: nowrap;
     }
     
     .header-links a:hover,
@@ -91,7 +94,7 @@
     
     .demo-link {
       background: rgba(255,255,255,0.2) !important;
-      padding: 10px 24px !important;
+      padding: 8px 18px !important;
       border-radius: 6px;
       font-weight: 600 !important;
       border: 2px solid rgba(255,255,255,0.3) !important;
@@ -1600,7 +1603,7 @@
         <div class="footer-section">
           <h4>Contact</h4>
           <p><strong>Email:</strong><br>
-          <a href="mailto:info@veritastruth.net">info@veritastruth.net</a></p>
+          <a href="/cdn-cgi/l/email-protection#147d7a727b546271667d607567606661607c3a7a7160"><span class="__cf_email__" data-cfemail="84edeae2ebc4f2e1f6edf0e5f7f0f6f1f0ecaaeae1f0">[email&#160;protected]</span></a></p>
           <p style="margin-top: 16px;"><strong>Website:</strong><br>
           <a href="http://www.veritastruth.net">www.veritastruth.net</a></p>
         </div>
@@ -1669,7 +1672,7 @@
   <!-- ============================================ -->
   <!-- JAVASCRIPT FOR MODALS -->
   <!-- ============================================ -->
-  <script>
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
     // PDF file path
     const STORY_PDF_PATH = 'VERITAS_The_Story.pdf';
     let pdfLoaded = false;
@@ -1752,16 +1755,4 @@
     });
 
     document.getElementById('videoModal').addEventListener('click', function(e) {
-      if (e.target === this) closeVideoModal();
-    });
-
-    // Close on Escape key
-    document.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape') {
-        closeStoryModal();
-        closeVideoModal();
-      }
-    });
-  </script>
-</body>
-</html>
+      if (e.target ===
