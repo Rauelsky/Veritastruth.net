@@ -3,392 +3,341 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VERITAS - Live Assessment</title>
+    <title>VERITAS Live Assessment</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #0f0c29 0%, #1a1a2e 50%, #16213e 100%);
+            background: linear-gradient(135deg, #1e3a5f 0%, #0f172a 100%);
             min-height: 100vh;
-            color: #e0e0e0;
-            line-height: 1.6;
+            padding: 40px 20px;
         }
-        .container { max-width: 900px; margin: 0 auto; padding: 40px 20px; }
-        
-        .header { text-align: center; margin-bottom: 40px; }
-        .header img { max-width: 200px; margin-bottom: 15px; }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
         .header h1 {
-            font-size: 48px; font-weight: 800; letter-spacing: 8px;
-            background: linear-gradient(135deg, #4a9eff 0%, #00d4ff 100%);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            color: white;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
         }
-        .header .motto { color: #4a9eff; font-style: italic; font-size: 18px; }
-        .header .version { color: #666; font-size: 14px; margin-top: 5px; }
-        
-        .mode-toggle { display: flex; justify-content: center; gap: 10px; margin-bottom: 30px; }
-        .mode-btn {
-            padding: 12px 30px; border: 2px solid #4a9eff; background: transparent;
-            color: #4a9eff; border-radius: 25px; font-size: 16px; font-weight: 600;
-            cursor: pointer; transition: all 0.3s ease;
+        .header p {
+            color: rgba(255,255,255,0.8);
+            font-size: 1.1rem;
         }
-        .mode-btn.active { background: linear-gradient(135deg, #4a9eff 0%, #0f3460 100%); color: white; }
-        .mode-btn:hover { transform: translateY(-2px); }
-        
-        .input-section {
-            background: rgba(255, 255, 255, 0.05); border-radius: 16px;
-            padding: 30px; margin-bottom: 30px; border: 1px solid rgba(74, 158, 255, 0.2);
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            margin-bottom: 24px;
         }
-        .input-group { margin-bottom: 20px; }
-        .input-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #4a9eff; }
-        .input-group input, .input-group textarea {
-            width: 100%; padding: 15px; border: 2px solid rgba(74, 158, 255, 0.3);
-            border-radius: 10px; background: rgba(0, 0, 0, 0.3); color: #fff;
-            font-size: 16px; font-family: inherit;
+        .form-group {
+            margin-bottom: 24px;
         }
-        .input-group input:focus, .input-group textarea:focus { outline: none; border-color: #4a9eff; }
-        .input-group textarea { min-height: 150px; resize: vertical; }
-        .input-group input::placeholder, .input-group textarea::placeholder { color: #666; }
-        
-        .submit-btn {
-            width: 100%; padding: 18px;
-            background: linear-gradient(135deg, #4a9eff 0%, #0f3460 100%);
-            border: none; border-radius: 10px; color: white;
-            font-size: 18px; font-weight: 700; cursor: pointer;
-            display: flex; align-items: center; justify-content: center; gap: 10px;
+        label {
+            display: block;
+            font-weight: 600;
+            color: #1e3a5f;
+            margin-bottom: 8px;
+            font-size: 1rem;
         }
-        .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(74, 158, 255, 0.3); }
-        .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
-        
-        .loading { display: none; text-align: center; padding: 40px; }
-        .spinner {
-            width: 50px; height: 50px; border: 4px solid rgba(74, 158, 255, 0.3);
-            border-top-color: #4a9eff; border-radius: 50%;
-            animation: spin 1s linear infinite; margin: 0 auto 20px;
+        textarea, input[type="text"] {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.2s;
         }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        
+        textarea:focus, input[type="text"]:focus {
+            outline: none;
+            border-color: #3b82f6;
+        }
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 16px 32px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            width: 100%;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+        }
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .btn-amplify {
+            background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%);
+            color: white;
+            width: 100%;
+            margin-top: 16px;
+        }
+        .btn-amplify:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(124, 58, 237, 0.4);
+        }
         .results {
-            display: none; background: rgba(255, 255, 255, 0.05);
-            border-radius: 16px; padding: 30px; border: 1px solid rgba(74, 158, 255, 0.2);
-            margin-bottom: 30px;
+            display: none;
         }
-        .score-header { text-align: center; padding: 30px; border-radius: 12px; margin-bottom: 30px; }
-        .score-number { font-size: 72px; font-weight: 800; }
-        .score-label { font-size: 18px; opacity: 0.9; margin-top: 10px; }
-        .question-display { font-size: 20px; margin-top: 15px; font-style: italic; }
-        
-        .scale-visual { background: rgba(0, 0, 0, 0.3); padding: 20px; border-radius: 12px; margin-bottom: 30px; }
-        .scale-title { text-align: center; font-weight: 600; margin-bottom: 15px; }
-        .scale-bar {
-            height: 30px; border-radius: 15px; position: relative;
-            background: linear-gradient(90deg, #d32f2f 0%, #f44336 20%, #ff9800 40%, #ffc107 50%, #8bc34a 60%, #4caf50 80%, #2e7d32 100%);
+        .results.visible {
+            display: block;
         }
-        .scale-marker {
-            position: absolute; top: -5px; width: 6px; height: 40px;
-            background: white; border: 2px solid #1a1a2e; border-radius: 3px;
-            transform: translateX(-50%); box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        .scores {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 24px;
         }
-        .scale-labels { display: flex; justify-content: space-between; margin-top: 10px; font-size: 12px; color: #999; }
-        
-        .section {
-            margin-bottom: 25px; padding: 20px; background: rgba(0, 0, 0, 0.2);
-            border-radius: 10px; border-left: 4px solid #4a9eff;
+        .score-card {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
         }
-        .section-title { font-size: 18px; font-weight: 700; color: #4a9eff; margin-bottom: 12px; }
-        .section-content { color: #ccc; }
-        .section-content p { margin-bottom: 10px; }
-        .highlight-section { border-left-color: #ffc107; background: rgba(255, 193, 7, 0.1); }
-        .highlight-section .section-title { color: #ffc107; }
-        
-        .integrity-box {
-            background: linear-gradient(135deg, rgba(0, 150, 136, 0.2) 0%, rgba(0, 77, 64, 0.2) 100%);
-            border: 2px solid #00796b; border-radius: 12px; padding: 20px; margin-bottom: 30px;
+        .score-label {
+            font-size: 0.9rem;
+            color: #64748b;
+            margin-bottom: 8px;
         }
-        .integrity-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .integrity-title { font-weight: 700; color: #4dd0e1; }
-        .integrity-score { font-size: 24px; font-weight: 700; padding: 5px 15px; border-radius: 8px; background: rgba(0, 0, 0, 0.3); }
-        
-        .amplify-btn {
-            width: 100%; padding: 16px; margin-top: 20px;
-            background: linear-gradient(135deg, #7b1fa2 0%, #4a148c 100%);
-            border: none; border-radius: 10px; color: white;
-            font-size: 16px; font-weight: 700; cursor: pointer;
-            display: flex; align-items: center; justify-content: center; gap: 10px;
+        .score-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #1e3a5f;
         }
-        .amplify-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(123, 31, 162, 0.3); }
-        .amplify-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
-        
-        .amplified-section {
-            margin-top: 30px; padding: 25px;
-            background: linear-gradient(135deg, rgba(123, 31, 162, 0.1) 0%, rgba(74, 20, 140, 0.1) 100%);
-            border: 2px solid #7b1fa2; border-radius: 12px;
+        .assessment-text {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 24px;
+            line-height: 1.8;
+            white-space: pre-wrap;
+            font-size: 0.95rem;
+            color: #334155;
+            max-height: 600px;
+            overflow-y: auto;
         }
-        .amplified-header {
-            font-size: 20px; font-weight: 700; color: #ce93d8;
-            margin-bottom: 20px; display: flex; align-items: center; gap: 10px;
+        .error {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #dc2626;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            display: none;
         }
-        .amplified-content .section { border-left-color: #9c27b0; }
-        .amplified-content .section-title { color: #ce93d8; }
-        
+        .error.visible {
+            display: block;
+        }
         .api-key-section {
-            background: rgba(255, 152, 0, 0.1); border: 1px solid rgba(255, 152, 0, 0.3);
-            border-radius: 12px; padding: 20px; margin-bottom: 30px; display: none;
+            background: #fffbeb;
+            border: 1px solid #fde68a;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 24px;
         }
-        .api-key-section h3 { color: #ff9800; margin-bottom: 10px; }
-        .api-key-section p { color: #999; font-size: 14px; margin-bottom: 15px; }
-        .api-key-input { display: flex; gap: 10px; }
-        .api-key-input input {
-            flex: 1; padding: 12px; border: 2px solid rgba(255, 152, 0, 0.3);
-            border-radius: 8px; background: rgba(0, 0, 0, 0.3); color: #fff; font-family: monospace;
+        .api-key-section summary {
+            cursor: pointer;
+            font-weight: 600;
+            color: #92400e;
         }
-        .api-key-input button {
-            padding: 12px 20px; background: #ff9800; border: none;
-            border-radius: 8px; color: white; font-weight: 600; cursor: pointer;
+        .api-key-section p {
+            margin: 12px 0;
+            font-size: 0.9rem;
+            color: #78350f;
         }
-        
-        .rate-limit-notice {
-            background: rgba(74, 158, 255, 0.1); border: 1px solid rgba(74, 158, 255, 0.3);
-            border-radius: 10px; padding: 15px; margin-bottom: 20px; text-align: center;
+        .free-tier-note {
+            text-align: center;
+            color: #64748b;
+            font-size: 0.9rem;
+            margin-top: 16px;
         }
-        .rate-limit-notice .remaining { font-size: 24px; font-weight: 700; color: #4a9eff; }
-        
-        .error-box {
-            background: rgba(211, 47, 47, 0.2); border: 1px solid #d32f2f;
-            border-radius: 10px; padding: 20px; margin-bottom: 20px; display: none;
+        .amplified-results {
+            display: none;
+            margin-top: 24px;
+            border: 2px solid #7c3aed;
+            border-radius: 12px;
+            padding: 24px;
+            background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
         }
-        .error-box h3 { color: #f44336; margin-bottom: 10px; }
-        
-        .footer {
-            text-align: center; margin-top: 40px; padding-top: 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1); color: #666; font-size: 14px;
+        .amplified-results.visible {
+            display: block;
         }
-        .footer a { color: #4a9eff; text-decoration: none; }
-        
-        @media (max-width: 600px) {
-            .header h1 { font-size: 32px; letter-spacing: 4px; }
-            .mode-toggle { flex-direction: column; }
-            .score-number { font-size: 48px; }
+        .amplified-results h3 {
+            color: #5b21b6;
+            margin-bottom: 16px;
+        }
+        .amplified-text {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            line-height: 1.8;
+            white-space: pre-wrap;
+            font-size: 0.95rem;
+            color: #334155;
+        }
+        .back-link {
+            display: inline-block;
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+        }
+        .back-link:hover {
+            color: white;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <header class="header">
-            <img src="/veritas-logo.png" alt="VERITAS">
-            <p class="motto">Truth through Transparency</p>
-            <p class="version">Live Assessment • Web Edition</p>
-        </header>
+        <a href="/" class="back-link">← Back to VERITAS Home</a>
         
-        <div class="rate-limit-notice" id="rateLimitNotice">
-            Free assessments remaining today: <span class="remaining" id="remainingCount">5</span>
+        <div class="header">
+            <h1>🔍 VERITAS Live Assessment</h1>
+            <p>AI-powered truth verification with web search and epistemological analysis</p>
         </div>
-        
-        <div class="mode-toggle">
-            <button class="mode-btn active" id="questionModeBtn" onclick="setMode('question')">Ask a Question</button>
-            <button class="mode-btn" id="articleModeBtn" onclick="setMode('article')">Assess an Article</button>
-        </div>
-        
-        <div class="input-section">
-            <div class="input-group" id="questionGroup">
-                <label for="question">Your Question or Claim</label>
-                <input type="text" id="question" placeholder="e.g., 'Is it true that vaccines cause autism?'">
+
+        <div class="card">
+            <div class="error" id="errorBox"></div>
+            
+            <div class="form-group">
+                <label for="question">Question or Claim to Assess</label>
+                <input type="text" id="question" placeholder="e.g., Is climate change primarily caused by human activity?">
             </div>
-            <div class="input-group" id="articleGroup" style="display: none;">
-                <label for="articleText">Article Text</label>
-                <textarea id="articleText" placeholder="Paste the full article text here..."></textarea>
+
+            <div class="form-group">
+                <label for="articleText">Article Text (Optional)</label>
+                <textarea id="articleText" placeholder="Paste article text here for analysis, or leave blank to assess just the question above..."></textarea>
             </div>
-            <div class="input-group" id="articleQuestionGroup" style="display: none;">
-                <label for="articleQuestion">Specific Question (optional)</label>
-                <input type="text" id="articleQuestion" placeholder="e.g., 'Is this article's main claim accurate?'">
-            </div>
-            <button class="submit-btn" id="submitBtn" onclick="submitAssessment()">
-                <span>🔍</span><span>Assess with VERITAS</span>
+
+            <details class="api-key-section">
+                <summary>🔑 Use Your Own API Key (Optional)</summary>
+                <p>Get unlimited assessments by using your own Anthropic API key. Without a key, you get 5 free assessments per day.</p>
+                <input type="text" id="apiKey" placeholder="sk-ant-...">
+            </details>
+
+            <button class="btn btn-primary" id="assessBtn" onclick="assessClaim()">
+                🔍 Assess with VERITAS
             </button>
+
+            <p class="free-tier-note">5 free assessments per day • Powered by Claude with web search</p>
         </div>
-        
-        <div class="api-key-section" id="apiKeySection">
-            <h3>🔑 Use Your Own API Key</h3>
-            <p>You've used your free assessments. Enter your Anthropic API key to continue.</p>
-            <div class="api-key-input">
-                <input type="password" id="userApiKey" placeholder="sk-ant-...">
-                <button onclick="saveApiKey()">Save Key</button>
+
+        <div class="card results" id="results">
+            <h2 style="color: #1e3a5f; margin-bottom: 20px;">Assessment Results</h2>
+            
+            <div class="scores">
+                <div class="score-card">
+                    <div class="score-label">Reality Score</div>
+                    <div class="score-value" id="realityScore">—</div>
+                </div>
+                <div class="score-card">
+                    <div class="score-label">Integrity Score</div>
+                    <div class="score-value" id="integrityScore">—</div>
+                </div>
+            </div>
+
+            <div class="assessment-text" id="assessmentText"></div>
+
+            <button class="btn btn-amplify" id="amplifyBtn" onclick="amplifyAssessment()">
+                🔬 Amplify Assessment
+            </button>
+
+            <div class="amplified-results" id="amplifiedResults">
+                <h3>🔬 Amplified Analysis</h3>
+                <div class="amplified-text" id="amplifiedText"></div>
             </div>
         </div>
-        
-        <div class="error-box" id="errorBox">
-            <h3>⚠️ Error</h3>
-            <p id="errorMessage"></p>
-        </div>
-        
-        <div class="loading" id="loading">
-            <div class="spinner"></div>
-            <p>Investigating your claim...</p>
-            <p style="color: #666; font-size: 14px;">This typically takes 30-60 seconds</p>
-        </div>
-        
-        <div class="results" id="results"></div>
-        
-        <footer class="footer">
-            <p>VERITAS • Truth through Transparency</p>
-            <p><a href="/">← Back to Home</a></p>
-            <p style="margin-top: 10px;">© 2025 VERITAS LLC</p>
-        </footer>
     </div>
-    
+
     <script>
-        let currentMode = 'question';
-        let userApiKey = localStorage.getItem('veritas_api_key') || '';
         let lastAssessment = null;
-        
-        if (userApiKey) {
-            document.getElementById('rateLimitNotice').innerHTML = 
-                '🔑 Using your API key • <a href="#" onclick="clearApiKey()">Use free tier instead</a>';
-        }
-        
-        function setMode(mode) {
-            currentMode = mode;
-            document.getElementById('questionModeBtn').classList.toggle('active', mode === 'question');
-            document.getElementById('articleModeBtn').classList.toggle('active', mode === 'article');
-            document.getElementById('questionGroup').style.display = mode === 'question' ? 'block' : 'none';
-            document.getElementById('articleGroup').style.display = mode === 'article' ? 'block' : 'none';
-            document.getElementById('articleQuestionGroup').style.display = mode === 'article' ? 'block' : 'none';
-        }
-        
-        function saveApiKey() {
-            const key = document.getElementById('userApiKey').value.trim();
-            if (key && key.startsWith('sk-ant-')) {
-                userApiKey = key;
-                localStorage.setItem('veritas_api_key', key);
-                document.getElementById('apiKeySection').style.display = 'none';
-                document.getElementById('rateLimitNotice').innerHTML = 
-                    '🔑 Using your API key • <a href="#" onclick="clearApiKey()">Use free tier instead</a>';
-                alert('API key saved!');
-            } else {
-                alert('Please enter a valid Anthropic API key (starts with sk-ant-)');
+
+        async function assessClaim() {
+            const question = document.getElementById('question').value.trim();
+            const articleText = document.getElementById('articleText').value.trim();
+            const userApiKey = document.getElementById('apiKey').value.trim();
+            const btn = document.getElementById('assessBtn');
+            const errorBox = document.getElementById('errorBox');
+            const results = document.getElementById('results');
+
+            if (!question && !articleText) {
+                errorBox.textContent = 'Please enter a question or paste article text to assess.';
+                errorBox.classList.add('visible');
+                return;
             }
-        }
-        
-        function clearApiKey() {
-            userApiKey = '';
-            localStorage.removeItem('veritas_api_key');
-            location.reload();
-            return false;
-        }
-        
-        async function submitAssessment() {
-            const question = currentMode === 'question' 
-                ? document.getElementById('question').value.trim()
-                : document.getElementById('articleQuestion').value.trim() || 'Is this article accurate and honest?';
-            const articleText = currentMode === 'article' ? document.getElementById('articleText').value.trim() : '';
-            
-            if (currentMode === 'question' && !question) { alert('Please enter a question.'); return; }
-            if (currentMode === 'article' && !articleText) { alert('Please paste the article text.'); return; }
-            
-            document.getElementById('loading').style.display = 'block';
-            document.getElementById('results').style.display = 'none';
-            document.getElementById('errorBox').style.display = 'none';
-            document.getElementById('submitBtn').disabled = true;
-            
+
+            errorBox.classList.remove('visible');
+            btn.disabled = true;
+            btn.innerHTML = '⏳ Analyzing with web search...';
+            results.classList.remove('visible');
+            document.getElementById('amplifiedResults').classList.remove('visible');
+            document.getElementById('amplifyBtn').style.display = 'block';
+
             try {
                 const response = await fetch('/api/assess', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ question, articleText, userApiKey: userApiKey || undefined })
+                    body: JSON.stringify({ question, articleText, userApiKey })
                 });
-                
+
                 const data = await response.json();
-                
+
                 if (!response.ok) {
-                    if (response.status === 429) {
-                        document.getElementById('apiKeySection').style.display = 'block';
-                    }
-                    throw new Error(data.message || data.error || 'Assessment failed');
+                    throw new Error(data.error || data.message || 'Assessment failed');
                 }
-                
-                lastAssessment = { question, assessment: data.assessment };
-                displayResults(data);
-                
-            } catch (error) {
-                document.getElementById('errorBox').style.display = 'block';
-                document.getElementById('errorMessage').textContent = error.message;
+
+                document.getElementById('realityScore').textContent = data.realityScore !== null ? data.realityScore : '—';
+                document.getElementById('integrityScore').textContent = data.integrityScore !== null ? data.integrityScore.toFixed(1) : '—';
+                document.getElementById('assessmentText').textContent = data.assessment;
+                results.classList.add('visible');
+
+                lastAssessment = {
+                    question: question || 'Article Assessment',
+                    assessment: data.assessment
+                };
+
+            } catch (err) {
+                errorBox.textContent = '⚠️ Error: ' + err.message;
+                errorBox.classList.add('visible');
             } finally {
-                document.getElementById('loading').style.display = 'none';
-                document.getElementById('submitBtn').disabled = false;
+                btn.disabled = false;
+                btn.innerHTML = '🔍 Assess with VERITAS';
             }
         }
-        
-        function displayResults(data) {
-            const resultsDiv = document.getElementById('results');
-            const realityScore = data.realityScore || 0;
-            const integrityScore = data.integrityScore || 0;
-            
-            let color;
-            if (realityScore >= 7) color = '#2e7d32';
-            else if (realityScore >= 4) color = '#4caf50';
-            else if (realityScore >= 1) color = '#8bc34a';
-            else if (realityScore >= -1) color = '#ffc107';
-            else if (realityScore >= -4) color = '#ff9800';
-            else if (realityScore >= -7) color = '#f44336';
-            else color = '#d32f2f';
-            
-            const position = ((realityScore + 10) / 20) * 100;
-            
-            let html = `
-                <div class="score-header" style="background: linear-gradient(135deg, ${color} 0%, #1a1a2e 100%);">
-                    <div class="score-number">${realityScore >= 0 ? '+' : ''}${realityScore}</div>
-                    <div class="score-label">Reality Score</div>
-                    <div class="question-display">${escapeHtml(data.question)}</div>
-                </div>
-                <div class="scale-visual">
-                    <div class="scale-title">Reality Score: ${realityScore >= 0 ? '+' : ''}${realityScore}</div>
-                    <div class="scale-bar"><div class="scale-marker" style="left: ${Math.max(0, Math.min(100, position))}%;"></div></div>
-                    <div class="scale-labels">
-                        <span>-10<br>FALSE</span><span>-5</span><span>0<br>UNCERTAIN</span><span>+5</span><span>+10<br>TRUE</span>
-                    </div>
-                </div>
-                <div class="integrity-box">
-                    <div class="integrity-header">
-                        <span class="integrity-title">Epistemological Integrity Score</span>
-                        <span class="integrity-score" style="color: ${getIntegrityColor(integrityScore)}">${integrityScore.toFixed(1)}</span>
-                    </div>
-                    <p style="color: #999; font-size: 14px;">${getIntegrityLabel(integrityScore)}</p>
-                </div>
-            `;
-            
-            const sections = parseAssessment(data.assessment);
-            for (const section of sections) {
-                const isHighlight = section.title.toLowerCase().includes('underlying') || 
-                                   section.title.toLowerCase().includes('bottom line') ||
-                                   section.title.toLowerCase().includes('veritas assessment');
-                html += `
-                    <div class="section ${isHighlight ? 'highlight-section' : ''}">
-                        <div class="section-title">${escapeHtml(section.title)}</div>
-                        <div class="section-content">${formatContent(section.content)}</div>
-                    </div>
-                `;
-            }
-            
-            html += `
-                <button class="amplify-btn" id="amplifyBtn" onclick="amplifyAssessment()">
-                    <span>🔬</span><span>VERITAS Amplified Assessment</span>
-                </button>
-                <div id="amplifiedResults"></div>
-            `;
-            
-            resultsDiv.innerHTML = html;
-            resultsDiv.style.display = 'block';
-            resultsDiv.scrollIntoView({ behavior: 'smooth' });
-        }
-        
+
         async function amplifyAssessment() {
-            if (!lastAssessment) { alert('No assessment to amplify.'); return; }
-            
-            const amplifyBtn = document.getElementById('amplifyBtn');
-            const amplifiedResults = document.getElementById('amplifiedResults');
-            
-            amplifyBtn.innerHTML = '<span>⏳</span><span>Amplifying...</span>';
-            amplifyBtn.disabled = true;
-            
+            if (!lastAssessment) return;
+
+            const btn = document.getElementById('amplifyBtn');
+            const userApiKey = document.getElementById('apiKey').value.trim();
+
+            btn.disabled = true;
+            btn.innerHTML = '⏳ Amplifying...';
+
             try {
                 const response = await fetch('/api/amplify', {
                     method: 'POST',
@@ -396,93 +345,25 @@
                     body: JSON.stringify({
                         question: lastAssessment.question,
                         assessment: lastAssessment.assessment,
-                        userApiKey: userApiKey || undefined
+                        userApiKey
                     })
                 });
-                
+
                 const data = await response.json();
-                
-                if (!response.ok) throw new Error(data.message || data.error || 'Amplification failed');
-                
-                displayAmplifiedResults(data.amplified);
-                amplifyBtn.style.display = 'none';
-                
-            } catch (error) {
-                alert('Amplification error: ' + error.message);
-                amplifyBtn.innerHTML = '<span>🔬</span><span>VERITAS Amplified Assessment</span>';
-                amplifyBtn.disabled = false;
-            }
-        }
-        
-        function displayAmplifiedResults(content) {
-            const sections = parseAssessment(content);
-            let html = `
-                <div class="amplified-section">
-                    <div class="amplified-header">🔬 Amplified Analysis</div>
-                    <div class="amplified-content">
-            `;
-            
-            for (const section of sections) {
-                html += `
-                    <div class="section">
-                        <div class="section-title">${escapeHtml(section.title)}</div>
-                        <div class="section-content">${formatContent(section.content)}</div>
-                    </div>
-                `;
-            }
-            
-            html += '</div></div>';
-            document.getElementById('amplifiedResults').innerHTML = html;
-        }
-        
-        function parseAssessment(text) {
-            const sections = [];
-            const lines = text.split('\n');
-            let currentSection = null;
-            
-            for (const line of lines) {
-                const headerMatch = line.match(/^\*\*(.+?)\*\*\s*$/) || 
-                                   line.match(/^##\s*(.+)$/) ||
-                                   line.match(/^([A-Z][A-Z\s]+):?\s*$/);
-                if (headerMatch) {
-                    if (currentSection) sections.push(currentSection);
-                    currentSection = { title: headerMatch[1].replace(/\*\*/g, '').trim(), content: '' };
-                } else if (currentSection) {
-                    currentSection.content += line + '\n';
+
+                if (!response.ok) {
+                    throw new Error(data.error || data.message || 'Amplification failed');
                 }
+
+                document.getElementById('amplifiedText').textContent = data.amplified;
+                document.getElementById('amplifiedResults').classList.add('visible');
+                btn.style.display = 'none';
+
+            } catch (err) {
+                alert('Amplification error: ' + err.message);
+                btn.disabled = false;
+                btn.innerHTML = '🔬 Amplify Assessment';
             }
-            if (currentSection) sections.push(currentSection);
-            return sections.filter(s => s.content.trim());
-        }
-        
-        function formatContent(text) {
-            return text
-                .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-                .replace(/\*(.+?)\*/g, '<em>$1</em>')
-                .replace(/^- (.+)$/gm, '• $1<br>')
-                .replace(/\n/g, '<br>');
-        }
-        
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-        
-        function getIntegrityColor(score) {
-            if (score >= -0.1) return '#4caf50';
-            if (score >= -0.3) return '#8bc34a';
-            if (score >= -0.5) return '#ffc107';
-            if (score >= -0.7) return '#ff9800';
-            return '#f44336';
-        }
-        
-        function getIntegrityLabel(score) {
-            if (score >= -0.1) return 'Exemplary intellectual honesty';
-            if (score >= -0.3) return 'Minor bias or omissions detected';
-            if (score >= -0.5) return 'Significant framing issues';
-            if (score >= -0.7) return 'Substantial manipulation present';
-            return 'Severe deceptive practices detected';
         }
     </script>
 </body>
