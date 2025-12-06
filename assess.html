@@ -271,6 +271,69 @@
         .back-link:hover {
             color: white;
         }
+        .mode-toggle {
+            display: flex;
+            margin-bottom: 24px;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 2px solid #e2e8f0;
+        }
+        .mode-tab {
+            flex: 1;
+            padding: 14px 20px;
+            background: #f8fafc;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #64748b;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+        .mode-tab:first-child {
+            border-right: 1px solid #e2e8f0;
+        }
+        .mode-tab.active {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+        }
+        .mode-tab:hover:not(.active) {
+            background: #e2e8f0;
+        }
+        .url-field {
+            display: none;
+            margin-bottom: 16px;
+        }
+        .url-field.visible {
+            display: block;
+        }
+        .url-field input {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+        }
+        .url-field input:focus {
+            outline: none;
+            border-color: #3b82f6;
+        }
+        .url-field small {
+            display: block;
+            margin-top: 6px;
+            color: #64748b;
+            font-size: 0.85rem;
+        }
+        .mode-hint {
+            background: #f0f9ff;
+            border: 1px solid #bae6fd;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-bottom: 20px;
+            color: #0369a1;
+            font-size: 0.9rem;
+        }
         @media (max-width: 600px) {
             .scores { grid-template-columns: 1fr; }
             .header h1 { font-size: 1.8rem; }
@@ -287,8 +350,28 @@
         </div>
         <div class="card">
             <div class="error" id="errorBox"></div>
+            
+            <div class="mode-toggle">
+                <button type="button" class="mode-tab active" id="questionModeTab" onclick="setMode('question')">
+                    ❓ Research Question
+                </button>
+                <button type="button" class="mode-tab" id="articleModeTab" onclick="setMode('article')">
+                    📰 Assess Article
+                </button>
+            </div>
+            
+            <div class="mode-hint" id="modeHint">
+                Enter a claim or question and VERITAS will search for evidence and provide an assessment.
+            </div>
+            
+            <div class="url-field" id="urlField">
+                <label for="articleUrl">Article URL</label>
+                <input type="text" id="articleUrl" placeholder="https://example.com/article...">
+                <small>Providing the source URL helps VERITAS verify the article's context and credibility</small>
+            </div>
+            
             <div class="form-group">
-                <label for="question">Question or Claim to Assess</label>
+                <label for="question" id="questionLabel">Question or Claim to Assess</label>
                 <input type="text" id="question" placeholder="e.g., Is climate change primarily caused by human activity?">
             </div>
             <div class="form-group">
@@ -325,6 +408,36 @@
     </div>
     <script>
         var lastAssessment = null;
+        var currentMode = 'question';
+
+        function setMode(mode) {
+            currentMode = mode;
+            var questionTab = document.getElementById('questionModeTab');
+            var articleTab = document.getElementById('articleModeTab');
+            var urlField = document.getElementById('urlField');
+            var modeHint = document.getElementById('modeHint');
+            var questionLabel = document.getElementById('questionLabel');
+            var articleTextarea = document.getElementById('articleText');
+            var questionInput = document.getElementById('question');
+            
+            if (mode === 'article') {
+                questionTab.classList.remove('active');
+                articleTab.classList.add('active');
+                urlField.classList.add('visible');
+                modeHint.innerHTML = 'Paste the article text below. Providing the URL helps VERITAS verify source credibility.';
+                questionLabel.textContent = 'What aspect to assess? (Optional)';
+                questionInput.placeholder = 'e.g., Is this article accurate? What claims need verification?';
+                articleTextarea.placeholder = 'Paste the full article text here for assessment...';
+            } else {
+                articleTab.classList.remove('active');
+                questionTab.classList.add('active');
+                urlField.classList.remove('visible');
+                modeHint.innerHTML = 'Enter a claim or question and VERITAS will search for evidence and provide an assessment.';
+                questionLabel.textContent = 'Question or Claim to Assess';
+                questionInput.placeholder = 'e.g., Is climate change primarily caused by human activity?';
+                articleTextarea.placeholder = 'Paste article text here for analysis, or leave blank to assess just the question above...';
+            }
+        }
 
         function formatAssessment(text) {
             var sections = [
@@ -433,15 +546,29 @@
         function runAssessment() {
             var question = document.getElementById('question').value.trim();
             var articleText = document.getElementById('articleText').value.trim();
+            var articleUrl = document.getElementById('articleUrl').value.trim();
             var userApiKey = document.getElementById('apiKey').value.trim();
             var btn = document.getElementById('assessBtn');
             var errorBox = document.getElementById('errorBox');
             var results = document.getElementById('results');
 
-            if (!question && !articleText) {
+            // In article mode, require article text
+            if (currentMode === 'article' && !articleText) {
+                errorBox.textContent = 'Please paste the article text to assess.';
+                errorBox.classList.add('visible');
+                return;
+            }
+            
+            if (currentMode === 'question' && !question && !articleText) {
                 errorBox.textContent = 'Please enter a question or paste article text.';
                 errorBox.classList.add('visible');
                 return;
+            }
+
+            // Prepend URL to article text if provided
+            var finalArticleText = articleText;
+            if (articleUrl && articleText) {
+                finalArticleText = 'SOURCE URL: ' + articleUrl + '\n\n' + articleText;
             }
 
             errorBox.classList.remove('visible');
@@ -453,7 +580,7 @@
 
             var requestBody = {
                 question: question,
-                articleText: articleText,
+                articleText: finalArticleText,
                 userApiKey: userApiKey
             };
 
