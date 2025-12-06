@@ -552,23 +552,35 @@
             var errorBox = document.getElementById('errorBox');
             var results = document.getElementById('results');
 
-            // In article mode, require article text
-            if (currentMode === 'article' && !articleText) {
-                errorBox.textContent = 'Please paste the article text to assess.';
-                errorBox.classList.add('visible');
-                return;
-            }
-            
-            if (currentMode === 'question' && !question && !articleText) {
-                errorBox.textContent = 'Please enter a question or paste article text.';
-                errorBox.classList.add('visible');
-                return;
+            // Validation based on mode
+            if (currentMode === 'article') {
+                if (!articleText && !articleUrl) {
+                    errorBox.textContent = 'Please provide an article URL or paste the article text.';
+                    errorBox.classList.add('visible');
+                    return;
+                }
+            } else {
+                if (!question && !articleText) {
+                    errorBox.textContent = 'Please enter a question or paste article text.';
+                    errorBox.classList.add('visible');
+                    return;
+                }
             }
 
-            // Prepend URL to article text if provided
-            var finalArticleText = articleText;
+            // Build article context - URL alone, text alone, or both
+            var finalArticleText = '';
             if (articleUrl && articleText) {
-                finalArticleText = 'SOURCE URL: ' + articleUrl + '\n\n' + articleText;
+                finalArticleText = 'SOURCE URL: ' + articleUrl + '\n\nARTICLE TEXT:\n' + articleText;
+            } else if (articleUrl) {
+                finalArticleText = 'SOURCE URL: ' + articleUrl + '\n\nPlease fetch and analyze this article using web search.';
+            } else if (articleText) {
+                finalArticleText = articleText;
+            }
+            
+            // Default question for URL-only article assessment
+            var finalQuestion = question;
+            if (currentMode === 'article' && !question && articleUrl) {
+                finalQuestion = 'Assess the accuracy and epistemological integrity of this article.';
             }
 
             errorBox.classList.remove('visible');
@@ -579,7 +591,7 @@
             document.getElementById('amplifyBtn').style.display = 'block';
 
             var requestBody = {
-                question: question,
+                question: finalQuestion,
                 articleText: finalArticleText,
                 userApiKey: userApiKey
             };
@@ -604,7 +616,7 @@
                 results.classList.add('visible');
 
                 lastAssessment = {
-                    question: question || 'Article Assessment',
+                    question: finalQuestion || 'Article Assessment',
                     assessment: data.assessment
                 };
 
