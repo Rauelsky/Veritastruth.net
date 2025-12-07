@@ -631,6 +631,141 @@
             margin-bottom: 6px;
         }
 
+        /* Print Styles - Preserve colors and control page breaks */
+        @media print {
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+                color-adjust: exact !important;
+            }
+
+            body {
+                background: white !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+
+            .site-header {
+                position: relative !important;
+                border-bottom: 2px solid var(--border-light) !important;
+                margin-bottom: 20px !important;
+            }
+
+            .container {
+                max-width: 100% !important;
+                padding: 0 20px !important;
+            }
+
+            /* Hide input form when printing results */
+            .card:has(#assessBtn) {
+                display: none !important;
+            }
+
+            /* Keep hero section together */
+            .hero-section {
+                break-inside: avoid !important;
+                page-break-inside: avoid !important;
+                background: linear-gradient(135deg, var(--navy) 0%, var(--navy-dark) 100%) !important;
+                margin-bottom: 20px !important;
+            }
+
+            .hero-score {
+                color: var(--score-green) !important;
+            }
+
+            .hero-score.positive { color: #22c55e !important; }
+            .hero-score.negative { color: #ef4444 !important; }
+            .hero-score.neutral { color: #eab308 !important; }
+
+            /* Keep score bars together */
+            .score-bars-container {
+                break-inside: avoid !important;
+                page-break-inside: avoid !important;
+                box-shadow: none !important;
+                border: 1px solid var(--border-light) !important;
+            }
+
+            .score-bar-gradient.reality {
+                background: linear-gradient(90deg, 
+                    #ef4444 0%, 
+                    #f97316 20%, 
+                    #eab308 40%, 
+                    #84cc16 60%, 
+                    #22c55e 80%, 
+                    #16a34a 100%
+                ) !important;
+            }
+
+            .score-bar-gradient.integrity {
+                background: linear-gradient(90deg, 
+                    #0a1f1c 0%,
+                    #003d33 15%,
+                    #00574a 30%, 
+                    #00796b 45%,
+                    #26a69a 60%, 
+                    #4dd0e1 75%,
+                    #81d4fa 90%,
+                    #b3e5fc 100%
+                ) !important;
+            }
+
+            /* Keep each assessment section together */
+            .assessment-section {
+                break-inside: avoid !important;
+                page-break-inside: avoid !important;
+                box-shadow: none !important;
+                border: 1px solid var(--border-light) !important;
+                margin-bottom: 12px !important;
+            }
+
+            /* Preserve section border colors */
+            .section-truth { border-left: 4px solid #10b981 !important; }
+            .section-assessment { border-left: 4px solid #2B7CD3 !important; }
+            .section-claim { border-left: 4px solid #8b5cf6 !important; }
+            .section-evidence { border-left: 4px solid #f59e0b !important; }
+            .section-distortion { border-left: 4px solid #ef4444 !important; }
+            .section-confident { border-left: 4px solid #10b981 !important; }
+            .section-uncertain { border-left: 4px solid #6b7280 !important; }
+            .section-bottom { 
+                border-left: 4px solid var(--navy) !important; 
+                background: linear-gradient(135deg, #e0f2fe 0%, #dbeafe 100%) !important;
+            }
+            .section-lessons { border-left: 4px solid #8b5cf6 !important; }
+            .section-methodology { border-left: 4px solid #64748b !important; }
+            .section-sources { border-left: 4px solid #64748b !important; }
+            .section-framework { border-left: 4px solid #0891b2 !important; }
+            .section-integrity { border-left: 4px solid #7c3aed !important; }
+
+            /* Hide amplify button in print */
+            .btn-amplify {
+                display: none !important;
+            }
+
+            /* Keep amplified sections together */
+            .amplified-results {
+                break-before: page !important;
+                page-break-before: always !important;
+                border: 2px solid var(--amplify-purple) !important;
+                background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%) !important;
+            }
+
+            .amplified-section {
+                break-inside: avoid !important;
+                page-break-inside: avoid !important;
+                border-left: 4px solid var(--amplify-purple) !important;
+                box-shadow: none !important;
+                margin-bottom: 10px !important;
+            }
+
+            /* Ensure text is black for readability */
+            .assessment-section p,
+            .assessment-section li,
+            .amplified-section p,
+            .amplified-section li {
+                color: #1e293b !important;
+            }
+        }
+
         /* Responsive */
         @media (max-width: 640px) {
             .header-content {
