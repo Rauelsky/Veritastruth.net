@@ -632,6 +632,33 @@
             });
         }
 
+        function truncateForAmplify(assessment) {
+            // Extract key sections to keep amplify prompt manageable
+            var sections = [
+                /\*\*REALITY SCORE:[^*]*\*\*/i,
+                /\*\*EPISTEMOLOGICAL INTEGRITY SCORE:[^*]*\*\*/i,
+                /\*\*UNDERLYING TRUTH\*\*[\s\S]*?(?=\*\*[A-Z])/i,
+                /\*\*VERITAS ASSESSMENT\*\*[\s\S]*?(?=\*\*[A-Z])/i,
+                /\*\*CLAIM BEING TESTED\*\*[\s\S]*?(?=\*\*[A-Z])/i,
+                /\*\*BOTTOM LINE\*\*[\s\S]*?(?=\*\*[A-Z]|$)/i
+            ];
+            
+            var extracted = '';
+            for (var i = 0; i < sections.length; i++) {
+                var match = assessment.match(sections[i]);
+                if (match) {
+                    extracted += match[0] + '\n\n';
+                }
+            }
+            
+            // If extraction failed, just truncate to first 3000 chars
+            if (extracted.length < 100) {
+                return assessment.substring(0, 3000) + '\n\n[Assessment truncated for amplification]';
+            }
+            
+            return extracted;
+        }
+
         function runAmplify() {
             if (!lastAssessment) return;
 
@@ -641,9 +668,12 @@
             btn.disabled = true;
             btn.textContent = 'Amplifying...';
 
+            // Truncate assessment to key sections to avoid timeout
+            var truncatedAssessment = truncateForAmplify(lastAssessment.assessment);
+
             var requestBody = {
                 question: lastAssessment.question,
-                assessment: lastAssessment.assessment,
+                assessment: truncatedAssessment,
                 userApiKey: userApiKey
             };
 
