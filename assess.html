@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VERITAS Assessment Tool - Preview</title>
+    <title>VERITAS Assessment Tool</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
@@ -63,13 +63,9 @@
             gap: 16px;
         }
 
-        .logo-text {
-            font-size: 1.5rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, var(--primary-blue), #1d4ed8);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+        .logo-section img {
+            height: 40px;
+            width: auto;
         }
 
         .tagline {
@@ -102,6 +98,223 @@
             padding: 28px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.04);
             margin-bottom: 24px;
+        }
+
+        /* Mode Toggle */
+        .mode-toggle {
+            display: flex;
+            margin-bottom: 24px;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 2px solid var(--border-light);
+            background: var(--bg-light);
+        }
+
+        .mode-tab {
+            flex: 1;
+            padding: 12px 20px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            font-family: inherit;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .mode-tab.active {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        .mode-tab:hover:not(.active) {
+            background: var(--border-light);
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            color: var(--navy);
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--border-light);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.2s ease;
+        }
+
+        input[type="text"]:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .mode-hint {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-bottom: 20px;
+            color: #1e40af;
+            font-size: 0.9rem;
+        }
+
+        .url-field {
+            display: none;
+            margin-bottom: 16px;
+        }
+
+        .url-field.visible {
+            display: block;
+        }
+
+        .url-field small {
+            display: block;
+            margin-top: 6px;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        /* Buttons */
+        .btn-row {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 14px 28px;
+            font-size: 1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, #1d4ed8 100%);
+            color: white;
+            flex: 1;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(43, 124, 211, 0.35);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-clear {
+            background: var(--bg-light);
+            color: var(--text-muted);
+            border: 2px solid var(--border-light);
+            padding: 14px 20px;
+        }
+
+        .btn-clear:hover {
+            background: var(--border-light);
+            color: var(--text-dark);
+        }
+
+        .btn-amplify {
+            background: linear-gradient(135deg, var(--amplify-purple) 0%, var(--amplify-purple-dark) 100%);
+            color: white;
+            width: 100%;
+            margin-top: 24px;
+            padding: 16px 28px;
+        }
+
+        .btn-amplify:hover:not(:disabled) {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.35);
+        }
+
+        /* API Key Section */
+        .api-key-section {
+            background: #fffbeb;
+            border: 1px solid #fde68a;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+
+        .api-key-section summary {
+            cursor: pointer;
+            font-weight: 600;
+            color: #92400e;
+            font-size: 0.95rem;
+        }
+
+        .api-key-section p {
+            margin: 12px 0;
+            font-size: 0.9rem;
+            color: #78350f;
+        }
+
+        .api-key-section input {
+            margin-top: 8px;
+        }
+
+        .free-tier-note {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-top: 12px;
+        }
+
+        /* Error Box */
+        .error {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #dc2626;
+            padding: 14px 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            display: none;
+            font-size: 0.95rem;
+        }
+
+        .error.visible {
+            display: block;
+        }
+
+        /* Results Section */
+        .results {
+            display: none;
+        }
+
+        .results.visible {
+            display: block;
         }
 
         /* Hero Score Display */
@@ -147,6 +360,11 @@
             padding: 8px 16px;
             border-radius: 8px;
             margin-bottom: 20px;
+        }
+
+        .hero-badge img {
+            height: 24px;
+            width: auto;
         }
 
         .hero-badge span {
@@ -267,7 +485,6 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
             font-weight: 500;
-            text-align: center;
         }
 
         /* Assessment Sections */
@@ -286,26 +503,36 @@
             font-weight: 600;
         }
 
-        .assessment-section p {
+        .assessment-section p, .assessment-section ul, .assessment-section li {
             color: var(--text-dark);
             line-height: 1.75;
             font-size: 0.95rem;
-            margin-bottom: 8px;
         }
 
-        .assessment-section p:last-child {
-            margin-bottom: 0;
+        .assessment-section ul {
+            margin-left: 20px;
+            margin-top: 8px;
+        }
+
+        .assessment-section li {
+            margin-bottom: 6px;
         }
 
         /* Section color variants */
         .section-truth { border-left-color: #10b981; }
         .section-truth h3 { color: #065f46; }
         
+        .section-assessment { border-left-color: var(--primary-blue); }
+        .section-assessment h3 { color: #1e40af; }
+        
         .section-claim { border-left-color: #8b5cf6; }
         .section-claim h3 { color: #5b21b6; }
         
         .section-evidence { border-left-color: #f59e0b; }
         .section-evidence h3 { color: #b45309; }
+        
+        .section-distortion { border-left-color: #ef4444; }
+        .section-distortion h3 { color: #b91c1c; }
         
         .section-confident { border-left-color: #10b981; }
         .section-confident h3 { color: #065f46; }
@@ -318,6 +545,18 @@
             background: linear-gradient(135deg, #e0f2fe 0%, #dbeafe 100%);
         }
         .section-bottom h3 { color: var(--navy); }
+        
+        .section-lessons { border-left-color: #8b5cf6; }
+        .section-lessons h3 { color: #5b21b6; }
+        
+        .section-sources { 
+            border-left-color: #64748b; 
+            background: #f1f5f9;
+        }
+        .section-sources h3 { color: #475569; }
+
+        .section-framework { border-left-color: #0891b2; }
+        .section-framework h3 { color: #0e7490; }
 
         .section-integrity { border-left-color: #7c3aed; }
         .section-integrity h3 { color: #5b21b6; }
@@ -325,38 +564,18 @@
         .section-methodology { border-left-color: #64748b; }
         .section-methodology h3 { color: #475569; }
 
-        /* Buttons */
-        .btn-amplify {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            width: 100%;
-            padding: 16px 28px;
-            font-size: 1rem;
-            font-weight: 600;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-family: inherit;
-            background: linear-gradient(135deg, var(--amplify-purple) 0%, var(--amplify-purple-dark) 100%);
-            color: white;
-            margin-top: 24px;
-            transition: all 0.2s ease;
-        }
-
-        .btn-amplify:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.35);
-        }
-
         /* Amplified Results */
         .amplified-results {
+            display: none;
             margin-top: 24px;
             border: 2px solid var(--amplify-purple);
             border-radius: 12px;
             padding: 24px;
             background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+        }
+
+        .amplified-results.visible {
+            display: block;
         }
 
         .amplified-header {
@@ -392,24 +611,20 @@
             font-size: 1rem;
             margin-bottom: 10px;
             font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        .amplified-section p {
+        .amplified-section p, .amplified-section ul, .amplified-section li {
             color: var(--text-dark);
             line-height: 1.7;
             font-size: 0.95rem;
-            margin-bottom: 8px;
-        }
-
-        .amplified-section p:last-child {
-            margin-bottom: 0;
         }
 
         .amplified-section ul {
-            margin: 8px 0 8px 20px;
-            color: var(--text-dark);
-            line-height: 1.7;
-            font-size: 0.95rem;
+            margin-left: 20px;
+            margin-top: 8px;
         }
 
         .amplified-section li {
@@ -439,6 +654,10 @@
                 padding: 32px 20px;
             }
 
+            .btn-row {
+                flex-direction: column;
+            }
+
             .score-bar-labels {
                 font-size: 0.65rem;
             }
@@ -450,7 +669,7 @@
     <header class="site-header">
         <div class="header-content">
             <div class="logo-section">
-                <span class="logo-text">VERITAS LLC</span>
+                <img src="/veritas-logo-horizontal.png" alt="VERITAS LLC" onerror="this.style.display='none'">
                 <span class="tagline">Truth through Transparency</span>
             </div>
             <span class="version-badge">VERACITY ENGINE™ v3.7</span>
@@ -458,176 +677,499 @@
     </header>
 
     <div class="container">
-        <!-- Hero Score Display -->
-        <div class="hero-section">
-            <div class="hero-badge">
-                <span>VERITAS</span>
-            </div>
-            <div class="hero-score positive">+8</div>
-            <div class="hero-question">Do dogs dream in their sleep?</div>
-            <div class="hero-subtitle">Reality Score: Is the claim TRUE or FALSE?</div>
-        </div>
-
-        <!-- Score Bars -->
-        <div class="score-bars-container">
-            <div class="score-bar-wrapper">
-                <div class="score-bar-header">
-                    <span class="score-bar-title">Reality Score:</span>
-                    <span class="score-bar-value">+8</span>
-                </div>
-                <div class="score-bar-container">
-                    <div class="score-bar-gradient reality"></div>
-                    <div class="score-bar-marker" style="left: 90%;"></div>
-                </div>
-                <div class="score-bar-labels">
-                    <span>-10<br>FALSE</span>
-                    <span>-5</span>
-                    <span>0<br>UNCERTAIN</span>
-                    <span>+5</span>
-                    <span>+10<br>TRUE</span>
-                </div>
-            </div>
-
-            <div class="score-bar-wrapper">
-                <div class="score-bar-header">
-                    <span class="score-bar-title">Integrity Score:</span>
-                    <span class="score-bar-value">+0.90 — Excellent</span>
-                </div>
-                <div class="score-bar-container">
-                    <div class="score-bar-gradient integrity"></div>
-                    <div class="score-bar-marker" style="left: 95%;"></div>
-                </div>
-                <div class="score-bar-labels">
-                    <span>-1.0<br>Deceptive</span>
-                    <span>-0.5<br>Dishonest</span>
-                    <span>0<br>Neutral</span>
-                    <span>+0.5<br>Good</span>
-                    <span>+1.0<br>Honest</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Assessment Content -->
+        <!-- Input Card -->
         <div class="card">
-            <div class="assessment-section section-truth">
-                <h3>The Underlying Reality</h3>
-                <p>Dogs do dream during sleep, experiencing similar sleep cycles to humans including REM (Rapid Eye Movement) phases where dreaming occurs. Scientific research has documented brain activity patterns, physical movements, and neurological responses in sleeping dogs that strongly indicate dreaming behavior.</p>
+            <div class="error" id="errorBox"></div>
+
+            <div class="mode-toggle">
+                <button type="button" class="mode-tab active" id="questionModeTab" onclick="setMode('question')">
+                    ❓ Research Question
+                </button>
+                <button type="button" class="mode-tab" id="articleModeTab" onclick="setMode('article')">
+                    📰 Assess Article
+                </button>
             </div>
 
-            <div class="assessment-section section-claim">
-                <h3>Claim Being Tested</h3>
-                <p><strong>"Dogs experience dreams during their sleep periods."</strong></p>
+            <div class="mode-hint" id="modeHint">
+                Enter a claim or question and VERITAS will search for evidence and provide an assessment.
             </div>
 
-            <div class="assessment-section section-evidence">
-                <h3>Evidence Analysis</h3>
-                <p>Multiple lines of scientific evidence support canine dreaming:</p>
-                <p><strong>Neurological Evidence:</strong> Dogs exhibit REM sleep phases with brain wave patterns similar to humans during dreaming states. EEG studies show comparable neural activity patterns.</p>
-                <p><strong>Behavioral Evidence:</strong> Sleeping dogs display movements consistent with dream activity - leg movements suggesting running, quiet barks, tail wagging, and facial expressions that correlate with REM phases.</p>
-                <p><strong>Comparative Biology:</strong> The brain structures involved in dreaming (hippocampus, pons, neocortex) are present and functionally similar in dogs and humans.</p>
+            <div class="url-field" id="urlField">
+                <label for="articleUrl">Article URL</label>
+                <input type="text" id="articleUrl" placeholder="https://example.com/article...">
+                <small>Providing the source URL helps VERITAS verify the article's context and credibility</small>
             </div>
 
-            <div class="assessment-section section-integrity">
-                <h3>Integrity Analysis</h3>
-                <p><strong>Framework Honesty:</strong> Genuinely seeking scientific truth</p>
-                <p><strong>Hidden Assumptions:</strong> Only assumes dogs sleep, which is factually established</p>
-                <p><strong>Manipulation Level:</strong> Honest</p>
-                <p><strong>Key Concerns:</strong> None - exemplary neutral framing</p>
+            <div class="form-group">
+                <label for="question" id="questionLabel">Question or Claim to Assess</label>
+                <input type="text" id="question" placeholder="e.g., Is climate change primarily caused by human activity?">
             </div>
 
-            <div class="assessment-section section-confident">
-                <h3>What We Can Be Confident About</h3>
-                <p>• Dogs experience REM sleep phases</p>
-                <p>• During REM sleep, dogs show brain activity patterns consistent with dreaming</p>
-                <p>• Physical behaviors during sleep suggest dogs are "acting out" dreams</p>
-                <p>• The neurological basis for dreaming exists in canine brain structure</p>
+            <div class="form-group">
+                <label for="articleText">Article Text (Optional)</label>
+                <textarea id="articleText" placeholder="Paste article text here for analysis, or leave blank to assess just the question above..."></textarea>
             </div>
 
-            <div class="assessment-section section-uncertain">
-                <h3>What Remains Uncertain</h3>
-                <p>• The specific content or narrative complexity of dog dreams</p>
-                <p>• Whether dogs experience dreams as vividly as humans</p>
-                <p>• The exact correlation between observed movements and dream content</p>
-            </div>
+            <details class="api-key-section">
+                <summary>Use Your Own API Key (Optional)</summary>
+                <p>Get unlimited assessments by using your own Anthropic API key. Without a key, you get 5 free assessments per day.</p>
+                <input type="text" id="apiKey" placeholder="sk-ant-...">
+            </details>
 
-            <div class="assessment-section section-bottom">
-                <h3>Bottom Line</h3>
-                <p>Dogs do dream during sleep based on strong scientific evidence from neurological and behavioral studies. This question represents honest scientific inquiry without problematic framing.</p>
+            <div class="btn-row">
+                <button class="btn btn-clear" onclick="clearForm()">🗑️ Clear</button>
+                <button class="btn btn-primary" id="assessBtn" onclick="runAssessment()">Assess with VERITAS</button>
             </div>
-
-            <div class="assessment-section section-methodology">
-                <h3>Methodology Notes</h3>
-                <p><strong>Reality Score (+8):</strong> Strong scientific consensus supported by neurological, behavioral, and comparative evidence. Not +10 because some aspects of dream content remain uncertain, but the basic phenomenon is well-established.</p>
-                <p><strong>Integrity Score (+0.9):</strong> Nearly flawless honest framing - straightforward scientific question with no hidden premises, manipulation, or agenda.</p>
-            </div>
+            <p class="free-tier-note">5 free assessments per day • Powered by Claude with web search</p>
         </div>
 
-        <!-- Amplify Button -->
-        <button class="btn-amplify">
-            🔍 Amplify Assessment — Deeper Analysis
-        </button>
-
-        <!-- Amplified Results -->
-        <div class="amplified-results">
-            <div class="amplified-header">
-                <span style="font-size: 1.5rem;">▲</span>
-                <h3>Amplified Analysis</h3>
+        <!-- Results Section -->
+        <div class="results" id="results">
+            <!-- Hero Score Display -->
+            <div class="hero-section">
+                <div class="hero-badge">
+                    <img src="/veritas-logo-horizontal.png" alt="VERITAS" style="height: 20px; filter: brightness(0) invert(1);" onerror="this.parentElement.innerHTML='<span>VERITAS</span>'">
+                </div>
+                <div class="hero-score positive" id="heroScore">+8</div>
+                <div class="hero-question" id="heroQuestion">Do dogs dream in their sleep?</div>
+                <div class="hero-subtitle">Reality Score: Is the claim TRUE or FALSE?</div>
             </div>
 
-            <div class="amplified-section">
-                <h4>🔍 Amplified Analysis Summary</h4>
-                <p>While the initial assessment correctly identifies strong scientific evidence for canine dreaming, it may underestimate the complexity of consciousness attribution and overstate the certainty of comparative neurological interpretations. The analysis would benefit from examining methodological limitations in animal consciousness research and considering alternative explanations for observed phenomena.</p>
+            <!-- Score Bars -->
+            <div class="score-bars-container">
+                <div class="score-bar-wrapper">
+                    <div class="score-bar-header">
+                        <span class="score-bar-title">Reality Score:</span>
+                        <span class="score-bar-value" id="realityScoreDisplay">+8</span>
+                    </div>
+                    <div class="score-bar-container">
+                        <div class="score-bar-gradient reality"></div>
+                        <div class="score-bar-marker" id="realityMarker" style="left: 90%;"></div>
+                    </div>
+                    <div class="score-bar-labels">
+                        <span>-10<br>FALSE</span>
+                        <span>-5</span>
+                        <span>0<br>UNCERTAIN</span>
+                        <span>+5</span>
+                        <span>+10<br>TRUE</span>
+                    </div>
+                </div>
+
+                <div class="score-bar-wrapper">
+                    <div class="score-bar-header">
+                        <span class="score-bar-title">Integrity Score:</span>
+                        <span class="score-bar-value" id="integrityScoreDisplay">+0.90</span>
+                    </div>
+                    <div class="score-bar-container">
+                        <div class="score-bar-gradient integrity"></div>
+                        <div class="score-bar-marker" id="integrityMarker" style="left: 95%;"></div>
+                    </div>
+                    <div class="score-bar-labels">
+                        <span>-1.0<br>Deceptive</span>
+                        <span>-0.5<br>Dishonest</span>
+                        <span>0<br>Neutral</span>
+                        <span>+0.5<br>Good</span>
+                        <span>+1.0<br>Honest</span>
+                    </div>
+                </div>
             </div>
 
-            <div class="amplified-section">
-                <h4>🌐 Missing Perspectives</h4>
-                <ul>
-                    <li><strong>Skeptical neuroscience perspective:</strong> Researchers who question consciousness attribution based on behavioral similarities</li>
-                    <li><strong>Comparative consciousness philosophy:</strong> Frameworks for understanding cross-species subjective experience</li>
-                    <li><strong>Recent neurotechnology findings:</strong> More sophisticated brain imaging and measurement techniques</li>
-                    <li><strong>Veterinary sleep medicine:</strong> Clinical perspectives on sleep disorders and variations in dogs</li>
-                </ul>
+            <!-- Assessment Content -->
+            <div class="card">
+                <div id="formattedAssessment"></div>
             </div>
 
-            <div class="amplified-section">
-                <h4>🔄 Alternative Framings</h4>
-                <p><strong>Steelman Alternative:</strong> Dogs experience REM sleep with neural consolidation processes that serve similar functions to human dreaming but may not involve the same subjective, narrative-rich conscious experiences. The question conflates measurable neurological processes with unmeasurable subjective experiences, making definitive claims about "dreaming" premature given current methodological limitations in consciousness research.</p>
-            </div>
+            <!-- Amplify Button -->
+            <button class="btn btn-amplify" id="amplifyBtn" onclick="runAmplify()">
+                🔍 Amplify Assessment — Deeper Analysis
+            </button>
 
-            <div class="amplified-section">
-                <h4>🔮 What Would Change This Assessment?</h4>
-                <ul>
-                    <li>Brain-computer interface technology that could more directly measure subjective experience in dogs</li>
-                    <li>Discovery of fundamental differences in how REM sleep functions across species</li>
-                    <li>Evidence that observed REM behaviors in dogs serve entirely different neurological functions</li>
-                    <li>Breakthrough methodology for measuring animal consciousness more directly</li>
-                </ul>
-            </div>
-
-            <div class="amplified-section">
-                <h4>📊 Uncertainty Categorization</h4>
-                <ul>
-                    <li><strong>Unknown (we don't know yet):</strong> The subjective quality and content of any dog dream experiences; whether dogs experience narrative coherence in dreams</li>
-                    <li><strong>Concerning (signals suggest potential issues):</strong> Over-attribution of human-like consciousness based on similar neural patterns; methodological limitations in consciousness research</li>
-                    <li><strong>Established (documented effects):</strong> Dogs experience REM sleep phases; dogs show brain activity and physical behaviors during REM similar to humans</li>
-                </ul>
-            </div>
-
-            <div class="amplified-section">
-                <h4>🤔 Epistemic Humility Check</h4>
-                <p><em>"If I'm wrong about this assessment, it's most likely because..."</em></p>
-                <ul>
-                    <li>I'm being overly skeptical about reasonable scientific inferences from strong correlational evidence across multiple domains</li>
-                    <li>The practical definition of "dreaming" in scientific contexts is more inclusive than I'm acknowledging</li>
-                    <li>The convergent evidence from multiple independent lines of research creates a sufficiently strong case despite individual methodological limitations</li>
-                </ul>
-            </div>
-
-            <div class="amplified-section">
-                <h4>✅ Bottom Line</h4>
-                <p>This amplified analysis complicates the original assessment without fundamentally weakening it. The Reality Score of +8 remains appropriate if we define dreaming as "REM sleep with associated neural and behavioral patterns." However, the assessment would be stronger with explicit acknowledgment of the inferential gap between measuring neural activity and claiming subjective conscious experience.</p>
+            <!-- Amplified Results -->
+            <div class="amplified-results" id="amplifiedResults">
+                <div class="amplified-header">
+                    <span style="font-size: 1.5rem;">▲</span>
+                    <h3>Amplified Analysis</h3>
+                </div>
+                <div id="formattedAmplified"></div>
             </div>
         </div>
     </div>
+
+    <script>
+        var lastAssessment = null;
+        var currentMode = 'question';
+        var currentQuestion = '';
+
+        function setMode(mode) {
+            currentMode = mode;
+            var questionTab = document.getElementById('questionModeTab');
+            var articleTab = document.getElementById('articleModeTab');
+            var urlField = document.getElementById('urlField');
+            var modeHint = document.getElementById('modeHint');
+            var questionLabel = document.getElementById('questionLabel');
+            var articleTextarea = document.getElementById('articleText');
+            var questionInput = document.getElementById('question');
+            
+            if (mode === 'article') {
+                questionTab.classList.remove('active');
+                articleTab.classList.add('active');
+                urlField.classList.add('visible');
+                modeHint.innerHTML = 'Paste the article text below. Providing the URL helps VERITAS verify source credibility.';
+                questionLabel.textContent = 'What aspect to assess? (Optional)';
+                questionInput.placeholder = 'e.g., Is this article accurate? What claims need verification?';
+                articleTextarea.placeholder = 'Paste the full article text here for assessment...';
+            } else {
+                articleTab.classList.remove('active');
+                questionTab.classList.add('active');
+                urlField.classList.remove('visible');
+                modeHint.innerHTML = 'Enter a claim or question and VERITAS will search for evidence and provide an assessment.';
+                questionLabel.textContent = 'Question or Claim to Assess';
+                questionInput.placeholder = 'e.g., Is climate change primarily caused by human activity?';
+                articleTextarea.placeholder = 'Paste article text here for analysis, or leave blank to assess just the question above...';
+            }
+        }
+
+        function clearForm() {
+            document.getElementById('question').value = '';
+            document.getElementById('articleText').value = '';
+            document.getElementById('articleUrl').value = '';
+            document.getElementById('errorBox').classList.remove('visible');
+            document.getElementById('results').classList.remove('visible');
+            document.getElementById('amplifiedResults').classList.remove('visible');
+            document.getElementById('amplifyBtn').style.display = 'block';
+            lastAssessment = null;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function updateScoreDisplay(realityScore, integrityScore) {
+            // Update hero score
+            var heroScoreEl = document.getElementById('heroScore');
+            var heroQuestionEl = document.getElementById('heroQuestion');
+            
+            if (realityScore !== null && realityScore !== undefined) {
+                var scoreNum = parseFloat(realityScore);
+                heroScoreEl.textContent = (scoreNum >= 0 ? '+' : '') + scoreNum;
+                
+                // Color based on score
+                heroScoreEl.classList.remove('positive', 'negative', 'neutral');
+                if (scoreNum >= 3) {
+                    heroScoreEl.classList.add('positive');
+                } else if (scoreNum <= -3) {
+                    heroScoreEl.classList.add('negative');
+                } else {
+                    heroScoreEl.classList.add('neutral');
+                }
+                
+                // Update reality score bar
+                document.getElementById('realityScoreDisplay').textContent = (scoreNum >= 0 ? '+' : '') + scoreNum;
+                var realityPercent = ((scoreNum + 10) / 20) * 100;
+                document.getElementById('realityMarker').style.left = realityPercent + '%';
+            } else {
+                heroScoreEl.textContent = '-';
+                document.getElementById('realityScoreDisplay').textContent = '-';
+            }
+            
+            // Update question display
+            heroQuestionEl.textContent = currentQuestion || 'Assessment Complete';
+            
+            // Update integrity score bar
+            if (integrityScore !== null && integrityScore !== undefined) {
+                var integrityNum = parseFloat(integrityScore);
+                document.getElementById('integrityScoreDisplay').textContent = (integrityNum >= 0 ? '+' : '') + integrityNum.toFixed(2);
+                var integrityPercent = ((integrityNum + 1) / 2) * 100;
+                document.getElementById('integrityMarker').style.left = integrityPercent + '%';
+            } else {
+                document.getElementById('integrityScoreDisplay').textContent = '-';
+            }
+        }
+
+        function formatAssessment(text) {
+            var sections = [
+                { pattern: /\*\*(?:THE )?UNDERLYING (?:TRUTH|REALITY)\*\*/i, title: 'The Underlying Reality', cls: 'section-truth' },
+                { pattern: /\*\*VERITAS ASSESSMENT\*\*/i, title: 'VERITAS Assessment', cls: 'section-assessment' },
+                { pattern: /\*\*CLAIM BEING TESTED\*\*/i, title: 'Claim Being Tested', cls: 'section-claim' },
+                { pattern: /\*\*(?:THE )?CENTRAL CLAIMS?\*\*/i, title: 'The Central Claims', cls: 'section-claim' },
+                { pattern: /\*\*EVIDENCE ANALYSIS\*\*/i, title: 'Evidence Analysis', cls: 'section-evidence' },
+                { pattern: /\*\*TRUTH DISTORTION (?:ANALYSIS|PATTERNS)\*\*/i, title: 'Truth Distortion Analysis', cls: 'section-distortion' },
+                { pattern: /\*\*EXAMINING THE QUESTION'?S? FRAMEWORK\*\*/i, title: "Examining the Question's Framework", cls: 'section-framework' },
+                { pattern: /\*\*INTEGRITY ANALYSIS\*\*/i, title: 'Integrity Analysis', cls: 'section-integrity' },
+                { pattern: /\*\*WHAT WE CAN BE CONFIDENT ABOUT\*\*/i, title: 'What We Can Be Confident About', cls: 'section-confident' },
+                { pattern: /\*\*WHAT REMAINS (?:GENUINELY )?UNCERTAIN\*\*/i, title: 'What Remains Uncertain', cls: 'section-uncertain' },
+                { pattern: /\*\*BOTTOM LINE\*\*/i, title: 'Bottom Line', cls: 'section-bottom' },
+                { pattern: /\*\*LESSONS FOR INFORMATION ASSESSMENT\*\*/i, title: 'Lessons for Information Assessment', cls: 'section-lessons' },
+                { pattern: /\*\*METHODOLOGY NOTES?\*\*/i, title: 'Methodology Notes', cls: 'section-methodology' },
+                { pattern: /\*\*KEY SOURCES(?: REFERENCED)?\*\*/i, title: 'Key Sources', cls: 'section-sources' }
+            ];
+            
+            var cleanText = text;
+            cleanText = cleanText.replace(/\*\*REALITY SCORE:[^*]*\*\*/gi, '');
+            cleanText = cleanText.replace(/\*\*EPISTEMOLOGICAL INTEGRITY SCORE:[^*]*\*\*/gi, '');
+            cleanText = cleanText.replace(/\*\*INTEGRITY SCORE:[^*]*\*\*/gi, '');
+            
+            var html = '';
+            var i, j, section, match, startIdx, endIdx, nextMatch, content;
+            
+            for (i = 0; i < sections.length; i++) {
+                section = sections[i];
+                match = cleanText.match(section.pattern);
+                if (match) {
+                    startIdx = match.index + match[0].length;
+                    endIdx = cleanText.length;
+                    
+                    for (j = i + 1; j < sections.length; j++) {
+                        nextMatch = cleanText.substring(startIdx).match(sections[j].pattern);
+                        if (nextMatch) {
+                            endIdx = startIdx + nextMatch.index;
+                            break;
+                        }
+                    }
+                    
+                    content = cleanText.substring(startIdx, endIdx).trim();
+                    content = content.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+                    content = formatListsAndParagraphs(content);
+                    
+                    if (content) {
+                        html += '<div class="assessment-section ' + section.cls + '">';
+                        html += '<h3>' + section.title + '</h3>';
+                        html += content;
+                        html += '</div>';
+                    }
+                }
+            }
+            
+            if (!html) {
+                html = '<div class="assessment-section"><p>' + text.replace(/\n/g, '<br>') + '</p></div>';
+            }
+            
+            return html;
+        }
+
+        function formatListsAndParagraphs(content) {
+            // Split by double newlines for paragraphs
+            var lines = content.split('\n');
+            var result = '';
+            var inList = false;
+            
+            for (var i = 0; i < lines.length; i++) {
+                var line = lines[i].trim();
+                if (!line) continue;
+                
+                // Check if it's a bullet point
+                if (line.match(/^[•\-\*]\s+/)) {
+                    if (!inList) {
+                        result += '<ul>';
+                        inList = true;
+                    }
+                    result += '<li>' + line.replace(/^[•\-\*]\s+/, '') + '</li>';
+                } else {
+                    if (inList) {
+                        result += '</ul>';
+                        inList = false;
+                    }
+                    result += '<p>' + line + '</p>';
+                }
+            }
+            
+            if (inList) {
+                result += '</ul>';
+            }
+            
+            return result;
+        }
+
+        function formatAmplified(text) {
+            var sections = [
+                { pattern: /\*\*AMPLIFI(?:CATION|ED(?: ANALYSIS)?) SUMMARY\*\*/i, title: '🔍 Amplified Analysis Summary', icon: '' },
+                { pattern: /\*\*MISSING PERSPECTIVES\*\*/i, title: '🌐 Missing Perspectives', icon: '' },
+                { pattern: /\*\*ALTERNATIVE FRAMINGS?\*\*/i, title: '🔄 Alternative Framings', icon: '' },
+                { pattern: /\*\*WHAT WOULD CHANGE (?:THE|THIS) ASSESSMENT\??\*\*/i, title: '🔮 What Would Change This Assessment?', icon: '' },
+                { pattern: /\*\*UNCERTAINTY CATEGORIZATION\*\*/i, title: '📊 Uncertainty Categorization', icon: '' },
+                { pattern: /\*\*EPISTEMIC HUMILITY CHECK\*\*/i, title: '🤔 Epistemic Humility Check', icon: '' },
+                { pattern: /\*\*BOTTOM LINE\*\*/i, title: '✅ Bottom Line', icon: '' }
+            ];
+            
+            var html = '';
+            var i, j, section, match, startIdx, endIdx, nextMatch, content;
+            
+            for (i = 0; i < sections.length; i++) {
+                section = sections[i];
+                match = text.match(section.pattern);
+                if (match) {
+                    startIdx = match.index + match[0].length;
+                    endIdx = text.length;
+                    
+                    for (j = i + 1; j < sections.length; j++) {
+                        nextMatch = text.substring(startIdx).match(sections[j].pattern);
+                        if (nextMatch) {
+                            endIdx = startIdx + nextMatch.index;
+                            break;
+                        }
+                    }
+                    
+                    content = text.substring(startIdx, endIdx).trim();
+                    content = content.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+                    content = formatListsAndParagraphs(content);
+                    
+                    if (content) {
+                        html += '<div class="amplified-section">';
+                        html += '<h4>' + section.title + '</h4>';
+                        html += content;
+                        html += '</div>';
+                    }
+                }
+            }
+            
+            if (!html) {
+                html = '<div class="amplified-section"><p>' + text.replace(/\n/g, '<br>') + '</p></div>';
+            }
+            
+            return html;
+        }
+
+        function runAssessment() {
+            var question = document.getElementById('question').value.trim();
+            var articleText = document.getElementById('articleText').value.trim();
+            var articleUrl = document.getElementById('articleUrl').value.trim();
+            var userApiKey = document.getElementById('apiKey').value.trim();
+            var btn = document.getElementById('assessBtn');
+            var errorBox = document.getElementById('errorBox');
+            var results = document.getElementById('results');
+
+            // Validation based on mode
+            if (currentMode === 'article') {
+                if (!articleText && !articleUrl) {
+                    errorBox.textContent = 'Please provide an article URL or paste the article text.';
+                    errorBox.classList.add('visible');
+                    return;
+                }
+            } else {
+                if (!question && !articleText) {
+                    errorBox.textContent = 'Please enter a question or paste article text.';
+                    errorBox.classList.add('visible');
+                    return;
+                }
+            }
+
+            // Build article context
+            var finalArticleText = '';
+            if (articleUrl && articleText) {
+                finalArticleText = 'SOURCE URL: ' + articleUrl + '\n\nARTICLE TEXT:\n' + articleText;
+            } else if (articleUrl) {
+                finalArticleText = 'SOURCE URL: ' + articleUrl + '\n\nPlease fetch and analyze this article using web search.';
+            } else if (articleText) {
+                finalArticleText = articleText;
+            }
+            
+            // Default question for URL-only article assessment
+            var finalQuestion = question;
+            if (currentMode === 'article' && !question && articleUrl) {
+                finalQuestion = 'Assess the accuracy and epistemological integrity of this article.';
+            }
+
+            // Store question for display
+            currentQuestion = finalQuestion || 'Article Assessment';
+
+            errorBox.classList.remove('visible');
+            btn.disabled = true;
+            btn.textContent = 'Analyzing with web search...';
+            results.classList.remove('visible');
+            document.getElementById('amplifiedResults').classList.remove('visible');
+            document.getElementById('amplifyBtn').style.display = 'block';
+
+            var requestBody = {
+                question: finalQuestion,
+                articleText: finalArticleText,
+                userApiKey: userApiKey
+            };
+
+            fetch('/api/assess', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(requestBody)
+            })
+            .then(function(response) {
+                var contentType = response.headers.get('content-type');
+                if (!contentType || !contentType.includes('application/json')) {
+                    throw new Error('Server error - please try again. If assessing a URL, try pasting the article text instead.');
+                }
+                return response.json().then(function(data) {
+                    if (!response.ok) {
+                        throw new Error(data.error || data.message || 'Assessment failed');
+                    }
+                    return data;
+                });
+            })
+            .then(function(data) {
+                updateScoreDisplay(data.realityScore, data.integrityScore);
+                document.getElementById('formattedAssessment').innerHTML = formatAssessment(data.assessment);
+                results.classList.add('visible');
+
+                lastAssessment = {
+                    question: finalQuestion || 'Article Assessment',
+                    assessment: data.assessment
+                };
+
+                results.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            })
+            .catch(function(err) {
+                errorBox.textContent = 'Error: ' + err.message;
+                errorBox.classList.add('visible');
+            })
+            .finally(function() {
+                btn.disabled = false;
+                btn.textContent = 'Assess with VERITAS';
+            });
+        }
+
+        function truncateForAmplify(assessment) {
+            if (assessment.length > 4000) {
+                return assessment.substring(0, 4000) + '\n\n[...Assessment truncated for amplification analysis...]';
+            }
+            return assessment;
+        }
+
+        function runAmplify() {
+            if (!lastAssessment) return;
+
+            var btn = document.getElementById('amplifyBtn');
+            var userApiKey = document.getElementById('apiKey').value.trim();
+
+            btn.disabled = true;
+            btn.textContent = '🔍 Amplifying...';
+
+            var truncatedAssessment = truncateForAmplify(lastAssessment.assessment);
+
+            var requestBody = {
+                question: lastAssessment.question,
+                assessment: truncatedAssessment,
+                userApiKey: userApiKey
+            };
+
+            fetch('/api/amplify', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(requestBody)
+            })
+            .then(function(response) {
+                return response.json().then(function(data) {
+                    if (!response.ok) {
+                        throw new Error(data.error || data.message || 'Amplification failed');
+                    }
+                    return data;
+                });
+            })
+            .then(function(data) {
+                document.getElementById('formattedAmplified').innerHTML = formatAmplified(data.amplified);
+                document.getElementById('amplifiedResults').classList.add('visible');
+                btn.style.display = 'none';
+                document.getElementById('amplifiedResults').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            })
+            .catch(function(err) {
+                alert('Amplification error: ' + err.message);
+                btn.disabled = false;
+                btn.textContent = '🔍 Amplify Assessment — Deeper Analysis';
+            });
+        }
+    </script>
 </body>
 </html>
