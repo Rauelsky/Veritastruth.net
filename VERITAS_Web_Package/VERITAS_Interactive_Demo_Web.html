@@ -29,13 +29,17 @@
             padding: 60px 100px 60px 140px;
             overflow-y: auto;
             opacity: 0;
-            transition: opacity 0.3s ease;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0s 0.3s;
             pointer-events: none;
             z-index: 1;
+            -webkit-overflow-scrolling: touch; /* Enable smooth scrolling on iOS */
         }
 
         .webpage-container.active {
             opacity: 1;
+            visibility: visible;
+            transition: opacity 0.3s ease, visibility 0s;
             pointer-events: auto;
         }
 
@@ -96,16 +100,29 @@
 
         .favicon-click-label {
             position: absolute;
-            bottom: -20px;
+            bottom: -32px;
             left: 50%;
             transform: translateX(-50%);
             white-space: nowrap;
-            font-size: 10px;
-            color: #666;
+            font-size: 9px;
+            color: #444;
             background: white;
-            padding: 2px 6px;
-            border-radius: 3px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+            padding: 4px 8px;
+            border-radius: 4px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            z-index: 1000;
+            border: 1px solid #e0e0e0;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .favicon-click-label:hover {
+            background: #f5f5f5;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.25);
+        }
+        
+        .veritas-favicon img {
+            cursor: pointer;
         }
 
         /* Hover trigger area at left edge */
@@ -117,34 +134,6 @@
             width: 5px;
             z-index: 999;
             pointer-events: auto;
-        }
-
-        /* Mobile menu toggle button */
-        .mobile-menu-toggle {
-            position: fixed;
-            left: 15px;
-            top: 15px;
-            width: 50px;
-            height: 50px;
-            background: linear-gradient(135deg, #1a1a2e 0%, #0f3460 100%);
-            border-radius: 50%;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-            z-index: 1001;
-            cursor: pointer;
-            border: 2px solid #4a9eff;
-            color: #4a9eff;
-            font-size: 24px;
-            font-weight: bold;
-            -webkit-tap-highlight-color: transparent;
-            touch-action: manipulation;
-        }
-
-        .mobile-menu-toggle.active {
-            background: #4a9eff;
-            color: white;
         }
 
         /* CBO Page Styling */
@@ -922,7 +911,8 @@
         /* RESPONSIVE DESIGN */
         
         /* Tablets (768px - 1024px) */
-        @media (max-width: 1024px) {
+        /* Tablets and Small Desktops (1025px - 1440px) */
+        @media (min-width: 1025px) and (max-width: 1440px) {
             .veritas-sidebar {
                 width: 80px;
                 padding: 15px 8px;
@@ -1091,23 +1081,26 @@
         }
 
         /* Mobile Portrait (320px - 567px) */
-        @media (max-width: 567px) {
+        /* Mobile & Tablet Portrait - Touch-friendly narrow sidebar layout */
+        @media (max-width: 1024px) {
             body {
                 font-size: 14px;
             }
 
-            /* Hide sidebar by default, make it overlay full width */
+            /* Narrow sidebar tight against left edge on mobile */
             .veritas-sidebar {
-                width: 100%;
-                flex-direction: row;
-                flex-wrap: wrap;
-                justify-content: center;
-                padding: 15px;
-                height: auto;
+                width: 65px;
+                height: 100vh;
+                flex-direction: column;
+                justify-content: flex-start;
+                padding: 15px 5px;
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+                left: 0;
+                top: 0;
                 bottom: auto;
             }
 
-            .veritas-sidebar:hover,
             .veritas-sidebar.active {
                 transform: translateX(0);
             }
@@ -1115,28 +1108,69 @@
             .veritas-logo {
                 width: 100%;
                 margin-bottom: 15px;
-                padding-bottom: 15px;
+                padding-bottom: 10px;
                 text-align: center;
+                border-bottom: 1px solid rgba(255,255,255,0.1);
             }
 
+            .veritas-logo img {
+                width: 45px;
+                height: auto;
+            }
+
+            /* Vertical stacked tabs with favicon left, vertical text right */
             .topic-button {
-                width: 45%;
-                margin: 5px;
-                padding: 15px 10px;
+                width: 100%;
+                margin: 6px 0;
+                padding: 10px 5px;
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+                min-height: 70px;
             }
 
             .topic-icon {
                 font-size: 24px;
+                margin-right: 5px;
+                flex-shrink: 0;
             }
 
             .topic-label {
-                font-size: 11px;
+                writing-mode: vertical-rl;
+                transform: rotate(180deg);
+                font-size: 9px;
+                text-align: center;
+                line-height: 1.1;
+                white-space: nowrap;
+                flex-shrink: 0;
             }
 
-            /* Articles panel full width on mobile */
+            /* End Demo button with 2-line layout */
+            .end-demo-button {
+                width: 60px !important;
+                margin-top: 15px;
+                padding: 6px 5px !important;
+                font-size: 9px !important;
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: center !important;
+                justify-content: center !important;
+                gap: 2px;
+                white-space: nowrap;
+                line-height: 1.2 !important;
+            }
+
+            .end-demo-button span {
+                display: block !important;
+            }
+
+            /* Articles panel slides out from sidebar on mobile */
             .articles-panel {
-                width: 100%;
-                left: 0;
+                width: calc(100% - 65px);
+                left: 65px;
+                transform: translateX(calc(-100% - 65px));
+                transition: transform 0.3s ease;
             }
 
             .articles-panel.open {
@@ -1145,7 +1179,12 @@
 
             /* CRITICAL: Hide articles panel completely when assessment opens in portrait */
             .articles-panel.recessed {
-                transform: translateX(-100%) !important;
+                transform: translateX(calc(-100% - 65px)) !important;
+            }
+
+            /* Mobile-specific hidden-for-reading to fully retract off-screen */
+            .articles-panel.hidden-for-reading {
+                transform: translateX(calc(-100% - 65px)) !important;
             }
 
             .articles-header {
@@ -1239,6 +1278,13 @@
             .webpage-container {
                 padding: 20px 15px;
                 font-size: 13px;
+            }
+
+            /* Fix iframe scrolling on mobile */
+            .webpage-container iframe {
+                overflow: auto;
+                -webkit-overflow-scrolling: touch;
+                touch-action: pan-y;
             }
 
             .gov-header {
@@ -1349,7 +1395,17 @@
             /* Splash overlay adjustments */
             .splash-content {
                 max-width: 90%;
-                padding: 25px;
+                padding: 20px 15px;
+            }
+
+            .splash-logo-container {
+                padding: 8px 15px;
+                margin-bottom: 15px;
+            }
+
+            .splash-logo-container img {
+                max-width: 100%;
+                height: auto;
             }
 
             .splash-logo {
@@ -1359,15 +1415,49 @@
 
             .splash-tagline {
                 font-size: 18px;
-                margin-bottom: 40px;
+                margin-bottom: 15px;
             }
 
             .splash-subtitle {
-                font-size: 16px;
+                font-size: 14px;
+                margin-bottom: 15px;
+            }
+
+            .acronym-section {
+                margin: 15px 0;
+                padding: 15px;
             }
 
             .acronym-expanded {
-                font-size: 16px;
+                font-size: 14px;
+                line-height: 1.6;
+            }
+
+            .acronym-letter {
+                font-size: 18px;
+            }
+
+            .philosophy-section {
+                margin: 15px 0;
+            }
+
+            .philosophy-text {
+                font-size: 14px;
+            }
+
+            .quote {
+                font-size: 14px;
+                margin: 10px 0 5px;
+            }
+
+            .quote-author {
+                font-size: 12px;
+                margin-bottom: 15px;
+            }
+
+            .instruction-hint {
+                margin-top: 25px;
+                font-size: 28px;
             }
 
             /* Sidebar trigger wider on mobile for easier access */
@@ -1407,10 +1497,6 @@
         /* Touch device improvements */
         @media (hover: none) and (pointer: coarse) {
             /* Show mobile menu toggle on touch devices */
-            .mobile-menu-toggle {
-                display: flex;
-            }
-
             /* Show collapse button on touch devices */
             .articles-collapse-btn {
                 display: block;
@@ -1460,10 +1546,6 @@
 
         /* Also show on small screens regardless of touch */
         @media (max-width: 767px) {
-            .mobile-menu-toggle {
-                display: flex;
-            }
-
             .articles-collapse-btn {
                 display: block;
             }
@@ -1476,7 +1558,8 @@
         /* ============================================ */
         /* MOBILE EDGE TABS (simpler approach)         */
         /* ============================================ */
-        @media (max-width: 567px) {
+        /* Apply to phones AND tablets for touch-friendly interface */
+        @media (max-width: 1024px) {
             /* Left Edge Tab - Topics */
             .mobile-edge-tab-left {
                 position: fixed;
@@ -1543,78 +1626,6 @@
             }
 
             /* Mobile Topics Panel */
-            .mobile-topics-panel {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 85%;
-                max-width: 320px;
-                height: 100%;
-                background: linear-gradient(180deg, #1a1a2e 0%, #0f3460 100%);
-                z-index: 2500;
-                transform: translateX(-100%);
-                transition: transform 0.3s ease;
-                overflow-y: auto;
-                box-shadow: 4px 0 20px rgba(0,0,0,0.4);
-            }
-
-            .mobile-topics-panel.open {
-                transform: translateX(0);
-            }
-
-            .mobile-topics-panel .panel-header {
-                padding: 20px;
-                border-bottom: 1px solid rgba(255,255,255,0.1);
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-            }
-
-            .mobile-topics-panel .panel-title {
-                color: white;
-                font-size: 18px;
-                font-weight: 700;
-            }
-
-            .mobile-topics-panel .panel-close {
-                background: rgba(255,255,255,0.1);
-                border: none;
-                color: white;
-                width: 36px;
-                height: 36px;
-                border-radius: 50%;
-                font-size: 20px;
-                cursor: pointer;
-            }
-
-            .mobile-topics-panel .topics-list {
-                padding: 15px;
-            }
-
-            .mobile-topics-panel .mobile-topic-btn {
-                display: flex;
-                align-items: center;
-                gap: 15px;
-                width: 100%;
-                padding: 18px 15px;
-                margin-bottom: 10px;
-                background: rgba(255,255,255,0.05);
-                border: 1px solid rgba(255,255,255,0.1);
-                border-radius: 10px;
-                color: white;
-                font-size: 16px;
-                cursor: pointer;
-            }
-
-            .mobile-topics-panel .mobile-topic-btn.active {
-                background: rgba(74, 158, 255, 0.2);
-                border-color: #4a9eff;
-            }
-
-            .mobile-topics-panel .mobile-topic-btn .topic-icon {
-                font-size: 24px;
-            }
-
             /* Mobile Assessment Panel */
             .mobile-assessment-panel {
                 position: fixed;
@@ -1738,8 +1749,8 @@
             }
         }
 
-        /* Hide mobile elements on desktop */
-        @media (min-width: 568px) {
+        /* Hide mobile elements on desktop (larger than tablets) */
+        @media (min-width: 1025px) {
             .mobile-edge-tab-left,
             .mobile-edge-tab-right,
             .mobile-topics-panel,
@@ -1764,6 +1775,8 @@
             cursor: pointer;
             opacity: 1;
             transition: opacity 1.5s ease-out;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
         }
 
         .splash-overlay.fade-out {
@@ -1777,6 +1790,8 @@
             padding: 112px 40px;
             color: white;
             animation: fadeIn 1.5s ease-in;
+            margin: auto;
+            min-height: min-content;
         }
 
         @keyframes fadeIn {
@@ -1936,8 +1951,8 @@
             pointer-events: auto;
         }
 
-        /* Mobile adjustments for instructions */
-        @media (max-width: 567px) {
+        /* Mobile & Tablet adjustments for instructions */
+        @media (max-width: 1024px) {
             .instructions-overlay {
                 width: 92%;
                 max-width: none;
@@ -2140,84 +2155,81 @@
     <!-- Hover trigger at left edge -->
     <div class="sidebar-trigger" onmouseenter="showSidebar()"></div>
 
-    <!-- Mobile menu toggle button -->
-    <div class="mobile-menu-toggle" id="mobileMenuToggle">☰</div>
-
     <!-- VERITAS Favicon Badges -->
     <!-- Topic 1: Election Fraud Favicons -->
-    <div class="veritas-favicon" id="faviconEF1" style="display: none; cursor: pointer;" title="Click to toggle between original article and VERITAS overview" onclick="toggleView('EF1')">
-        <img src="veritas-logo.png" alt="VERITAS" style="width: 50px; height: 50px; object-fit: contain;">
+    <div class="veritas-favicon" id="faviconEF1" style="display: none;">
+        <img src="veritas-logo.png" alt="VERITAS" style="width: 50px; height: 50px; object-fit: contain;" onclick="showAssessment('EF1')" title="Click to view VERITAS Assessment">
         <div class="favicon-rating rating-high">+9</div>
-        <div class="favicon-click-label">Click for Review</div>
+        <div class="favicon-click-label" onclick="event.stopPropagation(); toggleView('EF1')" title="Toggle between original article and VERITAS overview">Click for Review</div>
     </div>
 
-    <div class="veritas-favicon" id="faviconEF2" style="display: none; cursor: pointer;" title="Click to toggle between original article and VERITAS overview" onclick="toggleView('EF2')">
-        <img src="veritas-logo.png" alt="VERITAS" style="width: 50px; height: 50px; object-fit: contain;">
+    <div class="veritas-favicon" id="faviconEF2" style="display: none;">
+        <img src="veritas-logo.png" alt="VERITAS" style="width: 50px; height: 50px; object-fit: contain;" onclick="showAssessment('EF2')" title="Click to view VERITAS Assessment">
         <div class="favicon-rating rating-medium">+2</div>
-        <div class="favicon-click-label">Click for Review</div>
+        <div class="favicon-click-label" onclick="event.stopPropagation(); toggleView('EF2')" title="Toggle between original article and VERITAS overview">Click for Review</div>
     </div>
 
-    <div class="veritas-favicon" id="faviconEF3" style="display: none; cursor: pointer;" title="Click to toggle between original article and VERITAS overview" onclick="toggleView('EF3')">
-        <img src="veritas-logo.png" alt="VERITAS" style="width: 50px; height: 50px; object-fit: contain;">
+    <div class="veritas-favicon" id="faviconEF3" style="display: none;">
+        <img src="veritas-logo.png" alt="VERITAS" style="width: 50px; height: 50px; object-fit: contain;" onclick="showAssessment('EF3')" title="Click to view VERITAS Assessment">
         <div class="favicon-rating rating-low">-8</div>
-        <div class="favicon-click-label">Click for Review</div>
+        <div class="favicon-click-label" onclick="event.stopPropagation(); toggleView('EF3')" title="Toggle between original article and VERITAS overview">Click for Review</div>
     </div>
 
     <!-- Topic 2: Immigration Favicons -->
-    <div class="veritas-favicon" id="favicon1" style="display: none; cursor: pointer;" title="VERITAS Assessment: +8 High Confidence" onclick="toggleView('1')">
-        <img src="veritas-logo.png" alt="VERITAS" style="width: 50px; height: 50px; object-fit: contain;">
+    <div class="veritas-favicon" id="favicon1" style="display: none;">
+        <img src="veritas-logo.png" alt="VERITAS" style="width: 50px; height: 50px; object-fit: contain;" onclick="showAssessment('1')" title="Click to view VERITAS Assessment">
         <div class="favicon-rating rating-high">+8</div>
-        <div class="favicon-click-label">Click for Review</div>
+        <div class="favicon-click-label" onclick="event.stopPropagation(); toggleView('1')" title="Toggle between original article and VERITAS overview">Click for Review</div>
     </div>
 
-    <div class="veritas-favicon" id="favicon2" style="display: none; cursor: pointer;" title="VERITAS Assessment: +4 Moderate Confidence" onclick="toggleView('2')">
-        <img src="veritas-logo.png" alt="VERITAS" style="width: 50px; height: 50px; object-fit: contain;">
+    <div class="veritas-favicon" id="favicon2" style="display: none;">
+        <img src="veritas-logo.png" alt="VERITAS" style="width: 50px; height: 50px; object-fit: contain;" onclick="showAssessment('2')" title="Click to view VERITAS Assessment">
         <div class="favicon-rating rating-medium">+4</div>
-        <div class="favicon-click-label">Click for Review</div>
+        <div class="favicon-click-label" onclick="event.stopPropagation(); toggleView('2')" title="Toggle between original article and VERITAS overview">Click for Review</div>
     </div>
 
-    <div class="veritas-favicon" id="favicon3" style="display: none; cursor: pointer;" title="VERITAS Assessment: -9 Very Low Confidence" onclick="toggleView('3')">
-        <img src="veritas-logo.png" alt="VERITAS" style="width: 50px; height: 50px; object-fit: contain;">
+    <div class="veritas-favicon" id="favicon3" style="display: none;">
+        <img src="veritas-logo.png" alt="VERITAS" style="width: 50px; height: 50px; object-fit: contain;" onclick="showAssessment('3')" title="Click to view VERITAS Assessment">
         <div class="favicon-rating rating-low">-9</div>
-        <div class="favicon-click-label">Click for Review</div>
+        <div class="favicon-click-label" onclick="event.stopPropagation(); toggleView('3')" title="Toggle between original article and VERITAS overview">Click for Review</div>
     </div>
 
     <!-- Topic 3: National Debt Favicons -->
-    <div class="veritas-favicon" id="faviconND1" style="display: none; cursor: pointer;" title="Click to toggle between original article and VERITAS overview" onclick="toggleView('ND1')">
-        <img src="veritas-logo.png" alt="VERITAS" style="width: 50px; height: 50px; object-fit: contain;">
+    <div class="veritas-favicon" id="faviconND1" style="display: none;">
+        <img src="veritas-logo.png" alt="VERITAS" style="width: 50px; height: 50px; object-fit: contain;" onclick="showAssessment('ND1')" title="Click to view VERITAS Assessment">
         <div class="favicon-rating rating-high">+8</div>
-        <div class="favicon-click-label">Click for Review</div>
+        <div class="favicon-click-label" onclick="event.stopPropagation(); toggleView('ND1')" title="Toggle between original article and VERITAS overview">Click for Review</div>
     </div>
 
-    <div class="veritas-favicon" id="faviconND2" style="display: none; cursor: pointer;" title="Click to toggle between original article and VERITAS overview" onclick="toggleView('ND2')">
-        <img src="veritas-logo.png" alt="VERITAS" style="width: 50px; height: 50px; object-fit: contain;">
+    <div class="veritas-favicon" id="faviconND2" style="display: none;">
+        <img src="veritas-logo.png" alt="VERITAS" style="width: 50px; height: 50px; object-fit: contain;" onclick="showAssessment('ND2')" title="Click to view VERITAS Assessment">
         <div class="favicon-rating rating-medium">+5</div>
-        <div class="favicon-click-label">Click for Review</div>
+        <div class="favicon-click-label" onclick="event.stopPropagation(); toggleView('ND2')" title="Toggle between original article and VERITAS overview">Click for Review</div>
     </div>
 
-    <div class="veritas-favicon" id="faviconND3" style="display: none; cursor: pointer;" title="Click to toggle between original article and VERITAS overview" onclick="toggleView('ND3')">
-        <img src="veritas-logo.png" alt="VERITAS" style="width: 50px; height: 50px; object-fit: contain;">
+    <div class="veritas-favicon" id="faviconND3" style="display: none;">
+        <img src="veritas-logo.png" alt="VERITAS" style="width: 50px; height: 50px; object-fit: contain;" onclick="showAssessment('ND3')" title="Click to view VERITAS Assessment">
         <div class="favicon-rating rating-low">-7</div>
-        <div class="favicon-click-label">Click for Review</div>
+        <div class="favicon-click-label" onclick="event.stopPropagation(); toggleView('ND3')" title="Toggle between original article and VERITAS overview">Click for Review</div>
     </div>
 
     <!-- Gender Identity Favicons -->
-    <div class="veritas-favicon" id="faviconGI1" style="display: none; cursor: pointer;" title="Click to toggle between original article and VERITAS overview" onclick="toggleView('GI1')">
-        <img src="veritas-logo.png" alt="VERITAS" style="width: 50px; height: 50px; object-fit: contain;">
+    <div class="veritas-favicon" id="faviconGI1" style="display: none;">
+        <img src="veritas-logo.png" alt="VERITAS" style="width: 50px; height: 50px; object-fit: contain;" onclick="showAssessment('GI1')" title="Click to view VERITAS Assessment">
         <div class="favicon-rating rating-high">+8</div>
-        <div class="favicon-click-label">Click for Review</div>
+        <div class="favicon-click-label" onclick="event.stopPropagation(); toggleView('GI1')" title="Toggle between original article and VERITAS overview">Click for Review</div>
     </div>
 
-    <div class="veritas-favicon" id="faviconGI2" style="display: none; cursor: pointer;" title="Click to toggle between original article and VERITAS overview" onclick="toggleView('GI2')">
-        <img src="veritas-logo.png" alt="VERITAS" style="width: 50px; height: 50px; object-fit: contain;">
+    <div class="veritas-favicon" id="faviconGI2" style="display: none;">
+        <img src="veritas-logo.png" alt="VERITAS" style="width: 50px; height: 50px; object-fit: contain;" onclick="showAssessment('GI2')" title="Click to view VERITAS Assessment">
         <div class="favicon-rating rating-medium">+4</div>
-        <div class="favicon-click-label">Click for Review</div>
+        <div class="favicon-click-label" onclick="event.stopPropagation(); toggleView('GI2')" title="Toggle between original article and VERITAS overview">Click for Review</div>
     </div>
 
-    <div class="veritas-favicon" id="faviconGI3" style="display: none; cursor: pointer;" title="Click to toggle between original article and VERITAS overview" onclick="toggleView('GI3')">
-        <img src="veritas-logo.png" alt="VERITAS" style="width: 50px; height: 50px; object-fit: contain;">
+    <div class="veritas-favicon" id="faviconGI3" style="display: none;">
+        <img src="veritas-logo.png" alt="VERITAS" style="width: 50px; height: 50px; object-fit: contain;" onclick="showAssessment('GI3')" title="Click to view VERITAS Assessment">
         <div class="favicon-rating rating-low">-6</div>
-        <div class="favicon-click-label">Click for Review</div>
+        <div class="favicon-click-label" onclick="event.stopPropagation(); toggleView('GI3')" title="Toggle between original article and VERITAS overview">Click for Review</div>
     </div>
 
 
@@ -2307,7 +2319,7 @@
 
     <!-- ORIGINAL ARTICLE VIEW - EF2 (Step 2 - NEW) -->
     <div class="webpage-container" id="originalArticleEF2" style="padding: 0; z-index: 10;">
-        <iframe src="articles/election-fraud/Heritage_Database___Election_Fraud_Map___The_Heritage_Foundation.htm" style="width: 100%; height: 100%; border: none;"></iframe>
+        <iframe src="articles/election-fraud/Heritage Database _ Election Fraud Map _ The Heritage Foundation.htm" style="width: 100%; height: 100%; border: none;"></iframe>
     </div>
 
     <!-- READING OVERVIEW - EF2 (Step 3) -->
@@ -3437,8 +3449,7 @@
     <!-- VERITAS Sidebar -->
     <div class="veritas-sidebar">
         <div class="veritas-logo">
-            <div class="veritas-logo-text">VERITAS</div>
-            <div class="veritas-tagline">Truth in Context</div>
+            <img src="logo-square-transparent.png" alt="VERITAS" style="width: 50px; height: auto; display: block; margin: 0 auto;">
         </div>
 
         <div class="topic-button active" onclick="showTopic('election-fraud')" id="electionFraudBtn">
@@ -3461,7 +3472,7 @@
             <div class="topic-label">Gender Identity</div>
         </div>
 
-        <button class="end-demo-button" onclick="showSplash()">End Demo</button>
+        <button class="end-demo-button" onclick="window.location.href='index.html'"><span>End</span><span>Demo</span></button>
     </div>
 
     <!-- Articles Panels -->
@@ -3601,9 +3612,7 @@
             <button class="back-button" onclick="closeAssessment()">← Back to Articles</button>
             <div class="assessment-score" style="color: #4caf50;">+8</div>
             <div class="assessment-title">The Budgetary Impact of Immigration</div>
-            <div class="assessment-source">Congressional Budget Office, 2024</div>
-            <a href="articles/immigration/Effects_of_the_Immigration_Surge_on_the_Federal_Budget_and_the_Economy___Congressional_Budget_Office.htm" target="_blank" class="source-link-btn">🔗 View Original Source</a>
-        </div>
+            <div class="assessment-source">Congressional Budget Office, 2024</div>        </div>
 
         <div class="assessment-content">
             <div class="scale-visual">
@@ -3688,9 +3697,7 @@
             <button class="back-button" onclick="closeAssessment()">← Back to Articles</button>
             <div class="assessment-score" style="color: #ff9800;">+4</div>
             <div class="assessment-title">Economic Contributions of Immigrants</div>
-            <div class="assessment-source">American Immigration Council, 2024</div>
-            <a href="https://www.americanimmigrationcouncil.org/research/immigrants-in-the-united-states" target="_blank" class="source-link-btn">🔗 View Original Source</a>
-        </div>
+            <div class="assessment-source">American Immigration Council, 2024</div>        </div>
         <div class="assessment-content">
             <div class="scale-visual">
                 <div>
@@ -3728,9 +3735,7 @@
             <button class="back-button" onclick="closeAssessment()">← Back to Articles</button>
             <div class="assessment-score" style="color: #f44336;">-9</div>
             <div class="assessment-title">Springfield Pets Claim Investigation</div>
-            <div class="assessment-source">Social Media Claims, 2024</div>
-            <a href="articles/immigration/PolitiFact___What_s_behind_recent_false_claims_about_immigrants_and_crime_.htm" target="_blank" class="source-link-btn">🔗 View Original Source</a>
-        </div>
+            <div class="assessment-source">Social Media Claims, 2024</div>        </div>
         <div class="assessment-content">
             <div class="scale-visual">
                 <div>
@@ -3769,9 +3774,7 @@
             <button class="back-button" onclick="closeAssessment()">← Back to Articles</button>
             <div class="assessment-score" style="color: #4caf50;">+9</div>
             <div class="assessment-title">Voter Fraud Is Rare: Evidence from Administrative Records</div>
-            <div class="assessment-source">PNAS (Proceedings of the National Academy of Sciences), 2017</div>
-            <a href="articles/election-fraud/Voter_Fraud1__PNAS.htm" target="_blank" class="source-link-btn">🔗 View Original Source</a>
-        </div>
+            <div class="assessment-source">PNAS (Proceedings of the National Academy of Sciences), 2017</div>        </div>
 
         <div class="assessment-content">
             <div class="scale-visual">
@@ -3873,9 +3876,7 @@
             <button class="back-button" onclick="closeAssessment()">← Back to Articles</button>
             <div class="assessment-score" style="color: #ff9800;">+2</div>
             <div class="assessment-title">Heritage Foundation Election Fraud Database</div>
-            <div class="assessment-source">The Heritage Foundation, Updated 2024</div>
-            <a href="https://electionfraud.heritage.org/" target="_blank" class="source-link-btn">🔗 View Original Source</a>
-        </div>
+            <div class="assessment-source">The Heritage Foundation, Updated 2024</div>        </div>
 
         <div class="assessment-content">
             <div class="scale-visual">
@@ -4148,9 +4149,7 @@
             <button class="back-button" onclick="closeAssessment()">← Back to Articles</button>
             <div class="assessment-score" style="color: #4caf50;">+8</div>
             <div class="assessment-title">The Budget and Economic Outlook: 2024-2034</div>
-            <div class="assessment-source">Congressional Budget Office, February 2024</div>
-            <a href="articles/national-debt/The_Budget_and_Economic_Outlook__2024_to_2034___Congressional_Budget_Office.htm" target="_blank" class="source-link-btn">🔗 View Original Source</a>
-        </div>
+            <div class="assessment-source">Congressional Budget Office, February 2024</div>        </div>
 
         <div class="assessment-content">
             <div class="scale-visual">
@@ -4275,9 +4274,7 @@
             <button class="back-button" onclick="closeAssessment()">← Back to Articles</button>
             <div class="assessment-score" style="color: #ff9800;">+5</div>
             <div class="assessment-title">The Fiscal Outlook</div>
-            <div class="assessment-source">The Heritage Foundation, 2024</div>
-            <a href="articles/national-debt/The_Fiscal_Outlook___The_Heritage_Foundation.htm" target="_blank" class="source-link-btn">🔗 View Original Source</a>
-        </div>
+            <div class="assessment-source">The Heritage Foundation, 2024</div>        </div>
 
         <div class="assessment-content">
             <div class="scale-visual">
@@ -4432,9 +4429,7 @@
             <button class="back-button" onclick="closeAssessment()">← Back to Articles</button>
             <div class="assessment-score" style="color: #f44336;">-7</div>
             <div class="assessment-title">The Deficit Myth</div>
-            <div class="assessment-source">Modern Monetary Theory - Milken Institute Review</div>
-            <a href="articles/national-debt/The_Deficit_Myth_-_Milken_Institute_Review.htm" target="_blank" class="source-link-btn">🔗 View Original Source</a>
-        </div>
+            <div class="assessment-source">Modern Monetary Theory - Milken Institute Review</div>        </div>
 
         <div class="assessment-content">
             <div class="scale-visual">
@@ -4611,9 +4606,7 @@
             <button class="back-button" onclick="closeAssessment()">← Back to Articles</button>
             <div class="assessment-score" style="color: #4caf50;">+8</div>
             <div class="assessment-title">WPATH Standards of Care, Version 8</div>
-            <div class="assessment-source">World Professional Association for Transgender Health, 2022</div>
-            <a href="articles/gender-identity/Standards_of_Care_for_the_Health_of_Transgender_and_Gender_Diverse_People__Version_8_-_PubMed.htm" target="_blank" class="source-link-btn">🔗 View Original Source</a>
-        </div>
+            <div class="assessment-source">World Professional Association for Transgender Health, 2022</div>        </div>
 
         <div class="assessment-content">
             <div class="scale-visual">
@@ -4800,9 +4793,7 @@
             <button class="back-button" onclick="closeAssessment()">← Back to Articles</button>
             <div class="assessment-score" style="color: #ff9800;">+4</div>
             <div class="assessment-title">Current Concerns About Gender-Affirming Therapy in Adolescents</div>
-            <div class="assessment-source">Levine & Abbruzzese, Current Sexual Health Reports, 2023</div>
-            <a href="articles/gender-identity/Current_Concerns_About_Gender-Affirming_Therapy_in_Adolescents___Current_Sexual_Health_Reports.htm" target="_blank" class="source-link-btn">🔗 View Original Source</a>
-        </div>
+            <div class="assessment-source">Levine & Abbruzzese, Current Sexual Health Reports, 2023</div>        </div>
 
         <div class="assessment-content">
             <div class="scale-visual">
@@ -4996,9 +4987,7 @@
             <button class="back-button" onclick="closeAssessment()">← Back to Articles</button>
             <div class="assessment-score" style="color: #f44336;">-6</div>
             <div class="assessment-title">Accurate Transition Regret and Detransition Rates Are Unknown</div>
-            <div class="assessment-source">Society for Evidence-Based Gender Medicine (SEGM), 2024</div>
-            <a href="articles/gender-identity/Accurate_transition_regret_and_detransition_rates_are_unknown___SEGM.htm" target="_blank" class="source-link-btn">🔗 View Original Source</a>
-        </div>
+            <div class="assessment-source">Society for Evidence-Based Gender Medicine (SEGM), 2024</div>        </div>
 
         <div class="assessment-content">
             <div class="scale-visual">
@@ -5202,41 +5191,15 @@
     <div class="mobile-panel-overlay" id="mobilePanelOverlay" onclick="closeMobilePanels()"></div>
 
     <!-- Left Edge Tab - Topics -->
-    <div class="mobile-edge-tab-left" id="mobileTopicsTab" onclick="toggleMobileTopics()">
+    <div class="mobile-edge-tab-left" id="mobileTopicsTab">
         <span class="tab-icon">📋</span>
         <span class="tab-label">TOPICS</span>
     </div>
 
     <!-- Right Edge Tab - Assessment -->
-    <div class="mobile-edge-tab-right" id="mobileAssessmentTab" onclick="toggleMobileAssessment()">
+    <div class="mobile-edge-tab-right" id="mobileAssessmentTab">
         <span class="tab-icon">✓</span>
         <span class="tab-label">ASSESS</span>
-    </div>
-
-    <!-- Mobile Topics Panel -->
-    <div class="mobile-topics-panel" id="mobileTopicsPanel">
-        <div class="panel-header">
-            <span class="panel-title">Select Topic</span>
-            <button class="panel-close" onclick="closeMobilePanels()">×</button>
-        </div>
-        <div class="topics-list">
-            <button class="mobile-topic-btn" data-topic="election-fraud" onclick="selectMobileTopic('election-fraud')">
-                <span class="topic-icon">🗳️</span>
-                <span>Election Fraud</span>
-            </button>
-            <button class="mobile-topic-btn" data-topic="immigration" onclick="selectMobileTopic('immigration')">
-                <span class="topic-icon">🌎</span>
-                <span>Immigration</span>
-            </button>
-            <button class="mobile-topic-btn" data-topic="national-debt" onclick="selectMobileTopic('national-debt')">
-                <span class="topic-icon">💰</span>
-                <span>National Debt</span>
-            </button>
-            <button class="mobile-topic-btn" data-topic="gender-identity" onclick="selectMobileTopic('gender-identity')">
-                <span class="topic-icon">⚧️</span>
-                <span>Gender Identity</span>
-            </button>
-        </div>
     </div>
 
     <!-- Mobile Assessment Panel -->
@@ -5268,6 +5231,9 @@
         function showTopic(topic) {
             currentTopic = topic;
             
+            // Ensure sidebar stays visible on mobile when topic is clicked
+            document.querySelector('.veritas-sidebar').classList.add('active');
+            
             // Update button states
             document.getElementById('electionFraudBtn').classList.remove('active');
             document.getElementById('immigrationBtn').classList.remove('active');
@@ -5284,15 +5250,15 @@
                 document.getElementById('genderIdentityBtn').classList.add('active');
             }
             
-            // Hide all article panels
+            // Hide all article panels and clear hidden-for-reading
             const ef_panel = document.getElementById('articlesPanel-election-fraud');
             const imm_panel = document.getElementById('articlesPanel-immigration');
             const nd_panel = document.getElementById('articlesPanel-national-debt');
             const gi_panel = document.getElementById('articlesPanel-gender-identity');
-            ef_panel.classList.remove('open');
-            imm_panel.classList.remove('open');
-            nd_panel.classList.remove('open');
-            gi_panel.classList.remove('open');
+            ef_panel.classList.remove('open', 'hidden-for-reading');
+            imm_panel.classList.remove('open', 'hidden-for-reading');
+            nd_panel.classList.remove('open', 'hidden-for-reading');
+            gi_panel.classList.remove('open', 'hidden-for-reading');
             
             // Show appropriate panel
             if (topic === 'election-fraud') {
@@ -5330,10 +5296,26 @@
                     instructionsOverlay.classList.remove('visible');
                 }
                 
-                // Show Election Fraud topic by default after instructions close
+                // Show first article from Election Fraud topic after instructions close
                 setTimeout(function() {
-                    if (typeof showTopic === 'function') {
-                        showTopic('election-fraud');
+                    // Set current topic but DON'T open articles panel
+                    currentTopic = 'election-fraud';
+                    
+                    // Update button states
+                    document.getElementById('electionFraudBtn').classList.add('active');
+                    document.getElementById('immigrationBtn').classList.remove('active');
+                    document.getElementById('nationalDebtBtn').classList.remove('active');
+                    document.getElementById('genderIdentityBtn').classList.remove('active');
+                    
+                    // Show the first original article (PNAS Research Study)
+                    if (typeof showWebpage === 'function') {
+                        showWebpage('EF1');
+                    }
+                    
+                    // Show favicon for first article
+                    const favicon = document.getElementById('faviconEF1');
+                    if (favicon) {
+                        favicon.style.display = 'flex';
                     }
                 }, 500);
             } catch (e) {
@@ -5369,26 +5351,6 @@
             ]
         };
 
-        function toggleMobileTopics() {
-            const panel = document.getElementById('mobileTopicsPanel');
-            const overlay = document.getElementById('mobilePanelOverlay');
-            const assessPanel = document.getElementById('mobileAssessmentPanel');
-            
-            // Close assessment panel if open
-            assessPanel.classList.remove('open');
-            
-            // Toggle topics panel
-            panel.classList.toggle('open');
-            
-            // Show/hide overlay
-            if (panel.classList.contains('open')) {
-                overlay.classList.add('visible');
-                updateMobileTopicButtons();
-            } else {
-                overlay.classList.remove('visible');
-            }
-        }
-
         function toggleMobileAssessment() {
             const panel = document.getElementById('mobileAssessmentPanel');
             const overlay = document.getElementById('mobilePanelOverlay');
@@ -5410,25 +5372,10 @@
         }
 
         function closeMobilePanels() {
-            document.getElementById('mobileTopicsPanel').classList.remove('open');
-            document.getElementById('mobileAssessmentPanel').classList.remove('open');
-            document.getElementById('mobilePanelOverlay').classList.remove('visible');
-        }
-
-        function selectMobileTopic(topic) {
-            showTopic(topic);
-            closeMobilePanels();
-            updateMobileTopicButtons();
-        }
-
-        function updateMobileTopicButtons() {
-            const buttons = document.querySelectorAll('.mobile-topic-btn');
-            buttons.forEach(btn => {
-                btn.classList.remove('active');
-                if (btn.dataset.topic === currentTopic) {
-                    btn.classList.add('active');
-                }
-            });
+            const assessmentPanel = document.getElementById('mobileAssessmentPanel');
+            const overlay = document.getElementById('mobilePanelOverlay');
+            if (assessmentPanel) assessmentPanel.classList.remove('open');
+            if (overlay) overlay.classList.remove('visible');
         }
 
         function updateMobileAssessmentPanel() {
@@ -5494,12 +5441,62 @@
                 });
             }
             
-            // Mobile menu toggle
-            const mobileToggle = document.getElementById('mobileMenuToggle');
+            // Mobile left edge tab - toggles sidebar
+            const mobileTopicsTab = document.getElementById('mobileTopicsTab');
             const sidebar = document.querySelector('.veritas-sidebar');
             
-            mobileToggle.addEventListener('click', function() {
-                sidebar.classList.toggle('active');
+            if (mobileTopicsTab) {
+                // Use both click and touch events for better mobile support
+                mobileTopicsTab.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    sidebar.classList.toggle('active');
+                });
+                
+                mobileTopicsTab.addEventListener('touchend', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    sidebar.classList.toggle('active');
+                });
+            }
+            
+            // Mobile right edge tab - opens assessment for current article
+            const mobileAssessmentTab = document.getElementById('mobileAssessmentTab');
+            if (mobileAssessmentTab) {
+                mobileAssessmentTab.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    // Open assessment for current webpage
+                    if (currentWebpage) {
+                        showAssessment(currentWebpage);
+                    }
+                });
+                
+                mobileAssessmentTab.addEventListener('touchend', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    // Open assessment for current webpage
+                    if (currentWebpage) {
+                        showAssessment(currentWebpage);
+                    }
+                });
+            }
+            
+            // Add touch event support for topic buttons (mobile)
+            const topicButtons = document.querySelectorAll('.topic-button');
+            topicButtons.forEach(button => {
+                button.addEventListener('touchend', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    // Get the topic from the onclick attribute
+                    const onclickAttr = this.getAttribute('onclick');
+                    if (onclickAttr) {
+                        const match = onclickAttr.match(/showTopic\('([^']+)'\)/);
+                        if (match) {
+                            showTopic(match[1]);
+                        }
+                    }
+                });
             });
             
             // Article collapse buttons
@@ -5507,24 +5504,32 @@
                 const panel = document.getElementById('articlesPanel-election-fraud');
                 panel.classList.remove('open');
                 articlesOpen = false;
+                // Also hide Topics sidebar on mobile
+                document.querySelector('.veritas-sidebar').classList.remove('active');
             });
             
             document.getElementById('articlesCollapseBtn-immigration').addEventListener('click', function() {
                 const panel = document.getElementById('articlesPanel-immigration');
                 panel.classList.remove('open');
                 articlesOpen = false;
+                // Also hide Topics sidebar on mobile
+                document.querySelector('.veritas-sidebar').classList.remove('active');
             });
             
             document.getElementById('articlesCollapseBtn-national-debt').addEventListener('click', function() {
                 const panel = document.getElementById('articlesPanel-national-debt');
                 panel.classList.remove('open');
                 articlesOpen = false;
+                // Also hide Topics sidebar on mobile
+                document.querySelector('.veritas-sidebar').classList.remove('active');
             });
             
             document.getElementById('articlesCollapseBtn-gender-identity').addEventListener('click', function() {
                 const panel = document.getElementById('articlesPanel-gender-identity');
                 panel.classList.remove('open');
                 articlesOpen = false;
+                // Also hide Topics sidebar on mobile
+                document.querySelector('.veritas-sidebar').classList.remove('active');
             });
             
             // Article card interactions
@@ -5537,77 +5542,112 @@
                     }
                 });
                 
-                // Click - open assessment (desktop and mobile)
+                // Click - show webpage and hide sidebars (desktop and mobile)
                 card.addEventListener('click', function(e) {
                     const articleNum = this.getAttribute('data-article');
-                    showAssessment(articleNum);
+                    showWebpage(articleNum);
+                    
+                    // Hide both sidebars completely
+                    document.querySelector('.veritas-sidebar').classList.remove('active');
+                    
+                    // Hide articles panel
+                    const allPanels = document.querySelectorAll('.articles-panel');
+                    allPanels.forEach(panel => {
+                        panel.classList.remove('open');
+                        panel.classList.add('hidden-for-reading');
+                    });
+                });
+                
+                // Touch event for mobile devices
+                card.addEventListener('touchend', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const articleNum = this.getAttribute('data-article');
+                    showWebpage(articleNum);
+                    
+                    // Hide both sidebars completely
+                    document.querySelector('.veritas-sidebar').classList.remove('active');
+                    
+                    // Hide articles panel
+                    const allPanels = document.querySelectorAll('.articles-panel');
+                    allPanels.forEach(panel => {
+                        panel.classList.remove('open');
+                        panel.classList.add('hidden-for-reading');
+                    });
                 });
             });
             
-            // Keep sidebar visible when hovering over it
-            sidebar.addEventListener('mouseenter', function() {
-                sidebar.classList.add('active');
-                if (articlesOpen && !assessmentOpen) {
-                    if (currentTopic === 'election-fraud') {
-                        document.getElementById('articlesPanel-election-fraud').classList.remove('hidden-for-reading');
-                    } else if (currentTopic === 'immigration') {
-                        document.getElementById('articlesPanel-immigration').classList.remove('hidden-for-reading');
-                    } else if (currentTopic === 'national-debt') {
-                        document.getElementById('articlesPanel-national-debt').classList.remove('hidden-for-reading');
-                    } else if (currentTopic === 'gender-identity') {
-                        document.getElementById('articlesPanel-gender-identity').classList.remove('hidden-for-reading');
-                    }
-                }
-            });
-
-            sidebar.addEventListener('mouseleave', function() {
-                // Always allow sidebar to recede when mouse leaves
-                sidebar.classList.remove('active');
-            });
+            // Keep sidebar visible when hovering over it (DESKTOP ONLY)
+            // Check if this is a touch device
+            const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
             
-            // Articles panel mouse handling
+            if (!isTouchDevice) {
+                sidebar.addEventListener('mouseenter', function() {
+                    sidebar.classList.add('active');
+                    if (articlesOpen && !assessmentOpen) {
+                        if (currentTopic === 'election-fraud') {
+                            document.getElementById('articlesPanel-election-fraud').classList.remove('hidden-for-reading');
+                        } else if (currentTopic === 'immigration') {
+                            document.getElementById('articlesPanel-immigration').classList.remove('hidden-for-reading');
+                        } else if (currentTopic === 'national-debt') {
+                            document.getElementById('articlesPanel-national-debt').classList.remove('hidden-for-reading');
+                        } else if (currentTopic === 'gender-identity') {
+                            document.getElementById('articlesPanel-gender-identity').classList.remove('hidden-for-reading');
+                        }
+                    }
+                });
+
+                sidebar.addEventListener('mouseleave', function() {
+                    // Always allow sidebar to recede when mouse leaves (DESKTOP ONLY)
+                    sidebar.classList.remove('active');
+                });
+            }
+            
+            // Articles panel mouse handling (DESKTOP ONLY)
             const articlesPanelEF = document.getElementById('articlesPanel-election-fraud');
             const articlesPanelIMM = document.getElementById('articlesPanel-immigration');
             const articlesPanelND = document.getElementById('articlesPanel-national-debt');
             const articlesPanelGI = document.getElementById('articlesPanel-gender-identity');
             
-            [articlesPanelEF, articlesPanelIMM, articlesPanelND, articlesPanelGI].forEach(panel => {
-                panel.addEventListener('mouseenter', function() {
-                    sidebar.classList.add('active');
-                    if (articlesOpen && !assessmentOpen) {
-                        panel.classList.remove('hidden-for-reading');
-                    }
-                });
-                
-                panel.addEventListener('mouseleave', function(e) {
-                    // Remove sidebar active state when leaving panel
-                    sidebar.classList.remove('active');
+            if (!isTouchDevice) {
+                [articlesPanelEF, articlesPanelIMM, articlesPanelND, articlesPanelGI].forEach(panel => {
+                    panel.addEventListener('mouseenter', function() {
+                        sidebar.classList.add('active');
+                        if (articlesOpen && !assessmentOpen) {
+                            panel.classList.remove('hidden-for-reading');
+                        }
+                    });
                     
-                    if (articlesOpen && !assessmentOpen) {
-                        if (e.clientX > panel.offsetWidth + 100) {
-                            panel.classList.add('hidden-for-reading');
+                    panel.addEventListener('mouseleave', function(e) {
+                        // Remove sidebar active state when leaving panel
+                        sidebar.classList.remove('active');
+                        
+                        if (articlesOpen && !assessmentOpen) {
+                            if (e.clientX > panel.offsetWidth + 100) {
+                                panel.classList.add('hidden-for-reading');
+                            }
                         }
-                    }
+                    });
                 });
-            });
 
-            // Hide articles when hovering over webpage
-            const webpages = document.querySelectorAll('.webpage-container');
-            webpages.forEach(function(webpage) {
-                webpage.addEventListener('mouseenter', function() {
-                    if (articlesOpen && !assessmentOpen) {
-                        if (currentTopic === 'election-fraud') {
-                            articlesPanelEF.classList.add('hidden-for-reading');
-                        } else if (currentTopic === 'immigration') {
-                            articlesPanelIMM.classList.add('hidden-for-reading');
-                        } else if (currentTopic === 'national-debt') {
-                            articlesPanelND.classList.add('hidden-for-reading');
-                        } else if (currentTopic === 'gender-identity') {
-                            articlesPanelGI.classList.add('hidden-for-reading');
+                // Hide articles when hovering over webpage (DESKTOP ONLY)
+                const webpages = document.querySelectorAll('.webpage-container');
+                webpages.forEach(function(webpage) {
+                    webpage.addEventListener('mouseenter', function() {
+                        if (articlesOpen && !assessmentOpen) {
+                            if (currentTopic === 'election-fraud') {
+                                articlesPanelEF.classList.add('hidden-for-reading');
+                            } else if (currentTopic === 'immigration') {
+                                articlesPanelIMM.classList.add('hidden-for-reading');
+                            } else if (currentTopic === 'national-debt') {
+                                articlesPanelND.classList.add('hidden-for-reading');
+                            } else if (currentTopic === 'gender-identity') {
+                                articlesPanelGI.classList.add('hidden-for-reading');
+                            }
                         }
-                    }
+                    });
                 });
-            });
+            }
         });
 
         function showSidebar() {
@@ -5775,8 +5815,10 @@
         function closeAssessment() {
             assessmentOpen = false;
             
-            // Restore sidebar
-            document.querySelector('.veritas-sidebar').classList.remove('hidden-for-assessment');
+            // Restore sidebar and make it visible on mobile
+            const sidebar = document.querySelector('.veritas-sidebar');
+            sidebar.classList.remove('hidden-for-assessment');
+            sidebar.classList.add('active');
             
             // Close all assessments
             const assessmentIds = ['assessmentEF1', 'assessmentEF2', 'assessmentEF3', 'assessmentIMM1', 'assessmentIMM2', 'assessmentIMM3', 'assessmentND1', 'assessmentND2', 'assessmentND3', 'assessmentGI1', 'assessmentGI2', 'assessmentGI3'];
@@ -5806,8 +5848,6 @@
                 giPanel.classList.add('open');
             }
         }
-    </script>
-
     </script>
 
 </body>
