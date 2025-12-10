@@ -169,6 +169,49 @@
             resize: vertical;
         }
 
+        /* Character Counter Styles */
+        .input-wrapper {
+            position: relative;
+        }
+
+        .char-counter {
+            text-align: right;
+            font-size: 0.8rem;
+            margin-top: 6px;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+
+        .char-counter.green { color: #22c55e; }
+        .char-counter.yellow { color: #eab308; }
+        .char-counter.red { color: #ef4444; }
+
+        .char-warning {
+            background: #fef3c7;
+            border: 1px solid #fcd34d;
+            color: #92400e;
+            padding: 10px 14px;
+            border-radius: 6px;
+            margin-top: 8px;
+            font-size: 0.85rem;
+            display: none;
+        }
+
+        .char-warning.visible {
+            display: block;
+        }
+
+        .input-tip {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 6px;
+        }
+
+        #question {
+            min-height: 60px;
+            resize: vertical;
+        }
+
         .mode-hint {
             background: #eff6ff;
             border: 1px solid #bfdbfe;
@@ -837,7 +880,12 @@
 
             <div class="form-group">
                 <label for="question" id="questionLabel">Question or Claim to Assess</label>
-                <input type="text" id="question" placeholder="e.g., Is climate change primarily caused by human activity?">
+                <div class="input-wrapper">
+                    <textarea id="question" maxlength="600" placeholder="Enter ONE specific claim to assess (e.g., 'Climate change is primarily caused by human activity')" oninput="updateCharCounter()"></textarea>
+                    <div class="char-counter green" id="charCounter">0 / 280 characters</div>
+                    <div class="char-warning" id="charWarning">⚠️ That's getting long! For the best assessment, try to focus on ONE specific claim. Can you simplify?</div>
+                </div>
+                <p class="input-tip">💡 <strong>Tip:</strong> One claim at a time works best. Keep it under 280 characters for optimal results.</p>
             </div>
 
             <div class="form-group">
@@ -935,6 +983,33 @@
         var currentMode = 'question';
         var currentQuestion = '';
 
+        // Character counter function
+        function updateCharCounter() {
+            var question = document.getElementById('question');
+            var counter = document.getElementById('charCounter');
+            var warning = document.getElementById('charWarning');
+            var len = question.value.length;
+            
+            counter.textContent = len + ' / 280 characters';
+            
+            // Update color based on length
+            counter.classList.remove('green', 'yellow', 'red');
+            if (len <= 200) {
+                counter.classList.add('green');
+            } else if (len <= 280) {
+                counter.classList.add('yellow');
+            } else {
+                counter.classList.add('red');
+            }
+            
+            // Show warning if over 400 characters
+            if (len > 400) {
+                warning.classList.add('visible');
+            } else {
+                warning.classList.remove('visible');
+            }
+        }
+
         function setMode(mode) {
             currentMode = mode;
             var questionTab = document.getElementById('questionModeTab');
@@ -959,7 +1034,7 @@
                 urlField.classList.remove('visible');
                 modeHint.innerHTML = 'Enter a claim or question and VERITAS will search for evidence and provide an assessment.';
                 questionLabel.textContent = 'Question or Claim to Assess';
-                questionInput.placeholder = 'e.g., Is climate change primarily caused by human activity?';
+                questionInput.placeholder = 'Enter ONE specific claim to assess (e.g., \'Climate change is primarily caused by human activity\')';
                 articleTextarea.placeholder = 'Paste article text here for analysis, or leave blank to assess just the question above...';
             }
         }
@@ -970,6 +1045,9 @@
             document.getElementById('articleUrl').value = '';
             document.getElementById('errorBox').classList.remove('visible');
             document.getElementById('results').classList.remove('visible');
+            document.getElementById('amplifiedResults').classList.remove('visible');
+            // Reset character counter
+            updateCharCounter();;
             document.getElementById('amplifiedResults').classList.remove('visible');
             document.getElementById('amplifyBtn').style.display = 'block';
             lastAssessment = null;
