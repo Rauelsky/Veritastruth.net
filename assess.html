@@ -359,6 +359,211 @@
             box-shadow: 0 4px 12px rgba(124, 58, 237, 0.35);
         }
 
+        /* Second Opinion (Adjudicate) Button */
+        .btn-adjudicate {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            color: white;
+            width: 100%;
+            margin-top: 12px;
+            padding: 16px 28px;
+        }
+
+        .btn-adjudicate:hover:not(:disabled) {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(5, 150, 105, 0.35);
+        }
+
+        .btn-adjudicate:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Score Comparison Panel */
+        .score-comparison {
+            display: none;
+            background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+            border: 2px solid #86efac;
+            border-radius: 12px;
+            padding: 24px;
+            margin-top: 24px;
+        }
+
+        .score-comparison.visible {
+            display: block;
+        }
+
+        .score-comparison h3 {
+            color: #047857;
+            margin-bottom: 16px;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 16px;
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 12px 16px;
+            text-align: center;
+            border-bottom: 1px solid #bbf7d0;
+        }
+
+        .comparison-table th {
+            background: #dcfce7;
+            font-weight: 600;
+            color: #166534;
+        }
+
+        .comparison-table tr:hover {
+            background: rgba(134, 239, 172, 0.2);
+        }
+
+        .score-match {
+            color: #16a34a;
+            font-weight: 600;
+        }
+
+        .score-minor-diff {
+            color: #ca8a04;
+            font-weight: 600;
+        }
+
+        .score-major-diff {
+            color: #dc2626;
+            font-weight: 600;
+        }
+
+        .discrepancy-alert {
+            display: none;
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+            border-radius: 8px;
+            padding: 14px 16px;
+            color: #92400e;
+            font-weight: 500;
+            margin-top: 12px;
+        }
+
+        .discrepancy-alert.visible {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .consensus-note {
+            background: #dcfce7;
+            border-radius: 8px;
+            padding: 12px 16px;
+            color: #166534;
+            font-weight: 500;
+            margin-top: 12px;
+            display: none;
+        }
+
+        .consensus-note.visible {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Second Assessment Display */
+        .second-assessment-results {
+            display: none;
+            background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+            border: 2px solid #059669;
+            border-radius: 12px;
+            padding: 24px;
+            margin-top: 24px;
+        }
+
+        .second-assessment-results.visible {
+            display: block;
+        }
+
+        .second-assessment-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid #86efac;
+        }
+
+        .second-assessment-header h3 {
+            color: #047857;
+            font-size: 1.2rem;
+            margin: 0;
+        }
+
+        /* Post-Assessment Options Panel */
+        .post-assessment-options {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-top: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.04);
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 16px;
+        }
+
+        @media (max-width: 700px) {
+            .options-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .option-card {
+            background: var(--bg-light);
+            border: 1px solid var(--border-light);
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .option-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .option-icon {
+            font-size: 1.5rem;
+        }
+
+        .option-header h4 {
+            margin: 0;
+            font-size: 1rem;
+            color: var(--navy);
+        }
+
+        .option-description {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+            margin-bottom: 16px;
+        }
+
+        .option-description strong {
+            color: var(--text-dark);
+        }
+
+        .option-card .btn {
+            width: 100%;
+            margin-top: 0;
+        }
+
         /* API Key Section */
         .api-key-section {
             background: #fffbeb;
@@ -1079,19 +1284,100 @@
                 <div id="formattedAssessment"></div>
             </div>
 
-            <!-- Amplify Button -->
-            <button class="btn btn-amplify" id="amplifyBtn" onclick="runAmplify()" disabled>
-                🔍 Amplify Assessment — Deeper Analysis
-            </button>
-            <div class="amplify-cooldown-notice" id="amplifyCooldown">
-                <span class="pulse-icon">⏳</span> Deep analysis requires preparation. Amplify available in <span class="cooldown-timer" id="cooldownTimer">60</span> seconds...
+            <!-- Post-Assessment Options Panel -->
+            <div class="post-assessment-options" id="postAssessmentOptions" style="display: none;">
+                <h3 style="color: var(--navy); margin-bottom: 16px; font-size: 1.1rem;">🔬 Want to Go Deeper?</h3>
+                
+                <div class="options-grid">
+                    <!-- Amplify Option -->
+                    <div class="option-card">
+                        <div class="option-header">
+                            <span class="option-icon">🔍</span>
+                            <h4>Amplify</h4>
+                        </div>
+                        <p class="option-description">
+                            Stress-test the assessment — challenge assumptions, explore 
+                            alternative interpretations, find blind spots. <strong>Best for:</strong> 
+                            Understanding where the analysis might be vulnerable.
+                        </p>
+                        <button class="btn btn-amplify" id="amplifyBtn" onclick="runAmplify()" disabled>
+                            🔍 Amplify — Explore Vulnerabilities
+                        </button>
+                    </div>
+
+                    <!-- Verify Option -->
+                    <div class="option-card">
+                        <div class="option-header">
+                            <span class="option-icon">✓</span>
+                            <h4>Verify</h4>
+                        </div>
+                        <p class="option-description">
+                            Get an independent second evaluation using identical methodology — 
+                            fresh eyes, no knowledge of the first assessment. Compare scores 
+                            to confirm reliability. <strong>Best for:</strong> Validating scores before acting on them.
+                        </p>
+                        <button class="btn btn-adjudicate" id="adjudicateBtn" onclick="runVerify()" disabled>
+                            ✓ Verify — Independent Confirmation
+                        </button>
+                    </div>
+                </div>
+
+                <div class="amplify-cooldown-notice" id="amplifyCooldown">
+                    <span class="pulse-icon">⏳</span> Deep analysis requires preparation. Options available in <span class="cooldown-timer" id="cooldownTimer">60</span> seconds...
+                </div>
+            </div>
+
+            <!-- Score Comparison Panel -->
+            <div class="score-comparison" id="scoreComparison">
+                <h3>✓ Verification Results — Two Independent Assessments</h3>
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Assessor</th>
+                            <th>Reality Score</th>
+                            <th>Integrity Score</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Initial</strong></td>
+                            <td id="primaryReality">—</td>
+                            <td id="primaryIntegrity">—</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Verification</strong></td>
+                            <td id="secondaryReality">—</td>
+                            <td id="secondaryIntegrity">—</td>
+                        </tr>
+                        <tr style="background: #f0fdf4;">
+                            <td><strong>Difference</strong></td>
+                            <td id="diffReality">—</td>
+                            <td id="diffIntegrity">—</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="consensus-note" id="consensusNote">
+                    <span>✅</span> <span id="consensusText">Strong consensus between assessors.</span>
+                </div>
+                <div class="discrepancy-alert" id="discrepancyAlert">
+                    <span>⚠️</span> <span id="discrepancyText">Significant discrepancy detected — review both assessments carefully.</span>
+                </div>
+            </div>
+
+            <!-- Verification Results -->
+            <div class="second-assessment-results" id="secondAssessmentResults">
+                <div class="second-assessment-header">
+                    <span style="font-size: 1.5rem;">✓</span>
+                    <h3>Verification Assessment — Independent Evaluation</h3>
+                </div>
+                <div id="formattedSecondAssessment"></div>
             </div>
 
             <!-- Amplified Results -->
             <div class="amplified-results" id="amplifiedResults">
                 <div class="amplified-header">
-                    <span style="font-size: 1.5rem;">▲</span>
-                    <h3>Amplified Analysis</h3>
+                    <span style="font-size: 1.5rem;">🔍</span>
+                    <h3>Amplified Analysis — Epistemic Deep Dive</h3>
                 </div>
                 <div id="formattedAmplified"></div>
             </div>
@@ -1134,12 +1420,14 @@
 
         // Amplify cooldown timer function
         function startAmplifyCooldown() {
-            var btn = document.getElementById('amplifyBtn');
+            var amplifyBtn = document.getElementById('amplifyBtn');
+            var adjudicateBtn = document.getElementById('adjudicateBtn');
             var notice = document.getElementById('amplifyCooldown');
             var timerDisplay = document.getElementById('cooldownTimer');
             
             amplifyCooldownSeconds = 60;
-            btn.disabled = true;
+            amplifyBtn.disabled = true;
+            adjudicateBtn.disabled = true;
             notice.classList.add('visible');
             timerDisplay.textContent = amplifyCooldownSeconds;
             
@@ -1154,7 +1442,8 @@
                 
                 if (amplifyCooldownSeconds <= 0) {
                     clearInterval(amplifyCooldownTimer);
-                    btn.disabled = false;
+                    amplifyBtn.disabled = false;
+                    adjudicateBtn.disabled = false;
                     notice.classList.remove('visible');
                 }
             }, 1000);
@@ -1196,10 +1485,12 @@
             document.getElementById('errorBox').classList.remove('visible');
             document.getElementById('results').classList.remove('visible');
             document.getElementById('amplifiedResults').classList.remove('visible');
+            document.getElementById('secondAssessmentResults').classList.remove('visible');
+            document.getElementById('scoreComparison').classList.remove('visible');
+            document.getElementById('postAssessmentOptions').style.display = 'none';
             // Reset character counter
             updateCharCounter();;
             document.getElementById('amplifiedResults').classList.remove('visible');
-            document.getElementById('amplifyBtn').style.display = 'block';
             lastAssessment = null;
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
@@ -1445,7 +1736,9 @@
             btn.textContent = 'Analyzing with web search...';
             results.classList.remove('visible');
             document.getElementById('amplifiedResults').classList.remove('visible');
-            document.getElementById('amplifyBtn').style.display = 'block';
+            document.getElementById('secondAssessmentResults').classList.remove('visible');
+            document.getElementById('scoreComparison').classList.remove('visible');
+            document.getElementById('postAssessmentOptions').style.display = 'none';
 
             var requestBody = {
                 question: finalQuestion,
@@ -1477,10 +1770,20 @@
 
                 lastAssessment = {
                     question: finalQuestion || 'Article Assessment',
-                    assessment: data.assessment
+                    assessment: data.assessment,
+                    realityScore: data.realityScore,
+                    integrityScore: data.integrityScore
                 };
 
-                // Start the Amplify cooldown timer
+                // Show the post-assessment options panel
+                document.getElementById('postAssessmentOptions').style.display = 'block';
+                
+                // Reset comparison panel for new assessment
+                document.getElementById('scoreComparison').classList.remove('visible');
+                document.getElementById('secondAssessmentResults').classList.remove('visible');
+                document.getElementById('amplifiedResults').classList.remove('visible');
+
+                // Start the cooldown timer for both buttons
                 startAmplifyCooldown();
 
                 results.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -1535,14 +1838,136 @@
             .then(function(data) {
                 document.getElementById('formattedAmplified').innerHTML = formatAmplified(data.amplified);
                 document.getElementById('amplifiedResults').classList.add('visible');
-                btn.style.display = 'none';
+                // Hide the options panel after use
+                document.getElementById('postAssessmentOptions').style.display = 'none';
                 document.getElementById('amplifiedResults').scrollIntoView({ behavior: 'smooth', block: 'start' });
             })
             .catch(function(err) {
                 alert('Amplification error: ' + err.message);
                 btn.disabled = false;
-                btn.textContent = '🔍 Amplify Assessment — Deeper Analysis';
+                btn.textContent = '🔍 Amplify — Epistemic Deep Dive';
             });
+        }
+
+        function runVerify() {
+            if (!lastAssessment) return;
+
+            var btn = document.getElementById('adjudicateBtn');
+            var userApiKey = document.getElementById('apiKey').value.trim();
+
+            btn.disabled = true;
+            btn.textContent = '✓ Verifying...';
+
+            // Get the original article text if it exists
+            var articleText = document.getElementById('articleText').value.trim();
+
+            var requestBody = {
+                question: lastAssessment.question,
+                articleText: articleText,
+                userApiKey: userApiKey
+            };
+
+            fetch('/api/verify', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(requestBody)
+            })
+            .then(function(response) {
+                return response.json().then(function(data) {
+                    if (!response.ok) {
+                        throw new Error(data.error || data.message || 'Verification failed');
+                    }
+                    return data;
+                });
+            })
+            .then(function(data) {
+                // Display the verification assessment
+                document.getElementById('formattedSecondAssessment').innerHTML = formatAssessment(data.assessment);
+                document.getElementById('secondAssessmentResults').classList.add('visible');
+                
+                // Update the score comparison table
+                updateScoreComparison(
+                    lastAssessment.realityScore,
+                    lastAssessment.integrityScore,
+                    data.realityScore,
+                    data.integrityScore
+                );
+                
+                // Hide the options panel after use
+                document.getElementById('postAssessmentOptions').style.display = 'none';
+                
+                // Scroll to comparison first, then assessment
+                document.getElementById('scoreComparison').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            })
+            .catch(function(err) {
+                alert('Verification error: ' + err.message);
+                btn.disabled = false;
+                btn.textContent = '✓ Verify — Independent Confirmation';
+            });
+        }
+
+        function updateScoreComparison(primaryReality, primaryIntegrity, secondaryReality, secondaryIntegrity) {
+            // Populate the comparison table
+            document.getElementById('primaryReality').textContent = formatScoreDisplay(primaryReality);
+            document.getElementById('primaryIntegrity').textContent = formatIntegrityDisplay(primaryIntegrity);
+            document.getElementById('secondaryReality').textContent = formatScoreDisplay(secondaryReality);
+            document.getElementById('secondaryIntegrity').textContent = formatIntegrityDisplay(secondaryIntegrity);
+            
+            // Calculate differences
+            var realityDiff = Math.abs((primaryReality || 0) - (secondaryReality || 0));
+            var integrityDiff = Math.abs((primaryIntegrity || 0) - (secondaryIntegrity || 0));
+            
+            // Format difference displays
+            var diffRealityEl = document.getElementById('diffReality');
+            var diffIntegrityEl = document.getElementById('diffIntegrity');
+            
+            diffRealityEl.textContent = '±' + realityDiff.toFixed(1);
+            diffIntegrityEl.textContent = '±' + integrityDiff.toFixed(2);
+            
+            // Color code based on discrepancy
+            diffRealityEl.className = realityDiff <= 1 ? 'score-match' : (realityDiff <= 2 ? 'score-minor-diff' : 'score-major-diff');
+            diffIntegrityEl.className = integrityDiff <= 0.15 ? 'score-match' : (integrityDiff <= 0.3 ? 'score-minor-diff' : 'score-major-diff');
+            
+            // Show appropriate alert
+            var consensusNote = document.getElementById('consensusNote');
+            var discrepancyAlert = document.getElementById('discrepancyAlert');
+            
+            // Thresholds: Reality > 2 points or Integrity > 0.3 is significant
+            var hasSignificantDiscrepancy = realityDiff > 2 || integrityDiff > 0.3;
+            var hasMinorDiscrepancy = realityDiff > 1 || integrityDiff > 0.15;
+            
+            if (hasSignificantDiscrepancy) {
+                consensusNote.classList.remove('visible');
+                discrepancyAlert.classList.add('visible');
+                document.getElementById('discrepancyText').textContent = 
+                    'Significant discrepancy detected (Reality: ±' + realityDiff.toFixed(1) + 
+                    ', Integrity: ±' + integrityDiff.toFixed(2) + ') — review both assessments carefully.';
+            } else if (hasMinorDiscrepancy) {
+                discrepancyAlert.classList.remove('visible');
+                consensusNote.classList.add('visible');
+                document.getElementById('consensusText').textContent = 
+                    'Minor variance between assessors — both evaluations are reasonably aligned.';
+            } else {
+                discrepancyAlert.classList.remove('visible');
+                consensusNote.classList.add('visible');
+                document.getElementById('consensusText').textContent = 
+                    'Strong consensus between assessors — high confidence in this evaluation.';
+            }
+            
+            // Show the comparison panel
+            document.getElementById('scoreComparison').classList.add('visible');
+        }
+
+        function formatScoreDisplay(score) {
+            if (score === null || score === undefined) return '—';
+            var num = parseFloat(score);
+            return (num >= 0 ? '+' : '') + num.toFixed(0);
+        }
+
+        function formatIntegrityDisplay(score) {
+            if (score === null || score === undefined) return '—';
+            var num = parseFloat(score);
+            return (num >= 0 ? '+' : '') + num.toFixed(2);
         }
     </script>
 </body>
