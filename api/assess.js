@@ -171,6 +171,66 @@ function buildPrompt(question, articleText) {
     prompt += '**-10 Completely Incoherent:** No logical structure whatsoever. Self-contradictory claims. Fallacies are the foundation rather than exceptions. Conclusions are pure assertion.\n\n';
     
     // ============================================
+    // SECTION 3B: INTEGRITY DIMENSION RUBRICS (CHUNK 4 - NEW)
+    // ============================================
+    prompt += '## INTEGRITY DIMENSION RUBRICS — DETAILED SCORING CRITERIA\n\n';
+    prompt += 'The Integrity dimension is scored on a -1.0 to +1.0 scale and measures the HONESTY of presentation.\n';
+    prompt += 'This is INDEPENDENT of factual accuracy — a true claim can be presented dishonestly, and a false claim can be an honest mistake.\n';
+    prompt += 'The same four factors are assessed, but focusing on HOW claims are made rather than WHAT is true.\n\n';
+    
+    // --- Evidence Quality Rubric (Integrity) = Evidence Handling ---
+    prompt += '### Evidence Handling Rubric (Integrity Dimension)\n\n';
+    prompt += 'For Integrity scoring, assess HONESTY in evidence selection and presentation, not the quality of evidence itself.\n\n';
+    prompt += '**+1.0 Exemplary Honesty:** All relevant evidence presented fairly. Contradictory evidence fully disclosed and engaged. No cherry-picking. Limitations explicitly stated. Model of intellectual honesty.\n\n';
+    prompt += '**+0.7 to +0.9 High Honesty:** Evidence presented comprehensively with minor omissions. Contradictory evidence acknowledged. Limitations mostly stated. Good faith effort at completeness.\n\n';
+    prompt += '**+0.4 to +0.6 Adequate Honesty:** Evidence presentation is reasonably balanced. Some selectivity but not egregious. Key contradictory evidence noted even if not fully engaged.\n\n';
+    prompt += '**+0.1 to +0.3 Basic Honesty:** Evidence not fabricated but presentation favors one side. Important contradictions mentioned but minimized. Some selective omission.\n\n';
+    prompt += '**0 Neutral:** Cannot assess honesty in evidence handling. Or evidence handling is neither notably honest nor dishonest.\n\n';
+    prompt += '**-0.1 to -0.3 Mild Dishonesty:** Noticeable cherry-picking. Some relevant contrary evidence omitted. Presentation tilted through selection rather than fabrication.\n\n';
+    prompt += '**-0.4 to -0.6 Significant Dishonesty:** Systematic cherry-picking. Important contradictory evidence ignored. Misrepresentation through selective quotation or omission.\n\n';
+    prompt += '**-0.7 to -0.9 Severe Dishonesty:** Evidence grossly misrepresented. Contradictory evidence denied or attacked rather than addressed. Near-total selectivity.\n\n';
+    prompt += '**-1.0 Complete Dishonesty:** Evidence fabricated, invented, or fundamentally misrepresented. Systematic deception in evidence handling. Bad faith throughout.\n\n';
+    
+    // --- Epistemological Integrity Rubric (Integrity) ---
+    prompt += '### Epistemological Integrity Rubric (Integrity Dimension)\n\n';
+    prompt += 'This is the CORE of Integrity scoring: How honest is the reasoning process itself?\n\n';
+    prompt += '**+1.0 Exemplary:** Perfect epistemic calibration. Uncertainty acknowledged proportionally. Same standards applied to all sides. Counter-arguments addressed at their strongest (steel-manning). No tribal reasoning.\n\n';
+    prompt += '**+0.7 to +0.9 High:** Strong epistemic honesty. Uncertainty generally acknowledged. Standards mostly consistent. Counter-arguments engaged fairly. Minimal tribal bias.\n\n';
+    prompt += '**+0.4 to +0.6 Adequate:** Basic epistemic honesty. Key uncertainties noted. Some inconsistency in standards but not systematic. Counter-arguments acknowledged if not fully engaged.\n\n';
+    prompt += '**+0.1 to +0.3 Basic:** Minimal epistemic awareness. Uncertainty downplayed. Standards somewhat inconsistent. Counter-arguments mentioned but dismissed quickly.\n\n';
+    prompt += '**0 Neutral:** Cannot assess epistemic integrity. Or epistemology is neither notably honest nor dishonest.\n\n';
+    prompt += '**-0.1 to -0.3 Mild Problems:** Some epistemological special pleading. Weaponized uncertainty occasionally deployed. Double standards emerging. Counter-arguments straw-manned.\n\n';
+    prompt += '**-0.4 to -0.6 Significant Problems:** Clear pattern of special pleading. Uncertainty deployed strategically. Obvious double standards. Tribal reasoning influences conclusions.\n\n';
+    prompt += '**-0.7 to -0.9 Severe Problems:** Pervasive special pleading. Weaponized uncertainty is primary tactic. Standards completely different for "our side" vs "their side." Tribal identity drives epistemology.\n\n';
+    prompt += '**-1.0 Complete Failure:** Epistemology entirely subordinated to predetermined conclusions. Maximum special pleading. Uncertainty only exists for opposing views. Tribal reasoning is total.\n\n';
+    
+    // --- Source Reliability Rubric (Integrity) = Source Integrity ---
+    prompt += '### Source Integrity Rubric (Integrity Dimension)\n\n';
+    prompt += 'For Integrity scoring, assess HONESTY in source selection and attribution.\n\n';
+    prompt += '**+1.0 Exemplary:** Sources fully transparent with complete attribution. Conflicts of interest disclosed. Source limitations acknowledged. No selective citation.\n\n';
+    prompt += '**+0.7 to +0.9 High:** Sources well-attributed with minor gaps. Most conflicts disclosed. Generally honest about source limitations.\n\n';
+    prompt += '**+0.4 to +0.6 Adequate:** Basic attribution present. Major conflicts noted. Some selective citation but not egregious.\n\n';
+    prompt += '**+0.1 to +0.3 Basic:** Attribution incomplete. Some conflicts undisclosed. Noticeable selectivity in which sources cited.\n\n';
+    prompt += '**0 Neutral:** Cannot assess source integrity. Or source handling neither notably honest nor dishonest.\n\n';
+    prompt += '**-0.1 to -0.3 Mild Problems:** Attribution gaps. Important conflicts undisclosed. Source selectivity tilts presentation.\n\n';
+    prompt += '**-0.4 to -0.6 Significant Problems:** Poor attribution. Major conflicts hidden. Sources cherry-picked to support predetermined conclusion.\n\n';
+    prompt += '**-0.7 to -0.9 Severe Problems:** Sources misattributed or misrepresented. Critical conflicts concealed. Systematic source manipulation.\n\n';
+    prompt += '**-1.0 Complete Failure:** Sources fabricated or fundamentally misrepresented. Systematic deception about sourcing. Bad faith throughout.\n\n';
+    
+    // --- Logical Coherence Rubric (Integrity) = Logical Integrity ---
+    prompt += '### Logical Integrity Rubric (Integrity Dimension)\n\n';
+    prompt += 'For Integrity scoring, assess HONESTY in logical presentation — are fallacies deliberate or accidental?\n\n';
+    prompt += '**+1.0 Exemplary:** Arguments structured for clarity and honest persuasion. Any logical limitations acknowledged. No manipulative framing. Reader\'s reasoning respected.\n\n';
+    prompt += '**+0.7 to +0.9 High:** Arguments presented honestly. Minor rhetorical flourishes don\'t undermine substance. No deliberate fallacies.\n\n';
+    prompt += '**+0.4 to +0.6 Adequate:** Arguments basically honest. Some rhetorical shortcuts but not manipulative. Fallacies appear accidental not strategic.\n\n';
+    prompt += '**+0.1 to +0.3 Basic:** Arguments lean on rhetoric over logic. Some manipulative framing. Hard to tell if fallacies are deliberate.\n\n';
+    prompt += '**0 Neutral:** Cannot assess logical honesty. Or presentation neither notably honest nor dishonest.\n\n';
+    prompt += '**-0.1 to -0.3 Mild Problems:** Some deliberately misleading framing. False dichotomies deployed. Rhetoric obscures weak points.\n\n';
+    prompt += '**-0.4 to -0.6 Significant Problems:** Pattern of manipulative logic. Fallacies appear strategic. Emotional manipulation substitutes for argument.\n\n';
+    prompt += '**-0.7 to -0.9 Severe Problems:** Logic subordinated to persuasion. Systematic manipulation. Arguments designed to bypass rather than engage reason.\n\n';
+    prompt += '**-1.0 Complete Failure:** Pure manipulation with no honest argument. Propaganda techniques throughout. Complete contempt for reader\'s reasoning.\n\n';
+    
+    // ============================================
     // SECTION 4: SUMMARY SCORING SCALES (retained from v3)
     // ============================================
     prompt += '## SCORING SCALES — QUICK REFERENCE\n\n';
@@ -228,6 +288,136 @@ function buildPrompt(question, articleText) {
     prompt += 'A claim CANNOT score higher than its evidence supports, regardless of other factors.\n';
     prompt += 'If Evidence Quality is +3, the final Reality Score cannot exceed +5 even if other factors are +10.\n';
     prompt += 'The ceiling is approximately: EQ + 2 points maximum.\n\n';
+    
+    // ============================================
+    // SECTION 6B: THRESHOLD MARKERS + EVIDENCE CEILING EXPANDED (CHUNK 5)
+    // ============================================
+    prompt += '## THRESHOLD MARKERS AND EVIDENCE CEILING — EXPANDED GUIDANCE\n\n';
+    
+    // Evidence Ceiling Expanded
+    prompt += '### Evidence Ceiling Principle (Expanded)\n\n';
+    prompt += 'The Evidence Ceiling is a fundamental constraint: No claim can score higher on Reality than its evidence warrants, regardless of how well-reasoned or well-sourced the argument.\n\n';
+    prompt += '**FORMULA:** Maximum Reality Score ≤ Evidence Quality + 2\n\n';
+    prompt += '**EXAMPLES:**\n';
+    prompt += '- If EQ = +3 (somewhat supported), max Reality Score = +5, even if EI, SR, LC are all +10\n';
+    prompt += '- If EQ = -2 (weakly contradicted), max Reality Score = 0, even with excellent reasoning\n';
+    prompt += '- If EQ = +8 (very strong), max Reality Score = +10 (ceiling effectively reached)\n\n';
+    prompt += '**WHY THIS MATTERS:**\n';
+    prompt += '- Brilliant rhetoric cannot make weak evidence strong\n';
+    prompt += '- Excellent sources cannot overcome absent evidence\n';
+    prompt += '- Logical perfection cannot create evidence that doesn\'t exist\n\n';
+    prompt += '**EXCEPTION:** When EQ ≥ +8, the ceiling effectively disappears (EQ + 2 ≥ +10)\n\n';
+    
+    // Threshold Markers
+    prompt += '### Threshold Markers — What Moves the Score\n\n';
+    prompt += 'Use these markers to determine when a score crosses from one level to another.\n\n';
+    
+    prompt += '**+3 to +4 (Somewhat Supported → Likely):**\n';
+    prompt += '- At least one credible source with relevant expertise\n';
+    prompt += '- No major contradictory evidence unaddressed\n';
+    prompt += '- Plausible mechanism or explanation exists\n\n';
+    
+    prompt += '**+4 to +5 (Likely → Probable):**\n';
+    prompt += '- At least two independent quality sources agreeing\n';
+    prompt += '- Major alternative explanations addressed\n';
+    prompt += '- No significant unaddressed contradictory evidence\n\n';
+    
+    prompt += '**+5 to +6 (Probable → Solid):**\n';
+    prompt += '- Multiple credible sources with consistent findings\n';
+    prompt += '- Clear preponderance of evidence\n';
+    prompt += '- Remaining uncertainty is acknowledged and bounded\n\n';
+    
+    prompt += '**+6 to +7 (Solid → Strong):**\n';
+    prompt += '- Expert consensus beginning to form\n';
+    prompt += '- Contradictory evidence clearly outweighed\n';
+    prompt += '- Methodology sound enough for peer scrutiny\n\n';
+    
+    prompt += '**+7 to +8 (Strong → Very Strong):**\n';
+    prompt += '- Multiple independent lines of evidence converging\n';
+    prompt += '- Remaining objections are peripheral\n';
+    prompt += '- Replication or meta-analysis supports conclusion\n\n';
+    
+    prompt += '**+8 to +9 (Very Strong → Near-Certain):**\n';
+    prompt += '- Overwhelming convergent evidence\n';
+    prompt += '- Only trivial uncertainties remain\n';
+    prompt += '- Counter-evidence relies on fringe or discredited sources\n\n';
+    
+    prompt += '**0 to ±1 (Indeterminate → Barely Supported/Contradicted):**\n';
+    prompt += '- Any credible evidence bearing on the claim\n';
+    prompt += '- Evidence cannot be completely offset by counter-evidence\n';
+    prompt += '- Direction becomes discernible even if weak\n\n';
+    
+    prompt += '**-5 to -6 (Improbable → Poorly Supported):**\n';
+    prompt += '- Credible experts actively rejecting the claim\n';
+    prompt += '- Supporting evidence shown to be flawed or insufficient\n';
+    prompt += '- Alternative explanation more parsimonious\n\n';
+    
+    // Boundary Conditions
+    prompt += '### Applying the Evidence Ceiling\n\n';
+    prompt += '**WHEN TO APPLY CEILING ADJUSTMENT:**\n';
+    prompt += '1. Calculate raw weighted score using the formula\n';
+    prompt += '2. Compare raw score to EQ + 2\n';
+    prompt += '3. If raw > EQ + 2, adjust final score to EQ + 2\n';
+    prompt += '4. Note adjustment in output: "Evidence Ceiling Check: ADJUSTED from [raw] to [final]"\n\n';
+    prompt += '**WHEN NOT TO ADJUST:**\n';
+    prompt += '- If raw ≤ EQ + 2, use the raw score as final\n';
+    prompt += '- Note in output: "Evidence Ceiling Check: PASS"\n\n';
+    
+    // ============================================
+    // SECTION 6C: EDGE CASE HANDLING (CHUNK 6)
+    // ============================================
+    prompt += '## EDGE CASE HANDLING — SPECIAL CLAIM TYPES\n\n';
+    prompt += 'Some claims require special handling. Apply these rules when standard assessment doesn\'t fit.\n\n';
+    
+    // Satire and Hyperbole
+    prompt += '### Satire and Hyperbole\n\n';
+    prompt += 'When content is clearly satirical or hyperbolic:\n';
+    prompt += '1. Identify the IMPLICIT claim being made (not the literal statement)\n';
+    prompt += '2. If no factual claim is implied, score as 0/Neutral on both scales\n';
+    prompt += '3. If a factual claim IS implied, assess THAT claim\n';
+    prompt += '4. Note in output: "Assessed as satire/hyperbole — implicit claim evaluated"\n\n';
+    prompt += '**EXAMPLE:** "Politicians are all lizard people" (satirical)\n';
+    prompt += '- Literal claim: Not assessed (obvious hyperbole)\n';
+    prompt += '- Implicit claim: "Politicians are untrustworthy" — THIS gets assessed\n';
+    prompt += '- If no implicit factual claim: Reality 0, Integrity 0\n\n';
+    
+    // Predictions
+    prompt += '### Predictions (Future-Oriented Claims)\n\n';
+    prompt += 'For claims about future events:\n';
+    prompt += '- **Reality Score:** CANNOT be assessed until predicted event occurs\n';
+    prompt += '- Use special notation: "Cannot Determine — Future Claim"\n';
+    prompt += '- **Integrity Score:** CAN be assessed — is the prediction made with appropriate uncertainty?\n\n';
+    prompt += '**EXAMPLE:** "The economy will crash in 2026"\n';
+    prompt += '- Reality: Cannot Determine — Future Claim\n';
+    prompt += '- Integrity: Assessable (Is uncertainty acknowledged? Are conditions specified? Is confidence proportional to evidence?)\n\n';
+    
+    // Value Claims
+    prompt += '### Value Claims\n\n';
+    prompt += 'Claims containing value judgments (e.g., "X is immoral", "Y is beautiful"):\n';
+    prompt += '1. SEPARATE factual dimensions from value dimensions\n';
+    prompt += '2. Factual dimensions: Assess normally on Reality scale\n';
+    prompt += '3. Value dimensions: "Cannot Determine — Value Judgment"\n';
+    prompt += '4. Integrity: CAN still assess honesty of presentation for both dimensions\n\n';
+    prompt += '**EXAMPLE:** "Capital punishment is immoral because it doesn\'t deter crime"\n';
+    prompt += '- Factual claim (deterrence): Assessable on Reality scale\n';
+    prompt += '- Value claim (immorality): Cannot Determine — Value Judgment\n';
+    prompt += '- Integrity: Fully assessable for how honestly both components are presented\n\n';
+    
+    // Absence of Evidence
+    prompt += '### Absence of Evidence\n\n';
+    prompt += '"Absence of evidence is not evidence of absence" — BUT with important exceptions.\n\n';
+    prompt += '**WHEN ABSENCE IS EVIDENCE AGAINST:**\n';
+    prompt += '- The claim predicts specific observable effects\n';
+    prompt += '- Adequate investigation has been conducted\n';
+    prompt += '- The predicted effects are not observed\n';
+    prompt += '- Then absence IS evidence against the claim\n\n';
+    prompt += '**WHEN ABSENCE IS NOT EVIDENCE:**\n';
+    prompt += '- No investigation has occurred\n';
+    prompt += '- Investigation was inadequate to detect the effect\n';
+    prompt += '- Effects wouldn\'t be observable anyway\n\n';
+    prompt += '**EXAMPLES:**\n';
+    prompt += '- "There\'s a teapot orbiting Mars" — No way to investigate → Absence is NOT evidence against\n';
+    prompt += '- "This drug cures cancer" — Extensive trials show no effect → Absence IS evidence against\n\n';
     
     // ============================================
     // SECTION 7: YOUR TASK
@@ -390,7 +580,8 @@ module.exports = async function handler(req, res) {
             realityScore: realityMatch ? parseFloat(realityMatch[1]) : null,
             integrityScore: integrityMatch ? parseFloat(integrityMatch[1]) : null,
             question: question || 'Article Assessment',
-            assessmentDate: new Date().toISOString()
+            assessmentDate: new Date().toISOString(),
+            assessor: 'INITIAL'
         });
         
     } catch (err) {
