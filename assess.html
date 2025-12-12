@@ -1770,6 +1770,7 @@
 
                 lastAssessment = {
                     question: finalQuestion || 'Article Assessment',
+                    articleText: finalArticleText || '',
                     assessment: data.assessment,
                     realityScore: data.realityScore,
                     integrityScore: data.integrityScore
@@ -1858,12 +1859,9 @@
             btn.disabled = true;
             btn.textContent = '✓ Verifying...';
 
-            // Get the original article text if it exists
-            var articleText = document.getElementById('articleText').value.trim();
-
             var requestBody = {
                 question: lastAssessment.question,
-                articleText: articleText,
+                articleText: lastAssessment.articleText || '',
                 userApiKey: userApiKey
             };
 
