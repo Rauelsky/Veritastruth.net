@@ -4,6 +4,52 @@ const rateLimitMap = new Map();
 const FREE_LIMIT = 5;
 const RATE_LIMIT_WINDOW = 24 * 60 * 60 * 1000;
 
+// ============================================
+// TRACK B: CRITERIA DEFINITIONS
+// ============================================
+const CRITERIA_SETS = {
+    qualification: {
+        label: 'Person Qualification',
+        criteria: {
+            legal: { id: 'legal', label: 'Legal Eligibility', description: 'Does the person meet legal/constitutional requirements for the role?' },
+            experience: { id: 'experience', label: 'Experience & Credentials', description: 'What relevant experience, education, or credentials does the person have?' },
+            record: { id: 'record', label: 'Historical Record', description: 'What is their track record in similar or related roles?' },
+            alignment: { id: 'alignment', label: 'Value Alignment', description: 'How do their stated values align with the role\'s requirements?' },
+            controversies: { id: 'controversies', label: 'Controversies & Concerns', description: 'What documented concerns, controversies, or red flags exist?' }
+        }
+    },
+    policy: {
+        label: 'Policy Effectiveness',
+        criteria: {
+            goals: { id: 'goals', label: 'Stated Goals Clarity', description: 'Are the policy\'s goals clearly defined and measurable?' },
+            outcomes: { id: 'outcomes', label: 'Measurable Outcomes', description: 'What evidence exists about the policy\'s actual outcomes?' },
+            costbenefit: { id: 'costbenefit', label: 'Cost/Benefit Analysis', description: 'How do the costs compare to the benefits?' },
+            alternatives: { id: 'alternatives', label: 'Comparison to Alternatives', description: 'How does this policy compare to alternative approaches?' },
+            implementation: { id: 'implementation', label: 'Implementation Challenges', description: 'What practical challenges affect implementation?' }
+        }
+    },
+    product: {
+        label: 'Product/Service Quality',
+        criteria: {
+            audience: { id: 'audience', label: 'Audience Fit', description: 'For whom is this product/service appropriate?' },
+            measure: { id: 'measure', label: 'Success Criteria', description: 'By what measure is success/quality defined?' },
+            comparison: { id: 'comparison', label: 'Comparison to Alternatives', description: 'How does it compare to alternatives?' },
+            timeframe: { id: 'timeframe', label: 'Timeframe Considerations', description: 'What are short-term vs long-term implications?' },
+            credibility: { id: 'credibility', label: 'Source Credibility', description: 'What conflicts of interest or biases exist in claims about it?' }
+        }
+    },
+    prediction: {
+        label: 'Prediction/Forecast',
+        criteria: {
+            trackrecord: { id: 'trackrecord', label: 'Predictor Track Record', description: 'What is the predictor\'s history of accuracy?' },
+            transparency: { id: 'transparency', label: 'Model Transparency', description: 'Is the reasoning/model behind the prediction transparent?' },
+            baserates: { id: 'baserates', label: 'Base Rates Acknowledged', description: 'Are historical base rates considered?' },
+            uncertainty: { id: 'uncertainty', label: 'Uncertainty Quantified', description: 'Is uncertainty appropriately acknowledged and quantified?' },
+            falsifiability: { id: 'falsifiability', label: 'Falsifiability Defined', description: 'What would prove the prediction wrong?' }
+        }
+    }
+};
+
 function getRateLimitKey(req) {
     var ip = req.headers['x-forwarded-for']?.split(',')[0] || req.headers['x-real-ip'] || 'unknown';
     return 'rate:' + ip;
@@ -23,8 +69,10 @@ function checkRateLimit(key) {
     return { allowed: true, remaining: FREE_LIMIT - record.count };
 }
 
-function buildPrompt(question, articleText) {
-    // Get current date for temporal awareness
+// ============================================
+// TRACK A PROMPT BUILDER (existing logic)
+// ============================================
+function buildTrackAPrompt(question, articleText) {
     var now = new Date();
     var currentDate = now.toLocaleDateString('en-US', { 
         weekday: 'long', 
@@ -36,9 +84,7 @@ function buildPrompt(question, articleText) {
     
     var prompt = 'You are VERITAS, an epistemologically rigorous truth assessment system. Your purpose is to evaluate claims using a transparent four-factor methodology with intellectual honesty and appropriate epistemic humility.\n\n';
     
-    // ============================================
-    // SECTION 1: TEMPORAL AWARENESS (from Chunk 1)
-    // ============================================
+    // SECTION 1: TEMPORAL AWARENESS
     prompt += '## CURRENT DATE AND TEMPORAL AWARENESS\n';
     prompt += '**TODAY IS: ' + currentDate + ' (' + isoDate + ')**\n\n';
     prompt += 'CRITICAL: Your training data has a knowledge cutoff. Before making ANY assessment:\n';
@@ -55,11 +101,24 @@ function buildPrompt(question, articleText) {
     prompt += '2. Search for CURRENT status of each entity as of ' + currentDate + '\n';
     prompt += '3. Note any changes since your training cutoff\n';
     prompt += '4. Only THEN proceed to assessment\n\n';
-    prompt += 'Example: If asked about "the FBI Director," search "current FBI Director ' + now.getFullYear() + '" BEFORE assuming you know who it is.\n\n';
     
-    // ============================================
+    // SECTION 1.5: CLAIM TYPE CLASSIFICATION
+    prompt += '## SECTION 1.5: CLAIM TYPE CLASSIFICATION\n';
+    prompt += 'Before assessment, classify the claim type:\n';
+    prompt += '- **factual**: Verifiable through evidence (e.g., "The Earth is round")\n';
+    prompt += '- **subjective**: Depends on values/preferences (e.g., "X is qualified")\n';
+    prompt += '- **value_judgment**: Ethical/moral claim (e.g., "X is wrong")\n';
+    prompt += '- **prediction**: Future-oriented (e.g., "X will happen")\n\n';
+    
+    // SECTION 1.6: BASELINE INTEGRITY FLOOR (Seed)
+    prompt += '## SECTION 1.6: BASELINE INTEGRITY FLOOR (Seed)\n';
+    prompt += 'Before diving into evidence, note what the BARE CLAIM reveals about epistemological honesty:\n';
+    prompt += '- Does the claim acknowledge any uncertainty?\n';
+    prompt += '- Does it make absolute statements where nuance would be appropriate?\n';
+    prompt += '- Does the framing itself reveal potential bias?\n';
+    prompt += 'Document this as "baselineIntegrityNote" in structured output.\n\n';
+    
     // SECTION 2: THE FOUR-FACTOR FRAMEWORK
-    // ============================================
     prompt += '## THE FOUR-FACTOR ASSESSMENT FRAMEWORK\n\n';
     prompt += 'VERITAS uses four weighted factors to derive scores. You must assess EACH factor explicitly.\n\n';
     
@@ -100,328 +159,44 @@ function buildPrompt(question, articleText) {
     prompt += '- Are there logical fallacies (non sequitur, straw man, false dichotomy, etc.)?\n';
     prompt += '- Is the argument internally consistent?\n\n';
     
-    // ============================================
-    // SECTION 3: DETAILED REALITY DIMENSION RUBRICS (CHUNK 3 - NEW)
-    // ============================================
-    prompt += '## REALITY DIMENSION RUBRICS — DETAILED SCORING CRITERIA\n\n';
-    prompt += 'Use these detailed rubrics to score each factor on the Reality dimension (-10 to +10).\n';
-    prompt += 'The observable characteristics help ensure consistent scoring across evaluators.\n\n';
+    // SECTION 3: REALITY DIMENSION RUBRICS (condensed)
+    prompt += '## REALITY DIMENSION RUBRICS — SCORING CRITERIA\n\n';
+    prompt += '### Evidence Quality Rubric (Reality Dimension)\n';
+    prompt += '+10 Definitive: Overwhelming convergent evidence, settled science level\n';
+    prompt += '+7 to +9: Strong to very strong evidence with minor gaps\n';
+    prompt += '+4 to +6: Adequate to solid evidence, reasonable confidence\n';
+    prompt += '+1 to +3: Weak support, limited evidence\n';
+    prompt += '0: Indeterminate, evidence insufficient or balanced\n';
+    prompt += '-1 to -3: Weak refutation\n';
+    prompt += '-4 to -6: Improbable to poorly supported\n';
+    prompt += '-7 to -10: Strongly to definitively refuted\n\n';
     
-    // --- Evidence Quality Rubric (Reality) ---
-    prompt += '### Evidence Quality Rubric (Reality Dimension)\n\n';
-    prompt += '**+10 Definitive:** Overwhelming convergent evidence from multiple independent high-quality sources. No credible contradictory evidence. Scientific consensus at the level of "settled science." Example: "The Earth orbits the Sun."\n\n';
-    prompt += '**+9 Near-Certain:** Extensive high-quality evidence with only trivial uncertainties. Any remaining questions are peripheral to the core claim. Example: "Smoking causes lung cancer."\n\n';
-    prompt += '**+8 Very Strong:** Strong evidence from multiple independent sources. Minor gaps or caveats don\'t undermine the central conclusion. Meta-analyses or systematic reviews support the claim.\n\n';
-    prompt += '**+7 Strong:** Robust evidence with some limitations. Preponderance of high-quality sources support the claim. Counterevidence exists but is outweighed. Example: "Human activity is the primary driver of current climate change."\n\n';
-    prompt += '**+6 Solid:** Good evidence from credible sources. Some gaps in the evidence base but overall trend clearly supports the claim. Most experts in the field would agree.\n\n';
-    prompt += '**+5 Probable:** Reasonable evidence suggests the claim is likely true. Some uncertainty remains. Evidence is more suggestive than conclusive but points in a clear direction.\n\n';
-    prompt += '**+4 Likely:** Evidence leans toward supporting the claim but significant gaps exist. Plausible alternative explanations haven\'t been fully ruled out.\n\n';
-    prompt += '**+3 Somewhat Supported:** Some credible evidence supports the claim but it\'s far from conclusive. Evidence is mixed but tilts positive.\n\n';
-    prompt += '**+2 Weakly Supported:** Limited evidence provides slight support. More evidence needed before confidence is warranted. Consistent with the claim but not strongly supportive.\n\n';
-    prompt += '**+1 Barely Supported:** Minimal evidence provides marginal support. The claim isn\'t contradicted but also isn\'t well-supported. Evidence is thin but not absent.\n\n';
-    prompt += '**0 Indeterminate:** Evidence is insufficient, evenly balanced, or fundamentally unavailable. The question may be unanswerable with current knowledge. Example: "Intelligent life exists elsewhere in the universe."\n\n';
-    prompt += '**-1 Barely Contradicted:** Minimal evidence weighs against the claim. Not enough to confidently refute but more negative than positive.\n\n';
-    prompt += '**-2 Weakly Contradicted:** Limited evidence suggests the claim is probably false. Some contradictory data exists but isn\'t overwhelming.\n\n';
-    prompt += '**-3 Somewhat Refuted:** Some credible evidence contradicts the claim. The balance of evidence leans negative but isn\'t conclusive.\n\n';
-    prompt += '**-4 Unlikely:** Evidence suggests the claim is probably false. Significant contradictory evidence exists though some supporting evidence remains.\n\n';
-    prompt += '**-5 Improbable:** Reasonable evidence indicates the claim is likely false. Supporting evidence is weak or unreliable while contradictory evidence is stronger.\n\n';
-    prompt += '**-6 Poorly Supported:** Good evidence from credible sources contradicts the claim. Most experts would reject it.\n\n';
-    prompt += '**-7 Strongly Refuted:** Robust evidence contradicts the claim with only minor caveats. Preponderance of high-quality sources reject it. Example: "Vaccines cause autism."\n\n';
-    prompt += '**-8 Very Strongly Refuted:** Strong evidence from multiple independent sources contradicts the claim. Remaining proponents rely on fringe or discredited sources.\n\n';
-    prompt += '**-9 Near-Certainly False:** Extensive high-quality evidence demonstrates the claim is false. Only motivated reasoning could sustain belief.\n\n';
-    prompt += '**-10 Definitively False:** Overwhelming convergent evidence from multiple independent sources refutes the claim. Equivalent to "settled science" against. Example: "The Earth is flat."\n\n';
-    
-    // --- Epistemological Integrity Rubric (Reality) ---
-    prompt += '### Epistemological Integrity Rubric (Reality Dimension)\n\n';
-    prompt += 'For Reality scoring, assess how the integrity of reasoning affects factual accuracy.\n\n';
-    prompt += '**+10 Exemplary:** Rigorous methodology explicitly stated. All uncertainties acknowledged. Counter-evidence fully addressed. Standards applied consistently. Model of epistemological practice.\n\n';
-    prompt += '**+7 to +9 Strong:** Clear methodology with minor gaps. Most uncertainties acknowledged. Major counter-evidence addressed. Occasional minor inconsistencies in standards but overall rigorous.\n\n';
-    prompt += '**+4 to +6 Adequate:** Basic methodology present. Key uncertainties noted. Some counter-evidence acknowledged though not comprehensively. Standards reasonably consistent.\n\n';
-    prompt += '**+1 to +3 Weak:** Methodology implied but not explicit. Some uncertainties glossed over. Counter-evidence partially addressed. Some inconsistency in applied standards.\n\n';
-    prompt += '**0 Neutral:** Cannot assess methodology. Uncertainty handling unclear. Counter-evidence neither addressed nor ignored. No clear standard violations.\n\n';
-    prompt += '**-1 to -3 Problematic:** Methodology unclear or questionable. Key uncertainties minimized. Significant counter-evidence unaddressed. Some evidence of double standards.\n\n';
-    prompt += '**-4 to -6 Poor:** Methodology appears compromised. Uncertainty selectively deployed. Important counter-evidence ignored or dismissed without engagement. Clear double standards present.\n\n';
-    prompt += '**-7 to -9 Seriously Flawed:** Methodology absent or fundamentally flawed. Weaponized uncertainty evident. Counter-evidence systematically ignored. Pervasive special pleading.\n\n';
-    prompt += '**-10 Completely Dishonest:** No methodology—pure assertion. Certainty claimed where none exists. All counter-evidence dismissed or denied. Tribal reasoning dominates. Epistemological bad faith throughout.\n\n';
-    
-    // --- Source Reliability Rubric (Reality) ---
-    prompt += '### Source Reliability Rubric (Reality Dimension)\n\n';
-    prompt += 'For Reality scoring, assess how source quality affects confidence in factual claims.\n\n';
-    prompt += '**+10 Unimpeachable:** Sources exclusively from highest-quality peer-reviewed literature, official statistical agencies, or universally recognized authorities. Full transparency on methodology and conflicts.\n\n';
-    prompt += '**+7 to +9 Highly Reliable:** Sources primarily Tier 1 with excellent track records. Methodology and limitations disclosed. Any Tier 2 sources are from recognized experts with relevant credentials.\n\n';
-    prompt += '**+4 to +6 Generally Reliable:** Sources mostly from credible outlets. Mix of Tier 1 and Tier 2 sources. Track record is positive though not spotless. Basic transparency present.\n\n';
-    prompt += '**+1 to +3 Mixed Reliability:** Sources vary in quality. Some credible, some questionable. Track record is uneven. Transparency is partial.\n\n';
-    prompt += '**0 Uncertain:** Source quality cannot be assessed. New or unknown sources without track record. Neither clearly reliable nor unreliable.\n\n';
-    prompt += '**-1 to -3 Questionable:** Sources lean toward Tier 3 or below. Some known inaccuracies in track record. Potential conflicts of interest. Limited transparency.\n\n';
-    prompt += '**-4 to -6 Unreliable:** Sources predominantly from advocacy groups, partisan outlets, or sources with documented accuracy problems. Conflicts of interest present.\n\n';
-    prompt += '**-7 to -9 Highly Unreliable:** Sources from known misinformation outlets or anonymous/unverifiable origins. Documented history of false claims. Major undisclosed conflicts.\n\n';
-    prompt += '**-10 Completely Unreliable:** Sources are fabricated, deliberately deceptive, or from documented disinformation operations. No credibility whatsoever.\n\n';
-    
-    // --- Logical Coherence Rubric (Reality) ---
-    prompt += '### Logical Coherence Rubric (Reality Dimension)\n\n';
-    prompt += 'For Reality scoring, assess how logical soundness affects confidence in conclusions.\n\n';
-    prompt += '**+10 Rigorous:** Arguments are formally valid. Premises clearly stated. Conclusions necessarily follow. No fallacies present. Conditional statements properly qualified.\n\n';
-    prompt += '**+7 to +9 Sound:** Arguments are logically strong with minor imperfections. Conclusions well-supported by premises. Perhaps one minor fallacy that doesn\'t affect core argument.\n\n';
-    prompt += '**+4 to +6 Reasonable:** Arguments are generally logical with some gaps. Conclusions plausibly follow from premises though some leaps present. Minor fallacies don\'t undermine overall point.\n\n';
-    prompt += '**+1 to +3 Passable:** Basic logical structure present but with notable gaps. Conclusions somewhat supported but with significant inferential leaps. Multiple minor fallacies.\n\n';
-    prompt += '**0 Neutral:** Logic cannot be assessed. Arguments are not structured in a way that permits logical evaluation. Neither sound nor unsound.\n\n';
-    prompt += '**-1 to -3 Weak:** Arguments have notable logical problems. Conclusions don\'t clearly follow from premises. Several fallacies present that affect credibility.\n\n';
-    prompt += '**-4 to -6 Poor:** Arguments are structurally flawed. Major fallacies undermine conclusions. Significant non-sequiturs. Premises often unexamined.\n\n';
-    prompt += '**-7 to -9 Seriously Flawed:** Arguments are largely incoherent. Multiple major fallacies. Conclusions bear little relationship to premises. Circular reasoning or contradiction present.\n\n';
-    prompt += '**-10 Completely Incoherent:** No logical structure whatsoever. Self-contradictory claims. Fallacies are the foundation rather than exceptions. Conclusions are pure assertion.\n\n';
-    
-    // ============================================
-    // SECTION 3B: INTEGRITY DIMENSION RUBRICS (CHUNK 4 - NEW)
-    // ============================================
-    prompt += '## INTEGRITY DIMENSION RUBRICS — DETAILED SCORING CRITERIA\n\n';
+    // SECTION 4: INTEGRITY DIMENSION RUBRICS (condensed)
+    prompt += '## INTEGRITY DIMENSION RUBRICS — SCORING CRITERIA\n\n';
     prompt += 'The Integrity dimension is scored on a -1.0 to +1.0 scale and measures the HONESTY of presentation.\n';
-    prompt += 'This is INDEPENDENT of factual accuracy — a true claim can be presented dishonestly, and a false claim can be an honest mistake.\n';
-    prompt += 'The same four factors are assessed, but focusing on HOW claims are made rather than WHAT is true.\n\n';
+    prompt += 'This is INDEPENDENT of factual accuracy.\n\n';
+    prompt += '+0.8 to +1.0: Exemplary honesty, all evidence presented fairly\n';
+    prompt += '+0.4 to +0.7: High to adequate honesty\n';
+    prompt += '+0.1 to +0.3: Basic honesty, some selectivity\n';
+    prompt += '0: Neutral/cannot assess\n';
+    prompt += '-0.1 to -0.3: Mild dishonesty, noticeable cherry-picking\n';
+    prompt += '-0.4 to -0.6: Significant dishonesty, systematic selectivity\n';
+    prompt += '-0.7 to -1.0: Severe to complete dishonesty\n\n';
     
-    // --- Evidence Quality Rubric (Integrity) = Evidence Handling ---
-    prompt += '### Evidence Handling Rubric (Integrity Dimension)\n\n';
-    prompt += 'For Integrity scoring, assess HONESTY in evidence selection and presentation, not the quality of evidence itself.\n\n';
-    prompt += '**+1.0 Exemplary Honesty:** All relevant evidence presented fairly. Contradictory evidence fully disclosed and engaged. No cherry-picking. Limitations explicitly stated. Model of intellectual honesty.\n\n';
-    prompt += '**+0.7 to +0.9 High Honesty:** Evidence presented comprehensively with minor omissions. Contradictory evidence acknowledged. Limitations mostly stated. Good faith effort at completeness.\n\n';
-    prompt += '**+0.4 to +0.6 Adequate Honesty:** Evidence presentation is reasonably balanced. Some selectivity but not egregious. Key contradictory evidence noted even if not fully engaged.\n\n';
-    prompt += '**+0.1 to +0.3 Basic Honesty:** Evidence not fabricated but presentation favors one side. Important contradictions mentioned but minimized. Some selective omission.\n\n';
-    prompt += '**0 Neutral:** Cannot assess honesty in evidence handling. Or evidence handling is neither notably honest nor dishonest.\n\n';
-    prompt += '**-0.1 to -0.3 Mild Dishonesty:** Noticeable cherry-picking. Some relevant contrary evidence omitted. Presentation tilted through selection rather than fabrication.\n\n';
-    prompt += '**-0.4 to -0.6 Significant Dishonesty:** Systematic cherry-picking. Important contradictory evidence ignored. Misrepresentation through selective quotation or omission.\n\n';
-    prompt += '**-0.7 to -0.9 Severe Dishonesty:** Evidence grossly misrepresented. Contradictory evidence denied or attacked rather than addressed. Near-total selectivity.\n\n';
-    prompt += '**-1.0 Complete Dishonesty:** Evidence fabricated, invented, or fundamentally misrepresented. Systematic deception in evidence handling. Bad faith throughout.\n\n';
-    
-    // --- Epistemological Integrity Rubric (Integrity) ---
-    prompt += '### Epistemological Integrity Rubric (Integrity Dimension)\n\n';
-    prompt += 'This is the CORE of Integrity scoring: How honest is the reasoning process itself?\n\n';
-    prompt += '**+1.0 Exemplary:** Perfect epistemic calibration. Uncertainty acknowledged proportionally. Same standards applied to all sides. Counter-arguments addressed at their strongest (steel-manning). No tribal reasoning.\n\n';
-    prompt += '**+0.7 to +0.9 High:** Strong epistemic honesty. Uncertainty generally acknowledged. Standards mostly consistent. Counter-arguments engaged fairly. Minimal tribal bias.\n\n';
-    prompt += '**+0.4 to +0.6 Adequate:** Basic epistemic honesty. Key uncertainties noted. Some inconsistency in standards but not systematic. Counter-arguments acknowledged if not fully engaged.\n\n';
-    prompt += '**+0.1 to +0.3 Basic:** Minimal epistemic awareness. Uncertainty downplayed. Standards somewhat inconsistent. Counter-arguments mentioned but dismissed quickly.\n\n';
-    prompt += '**0 Neutral:** Cannot assess epistemic integrity. Or epistemology is neither notably honest nor dishonest.\n\n';
-    prompt += '**-0.1 to -0.3 Mild Problems:** Some epistemological special pleading. Weaponized uncertainty occasionally deployed. Double standards emerging. Counter-arguments straw-manned.\n\n';
-    prompt += '**-0.4 to -0.6 Significant Problems:** Clear pattern of special pleading. Uncertainty deployed strategically. Obvious double standards. Tribal reasoning influences conclusions.\n\n';
-    prompt += '**-0.7 to -0.9 Severe Problems:** Pervasive special pleading. Weaponized uncertainty is primary tactic. Standards completely different for "our side" vs "their side." Tribal identity drives epistemology.\n\n';
-    prompt += '**-1.0 Complete Failure:** Epistemology entirely subordinated to predetermined conclusions. Maximum special pleading. Uncertainty only exists for opposing views. Tribal reasoning is total.\n\n';
-    
-    // --- Source Reliability Rubric (Integrity) = Source Integrity ---
-    prompt += '### Source Integrity Rubric (Integrity Dimension)\n\n';
-    prompt += 'For Integrity scoring, assess HONESTY in source selection and attribution.\n\n';
-    prompt += '**+1.0 Exemplary:** Sources fully transparent with complete attribution. Conflicts of interest disclosed. Source limitations acknowledged. No selective citation.\n\n';
-    prompt += '**+0.7 to +0.9 High:** Sources well-attributed with minor gaps. Most conflicts disclosed. Generally honest about source limitations.\n\n';
-    prompt += '**+0.4 to +0.6 Adequate:** Basic attribution present. Major conflicts noted. Some selective citation but not egregious.\n\n';
-    prompt += '**+0.1 to +0.3 Basic:** Attribution incomplete. Some conflicts undisclosed. Noticeable selectivity in which sources cited.\n\n';
-    prompt += '**0 Neutral:** Cannot assess source integrity. Or source handling neither notably honest nor dishonest.\n\n';
-    prompt += '**-0.1 to -0.3 Mild Problems:** Attribution gaps. Important conflicts undisclosed. Source selectivity tilts presentation.\n\n';
-    prompt += '**-0.4 to -0.6 Significant Problems:** Poor attribution. Major conflicts hidden. Sources cherry-picked to support predetermined conclusion.\n\n';
-    prompt += '**-0.7 to -0.9 Severe Problems:** Sources misattributed or misrepresented. Critical conflicts concealed. Systematic source manipulation.\n\n';
-    prompt += '**-1.0 Complete Failure:** Sources fabricated or fundamentally misrepresented. Systematic deception about sourcing. Bad faith throughout.\n\n';
-    
-    // --- Logical Coherence Rubric (Integrity) = Logical Integrity ---
-    prompt += '### Logical Integrity Rubric (Integrity Dimension)\n\n';
-    prompt += 'For Integrity scoring, assess HONESTY in logical presentation — are fallacies deliberate or accidental?\n\n';
-    prompt += '**+1.0 Exemplary:** Arguments structured for clarity and honest persuasion. Any logical limitations acknowledged. No manipulative framing. Reader\'s reasoning respected.\n\n';
-    prompt += '**+0.7 to +0.9 High:** Arguments presented honestly. Minor rhetorical flourishes don\'t undermine substance. No deliberate fallacies.\n\n';
-    prompt += '**+0.4 to +0.6 Adequate:** Arguments basically honest. Some rhetorical shortcuts but not manipulative. Fallacies appear accidental not strategic.\n\n';
-    prompt += '**+0.1 to +0.3 Basic:** Arguments lean on rhetoric over logic. Some manipulative framing. Hard to tell if fallacies are deliberate.\n\n';
-    prompt += '**0 Neutral:** Cannot assess logical honesty. Or presentation neither notably honest nor dishonest.\n\n';
-    prompt += '**-0.1 to -0.3 Mild Problems:** Some deliberately misleading framing. False dichotomies deployed. Rhetoric obscures weak points.\n\n';
-    prompt += '**-0.4 to -0.6 Significant Problems:** Pattern of manipulative logic. Fallacies appear strategic. Emotional manipulation substitutes for argument.\n\n';
-    prompt += '**-0.7 to -0.9 Severe Problems:** Logic subordinated to persuasion. Systematic manipulation. Arguments designed to bypass rather than engage reason.\n\n';
-    prompt += '**-1.0 Complete Failure:** Pure manipulation with no honest argument. Propaganda techniques throughout. Complete contempt for reader\'s reasoning.\n\n';
-    
-    // ============================================
-    // SECTION 4: SUMMARY SCORING SCALES (retained from v3)
-    // ============================================
-    prompt += '## SCORING SCALES — QUICK REFERENCE\n\n';
-    
-    prompt += '### Reality Score (-10 to +10)\n';
-    prompt += 'Measures the degree to which evidence supports or refutes the factual claims.\n';
-    prompt += '| Score | Level | Observable Characteristics |\n';
-    prompt += '|-------|-------|---------------------------|\n';
-    prompt += '| +10 | Definitive | Overwhelming convergent evidence, no credible contradiction, settled science level |\n';
-    prompt += '| +8 to +9 | Very Strong | Extensive high-quality evidence, only trivial uncertainties remain |\n';
-    prompt += '| +6 to +7 | Strong | Robust evidence, preponderance of sources support, counterevidence outweighed |\n';
-    prompt += '| +4 to +5 | Probable | Reasonable evidence, more suggestive than conclusive, clear direction |\n';
-    prompt += '| +1 to +3 | Weak Support | Limited/thin evidence, leans positive but far from conclusive |\n';
-    prompt += '| 0 | Indeterminate | Evidence insufficient, evenly balanced, or fundamentally unavailable |\n';
-    prompt += '| -1 to -3 | Weak Refutation | Limited evidence against, leans negative |\n';
-    prompt += '| -4 to -5 | Improbable | Reasonable evidence indicates likely false |\n';
-    prompt += '| -6 to -7 | Strongly Refuted | Robust contradiction, experts reject it |\n';
-    prompt += '| -8 to -9 | Very Strongly Refuted | Extensive evidence demonstrates falsity |\n';
-    prompt += '| -10 | Definitively False | Overwhelming refutation, equivalent to settled science against |\n\n';
-    
-    prompt += '### Integrity Score (-1.0 to +1.0)\n';
-    prompt += 'Measures the epistemological honesty of HOW claims are presented (independent of truth).\n';
-    prompt += '| Score | Level | Observable Characteristics |\n';
-    prompt += '|-------|-------|---------------------------|\n';
-    prompt += '| +0.8 to +1.0 | Exemplary | All evidence presented fairly, uncertainty acknowledged, counter-arguments steel-manned |\n';
-    prompt += '| +0.5 to +0.7 | High | Comprehensive evidence, limitations stated, good faith effort, minimal bias |\n';
-    prompt += '| +0.2 to +0.4 | Adequate | Reasonably balanced, some selectivity but key contradictions noted |\n';
-    prompt += '| +0.1 | Basic | Evidence not fabricated but presentation favors one side |\n';
-    prompt += '| 0 | Neutral | Cannot assess or neither notably honest nor dishonest |\n';
-    prompt += '| -0.1 to -0.3 | Mild Problems | Noticeable cherry-picking, some omissions, straw-manning |\n';
-    prompt += '| -0.4 to -0.6 | Significant Problems | Systematic cherry-picking, double standards, tribal reasoning evident |\n';
-    prompt += '| -0.7 to -0.9 | Severe Problems | Evidence grossly misrepresented, pervasive special pleading |\n';
-    prompt += '| -1.0 | Complete Failure | Fabrication, deliberate deception, propaganda |\n\n';
-    
-    prompt += 'CRITICAL: These scores are INDEPENDENT. A TRUE claim can be presented DISHONESTLY. A FALSE claim can be an HONEST mistake.\n\n';
-    
-    // ============================================
     // SECTION 5: TRUTH DISTORTION PATTERNS
-    // ============================================
     prompt += '## TRUTH DISTORTION PATTERNS TO DETECT\n\n';
     prompt += '1. **Epistemological Special Pleading**: Applying different evidence standards based on desired conclusions\n';
-    prompt += '   - Detection: "Does this source apply the same standard to both sides?"\n';
-    prompt += '2. **Weaponized Uncertainty**: Exploiting complexity to avoid inconvenient conclusions while treating preferred conclusions as certain\n';
-    prompt += '   - Detection: "Is uncertainty deployed strategically or honestly?"\n';
-    prompt += '3. **Tribal Reasoning**: Evaluating claims based on who makes them rather than merit\n';
-    prompt += '   - Detection: "Would this source accept the same claim from the other side?"\n\n';
+    prompt += '2. **Weaponized Uncertainty**: Exploiting complexity to avoid inconvenient conclusions\n';
+    prompt += '3. **Tribal Reasoning**: Evaluating claims based on who makes them rather than merit\n\n';
     
-    // ============================================
     // SECTION 6: THE WEIGHTED FORMULA
-    // ============================================
     prompt += '## THE WEIGHTED FORMULA\n\n';
-    prompt += 'Both Reality and Integrity scores are calculated using:\n';
     prompt += '**Final Score = (EQ × 0.40) + (EI × 0.30) + (SR × 0.20) + (LC × 0.10)**\n\n';
     prompt += '### Evidence Ceiling Principle\n';
-    prompt += 'A claim CANNOT score higher than its evidence supports, regardless of other factors.\n';
-    prompt += 'If Evidence Quality is +3, the final Reality Score cannot exceed +5 even if other factors are +10.\n';
-    prompt += 'The ceiling is approximately: EQ + 2 points maximum.\n\n';
+    prompt += 'A claim CANNOT score higher than its evidence supports.\n';
+    prompt += 'Maximum Reality Score ≤ Evidence Quality + 2\n\n';
     
-    // ============================================
-    // SECTION 6B: THRESHOLD MARKERS + EVIDENCE CEILING EXPANDED (CHUNK 5)
-    // ============================================
-    prompt += '## THRESHOLD MARKERS AND EVIDENCE CEILING — EXPANDED GUIDANCE\n\n';
-    
-    // Evidence Ceiling Expanded
-    prompt += '### Evidence Ceiling Principle (Expanded)\n\n';
-    prompt += 'The Evidence Ceiling is a fundamental constraint: No claim can score higher on Reality than its evidence warrants, regardless of how well-reasoned or well-sourced the argument.\n\n';
-    prompt += '**FORMULA:** Maximum Reality Score ≤ Evidence Quality + 2\n\n';
-    prompt += '**EXAMPLES:**\n';
-    prompt += '- If EQ = +3 (somewhat supported), max Reality Score = +5, even if EI, SR, LC are all +10\n';
-    prompt += '- If EQ = -2 (weakly contradicted), max Reality Score = 0, even with excellent reasoning\n';
-    prompt += '- If EQ = +8 (very strong), max Reality Score = +10 (ceiling effectively reached)\n\n';
-    prompt += '**WHY THIS MATTERS:**\n';
-    prompt += '- Brilliant rhetoric cannot make weak evidence strong\n';
-    prompt += '- Excellent sources cannot overcome absent evidence\n';
-    prompt += '- Logical perfection cannot create evidence that doesn\'t exist\n\n';
-    prompt += '**EXCEPTION:** When EQ ≥ +8, the ceiling effectively disappears (EQ + 2 ≥ +10)\n\n';
-    
-    // Threshold Markers
-    prompt += '### Threshold Markers — What Moves the Score\n\n';
-    prompt += 'Use these markers to determine when a score crosses from one level to another.\n\n';
-    
-    prompt += '**+3 to +4 (Somewhat Supported → Likely):**\n';
-    prompt += '- At least one credible source with relevant expertise\n';
-    prompt += '- No major contradictory evidence unaddressed\n';
-    prompt += '- Plausible mechanism or explanation exists\n\n';
-    
-    prompt += '**+4 to +5 (Likely → Probable):**\n';
-    prompt += '- At least two independent quality sources agreeing\n';
-    prompt += '- Major alternative explanations addressed\n';
-    prompt += '- No significant unaddressed contradictory evidence\n\n';
-    
-    prompt += '**+5 to +6 (Probable → Solid):**\n';
-    prompt += '- Multiple credible sources with consistent findings\n';
-    prompt += '- Clear preponderance of evidence\n';
-    prompt += '- Remaining uncertainty is acknowledged and bounded\n\n';
-    
-    prompt += '**+6 to +7 (Solid → Strong):**\n';
-    prompt += '- Expert consensus beginning to form\n';
-    prompt += '- Contradictory evidence clearly outweighed\n';
-    prompt += '- Methodology sound enough for peer scrutiny\n\n';
-    
-    prompt += '**+7 to +8 (Strong → Very Strong):**\n';
-    prompt += '- Multiple independent lines of evidence converging\n';
-    prompt += '- Remaining objections are peripheral\n';
-    prompt += '- Replication or meta-analysis supports conclusion\n\n';
-    
-    prompt += '**+8 to +9 (Very Strong → Near-Certain):**\n';
-    prompt += '- Overwhelming convergent evidence\n';
-    prompt += '- Only trivial uncertainties remain\n';
-    prompt += '- Counter-evidence relies on fringe or discredited sources\n\n';
-    
-    prompt += '**0 to ±1 (Indeterminate → Barely Supported/Contradicted):**\n';
-    prompt += '- Any credible evidence bearing on the claim\n';
-    prompt += '- Evidence cannot be completely offset by counter-evidence\n';
-    prompt += '- Direction becomes discernible even if weak\n\n';
-    
-    prompt += '**-5 to -6 (Improbable → Poorly Supported):**\n';
-    prompt += '- Credible experts actively rejecting the claim\n';
-    prompt += '- Supporting evidence shown to be flawed or insufficient\n';
-    prompt += '- Alternative explanation more parsimonious\n\n';
-    
-    // Boundary Conditions
-    prompt += '### Applying the Evidence Ceiling\n\n';
-    prompt += '**WHEN TO APPLY CEILING ADJUSTMENT:**\n';
-    prompt += '1. Calculate raw weighted score using the formula\n';
-    prompt += '2. Compare raw score to EQ + 2\n';
-    prompt += '3. If raw > EQ + 2, adjust final score to EQ + 2\n';
-    prompt += '4. Note adjustment in output: "Evidence Ceiling Check: ADJUSTED from [raw] to [final]"\n\n';
-    prompt += '**WHEN NOT TO ADJUST:**\n';
-    prompt += '- If raw ≤ EQ + 2, use the raw score as final\n';
-    prompt += '- Note in output: "Evidence Ceiling Check: PASS"\n\n';
-    
-    // ============================================
-    // SECTION 6C: EDGE CASE HANDLING (CHUNK 6)
-    // ============================================
-    prompt += '## EDGE CASE HANDLING — SPECIAL CLAIM TYPES\n\n';
-    prompt += 'Some claims require special handling. Apply these rules when standard assessment doesn\'t fit.\n\n';
-    
-    // Satire and Hyperbole
-    prompt += '### Satire and Hyperbole\n\n';
-    prompt += 'When content is clearly satirical or hyperbolic:\n';
-    prompt += '1. Identify the IMPLICIT claim being made (not the literal statement)\n';
-    prompt += '2. If no factual claim is implied, score as 0/Neutral on both scales\n';
-    prompt += '3. If a factual claim IS implied, assess THAT claim\n';
-    prompt += '4. Note in output: "Assessed as satire/hyperbole — implicit claim evaluated"\n\n';
-    prompt += '**EXAMPLE:** "Politicians are all lizard people" (satirical)\n';
-    prompt += '- Literal claim: Not assessed (obvious hyperbole)\n';
-    prompt += '- Implicit claim: "Politicians are untrustworthy" — THIS gets assessed\n';
-    prompt += '- If no implicit factual claim: Reality 0, Integrity 0\n\n';
-    
-    // Predictions
-    prompt += '### Predictions (Future-Oriented Claims)\n\n';
-    prompt += 'For claims about future events:\n';
-    prompt += '- **Reality Score:** CANNOT be assessed until predicted event occurs\n';
-    prompt += '- Use special notation: "Cannot Determine — Future Claim"\n';
-    prompt += '- **Integrity Score:** CAN be assessed — is the prediction made with appropriate uncertainty?\n\n';
-    prompt += '**EXAMPLE:** "The economy will crash in 2026"\n';
-    prompt += '- Reality: Cannot Determine — Future Claim\n';
-    prompt += '- Integrity: Assessable (Is uncertainty acknowledged? Are conditions specified? Is confidence proportional to evidence?)\n\n';
-    
-    // Value Claims
-    prompt += '### Value Claims\n\n';
-    prompt += 'Claims containing value judgments (e.g., "X is immoral", "Y is beautiful"):\n';
-    prompt += '1. SEPARATE factual dimensions from value dimensions\n';
-    prompt += '2. Factual dimensions: Assess normally on Reality scale\n';
-    prompt += '3. Value dimensions: "Cannot Determine — Value Judgment"\n';
-    prompt += '4. Integrity: CAN still assess honesty of presentation for both dimensions\n\n';
-    prompt += '**EXAMPLE:** "Capital punishment is immoral because it doesn\'t deter crime"\n';
-    prompt += '- Factual claim (deterrence): Assessable on Reality scale\n';
-    prompt += '- Value claim (immorality): Cannot Determine — Value Judgment\n';
-    prompt += '- Integrity: Fully assessable for how honestly both components are presented\n\n';
-    
-    // Absence of Evidence
-    prompt += '### Absence of Evidence\n\n';
-    prompt += '"Absence of evidence is not evidence of absence" — BUT with important exceptions.\n\n';
-    prompt += '**WHEN ABSENCE IS EVIDENCE AGAINST:**\n';
-    prompt += '- The claim predicts specific observable effects\n';
-    prompt += '- Adequate investigation has been conducted\n';
-    prompt += '- The predicted effects are not observed\n';
-    prompt += '- Then absence IS evidence against the claim\n\n';
-    prompt += '**WHEN ABSENCE IS NOT EVIDENCE:**\n';
-    prompt += '- No investigation has occurred\n';
-    prompt += '- Investigation was inadequate to detect the effect\n';
-    prompt += '- Effects wouldn\'t be observable anyway\n\n';
-    prompt += '**EXAMPLES:**\n';
-    prompt += '- "There\'s a teapot orbiting Mars" — No way to investigate → Absence is NOT evidence against\n';
-    prompt += '- "This drug cures cancer" — Extensive trials show no effect → Absence IS evidence against\n\n';
-    
-    // ============================================
     // SECTION 7: YOUR TASK
-    // ============================================
     prompt += '## YOUR TASK\n\n';
     prompt += 'Assessment Date: ' + currentDate + '\n\n';
     if (articleText) {
@@ -430,10 +205,11 @@ function buildPrompt(question, articleText) {
         prompt += 'Evaluate this claim/question: ' + question + '\n\n';
     }
     
-    // ============================================
     // SECTION 8: REQUIRED OUTPUT FORMAT
-    // ============================================
     prompt += '## REQUIRED OUTPUT FORMAT\n\n';
+    
+    prompt += '**CLAIM TYPE CLASSIFICATION**\n';
+    prompt += '[factual/subjective/value_judgment/prediction]\n\n';
     
     prompt += '**TEMPORAL VERIFICATION COMPLETED**\n';
     prompt += '[Confirm what you searched to verify current status of relevant entities]\n\n';
@@ -441,26 +217,23 @@ function buildPrompt(question, articleText) {
     prompt += '**CLAIM BEING TESTED**\n';
     prompt += '[State the specific claim you are evaluating]\n\n';
     
-    // Reality Score Breakdown
     prompt += '**REALITY SCORE BREAKDOWN**\n';
-    prompt += '- Evidence Quality (40%): [score from -10 to +10] — [1-2 sentence justification citing evidence hierarchy and rubric level]\n';
-    prompt += '- Epistemological Integrity (30%): [score] — [1-2 sentence justification on reasoning rigor per rubric]\n';
-    prompt += '- Source Reliability (20%): [score] — [1-2 sentence justification citing source tiers and rubric level]\n';
-    prompt += '- Logical Coherence (10%): [score] — [1-2 sentence justification on argument validity per rubric]\n';
+    prompt += '- Evidence Quality (40%): [score from -10 to +10] — [1-2 sentence justification]\n';
+    prompt += '- Epistemological Integrity (30%): [score] — [1-2 sentence justification]\n';
+    prompt += '- Source Reliability (20%): [score] — [1-2 sentence justification]\n';
+    prompt += '- Logical Coherence (10%): [score] — [1-2 sentence justification]\n';
     prompt += '- Weighted Calculation: ([EQ] × 0.40) + ([EI] × 0.30) + ([SR] × 0.20) + ([LC] × 0.10) = [result]\n';
-    prompt += '- Evidence Ceiling Check: [PASS if result ≤ EQ+2, otherwise ADJUSTED to EQ+2]\n';
+    prompt += '- Evidence Ceiling Check: [PASS or ADJUSTED]\n';
     prompt += '- **FINAL REALITY SCORE: [X]** (integer from -10 to +10)\n\n';
     
-    // Integrity Score Breakdown
     prompt += '**INTEGRITY SCORE BREAKDOWN**\n';
-    prompt += '- Evidence Handling (40%): [score from -1.0 to +1.0] — [1-2 sentence on honesty in evidence selection/presentation]\n';
-    prompt += '- Epistemological Integrity (30%): [score] — [1-2 sentence on reasoning honesty, special pleading, tribal reasoning]\n';
-    prompt += '- Source Integrity (20%): [score] — [1-2 sentence on transparency of attribution, conflicts disclosed]\n';
-    prompt += '- Logical Integrity (10%): [score] — [1-2 sentence on whether fallacies appear deliberate or manipulative]\n';
+    prompt += '- Evidence Handling (40%): [score from -1.0 to +1.0] — [1-2 sentence justification]\n';
+    prompt += '- Epistemological Integrity (30%): [score] — [1-2 sentence justification]\n';
+    prompt += '- Source Integrity (20%): [score] — [1-2 sentence justification]\n';
+    prompt += '- Logical Integrity (10%): [score] — [1-2 sentence justification]\n';
     prompt += '- Weighted Calculation: ([EH] × 0.40) + ([EI] × 0.30) + ([SI] × 0.20) + ([LI] × 0.10) = [result]\n';
     prompt += '- **FINAL INTEGRITY SCORE: [X.X]** (one decimal from -1.0 to +1.0)\n\n';
     
-    // Remaining sections
     prompt += '**UNDERLYING TRUTH**\n';
     prompt += '[2-3 sentences on what is actually true about this topic as of ' + currentDate + ']\n\n';
     
@@ -483,11 +256,266 @@ function buildPrompt(question, articleText) {
     prompt += '[Final assessment for a general reader]\n\n';
     
     prompt += '**KEY SOURCES REFERENCED**\n';
-    prompt += '[List main sources consulted with dates where relevant]';
+    prompt += '[List main sources consulted with dates where relevant]\n\n';
+    
+    // SECTION 9: STRUCTURED OUTPUT
+    prompt += '## SECTION 9: STRUCTURED OUTPUT\n\n';
+    prompt += 'After your markdown assessment, output the following JSON block:\n\n';
+    prompt += '<!-- VERITAS_STRUCTURED_OUTPUT -->\n';
+    prompt += '```json\n';
+    prompt += '{\n';
+    prompt += '  "claimType": "factual|subjective|value_judgment|prediction",\n';
+    prompt += '  "confidence": "High|Medium|Low",\n';
+    prompt += '  "quickTake": "2-3 sentence headline summary for casual readers",\n';
+    prompt += '  "baselineIntegrityNote": "What the bare claim reveals about epistemological honesty",\n';
+    prompt += '  "holes": [\n';
+    prompt += '    {"text": "Gap 1 headline", "detail": "Expanded explanation", "priority": 1},\n';
+    prompt += '    {"text": "Gap 2 headline", "detail": "Expanded explanation", "priority": 1},\n';
+    prompt += '    {"text": "Gap 3 headline", "detail": "Expanded explanation", "priority": 1},\n';
+    prompt += '    {"text": "Gap 4 headline", "detail": "Expanded explanation", "priority": 2},\n';
+    prompt += '    {"text": "Gap 5 headline", "detail": "Expanded explanation", "priority": 2},\n';
+    prompt += '    {"text": "Gap 6 headline", "detail": "Expanded explanation", "priority": 2},\n';
+    prompt += '    {"text": "Gap 7 headline", "detail": "Expanded explanation", "priority": 3},\n';
+    prompt += '    {"text": "Gap 8 headline", "detail": "Expanded explanation", "priority": 3},\n';
+    prompt += '    {"text": "Gap 9 headline", "detail": "Expanded explanation", "priority": 3}\n';
+    prompt += '  ],\n';
+    prompt += '  "questions": [\n';
+    prompt += '    {"text": "Question 1", "detail": "Why this matters", "priority": 1},\n';
+    prompt += '    {"text": "Question 2", "detail": "Why this matters", "priority": 1},\n';
+    prompt += '    {"text": "Question 3", "detail": "Why this matters", "priority": 1},\n';
+    prompt += '    {"text": "Question 4", "detail": "Why this matters", "priority": 2},\n';
+    prompt += '    {"text": "Question 5", "detail": "Why this matters", "priority": 2},\n';
+    prompt += '    {"text": "Question 6", "detail": "Why this matters", "priority": 2},\n';
+    prompt += '    {"text": "Question 7", "detail": "Why this matters", "priority": 3},\n';
+    prompt += '    {"text": "Question 8", "detail": "Why this matters", "priority": 3},\n';
+    prompt += '    {"text": "Cui bono — who benefits from you believing this?", "detail": "Always consider framing incentives", "priority": 3}\n';
+    prompt += '  ],\n';
+    prompt += '  "fiveWs": {\n';
+    prompt += '    "who": "Key actors and stakeholders",\n';
+    prompt += '    "what": "Core facts and claims",\n';
+    prompt += '    "where": "Geographic/institutional context",\n';
+    prompt += '    "when": "Timeline and temporal context",\n';
+    prompt += '    "how": "Mechanisms and processes"\n';
+    prompt += '  },\n';
+    prompt += '  "trackBReserved": {\n';
+    prompt += '    "criteriaUsed": [],\n';
+    prompt += '    "perCriteriaScores": {}\n';
+    prompt += '  }\n';
+    prompt += '}\n';
+    prompt += '```\n';
     
     return prompt;
 }
 
+// ============================================
+// TRACK B PROMPT BUILDER
+// ============================================
+function buildTrackBPrompt(question, claimType, criteria, customCriteria) {
+    var now = new Date();
+    var currentDate = now.toLocaleDateString('en-US', { 
+        weekday: 'long', 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+    });
+    
+    var criteriaSet = CRITERIA_SETS[claimType];
+    if (!criteriaSet) {
+        criteriaSet = CRITERIA_SETS.qualification;
+    }
+    
+    var criteriaToAssess = [];
+    criteria.forEach(function(c) {
+        if (criteriaSet.criteria[c]) {
+            criteriaToAssess.push(criteriaSet.criteria[c]);
+        }
+    });
+    
+    customCriteria.forEach(function(c) {
+        criteriaToAssess.push({
+            id: 'custom_' + c.replace(/\s+/g, '_').toLowerCase(),
+            label: c,
+            description: 'User-defined criterion: ' + c
+        });
+    });
+    
+    var prompt = 'You are VERITAS operating in TRACK B mode — Criteria-Specific Subjective Assessment.\n\n';
+    prompt += '**TODAY IS: ' + currentDate + '**\n\n';
+    
+    prompt += '## TRACK B: CRITERIA-SPECIFIC ASSESSMENT\n\n';
+    prompt += 'Unlike Track A (factual verification), Track B assesses subjective claims through specific criteria.\n';
+    prompt += 'The user has selected which criteria matter to THEM — your job is to assess ONLY those criteria.\n\n';
+    
+    prompt += '## CLAIM TYPE: ' + criteriaSet.label.toUpperCase() + '\n\n';
+    prompt += '## CRITERIA TO ASSESS (Selected by User):\n\n';
+    
+    criteriaToAssess.forEach(function(c, i) {
+        prompt += (i + 1) + '. **' + c.label + '**: ' + c.description + '\n';
+    });
+    
+    prompt += '\n## CRITERIA NOT SELECTED (Acknowledge but do not assess):\n';
+    Object.keys(criteriaSet.criteria).forEach(function(key) {
+        var isSelected = criteria.includes(key);
+        if (!isSelected) {
+            prompt += '- ' + criteriaSet.criteria[key].label + '\n';
+        }
+    });
+    
+    prompt += '\n## YOUR TASK\n\n';
+    prompt += 'Evaluate this claim: **' + question + '**\n\n';
+    
+    prompt += '## SCORING RULES\n\n';
+    prompt += 'For EACH selected criterion:\n';
+    prompt += '- Score from -10 to +10 (same scale as Reality Score)\n';
+    prompt += '- +10 = Criterion strongly supports the claim\n';
+    prompt += '- 0 = Criterion is neutral or indeterminate\n';
+    prompt += '- -10 = Criterion strongly contradicts the claim\n';
+    prompt += '- Confidence: High/Medium/Low\n\n';
+    
+    prompt += '## REQUIRED OUTPUT FORMAT\n\n';
+    
+    prompt += '**TEMPORAL VERIFICATION COMPLETED**\n';
+    prompt += '[Confirm what you searched to verify current status]\n\n';
+    
+    prompt += '**CLAIM BEING TESTED**\n';
+    prompt += '[State the specific claim]\n\n';
+    
+    prompt += '**CRITERIA ASSESSMENTS**\n\n';
+    
+    criteriaToAssess.forEach(function(c) {
+        prompt += '### ' + c.label + '\n';
+        prompt += '- **Score:** [X] (-10 to +10)\n';
+        prompt += '- **Confidence:** [High/Medium/Low]\n';
+        prompt += '- **Summary:** [2-3 sentences]\n';
+        prompt += '- **Key Evidence:** [What supports this score]\n\n';
+    });
+    
+    prompt += '**CRITERIA NOT ASSESSED**\n';
+    prompt += '[List the criteria the user did not select, and briefly note what they might reveal if assessed]\n\n';
+    
+    prompt += '**FULL PICTURE SYNTHESIS**\n';
+    prompt += '[2-3 sentences synthesizing the assessed criteria WITHOUT providing an aggregate score]\n';
+    prompt += '[Acknowledge if criteria tell different stories]\n\n';
+    
+    prompt += '**WHAT YOU SHOULD ALSO CONSIDER**\n';
+    prompt += '[Questions the user should ask that weren\'t covered by selected criteria]\n\n';
+    
+    prompt += '## STRUCTURED OUTPUT\n\n';
+    prompt += 'After your markdown assessment, output the following JSON block:\n\n';
+    prompt += '<!-- VERITAS_STRUCTURED_OUTPUT -->\n';
+    prompt += '```json\n';
+    prompt += '{\n';
+    prompt += '  "track": "b",\n';
+    prompt += '  "claimType": "' + claimType + '",\n';
+    prompt += '  "criteriaAssessed": [\n';
+    
+    criteriaToAssess.forEach(function(c, i) {
+        prompt += '    {\n';
+        prompt += '      "id": "' + c.id + '",\n';
+        prompt += '      "label": "' + c.label + '",\n';
+        prompt += '      "score": 0,\n';
+        prompt += '      "confidence": "Medium",\n';
+        prompt += '      "summary": "...",\n';
+        prompt += '      "evidence": "..."\n';
+        prompt += '    }' + (i < criteriaToAssess.length - 1 ? ',' : '') + '\n';
+    });
+    
+    prompt += '  ],\n';
+    prompt += '  "criteriaNotAssessed": [' + Object.keys(criteriaSet.criteria).filter(function(k) { return !criteria.includes(k); }).map(function(k) { return '"' + criteriaSet.criteria[k].label + '"'; }).join(', ') + '],\n';
+    prompt += '  "divergence": {\n';
+    prompt += '    "spread": 0,\n';
+    prompt += '    "triggered": false,\n';
+    prompt += '    "message": ""\n';
+    prompt += '  },\n';
+    prompt += '  "fullPicture": "Synthesis paragraph",\n';
+    prompt += '  "additionalQuestions": ["Question 1", "Question 2", "Question 3"]\n';
+    prompt += '}\n';
+    prompt += '```\n';
+    prompt += '\nIMPORTANT: Calculate the "spread" as the difference between the highest and lowest criterion scores. If spread >= 4, set "triggered" to true and provide a message like "These criteria tell different stories."\n';
+    
+    return prompt;
+}
+
+// ============================================
+// CUSTOM CRITERIA VALIDATION
+// ============================================
+function validateCustomCriteria(criterion) {
+    if (!criterion || criterion.trim().length < 3) {
+        return { valid: false, message: "What was that? Did you switch languages on me or what? Try something I can actually assess — like 'crisis management' or 'bipartisan cooperation.'" };
+    }
+    
+    var cleaned = criterion.trim().toLowerCase();
+    var vowelCount = (cleaned.match(/[aeiou]/g) || []).length;
+    var letterCount = (cleaned.match(/[a-z]/g) || []).length;
+    
+    if (letterCount > 5 && vowelCount / letterCount < 0.15) {
+        return { valid: false, message: "What was that? Did you switch languages on me or what? Try something I can actually assess — like 'crisis management' or 'bipartisan cooperation.'" };
+    }
+    
+    var specialCount = (cleaned.match(/[^a-z0-9\s]/g) || []).length;
+    if (specialCount > cleaned.length * 0.3) {
+        return { valid: false, message: "What was that? Did you switch languages on me or what? Try something I can actually assess — like 'crisis management' or 'bipartisan cooperation.'" };
+    }
+    
+    return { valid: true };
+}
+
+// ============================================
+// STRUCTURED OUTPUT PARSER
+// ============================================
+function parseStructuredOutput(assessment) {
+    var result = {
+        claimType: null,
+        confidence: null,
+        quickTake: null,
+        baselineIntegrityNote: null,
+        holes: [],
+        questions: [],
+        fiveWs: null,
+        trackB: null
+    };
+    
+    try {
+        var jsonMarker = assessment.indexOf('<!-- VERITAS_STRUCTURED_OUTPUT -->');
+        if (jsonMarker === -1) return result;
+        
+        var jsonStart = assessment.indexOf('```json', jsonMarker);
+        var jsonEnd = assessment.indexOf('```', jsonStart + 7);
+        
+        if (jsonStart === -1 || jsonEnd === -1) return result;
+        
+        var jsonStr = assessment.substring(jsonStart + 7, jsonEnd).trim();
+        var parsed = JSON.parse(jsonStr);
+        
+        result.claimType = parsed.claimType || null;
+        result.confidence = parsed.confidence || null;
+        result.quickTake = parsed.quickTake || null;
+        result.baselineIntegrityNote = parsed.baselineIntegrityNote || null;
+        result.holes = parsed.holes || [];
+        result.questions = parsed.questions || [];
+        result.fiveWs = parsed.fiveWs || null;
+        
+        if (parsed.track === 'b') {
+            result.trackB = {
+                claimType: parsed.claimType,
+                criteriaAssessed: parsed.criteriaAssessed || [],
+                criteriaNotAssessed: parsed.criteriaNotAssessed || [],
+                divergence: parsed.divergence || { spread: 0, triggered: false },
+                fullPicture: parsed.fullPicture || '',
+                additionalQuestions: parsed.additionalQuestions || []
+            };
+        }
+        
+    } catch (e) {
+        console.error('Failed to parse structured output:', e);
+    }
+    
+    return result;
+}
+
+// ============================================
+// MAIN HANDLER
+// ============================================
 module.exports = async function handler(req, res) {
     res.setHeader('Content-Type', 'application/json');
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -511,9 +539,20 @@ module.exports = async function handler(req, res) {
         var question = body.question || '';
         var articleText = body.articleText || '';
         var userApiKey = body.userApiKey || '';
+        var track = body.track || 'a';
+        var claimType = body.claimType || 'qualification';
+        var criteria = body.criteria || [];
+        var customCriteria = body.customCriteria || [];
         
         if (!question && !articleText) {
             return res.status(400).json({ error: 'Please provide a question or article text' });
+        }
+        
+        for (var i = 0; i < customCriteria.length; i++) {
+            var validation = validateCustomCriteria(customCriteria[i]);
+            if (!validation.valid) {
+                return res.status(400).json({ error: validation.message, field: 'customCriteria' });
+            }
         }
         
         var apiKey = userApiKey;
@@ -530,7 +569,14 @@ module.exports = async function handler(req, res) {
         }
         
         var anthropic = new Anthropic({ apiKey: apiKey });
-        var prompt = buildPrompt(question, articleText);
+        
+        var prompt;
+        if (track === 'b') {
+            prompt = buildTrackBPrompt(question, claimType, criteria, customCriteria);
+        } else {
+            prompt = buildTrackAPrompt(question, articleText);
+        }
+        
         var message;
         
         try {
@@ -552,9 +598,9 @@ module.exports = async function handler(req, res) {
         }
         
         var assessment = '';
-        for (var i = 0; i < message.content.length; i++) {
-            if (message.content[i].type === 'text') {
-                assessment += message.content[i].text;
+        for (var j = 0; j < message.content.length; j++) {
+            if (message.content[j].type === 'text') {
+                assessment += message.content[j].text;
             }
         }
         
@@ -562,11 +608,9 @@ module.exports = async function handler(req, res) {
             return res.status(500).json({ error: 'No assessment generated' });
         }
         
-        // Updated regex to find FINAL scores in the new format
         var realityMatch = assessment.match(/FINAL REALITY SCORE:\s*\[?([+-]?\d+(?:\.\d+)?)\]?/i);
         var integrityMatch = assessment.match(/FINAL INTEGRITY SCORE:\s*\[?([+-]?\d+(?:\.\d+)?)\]?/i);
         
-        // Fallback to old format if new format not found
         if (!realityMatch) {
             realityMatch = assessment.match(/REALITY SCORE:\s*\[?([+-]?\d+(?:\.\d+)?)\]?/i);
         }
@@ -574,14 +618,22 @@ module.exports = async function handler(req, res) {
             integrityMatch = assessment.match(/EPISTEMOLOGICAL INTEGRITY SCORE:\s*\[?([+-]?\d+(?:\.\d+)?)\]?/i);
         }
         
+        var structured = parseStructuredOutput(assessment);
+        
         return res.status(200).json({
             success: true,
+            track: track,
             assessment: assessment,
             realityScore: realityMatch ? parseFloat(realityMatch[1]) : null,
             integrityScore: integrityMatch ? parseFloat(integrityMatch[1]) : null,
+            claimType: structured.claimType,
+            confidence: structured.confidence,
+            quickTake: structured.quickTake,
+            structured: structured,
             question: question || 'Article Assessment',
             assessmentDate: new Date().toISOString(),
-            assessor: 'INITIAL'
+            assessor: 'INITIAL',
+            criteriaSet: track === 'b' ? CRITERIA_SETS[claimType] : null
         });
         
     } catch (err) {
@@ -589,3 +641,5 @@ module.exports = async function handler(req, res) {
         return res.status(500).json({ error: 'Assessment failed', message: err.message });
     }
 };
+
+module.exports.CRITERIA_SETS = CRITERIA_SETS;
