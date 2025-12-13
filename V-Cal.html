@@ -1230,8 +1230,11 @@ Waiting for test execution...
                     };
                     log(`  ✓ Initial: R=${initialScores.reality}, I=${initialScores.integrity}`, 'success');
                     
-                    // Small delay to avoid rate limiting
-                    await new Promise(r => setTimeout(r, 1000));
+                    // Delay to avoid rate limiting - with countdown
+                    for (let countdown = 60; countdown > 0; countdown--) {
+                        log(`  ⏳ Waiting ${countdown}s before verification...`, 'info');
+                        await new Promise(r => setTimeout(r, 1000));
+                    }
                     
                     // Run Verification
                     log(`  → Running verification...`, 'info');
@@ -1272,9 +1275,12 @@ Waiting for test execution...
                 updateProgress(i + 1, totalTests);
                 updateStats();
                 
-                // Delay between tests
+                // Delay between tests - with countdown
                 if (i < tests.length - 1) {
-                    await new Promise(r => setTimeout(r, 2000));
+                    for (let countdown = 60; countdown > 0; countdown--) {
+                        log(`⏳ Next test in ${countdown}s...`, 'info');
+                        await new Promise(r => setTimeout(r, 1000));
+                    }
                 }
             }
             
