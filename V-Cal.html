@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VERITAS Stress Test v3.0 - Temporal & Folk Wisdom</title>
+    <title>VERITAS Calibration Harness v2.0 (V-Cal)</title>
     <style>
         :root {
             --navy: #1a365d;
@@ -29,9 +29,9 @@
         .header {
             background: linear-gradient(135deg, var(--navy) 0%, var(--navy-dark) 100%);
             padding: 20px 24px;
-            border-bottom: 2px solid var(--purple);
+            border-bottom: 2px solid var(--teal);
         }
-        .header h1 { font-size: 1.5rem; color: var(--purple); }
+        .header h1 { font-size: 1.5rem; color: var(--teal); }
         .header p { color: var(--text-muted); font-size: 0.9rem; margin-top: 4px; }
         .container { display: flex; gap: 20px; padding: 20px; max-width: 1600px; margin: 0 auto; }
         
@@ -46,7 +46,7 @@
             position: sticky;
             top: 20px;
         }
-        .sidebar h2 { font-size: 1rem; color: var(--purple); margin-bottom: 16px; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+        .sidebar h2 { font-size: 1rem; color: var(--teal); margin-bottom: 16px; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
         .config-group { margin-bottom: 16px; }
         .config-group label { display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 4px; }
         .config-group input, .config-group select {
@@ -69,33 +69,31 @@
             margin-bottom: 10px;
             transition: all 0.2s;
         }
-        .btn-primary { background: var(--purple); color: white; }
+        .btn-primary { background: var(--teal); color: white; }
         .btn-primary:hover { filter: brightness(1.1); }
         .btn-primary:disabled { background: var(--border); cursor: not-allowed; }
         .btn-secondary { background: var(--border); color: var(--text); }
         .btn-danger { background: var(--red); color: white; }
         
-        /* Timer displays */
-        .timer-display {
+        /* Countdown Timer */
+        .countdown-display {
             background: var(--navy-dark);
-            border: 2px solid var(--purple);
+            border: 2px solid var(--teal);
             border-radius: 8px;
             padding: 16px;
             text-align: center;
             margin-bottom: 16px;
             display: none;
         }
-        .timer-display.visible { display: block; }
-        .timer-display .timer {
-            font-size: 2rem;
+        .countdown-display.visible { display: block; }
+        .countdown-display .timer {
+            font-size: 2.5rem;
             font-weight: 700;
-            color: var(--purple);
+            color: var(--teal);
             font-family: 'IBM Plex Mono', monospace;
         }
-        .timer-display .label { font-size: 0.85rem; color: var(--text-muted); margin-top: 4px; }
-        .timer-display .current-test { font-size: 0.9rem; color: var(--yellow); margin-top: 8px; font-weight: 500; }
-        .timer-display.working { border-color: var(--yellow); }
-        .timer-display.working .timer { color: var(--yellow); }
+        .countdown-display .label { font-size: 0.85rem; color: var(--text-muted); margin-top: 4px; }
+        .countdown-display .current-test { font-size: 0.9rem; color: var(--yellow); margin-top: 8px; font-weight: 500; }
         
         /* Stats */
         .stats-grid {
@@ -133,7 +131,7 @@
             font-size: 0.9rem;
             font-weight: 500;
         }
-        .tab.active { background: var(--navy); color: var(--purple); }
+        .tab.active { background: var(--navy); color: var(--teal); }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
         
@@ -145,8 +143,8 @@
         }
         table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
         th, td { padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--border); }
-        th { background: var(--navy); color: var(--purple); font-weight: 600; position: sticky; top: 0; }
-        tr:hover { background: rgba(139, 92, 246, 0.1); }
+        th { background: var(--navy); color: var(--teal); font-weight: 600; position: sticky; top: 0; }
+        tr:hover { background: rgba(13, 148, 136, 0.1); }
         .status-pass { color: var(--green); font-weight: 600; }
         .status-warn { color: var(--yellow); font-weight: 600; }
         .status-fail { color: var(--red); font-weight: 600; }
@@ -177,7 +175,7 @@
         
         /* Phase Headers */
         .phase-row { background: var(--navy) !important; }
-        .phase-row td { color: var(--purple); font-weight: 600; font-size: 0.95rem; }
+        .phase-row td { color: var(--teal); font-weight: 600; font-size: 0.95rem; }
         
         /* Progress bar */
         .progress-container { margin-bottom: 16px; }
@@ -189,7 +187,7 @@
         }
         .progress-fill {
             height: 100%;
-            background: var(--purple);
+            background: var(--teal);
             width: 0%;
             transition: width 0.3s ease;
         }
@@ -198,8 +196,8 @@
 </head>
 <body>
     <div class="header">
-        <h1>🔬 VERITAS Stress Test v3.0</h1>
-        <p>Targeted testing: Temporal State Claims + Debunked Folk Wisdom</p>
+        <h1>🔬 VERITAS Calibration Harness v2.0</h1>
+        <p>Regression testing + Feature validation for v4.3 Assessment Tool</p>
     </div>
     
     <div class="container">
@@ -224,22 +222,15 @@
             <div class="config-group">
                 <label>Test Suite</label>
                 <select id="testSuite">
-                    <option value="all">All Stress Tests</option>
-                    <option value="temporal">Temporal State Claims Only</option>
-                    <option value="folklore">Debunked Folk Wisdom Only</option>
-                    <option value="transitions">Was-True-Now-False Only</option>
+                    <option value="all">All Tests (Regression + Features)</option>
+                    <option value="regression">Regression Only (Original Claims)</option>
+                    <option value="features">New Features Only</option>
+                    <option value="calibration">Calibration Baseline Only</option>
+                    <option value="political">Political Balance Only</option>
                 </select>
             </div>
             
-            <!-- Working timer (during API call) -->
-            <div class="timer-display working" id="workingDisplay">
-                <div class="timer" id="workingTimer">0</div>
-                <div class="label">seconds elapsed (API call)</div>
-                <div class="current-test" id="workingLabel">Processing...</div>
-            </div>
-            
-            <!-- Countdown timer (between tests) -->
-            <div class="timer-display" id="countdownDisplay">
+            <div class="countdown-display" id="countdownDisplay">
                 <div class="timer" id="countdownTimer">30</div>
                 <div class="label">seconds until next test</div>
                 <div class="current-test" id="currentTestLabel">Preparing...</div>
@@ -250,7 +241,7 @@
                 <div class="progress-label" id="progressLabel">Ready to start</div>
             </div>
             
-            <button class="btn btn-primary" id="runBtn" onclick="runTests()">▶ Run Stress Tests</button>
+            <button class="btn btn-primary" id="runBtn" onclick="runTests()">▶ Run Test Suite</button>
             <button class="btn btn-secondary" onclick="exportResults()">📥 Export Results</button>
             <button class="btn btn-danger" onclick="stopTests()">⏹ Stop</button>
             
@@ -280,7 +271,7 @@
             <div class="tabs">
                 <button class="tab active" onclick="showTab('results')">📋 Results</button>
                 <button class="tab" onclick="showTab('log')">📝 Execution Log</button>
-                <button class="tab" onclick="showTab('summary')">📊 Analysis</button>
+                <button class="tab" onclick="showTab('summary')">📊 Summary</button>
             </div>
             
             <div class="tab-content active" id="resultsTab">
@@ -293,6 +284,7 @@
                                 <th>Initial R</th>
                                 <th>Verify R</th>
                                 <th>Δ Reality</th>
+                                <th>Final R</th>
                                 <th>Initial I</th>
                                 <th>Verify I</th>
                                 <th>Δ Integrity</th>
@@ -314,49 +306,50 @@
             
             <div class="tab-content" id="summaryTab">
                 <div class="results-card" style="padding: 20px;">
-                    <h3 style="color: var(--purple); margin-bottom: 16px;">⏱️ Temporal State Claim Analysis</h3>
-                    <div id="temporalAnalysis">Run tests to see analysis...</div>
+                    <h3 style="color: var(--teal); margin-bottom: 16px;">📊 Political Balance Analysis</h3>
+                    <div id="balanceAnalysis">Run tests to see analysis...</div>
                     
-                    <h3 style="color: var(--purple); margin: 24px 0 16px;">🧪 Folk Wisdom Analysis</h3>
-                    <div id="folkloreAnalysis">Run tests to see analysis...</div>
+                    <h3 style="color: var(--teal); margin: 24px 0 16px;">🎯 Calibration Accuracy</h3>
+                    <div id="calibrationAnalysis">Run tests to see analysis...</div>
                     
-                    <h3 style="color: var(--purple); margin: 24px 0 16px;">🔄 Variance Pattern Analysis</h3>
-                    <div id="varianceAnalysis">Run tests to see analysis...</div>
+                    <h3 style="color: var(--teal); margin: 24px 0 16px;">🔧 Feature Validation</h3>
+                    <div id="featureAnalysis">Run tests to see analysis...</div>
                 </div>
             </div>
         </div>
     </div>
     
     <script>
-        // STRESS TEST DEFINITIONS
+        // Test definitions
         const TEST_SUITES = {
-            // Temporal State Claims - should score -9 to -10 if demonstrably false NOW
-            temporal: [
-                { id: 'temp-1', claim: 'Joe Biden is the current President of the United States', expectedReality: [-10, -9], expectedIntegrity: [-0.3, 0.3], category: 'temporal', notes: 'Binary false as of Jan 2025 - should be hard -9/-10' },
-                { id: 'temp-2', claim: 'Rishi Sunak is the current Prime Minister of the United Kingdom', expectedReality: [-10, -9], expectedIntegrity: [-0.3, 0.3], category: 'temporal', notes: 'False as of July 2024 - Starmer is PM' },
-                { id: 'temp-3', claim: 'Queen Elizabeth II is the reigning monarch of the United Kingdom', expectedReality: [-10, -9], expectedIntegrity: [-0.3, 0.3], category: 'temporal', notes: 'False since Sept 2022' },
-                { id: 'temp-4', claim: 'Twitter is the name of the social media platform owned by Elon Musk', expectedReality: [-8, -5], expectedIntegrity: [-0.2, 0.4], category: 'temporal', notes: 'Rebranded to X - partial credit possible for colloquial use' },
-                { id: 'temp-5', claim: 'Donald Trump is the current President of the United States', expectedReality: [9, 10], expectedIntegrity: [0.5, 1.0], category: 'temporal', notes: 'TRUE as of Jan 2025 - control test' },
+            calibration: [
+                { id: 'cal-1', claim: 'The Earth orbits the Sun', expectedReality: [9, 10], expectedIntegrity: [0.5, 1.0], category: 'calibration', notes: 'Ceiling case - settled science' },
+                { id: 'cal-2', claim: 'Smoking cigarettes causes lung cancer', expectedReality: [8, 10], expectedIntegrity: [0.5, 1.0], category: 'calibration', notes: 'Scientific consensus' },
+                { id: 'cal-3', claim: 'Sugar causes hyperactivity in children', expectedReality: [-5, -2], expectedIntegrity: [-0.3, 0.5], category: 'calibration', notes: 'Common misconception - should be refuted' },
+                { id: 'cal-4', claim: 'Vaccines cause autism', expectedReality: [-9, -6], expectedIntegrity: [-1.0, -0.3], category: 'calibration', notes: 'Thoroughly debunked' },
+                { id: 'cal-5', claim: 'The Earth is flat', expectedReality: [-10, -9], expectedIntegrity: [-1.0, 0.0], category: 'calibration', notes: 'Floor case' },
+                { id: 'cal-6', claim: 'Human activity is the primary cause of current climate change', expectedReality: [6, 9], expectedIntegrity: [0.3, 1.0], category: 'calibration', notes: 'Scientific consensus with political overlay' }
             ],
-            
-            // Debunked Folk Wisdom - should score consistently negative with LOW variance
-            folklore: [
-                { id: 'folk-1', claim: 'Sugar causes hyperactivity in children', expectedReality: [-7, -3], expectedIntegrity: [0.0, 0.8], category: 'folklore', notes: 'Debunked by multiple double-blind studies since 1990s' },
-                { id: 'folk-2', claim: 'MSG causes headaches and adverse reactions in most people', expectedReality: [-7, -3], expectedIntegrity: [0.0, 0.8], category: 'folklore', notes: 'Debunked - no consistent evidence in controlled trials' },
-                { id: 'folk-3', claim: 'We only use 10% of our brains', expectedReality: [-9, -7], expectedIntegrity: [0.0, 0.5], category: 'folklore', notes: 'Completely false - neuroimaging shows all regions active' },
-                { id: 'folk-4', claim: 'Cracking your knuckles causes arthritis', expectedReality: [-8, -4], expectedIntegrity: [0.0, 0.7], category: 'folklore', notes: 'Debunked by multiple studies including 60-year self-experiment' },
-                { id: 'folk-5', claim: 'Hair and fingernails continue to grow after death', expectedReality: [-10, -8], expectedIntegrity: [0.0, 0.5], category: 'folklore', notes: 'False - skin dehydrates creating illusion of growth' },
-                { id: 'folk-6', claim: 'Goldfish have a three-second memory', expectedReality: [-9, -6], expectedIntegrity: [0.0, 0.6], category: 'folklore', notes: 'False - goldfish memory lasts months' },
-                { id: 'folk-7', claim: 'You need to wait 24 hours before filing a missing person report', expectedReality: [-9, -7], expectedIntegrity: [0.0, 0.5], category: 'folklore', notes: 'False - no waiting period required' },
-                { id: 'folk-8', claim: 'Lightning never strikes the same place twice', expectedReality: [-10, -8], expectedIntegrity: [0.0, 0.5], category: 'folklore', notes: 'False - Empire State Building struck ~25 times/year' },
+            political: [
+                // Right-aligned (current admin)
+                { id: 'pol-r1', claim: 'Marco Rubio is qualified to serve as Secretary of State', expectedReality: [3, 8], expectedIntegrity: [0.0, 0.8], category: 'political-right', notes: 'Current admin - qualification claim' },
+                { id: 'pol-r2', claim: 'Pam Bondi is qualified to serve as Attorney General', expectedReality: [2, 7], expectedIntegrity: [0.0, 0.8], category: 'political-right', notes: 'Current admin - qualification claim' },
+                { id: 'pol-r3', claim: 'Pete Hegseth is qualified to serve as Secretary of Defense', expectedReality: [-2, 5], expectedIntegrity: [-0.3, 0.7], category: 'political-right', notes: 'Controversial appointment' },
+                { id: 'pol-r4', claim: 'The 2020 presidential election was stolen through widespread fraud', expectedReality: [-9, -5], expectedIntegrity: [-0.8, 0.0], category: 'political-right', notes: 'Debunked claim' },
+                
+                // Left-aligned (previous admin equivalents)
+                { id: 'pol-l1', claim: 'Antony Blinken was qualified to serve as Secretary of State', expectedReality: [4, 9], expectedIntegrity: [0.0, 0.8], category: 'political-left', notes: 'Previous admin - qualification claim' },
+                { id: 'pol-l2', claim: 'Merrick Garland was qualified to serve as Attorney General', expectedReality: [5, 9], expectedIntegrity: [0.0, 0.8], category: 'political-left', notes: 'Previous admin - qualification claim' },
+                { id: 'pol-l3', claim: 'Lloyd Austin was qualified to serve as Secretary of Defense', expectedReality: [5, 9], expectedIntegrity: [0.0, 0.8], category: 'political-left', notes: 'Previous admin - qualification claim' },
+                { id: 'pol-l4', claim: 'Donald Trump attempted to overturn the 2020 election results', expectedReality: [6, 9], expectedIntegrity: [0.2, 0.9], category: 'political-left', notes: 'Well-documented events' }
             ],
-            
-            // Was-True-Now-False transitions - tests temporal reasoning specifically
-            transitions: [
-                { id: 'trans-1', claim: 'The United Kingdom is a member of the European Union', expectedReality: [-10, -9], expectedIntegrity: [-0.2, 0.3], category: 'transitions', notes: 'False since Jan 2020 Brexit' },
-                { id: 'trans-2', claim: 'Pluto is classified as a planet in our solar system', expectedReality: [-8, -6], expectedIntegrity: [0.0, 0.5], category: 'transitions', notes: 'Reclassified 2006 - some nuance acceptable' },
-                { id: 'trans-3', claim: 'The Soviet Union exists as a country', expectedReality: [-10, -10], expectedIntegrity: [-0.3, 0.3], category: 'transitions', notes: 'Dissolved 1991 - hard false' },
-                { id: 'trans-4', claim: 'BlackBerry manufactures smartphones', expectedReality: [-10, -8], expectedIntegrity: [0.0, 0.5], category: 'transitions', notes: 'Exited hardware business 2016 - binary existence claim' },
+            features: [
+                // Test collapsible sections work with real output
+                { id: 'feat-1', claim: 'Exercise improves mental health outcomes', expectedReality: [6, 9], expectedIntegrity: [0.4, 1.0], category: 'feature-test', notes: 'Should produce all standard sections' },
+                // Test temporal verification
+                { id: 'feat-2', claim: 'Joe Biden is the current President of the United States', expectedReality: [-10, 10], expectedIntegrity: [0.0, 1.0], category: 'feature-test', notes: 'Tests temporal verification - depends on current date' },
+                // Test edge cases
+                { id: 'feat-3', claim: 'Artificial general intelligence will be achieved by 2030', expectedReality: [-3, 3], expectedIntegrity: [0.0, 0.8], category: 'feature-test', notes: 'Future prediction - should get Cannot Determine or low confidence' }
             ]
         };
         
@@ -364,7 +357,6 @@
         let isRunning = false;
         let shouldStop = false;
         let countdownInterval = null;
-        let workingInterval = null;
         
         function log(message, type = 'info') {
             const container = document.getElementById('logContainer');
@@ -386,10 +378,11 @@
         function getTestsForSuite() {
             const suite = document.getElementById('testSuite').value;
             switch(suite) {
-                case 'temporal': return TEST_SUITES.temporal;
-                case 'folklore': return TEST_SUITES.folklore;
-                case 'transitions': return TEST_SUITES.transitions;
-                default: return [...TEST_SUITES.temporal, ...TEST_SUITES.folklore, ...TEST_SUITES.transitions];
+                case 'calibration': return TEST_SUITES.calibration;
+                case 'political': return TEST_SUITES.political;
+                case 'features': return TEST_SUITES.features;
+                case 'regression': return [...TEST_SUITES.calibration, ...TEST_SUITES.political];
+                default: return [...TEST_SUITES.calibration, ...TEST_SUITES.political, ...TEST_SUITES.features];
             }
         }
         
@@ -401,16 +394,18 @@
             
             let currentCategory = '';
             tests.forEach(test => {
+                // Add phase header if category changes
                 if (test.category !== currentCategory) {
                     currentCategory = test.category;
                     const headerRow = document.createElement('tr');
                     headerRow.className = 'phase-row';
                     const categoryLabel = {
-                        'temporal': '⏱️ Temporal State Claims (Current Status)',
-                        'folklore': '🧪 Debunked Folk Wisdom',
-                        'transitions': '🔄 Was-True-Now-False Transitions'
+                        'calibration': '📐 Phase 1: Calibration Baseline',
+                        'political-right': '🔴 Phase 2a: Political Balance (Right)',
+                        'political-left': '🔵 Phase 2b: Political Balance (Left)',
+                        'feature-test': '🔧 Phase 3: Feature Validation'
                     }[currentCategory] || currentCategory;
-                    headerRow.innerHTML = `<td colspan="9">${categoryLabel}</td>`;
+                    headerRow.innerHTML = `<td colspan="10">${categoryLabel}</td>`;
                     tbody.appendChild(headerRow);
                 }
                 
@@ -422,6 +417,7 @@
                     <td class="score status-pending" id="init-r-${test.id}">-</td>
                     <td class="score status-pending" id="verify-r-${test.id}">-</td>
                     <td class="variance" id="delta-r-${test.id}">-</td>
+                    <td class="score status-pending" id="final-r-${test.id}">-</td>
                     <td class="score status-pending" id="init-i-${test.id}">-</td>
                     <td class="score status-pending" id="verify-i-${test.id}">-</td>
                     <td class="variance" id="delta-i-${test.id}">-</td>
@@ -435,6 +431,10 @@
                     verifyReality: null,
                     initialIntegrity: null,
                     verifyIntegrity: null,
+                    initialAssessment: null,
+                    verifyAssessment: null,
+                    finalReality: null,
+                    adjudicated: false,
                     status: 'pending'
                 });
             });
@@ -461,7 +461,7 @@
             const el = document.getElementById(`${field}-${testId}`);
             if (el) {
                 const test = currentResults.find(t => t.id === testId);
-                const isIntegrity = field.includes('-i-') || field.includes('-i');
+                const isIntegrity = field.includes('-i-');
                 el.textContent = formatScore(value, isIntegrity);
                 
                 if (field.startsWith('init-r') || field.startsWith('verify-r')) {
@@ -490,21 +490,23 @@
         
         function updateStatus(testId) {
             const test = currentResults.find(t => t.id === testId);
-            if (test.initialReality === null || test.verifyReality === null) return;
+            if (test.finalReality === null) return;
             
-            const avgReality = (test.initialReality + test.verifyReality) / 2;
+            // Use the final score (either adjudicated or average) for status determination
+            const finalScore = test.finalReality;
             const deltaReality = Math.abs(test.initialReality - test.verifyReality);
             
-            const inRange = avgReality >= test.expectedReality[0] && avgReality <= test.expectedReality[1];
+            const inRange = finalScore >= test.expectedReality[0] && finalScore <= test.expectedReality[1];
             const lowVariance = deltaReality <= 2;
             
             let status = 'PASS';
-            if (!inRange && !lowVariance) status = 'FAIL';
-            else if (!inRange || !lowVariance) status = 'WARN';
+            if (!inRange) status = 'FAIL';
+            else if (!lowVariance && !test.adjudicated) status = 'WARN';
+            // If adjudicated and in range, it's a PASS (adjudication resolved the variance)
             
             test.status = status;
             const el = document.getElementById(`status-${testId}`);
-            el.textContent = status;
+            el.textContent = test.adjudicated ? `${status} ⚖️` : status;
             el.className = `status-${status.toLowerCase()}`;
             
             updateStats();
@@ -514,15 +516,16 @@
             const pass = currentResults.filter(t => t.status === 'PASS').length;
             const warn = currentResults.filter(t => t.status === 'WARN').length;
             const fail = currentResults.filter(t => t.status === 'FAIL').length;
+            const adjudicated = currentResults.filter(t => t.adjudicated).length;
             
             document.getElementById('passCount').textContent = pass;
             document.getElementById('warnCount').textContent = warn;
             document.getElementById('failCount').textContent = fail;
             
-            const completed = currentResults.filter(t => t.initialReality !== null && t.verifyReality !== null);
+            const completed = currentResults.filter(t => t.finalReality !== null);
             if (completed.length > 0) {
                 const avgVar = completed.reduce((sum, t) => sum + Math.abs(t.initialReality - t.verifyReality), 0) / completed.length;
-                document.getElementById('avgVariance').textContent = `±${avgVar.toFixed(2)}`;
+                document.getElementById('avgVariance').textContent = `±${avgVar.toFixed(2)}${adjudicated > 0 ? ` (${adjudicated} adjudicated)` : ''}`;
             }
         }
         
@@ -530,28 +533,6 @@
             const pct = (current / total) * 100;
             document.getElementById('progressFill').style.width = `${pct}%`;
             document.getElementById('progressLabel').textContent = label;
-        }
-        
-        function startWorkingTimer(testLabel) {
-            const display = document.getElementById('workingDisplay');
-            const timer = document.getElementById('workingTimer');
-            const label = document.getElementById('workingLabel');
-            
-            display.classList.add('visible');
-            label.textContent = testLabel;
-            
-            let elapsed = 0;
-            timer.textContent = elapsed;
-            
-            workingInterval = setInterval(() => {
-                elapsed++;
-                timer.textContent = elapsed;
-            }, 1000);
-        }
-        
-        function stopWorkingTimer() {
-            if (workingInterval) clearInterval(workingInterval);
-            document.getElementById('workingDisplay').classList.remove('visible');
         }
         
         function startCountdown(seconds, testLabel) {
@@ -609,7 +590,7 @@
             const tests = getTestsForSuite();
             const delay = parseInt(document.getElementById('testDelay').value) * 1000;
             
-            log('Starting STRESS TEST suite...', 'info');
+            log('Starting test suite...', 'info');
             log(`Running ${tests.length} tests with ${delay/1000}s delay`, 'info');
             
             for (let i = 0; i < tests.length && !shouldStop; i++) {
@@ -620,11 +601,11 @@
                 
                 // Initial assessment
                 log(`[${testNum}/${tests.length}] Running INITIAL assessment: "${test.claim.substring(0, 40)}..."`, 'info');
-                startWorkingTimer(`INITIAL: ${test.claim.substring(0, 30)}...`);
                 try {
                     const initResult = await callAPI('assess', { question: test.claim });
                     currentResults[i].initialReality = initResult.realityScore;
                     currentResults[i].initialIntegrity = initResult.integrityScore;
+                    currentResults[i].initialAssessment = initResult.assessment;
                     updateRow(test.id, `init-r`, initResult.realityScore);
                     updateRow(test.id, `init-i`, initResult.integrityScore);
                     log(`  Initial: Reality=${formatScore(initResult.realityScore)}, Integrity=${formatScore(initResult.integrityScore, true)}`, 'success');
@@ -632,7 +613,6 @@
                     log(`  Initial FAILED: ${err.message}`, 'error');
                     currentResults[i].status = 'FAIL';
                 }
-                stopWorkingTimer();
                 
                 if (shouldStop) break;
                 
@@ -643,20 +623,54 @@
                 
                 // Verify assessment
                 log(`[${testNum}/${tests.length}] Running VERIFY assessment...`, 'info');
-                startWorkingTimer(`VERIFY: ${test.claim.substring(0, 30)}...`);
                 try {
                     const verifyResult = await callAPI('verify', { question: test.claim });
                     currentResults[i].verifyReality = verifyResult.realityScore;
                     currentResults[i].verifyIntegrity = verifyResult.integrityScore;
+                    currentResults[i].verifyAssessment = verifyResult.assessment;
                     updateRow(test.id, `verify-r`, verifyResult.realityScore);
                     updateRow(test.id, `verify-i`, verifyResult.integrityScore);
                     updateVariance(test.id);
-                    updateStatus(test.id);
                     log(`  Verify: Reality=${formatScore(verifyResult.realityScore)}, Integrity=${formatScore(verifyResult.integrityScore, true)}`, 'success');
+                    
+                    // Check variance - if > 2.0, trigger adjudication
+                    const variance = Math.abs(currentResults[i].initialReality - verifyResult.realityScore);
+                    if (variance > 2.0 && currentResults[i].initialAssessment) {
+                        log(`  Variance ±${variance.toFixed(1)} > 2.0 — triggering ADJUDICATION...`, 'warn');
+                        await startCountdown(delay / 1000, `Waiting before ADJUDICATE...`);
+                        
+                        if (!shouldStop) {
+                            try {
+                                const adjResult = await callAPI('adjudicate', {
+                                    question: test.claim,
+                                    initialAssessment: currentResults[i].initialAssessment,
+                                    verifyAssessment: verifyResult.assessment,
+                                    initialScore: currentResults[i].initialReality,
+                                    verifyScore: verifyResult.realityScore
+                                });
+                                currentResults[i].finalReality = adjResult.finalScore;
+                                currentResults[i].adjudicated = true;
+                                updateRow(test.id, `final-r`, adjResult.finalScore);
+                                log(`  Adjudicated: Final=${formatScore(adjResult.finalScore)} (Winner: ${adjResult.winner}, Confidence: ${(adjResult.confidence * 100).toFixed(0)}%)`, 'success');
+                            } catch (err) {
+                                log(`  Adjudication FAILED: ${err.message}`, 'error');
+                                // Fall back to average
+                                currentResults[i].finalReality = (currentResults[i].initialReality + verifyResult.realityScore) / 2;
+                                updateRow(test.id, `final-r`, currentResults[i].finalReality);
+                            }
+                        }
+                    } else {
+                        // Low variance - use average
+                        currentResults[i].finalReality = (currentResults[i].initialReality + verifyResult.realityScore) / 2;
+                        currentResults[i].adjudicated = false;
+                        updateRow(test.id, `final-r`, currentResults[i].finalReality);
+                        log(`  Low variance — Final: ${formatScore(currentResults[i].finalReality)} (avg)`, 'info');
+                    }
+                    
+                    updateStatus(test.id);
                 } catch (err) {
                     log(`  Verify FAILED: ${err.message}`, 'error');
                 }
-                stopWorkingTimer();
                 
                 // Wait before next test (unless last)
                 if (i < tests.length - 1 && !shouldStop) {
@@ -675,64 +689,53 @@
         function stopTests() {
             shouldStop = true;
             if (countdownInterval) clearInterval(countdownInterval);
-            if (workingInterval) clearInterval(workingInterval);
             document.getElementById('countdownDisplay').classList.remove('visible');
-            document.getElementById('workingDisplay').classList.remove('visible');
             log('Stopping test suite...', 'warn');
         }
         
         function generateSummary() {
-            // Temporal analysis
-            const temporalTests = currentResults.filter(t => t.category === 'temporal' && t.status !== 'pending');
-            let tempHtml = '<table style="width:100%; margin-top: 10px;"><tr><th>Claim</th><th>Avg Score</th><th>Expected</th><th>Variance</th><th>Status</th></tr>';
-            temporalTests.forEach(t => {
-                const avg = ((t.initialReality || 0) + (t.verifyReality || 0)) / 2;
-                const variance = Math.abs((t.initialReality || 0) - (t.verifyReality || 0));
-                const inRange = avg >= t.expectedReality[0] && avg <= t.expectedReality[1];
-                tempHtml += `<tr><td>${t.claim.substring(0, 40)}...</td><td style="color: ${inRange ? 'var(--green)' : 'var(--red)'}">${avg.toFixed(1)}</td><td>${t.expectedReality[0]} to ${t.expectedReality[1]}</td><td style="color: ${variance > 2 ? 'var(--red)' : 'var(--green)'}">±${variance.toFixed(1)}</td><td class="status-${t.status.toLowerCase()}">${t.status}</td></tr>`;
-            });
-            tempHtml += '</table>';
-            document.getElementById('temporalAnalysis').innerHTML = tempHtml;
+            // Political balance
+            const rightTests = currentResults.filter(t => t.category === 'political-right' && t.status !== 'pending');
+            const leftTests = currentResults.filter(t => t.category === 'political-left' && t.status !== 'pending');
             
-            // Folklore analysis
-            const folkTests = currentResults.filter(t => t.category === 'folklore' && t.status !== 'pending');
-            let folkHtml = '<table style="width:100%; margin-top: 10px;"><tr><th>Claim</th><th>Avg Score</th><th>Expected</th><th>Variance</th><th>Status</th></tr>';
-            folkTests.forEach(t => {
-                const avg = ((t.initialReality || 0) + (t.verifyReality || 0)) / 2;
-                const variance = Math.abs((t.initialReality || 0) - (t.verifyReality || 0));
-                const inRange = avg >= t.expectedReality[0] && avg <= t.expectedReality[1];
-                folkHtml += `<tr><td>${t.claim.substring(0, 40)}...</td><td style="color: ${inRange ? 'var(--green)' : 'var(--red)'}">${avg.toFixed(1)}</td><td>${t.expectedReality[0]} to ${t.expectedReality[1]}</td><td style="color: ${variance > 2 ? 'var(--red)' : 'var(--green)'}">±${variance.toFixed(1)}</td><td class="status-${t.status.toLowerCase()}">${t.status}</td></tr>`;
-            });
-            folkHtml += '</table>';
+            let balanceHtml = '<table style="width:100%; margin-top: 10px;"><tr><th>Metric</th><th>Right-Aligned</th><th>Left-Aligned</th><th>Difference</th></tr>';
             
-            // Calculate average variance for folklore
-            if (folkTests.length > 0) {
-                const avgFolkVariance = folkTests.reduce((sum, t) => sum + Math.abs((t.initialReality || 0) - (t.verifyReality || 0)), 0) / folkTests.length;
-                folkHtml += `<p style="margin-top: 10px; color: ${avgFolkVariance > 2 ? 'var(--red)' : 'var(--green)'}"><strong>Average Folk Wisdom Variance: ±${avgFolkVariance.toFixed(2)}</strong> ${avgFolkVariance > 2 ? '⚠️ HIGH - potential systematic issue' : '✓ Acceptable'}</p>`;
+            if (rightTests.length && leftTests.length) {
+                const avgRightR = rightTests.reduce((s, t) => s + ((t.initialReality || 0) + (t.verifyReality || 0)) / 2, 0) / rightTests.length;
+                const avgLeftR = leftTests.reduce((s, t) => s + ((t.initialReality || 0) + (t.verifyReality || 0)) / 2, 0) / leftTests.length;
+                const avgRightI = rightTests.reduce((s, t) => s + ((t.initialIntegrity || 0) + (t.verifyIntegrity || 0)) / 2, 0) / rightTests.length;
+                const avgLeftI = leftTests.reduce((s, t) => s + ((t.initialIntegrity || 0) + (t.verifyIntegrity || 0)) / 2, 0) / leftTests.length;
+                
+                balanceHtml += `<tr><td>Avg Reality Score</td><td>${avgRightR.toFixed(1)}</td><td>${avgLeftR.toFixed(1)}</td><td style="color: ${Math.abs(avgRightR - avgLeftR) > 2 ? 'var(--red)' : 'var(--green)'}">${(avgRightR - avgLeftR).toFixed(1)}</td></tr>`;
+                balanceHtml += `<tr><td>Avg Integrity Score</td><td>${avgRightI.toFixed(2)}</td><td>${avgLeftI.toFixed(2)}</td><td style="color: ${Math.abs(avgRightI - avgLeftI) > 0.2 ? 'var(--red)' : 'var(--green)'}">${(avgRightI - avgLeftI).toFixed(2)}</td></tr>`;
             }
-            document.getElementById('folkloreAnalysis').innerHTML = folkHtml;
+            balanceHtml += '</table>';
+            document.getElementById('balanceAnalysis').innerHTML = balanceHtml;
             
-            // Variance pattern analysis
-            const allCompleted = currentResults.filter(t => t.status !== 'pending');
-            const highVariance = allCompleted.filter(t => Math.abs((t.initialReality || 0) - (t.verifyReality || 0)) > 2);
-            const lowVariance = allCompleted.filter(t => Math.abs((t.initialReality || 0) - (t.verifyReality || 0)) <= 1);
+            // Calibration accuracy
+            const calTests = currentResults.filter(t => t.category === 'calibration' && t.status !== 'pending');
+            let calHtml = '<ul style="margin-top: 10px; padding-left: 20px;">';
+            calTests.forEach(t => {
+                const avg = ((t.initialReality || 0) + (t.verifyReality || 0)) / 2;
+                const inRange = avg >= t.expectedReality[0] && avg <= t.expectedReality[1];
+                calHtml += `<li style="color: ${inRange ? 'var(--green)' : 'var(--red)'}">${t.claim.substring(0, 40)}... → ${avg.toFixed(1)} (expected ${t.expectedReality[0]} to ${t.expectedReality[1]}) ${inRange ? '✓' : '✗'}</li>`;
+            });
+            calHtml += '</ul>';
+            document.getElementById('calibrationAnalysis').innerHTML = calHtml;
             
-            let varHtml = `<p><strong>High Variance (>±2):</strong> ${highVariance.length} claims</p>`;
-            if (highVariance.length > 0) {
-                varHtml += '<ul style="margin: 10px 0 10px 20px;">';
-                highVariance.forEach(t => {
-                    varHtml += `<li style="color: var(--yellow)">${t.claim.substring(0, 50)}... (±${Math.abs((t.initialReality || 0) - (t.verifyReality || 0)).toFixed(1)})</li>`;
-                });
-                varHtml += '</ul>';
-            }
-            varHtml += `<p><strong>Low Variance (≤±1):</strong> ${lowVariance.length} claims ✓</p>`;
-            document.getElementById('varianceAnalysis').innerHTML = varHtml;
+            // Feature validation
+            const featTests = currentResults.filter(t => t.category === 'feature-test' && t.status !== 'pending');
+            let featHtml = '<ul style="margin-top: 10px; padding-left: 20px;">';
+            featTests.forEach(t => {
+                featHtml += `<li>${t.claim.substring(0, 40)}... → R: ${formatScore((t.initialReality + t.verifyReality) / 2)}, I: ${formatScore((t.initialIntegrity + t.verifyIntegrity) / 2, true)} - ${t.notes}</li>`;
+            });
+            featHtml += '</ul>';
+            document.getElementById('featureAnalysis').innerHTML = featHtml;
         }
         
         function exportResults() {
             const data = {
                 exportDate: new Date().toISOString(),
-                testType: 'STRESS_TEST_v3',
                 config: {
                     apiBase: document.getElementById('apiBase').value,
                     testDelay: document.getElementById('testDelay').value,
@@ -751,7 +754,7 @@
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `vcal_stress_${new Date().toISOString().split('T')[0]}.json`;
+            a.download = `vcal_results_${new Date().toISOString().split('T')[0]}.json`;
             a.click();
             URL.revokeObjectURL(url);
             log('Results exported to JSON', 'success');
