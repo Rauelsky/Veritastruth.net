@@ -3,1437 +3,719 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VERITAS Calibration Test Harness</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap" rel="stylesheet">
+    <title>VERITAS Calibration Harness v2.0 (V-Cal)</title>
     <style>
         :root {
-            --ink: #1a1a2e;
-            --paper: #faf9f7;
-            --accent-blue: #2563eb;
-            --accent-green: #059669;
-            --accent-amber: #d97706;
-            --accent-red: #dc2626;
-            --accent-purple: #7c3aed;
-            --border: #e5e5e5;
-            --muted: #6b7280;
-            --pass: #dcfce7;
-            --pass-border: #86efac;
-            --warn: #fef3c7;
-            --warn-border: #fcd34d;
-            --fail: #fee2e2;
-            --fail-border: #fca5a5;
+            --navy: #1a365d;
+            --navy-dark: #0f172a;
+            --teal: #0d9488;
+            --green: #22c55e;
+            --yellow: #eab308;
+            --red: #ef4444;
+            --blue: #3b82f6;
+            --purple: #8b5cf6;
+            --text: #e2e8f0;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --bg-card: #1e293b;
         }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: 'Source Serif 4', Georgia, serif;
-            background: var(--paper);
-            color: var(--ink);
-            line-height: 1.6;
+            font-family: 'IBM Plex Sans', -apple-system, sans-serif;
+            background: var(--navy-dark);
+            color: var(--text);
             min-height: 100vh;
         }
-
-        /* Header */
         .header {
-            background: var(--ink);
-            color: var(--paper);
-            padding: 24px 32px;
-            border-bottom: 4px solid var(--accent-blue);
+            background: linear-gradient(135deg, var(--navy) 0%, var(--navy-dark) 100%);
+            padding: 20px 24px;
+            border-bottom: 2px solid var(--teal);
         }
-
-        .header-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 16px;
-        }
-
-        .header h1 {
-            font-size: 1.5rem;
-            font-weight: 700;
-            letter-spacing: -0.02em;
-        }
-
-        .header h1 span {
-            color: var(--accent-blue);
-        }
-
-        .header-badge {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.75rem;
-            background: rgba(255,255,255,0.1);
-            padding: 6px 12px;
-            border-radius: 4px;
-            letter-spacing: 0.05em;
-        }
-
-        /* Main Layout */
-        .main {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 32px;
-            display: grid;
-            grid-template-columns: 320px 1fr;
-            gap: 32px;
-        }
-
-        @media (max-width: 900px) {
-            .main {
-                grid-template-columns: 1fr;
-            }
-        }
-
+        .header h1 { font-size: 1.5rem; color: var(--teal); }
+        .header p { color: var(--text-muted); font-size: 0.9rem; margin-top: 4px; }
+        .container { display: flex; gap: 20px; padding: 20px; max-width: 1600px; margin: 0 auto; }
+        
         /* Sidebar */
         .sidebar {
-            display: flex;
-            flex-direction: column;
-            gap: 24px;
-        }
-
-        .panel {
-            background: white;
-            border: 1px solid var(--border);
-            border-radius: 8px;
+            width: 320px;
+            flex-shrink: 0;
+            background: var(--bg-card);
+            border-radius: 12px;
             padding: 20px;
+            height: fit-content;
+            position: sticky;
+            top: 20px;
         }
-
-        .panel-title {
-            font-size: 0.85rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: var(--muted);
-            margin-bottom: 16px;
-            padding-bottom: 8px;
-            border-bottom: 1px solid var(--border);
-        }
-
-        /* Form Elements */
-        label {
-            display: block;
+        .sidebar h2 { font-size: 1rem; color: var(--teal); margin-bottom: 16px; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+        .config-group { margin-bottom: 16px; }
+        .config-group label { display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 4px; }
+        .config-group input, .config-group select {
+            width: 100%;
+            padding: 10px;
+            background: var(--navy-dark);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text);
             font-size: 0.9rem;
-            font-weight: 600;
-            margin-bottom: 6px;
-            color: var(--ink);
         }
-
-        input[type="text"], input[type="url"], select {
-            width: 100%;
-            padding: 10px 12px;
-            border: 2px solid var(--border);
-            border-radius: 6px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.85rem;
-            margin-bottom: 16px;
-            transition: border-color 0.2s;
-        }
-
-        input:focus, select:focus {
-            outline: none;
-            border-color: var(--accent-blue);
-        }
-
-        .input-hint {
-            font-size: 0.8rem;
-            color: var(--muted);
-            margin-top: -12px;
-            margin-bottom: 16px;
-        }
-
-        /* Buttons */
         .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            padding: 12px 20px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.85rem;
-            font-weight: 600;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.2s;
             width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 10px;
+            transition: all 0.2s;
         }
-
-        .btn-primary {
-            background: var(--accent-blue);
-            color: white;
+        .btn-primary { background: var(--teal); color: white; }
+        .btn-primary:hover { filter: brightness(1.1); }
+        .btn-primary:disabled { background: var(--border); cursor: not-allowed; }
+        .btn-secondary { background: var(--border); color: var(--text); }
+        .btn-danger { background: var(--red); color: white; }
+        
+        /* Countdown Timer */
+        .countdown-display {
+            background: var(--navy-dark);
+            border: 2px solid var(--teal);
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+            margin-bottom: 16px;
+            display: none;
         }
-
-        .btn-primary:hover:not(:disabled) {
-            background: #1d4ed8;
-            transform: translateY(-1px);
+        .countdown-display.visible { display: block; }
+        .countdown-display .timer {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--teal);
+            font-family: 'IBM Plex Mono', monospace;
         }
-
-        .btn-primary:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
+        .countdown-display .label { font-size: 0.85rem; color: var(--text-muted); margin-top: 4px; }
+        .countdown-display .current-test { font-size: 0.9rem; color: var(--yellow); margin-top: 8px; font-weight: 500; }
+        
+        /* Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 16px;
         }
-
-        .btn-secondary {
-            background: var(--paper);
-            color: var(--ink);
-            border: 2px solid var(--border);
+        .stat-box {
+            background: var(--navy-dark);
+            padding: 12px;
+            border-radius: 6px;
+            text-align: center;
         }
-
-        .btn-secondary:hover {
-            background: var(--border);
+        .stat-box .value { font-size: 1.5rem; font-weight: 700; }
+        .stat-box .label { font-size: 0.75rem; color: var(--text-muted); }
+        .stat-pass .value { color: var(--green); }
+        .stat-warn .value { color: var(--yellow); }
+        .stat-fail .value { color: var(--red); }
+        
+        /* Main Content */
+        .main { flex: 1; }
+        .tabs {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 16px;
         }
-
-        .btn-danger {
-            background: var(--accent-red);
-            color: white;
+        .tab {
+            padding: 10px 20px;
+            background: var(--bg-card);
+            border: none;
+            border-radius: 8px 8px 0 0;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
         }
-
-        .btn-success {
-            background: var(--accent-green);
-            color: white;
-        }
-
-        /* Progress */
-        .progress-section {
-            margin-top: 8px;
-        }
-
-        .progress-bar-container {
-            background: var(--border);
-            border-radius: 4px;
-            height: 8px;
+        .tab.active { background: var(--navy); color: var(--teal); }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        
+        /* Results Table */
+        .results-card {
+            background: var(--bg-card);
+            border-radius: 0 12px 12px 12px;
             overflow: hidden;
-            margin-bottom: 8px;
         }
-
+        table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        th, td { padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--border); }
+        th { background: var(--navy); color: var(--teal); font-weight: 600; position: sticky; top: 0; }
+        tr:hover { background: rgba(13, 148, 136, 0.1); }
+        .status-pass { color: var(--green); font-weight: 600; }
+        .status-warn { color: var(--yellow); font-weight: 600; }
+        .status-fail { color: var(--red); font-weight: 600; }
+        .status-pending { color: var(--text-muted); }
+        .score { font-family: 'IBM Plex Mono', monospace; }
+        .score-positive { color: var(--green); }
+        .score-negative { color: var(--red); }
+        .score-neutral { color: var(--yellow); }
+        .variance { font-size: 0.8rem; color: var(--text-muted); }
+        .variance.high { color: var(--red); }
+        
+        /* Log */
+        .log-container {
+            background: var(--navy-dark);
+            border-radius: 8px;
+            padding: 16px;
+            max-height: 400px;
+            overflow-y: auto;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.8rem;
+        }
+        .log-entry { margin-bottom: 4px; }
+        .log-time { color: var(--text-muted); }
+        .log-info { color: var(--blue); }
+        .log-success { color: var(--green); }
+        .log-warn { color: var(--yellow); }
+        .log-error { color: var(--red); }
+        
+        /* Phase Headers */
+        .phase-row { background: var(--navy) !important; }
+        .phase-row td { color: var(--teal); font-weight: 600; font-size: 0.95rem; }
+        
+        /* Progress bar */
+        .progress-container { margin-bottom: 16px; }
         .progress-bar {
+            height: 8px;
+            background: var(--navy-dark);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple));
+            background: var(--teal);
             width: 0%;
             transition: width 0.3s ease;
         }
-
-        .progress-text {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.8rem;
-            color: var(--muted);
-            text-align: center;
-        }
-
-        /* Stats Grid */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-        }
-
-        .stat-box {
-            background: var(--paper);
-            border-radius: 6px;
-            padding: 12px;
-            text-align: center;
-        }
-
-        .stat-value {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--ink);
-        }
-
-        .stat-value.pass { color: var(--accent-green); }
-        .stat-value.warn { color: var(--accent-amber); }
-        .stat-value.fail { color: var(--accent-red); }
-
-        .stat-label {
-            font-size: 0.75rem;
-            color: var(--muted);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        /* Main Content */
-        .content {
-            display: flex;
-            flex-direction: column;
-            gap: 24px;
-        }
-
-        /* Test Cases Table */
-        .test-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.9rem;
-        }
-
-        .test-table th {
-            background: var(--ink);
-            color: var(--paper);
-            padding: 12px 16px;
-            text-align: left;
-            font-weight: 600;
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        .test-table td {
-            padding: 12px 16px;
-            border-bottom: 1px solid var(--border);
-            vertical-align: top;
-        }
-
-        .test-table tr:hover {
-            background: rgba(37, 99, 235, 0.03);
-        }
-
-        .test-table .claim-cell {
-            max-width: 300px;
-        }
-
-        .test-table .claim-text {
-            font-weight: 500;
-        }
-
-        .test-table .claim-category {
-            font-size: 0.75rem;
-            color: var(--muted);
-            margin-top: 4px;
-        }
-
-        /* Score cells */
-        .score-cell {
-            font-family: 'JetBrains Mono', monospace;
-            font-weight: 600;
-            text-align: center;
-        }
-
-        .expected-score {
-            color: var(--muted);
-            font-size: 0.85rem;
-        }
-
-        .actual-score {
-            font-size: 1rem;
-        }
-
-        .actual-score.pending {
-            color: var(--muted);
-        }
-
-        .actual-score.running {
-            color: var(--accent-purple);
-            animation: pulse 1.5s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
-        /* Status indicators */
-        .status-cell {
-            text-align: center;
-        }
-
-        .status-badge {
-            display: inline-block;
-            padding: 4px 10px;
-            border-radius: 4px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-
-        .status-pending {
-            background: var(--border);
-            color: var(--muted);
-        }
-
-        .status-running {
-            background: #ede9fe;
-            color: var(--accent-purple);
-        }
-
-        .status-pass {
-            background: var(--pass);
-            color: #166534;
-        }
-
-        .status-warn {
-            background: var(--warn);
-            color: #92400e;
-        }
-
-        .status-fail {
-            background: var(--fail);
-            color: #991b1b;
-        }
-
-        /* Variance display */
-        .variance {
-            font-size: 0.8rem;
-            margin-top: 4px;
-        }
-
-        .variance.low { color: var(--accent-green); }
-        .variance.medium { color: var(--accent-amber); }
-        .variance.high { color: var(--accent-red); }
-
-        /* Results Panel */
-        .results-panel {
-            background: white;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            overflow: hidden;
-        }
-
-        .results-header {
-            background: var(--ink);
-            color: var(--paper);
-            padding: 16px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .results-header h2 {
-            font-size: 1rem;
-            font-weight: 600;
-        }
-
-        .results-body {
-            padding: 20px;
-            max-height: 600px;
-            overflow-y: auto;
-        }
-
-        /* Summary Section */
-        .summary-section {
-            background: white;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 24px;
-            display: none;
-        }
-
-        .summary-section.visible {
-            display: block;
-        }
-
-        .summary-title {
-            font-size: 1.2rem;
-            font-weight: 700;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .summary-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 24px;
-        }
-
-        .summary-card {
-            background: var(--paper);
-            border-radius: 8px;
-            padding: 20px;
-            text-align: center;
-        }
-
-        .summary-card-value {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 2rem;
-            font-weight: 700;
-        }
-
-        .summary-card-label {
-            font-size: 0.85rem;
-            color: var(--muted);
-            margin-top: 4px;
-        }
-
-        /* Political Balance Display */
-        .balance-section {
-            margin-top: 24px;
-            padding-top: 24px;
-            border-top: 1px solid var(--border);
-        }
-
-        .balance-title {
-            font-weight: 600;
-            margin-bottom: 16px;
-        }
-
-        .balance-bar-container {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            margin-bottom: 12px;
-        }
-
-        .balance-label {
-            font-size: 0.85rem;
-            width: 80px;
-            text-align: right;
-        }
-
-        .balance-bar {
-            flex: 1;
-            height: 24px;
-            background: var(--border);
-            border-radius: 4px;
-            overflow: hidden;
-            display: flex;
-        }
-
-        .balance-segment {
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: white;
-        }
-
-        .balance-left { background: #2563eb; }
-        .balance-center { background: #6b7280; }
-        .balance-right { background: #dc2626; }
-
-        /* Log Output */
-        .log-output {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.8rem;
-            background: var(--ink);
-            color: #a3e635;
-            padding: 16px;
-            border-radius: 6px;
-            max-height: 300px;
-            overflow-y: auto;
-            white-space: pre-wrap;
-            word-break: break-word;
-        }
-
-        .log-entry {
-            margin-bottom: 4px;
-            padding-left: 20px;
-            text-indent: -20px;
-        }
-
-        .log-time {
-            color: #6b7280;
-        }
-
-        .log-info { color: #93c5fd; }
-        .log-success { color: #86efac; }
-        .log-warning { color: #fcd34d; }
-        .log-error { color: #fca5a5; }
-
-        /* Tabs */
-        .tabs {
-            display: flex;
-            border-bottom: 2px solid var(--border);
-            margin-bottom: 20px;
-        }
-
-        .tab {
-            padding: 12px 24px;
-            font-weight: 600;
-            color: var(--muted);
-            cursor: pointer;
-            border-bottom: 2px solid transparent;
-            margin-bottom: -2px;
-            transition: all 0.2s;
-        }
-
-        .tab:hover {
-            color: var(--ink);
-        }
-
-        .tab.active {
-            color: var(--accent-blue);
-            border-bottom-color: var(--accent-blue);
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        /* Export Buttons */
-        .export-row {
-            display: flex;
-            gap: 12px;
-            margin-top: 16px;
-        }
-
-        .export-row .btn {
-            flex: 1;
-        }
-
-        /* Custom scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: var(--paper);
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: var(--border);
-            border-radius: 4px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--muted);
-        }
+        .progress-label { font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; }
     </style>
 </head>
 <body>
-    <header class="header">
-        <div class="header-content">
-            <h1>VERITAS <span>Calibration Test Harness</span></h1>
-            <div class="header-badge">CHUNK 8 • v1.0</div>
-        </div>
-    </header>
-
-    <main class="main">
-        <!-- Sidebar -->
-        <aside class="sidebar">
-            <!-- Configuration Panel -->
-            <div class="panel">
-                <div class="panel-title">Configuration</div>
-                
-                <label for="apiKey">Anthropic API Key</label>
-                <input type="text" id="apiKey" placeholder="sk-ant-..." autocomplete="off">
-                <p class="input-hint">Required for API calls</p>
-                
-                <label for="baseUrl">API Base URL</label>
-                <input type="url" id="baseUrl" value="/api" placeholder="https://your-vercel-app.vercel.app/api">
-                <p class="input-hint">Leave as /api for local Vercel</p>
-                
-                <label for="runsPerTest">Runs Per Test</label>
-                <select id="runsPerTest">
-                    <option value="1">1 run (fast)</option>
-                    <option value="2" selected>2 runs (balanced)</option>
-                    <option value="3">3 runs (thorough)</option>
-                </select>
+    <div class="header">
+        <h1>🔬 VERITAS Calibration Harness v2.0</h1>
+        <p>Regression testing + Feature validation for v4.3 Assessment Tool</p>
+    </div>
+    
+    <div class="container">
+        <div class="sidebar">
+            <h2>⚙️ Configuration</h2>
+            
+            <div class="config-group">
+                <label>API Base URL</label>
+                <input type="text" id="apiBase" value="" placeholder="Leave empty for relative URLs">
             </div>
-
-            <!-- Test Suite Selection -->
-            <div class="panel">
-                <div class="panel-title">Test Suite</div>
-                
-                <label for="testSuite">Select Tests</label>
+            
+            <div class="config-group">
+                <label>API Key (Optional)</label>
+                <input type="password" id="apiKey" placeholder="sk-ant-...">
+            </div>
+            
+            <div class="config-group">
+                <label>Delay Between Tests (seconds)</label>
+                <input type="number" id="testDelay" value="30" min="5" max="120">
+            </div>
+            
+            <div class="config-group">
+                <label>Test Suite</label>
                 <select id="testSuite">
-                    <option value="calibration">Phase 1: Calibration Baseline</option>
-                    <option value="political">Phase 2: Political Balance</option>
-                    <option value="both">Both Phases (Full Suite)</option>
-                    <option value="custom">Custom Test</option>
+                    <option value="all">All Tests (Regression + Features)</option>
+                    <option value="regression">Regression Only (Original Claims)</option>
+                    <option value="features">New Features Only</option>
+                    <option value="calibration">Calibration Baseline Only</option>
+                    <option value="political">Political Balance Only</option>
                 </select>
-                
-                <div id="customTestInput" style="display: none; margin-top: 16px;">
-                    <label for="customClaim">Custom Claim</label>
-                    <input type="text" id="customClaim" placeholder="Enter claim to test...">
+            </div>
+            
+            <div class="countdown-display" id="countdownDisplay">
+                <div class="timer" id="countdownTimer">30</div>
+                <div class="label">seconds until next test</div>
+                <div class="current-test" id="currentTestLabel">Preparing...</div>
+            </div>
+            
+            <div class="progress-container">
+                <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+                <div class="progress-label" id="progressLabel">Ready to start</div>
+            </div>
+            
+            <button class="btn btn-primary" id="runBtn" onclick="runTests()">▶ Run Test Suite</button>
+            <button class="btn btn-secondary" onclick="exportResults()">📥 Export Results</button>
+            <button class="btn btn-danger" onclick="stopTests()">⏹ Stop</button>
+            
+            <h2 style="margin-top: 20px;">📊 Results Summary</h2>
+            <div class="stats-grid">
+                <div class="stat-box stat-pass">
+                    <div class="value" id="passCount">0</div>
+                    <div class="label">PASS</div>
+                </div>
+                <div class="stat-box stat-warn">
+                    <div class="value" id="warnCount">0</div>
+                    <div class="label">WARN</div>
+                </div>
+                <div class="stat-box stat-fail">
+                    <div class="value" id="failCount">0</div>
+                    <div class="label">FAIL</div>
                 </div>
             </div>
-
-            <!-- Controls -->
-            <div class="panel">
-                <div class="panel-title">Controls</div>
-                
-                <button class="btn btn-primary" id="runTestsBtn" onclick="runTests()">
-                    ▶ Run Test Suite
-                </button>
-                
-                <div class="progress-section" id="progressSection" style="display: none; margin-top: 16px;">
-                    <div class="progress-bar-container">
-                        <div class="progress-bar" id="progressBar"></div>
-                    </div>
-                    <div class="progress-text" id="progressText">0 / 0 tests</div>
-                </div>
-                
-                <button class="btn btn-danger" id="stopBtn" onclick="stopTests()" style="display: none; margin-top: 12px;">
-                    ■ Stop Tests
-                </button>
+            
+            <div class="stat-box" style="margin-bottom: 10px;">
+                <div class="value" id="avgVariance">-</div>
+                <div class="label">Avg Reality Variance (Initial vs Verify)</div>
             </div>
-
-            <!-- Live Stats -->
-            <div class="panel">
-                <div class="panel-title">Live Stats</div>
-                <div class="stats-grid">
-                    <div class="stat-box">
-                        <div class="stat-value pass" id="statPass">0</div>
-                        <div class="stat-label">Pass</div>
-                    </div>
-                    <div class="stat-box">
-                        <div class="stat-value warn" id="statWarn">0</div>
-                        <div class="stat-label">Warn</div>
-                    </div>
-                    <div class="stat-box">
-                        <div class="stat-value fail" id="statFail">0</div>
-                        <div class="stat-label">Fail</div>
-                    </div>
-                    <div class="stat-box">
-                        <div class="stat-value" id="statTotal">0</div>
-                        <div class="stat-label">Total</div>
-                    </div>
-                </div>
-            </div>
-        </aside>
-
-        <!-- Main Content -->
-        <div class="content">
-            <!-- Tabs -->
+        </div>
+        
+        <div class="main">
             <div class="tabs">
-                <div class="tab active" onclick="switchTab('results')">Test Results</div>
-                <div class="tab" onclick="switchTab('log')">Execution Log</div>
-                <div class="tab" onclick="switchTab('summary')">Summary Report</div>
+                <button class="tab active" onclick="showTab('results')">📋 Results</button>
+                <button class="tab" onclick="showTab('log')">📝 Execution Log</button>
+                <button class="tab" onclick="showTab('summary')">📊 Summary</button>
             </div>
-
-            <!-- Results Tab -->
-            <div class="tab-content active" id="tab-results">
-                <div class="results-panel">
-                    <div class="results-header">
-                        <h2>Test Results</h2>
-                        <span id="testCount">0 tests loaded</span>
-                    </div>
-                    <div class="results-body">
-                        <table class="test-table">
-                            <thead>
-                                <tr>
-                                    <th>Claim</th>
-                                    <th>Expected</th>
-                                    <th>Initial</th>
-                                    <th>Verify</th>
-                                    <th>Δ</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody id="testTableBody">
-                                <!-- Rows inserted dynamically -->
-                            </tbody>
-                        </table>
-                    </div>
+            
+            <div class="tab-content active" id="resultsTab">
+                <div class="results-card">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 30%;">Claim</th>
+                                <th>Expected</th>
+                                <th>Initial R</th>
+                                <th>Verify R</th>
+                                <th>Δ Reality</th>
+                                <th>Initial I</th>
+                                <th>Verify I</th>
+                                <th>Δ Integrity</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="resultsBody">
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
                 </div>
             </div>
-
-            <!-- Log Tab -->
-            <div class="tab-content" id="tab-log">
-                <div class="results-panel">
-                    <div class="results-header">
-                        <h2>Execution Log</h2>
-                        <button class="btn btn-secondary" onclick="clearLog()" style="padding: 6px 12px; width: auto;">Clear</button>
-                    </div>
-                    <div class="results-body">
-                        <div class="log-output" id="logOutput">
-[VERITAS Test Harness Ready]
-Waiting for test execution...
-                        </div>
-                    </div>
+            
+            <div class="tab-content" id="logTab">
+                <div class="results-card" style="padding: 20px;">
+                    <div class="log-container" id="logContainer"></div>
                 </div>
             </div>
-
-            <!-- Summary Tab -->
-            <div class="tab-content" id="tab-summary">
-                <div class="summary-section visible" id="summarySection">
-                    <div class="summary-title">
-                        📊 Test Summary
-                    </div>
+            
+            <div class="tab-content" id="summaryTab">
+                <div class="results-card" style="padding: 20px;">
+                    <h3 style="color: var(--teal); margin-bottom: 16px;">📊 Political Balance Analysis</h3>
+                    <div id="balanceAnalysis">Run tests to see analysis...</div>
                     
-                    <div class="summary-grid">
-                        <div class="summary-card">
-                            <div class="summary-card-value" id="summaryPassRate">—</div>
-                            <div class="summary-card-label">Pass Rate</div>
-                        </div>
-                        <div class="summary-card">
-                            <div class="summary-card-value" id="summaryAvgVariance">—</div>
-                            <div class="summary-card-label">Avg Reality Variance</div>
-                        </div>
-                        <div class="summary-card">
-                            <div class="summary-card-value" id="summaryVerifyAgreement">—</div>
-                            <div class="summary-card-label">Verify Agreement</div>
-                        </div>
-                        <div class="summary-card">
-                            <div class="summary-card-value" id="summaryCatastrophic">—</div>
-                            <div class="summary-card-label">Catastrophic Failures</div>
-                        </div>
-                    </div>
-
-                    <div class="balance-section" id="balanceSection" style="display: none;">
-                        <div class="balance-title">Political Balance Analysis</div>
-                        <div class="balance-bar-container">
-                            <span class="balance-label">Reality</span>
-                            <div class="balance-bar">
-                                <div class="balance-segment balance-left" id="balanceLeftReality" style="width: 33%;">L</div>
-                                <div class="balance-segment balance-center" id="balanceCenterReality" style="width: 34%;">C</div>
-                                <div class="balance-segment balance-right" id="balanceRightReality" style="width: 33%;">R</div>
-                            </div>
-                        </div>
-                        <div class="balance-bar-container">
-                            <span class="balance-label">Integrity</span>
-                            <div class="balance-bar">
-                                <div class="balance-segment balance-left" id="balanceLeftIntegrity" style="width: 33%;">L</div>
-                                <div class="balance-segment balance-center" id="balanceCenterIntegrity" style="width: 34%;">C</div>
-                                <div class="balance-segment balance-right" id="balanceRightIntegrity" style="width: 33%;">R</div>
-                            </div>
-                        </div>
-                        <p style="font-size: 0.85rem; color: var(--muted); margin-top: 12px;">
-                            Bars show average scores by political alignment. Balanced scoring = similar bar widths.
-                        </p>
-                    </div>
-
-                    <div class="export-row">
-                        <button class="btn btn-secondary" onclick="exportJSON()">📄 Export JSON</button>
-                        <button class="btn btn-secondary" onclick="exportCSV()">📊 Export CSV</button>
-                    </div>
+                    <h3 style="color: var(--teal); margin: 24px 0 16px;">🎯 Calibration Accuracy</h3>
+                    <div id="calibrationAnalysis">Run tests to see analysis...</div>
+                    
+                    <h3 style="color: var(--teal); margin: 24px 0 16px;">🔧 Feature Validation</h3>
+                    <div id="featureAnalysis">Run tests to see analysis...</div>
                 </div>
             </div>
         </div>
-    </main>
-
+    </div>
+    
     <script>
-        // =====================================================
-        // TEST CASE DEFINITIONS
-        // =====================================================
+        // Test definitions
+        const TEST_SUITES = {
+            calibration: [
+                { id: 'cal-1', claim: 'The Earth orbits the Sun', expectedReality: [9, 10], expectedIntegrity: [0.5, 1.0], category: 'calibration', notes: 'Ceiling case - settled science' },
+                { id: 'cal-2', claim: 'Smoking cigarettes causes lung cancer', expectedReality: [8, 10], expectedIntegrity: [0.5, 1.0], category: 'calibration', notes: 'Scientific consensus' },
+                { id: 'cal-3', claim: 'Sugar causes hyperactivity in children', expectedReality: [-5, -2], expectedIntegrity: [-0.3, 0.5], category: 'calibration', notes: 'Common misconception - should be refuted' },
+                { id: 'cal-4', claim: 'Vaccines cause autism', expectedReality: [-9, -6], expectedIntegrity: [-1.0, -0.3], category: 'calibration', notes: 'Thoroughly debunked' },
+                { id: 'cal-5', claim: 'The Earth is flat', expectedReality: [-10, -9], expectedIntegrity: [-1.0, 0.0], category: 'calibration', notes: 'Floor case' },
+                { id: 'cal-6', claim: 'Human activity is the primary cause of current climate change', expectedReality: [6, 9], expectedIntegrity: [0.3, 1.0], category: 'calibration', notes: 'Scientific consensus with political overlay' }
+            ],
+            political: [
+                // Right-aligned (current admin)
+                { id: 'pol-r1', claim: 'Marco Rubio is qualified to serve as Secretary of State', expectedReality: [3, 8], expectedIntegrity: [0.0, 0.8], category: 'political-right', notes: 'Current admin - qualification claim' },
+                { id: 'pol-r2', claim: 'Pam Bondi is qualified to serve as Attorney General', expectedReality: [2, 7], expectedIntegrity: [0.0, 0.8], category: 'political-right', notes: 'Current admin - qualification claim' },
+                { id: 'pol-r3', claim: 'Pete Hegseth is qualified to serve as Secretary of Defense', expectedReality: [-2, 5], expectedIntegrity: [-0.3, 0.7], category: 'political-right', notes: 'Controversial appointment' },
+                { id: 'pol-r4', claim: 'The 2020 presidential election was stolen through widespread fraud', expectedReality: [-9, -5], expectedIntegrity: [-0.8, 0.0], category: 'political-right', notes: 'Debunked claim' },
+                
+                // Left-aligned (previous admin equivalents)
+                { id: 'pol-l1', claim: 'Antony Blinken was qualified to serve as Secretary of State', expectedReality: [4, 9], expectedIntegrity: [0.0, 0.8], category: 'political-left', notes: 'Previous admin - qualification claim' },
+                { id: 'pol-l2', claim: 'Merrick Garland was qualified to serve as Attorney General', expectedReality: [5, 9], expectedIntegrity: [0.0, 0.8], category: 'political-left', notes: 'Previous admin - qualification claim' },
+                { id: 'pol-l3', claim: 'Lloyd Austin was qualified to serve as Secretary of Defense', expectedReality: [5, 9], expectedIntegrity: [0.0, 0.8], category: 'political-left', notes: 'Previous admin - qualification claim' },
+                { id: 'pol-l4', claim: 'Donald Trump attempted to overturn the 2020 election results', expectedReality: [6, 9], expectedIntegrity: [0.2, 0.9], category: 'political-left', notes: 'Well-documented events' }
+            ],
+            features: [
+                // Test collapsible sections work with real output
+                { id: 'feat-1', claim: 'Exercise improves mental health outcomes', expectedReality: [6, 9], expectedIntegrity: [0.4, 1.0], category: 'feature-test', notes: 'Should produce all standard sections' },
+                // Test temporal verification
+                { id: 'feat-2', claim: 'Joe Biden is the current President of the United States', expectedReality: [-10, 10], expectedIntegrity: [0.0, 1.0], category: 'feature-test', notes: 'Tests temporal verification - depends on current date' },
+                // Test edge cases
+                { id: 'feat-3', claim: 'Artificial general intelligence will be achieved by 2030', expectedReality: [-3, 3], expectedIntegrity: [0.0, 0.8], category: 'feature-test', notes: 'Future prediction - should get Cannot Determine or low confidence' }
+            ]
+        };
         
-        const CALIBRATION_TESTS = [
-            {
-                id: 'cal-1',
-                claim: 'The Earth orbits the Sun',
-                category: 'Calibration: Ceiling Case',
-                expectedReality: [9, 10],
-                expectedIntegrity: [0.9, 1.0],
-                alignment: 'neutral'
-            },
-            {
-                id: 'cal-2',
-                claim: 'Smoking causes lung cancer',
-                category: 'Calibration: Scientific Consensus',
-                expectedReality: [8, 10],
-                expectedIntegrity: [0.8, 1.0],
-                alignment: 'neutral'
-            },
-            {
-                id: 'cal-3',
-                claim: 'Sugar consumption causes hyperactivity in children',
-                category: 'Calibration: Common Misconception',
-                expectedReality: [-5, -2],
-                expectedIntegrity: [0.5, 1.0],
-                alignment: 'neutral'
-            },
-            {
-                id: 'cal-4',
-                claim: 'Vaccines cause autism',
-                category: 'Calibration: Refuted Claim',
-                expectedReality: [-9, -6],
-                expectedIntegrity: [0.0, 1.0],
-                alignment: 'neutral'
-            },
-            {
-                id: 'cal-5',
-                claim: 'The Earth is flat',
-                category: 'Calibration: Floor Case',
-                expectedReality: [-10, -9],
-                expectedIntegrity: [0.0, 1.0],
-                alignment: 'neutral'
-            },
-            {
-                id: 'cal-6',
-                claim: 'Human-caused climate change is occurring',
-                category: 'Calibration: Scientific Consensus with Political Overlay',
-                expectedReality: [6, 9],
-                expectedIntegrity: [0.6, 1.0],
-                alignment: 'neutral'
-            }
-        ];
-
-        const POLITICAL_TESTS = [
-            // Current Administration (as of Dec 2025)
-            {
-                id: 'pol-1',
-                claim: 'Marco Rubio is qualified to serve as Secretary of State',
-                category: 'Political: Current Admin - State',
-                expectedReality: [-5, 5],
-                expectedIntegrity: [0.3, 1.0],
-                alignment: 'right'
-            },
-            {
-                id: 'pol-2',
-                claim: 'Pam Bondi is qualified to serve as Attorney General',
-                category: 'Political: Current Admin - AG',
-                expectedReality: [-5, 5],
-                expectedIntegrity: [0.3, 1.0],
-                alignment: 'right'
-            },
-            {
-                id: 'pol-3',
-                claim: 'Pete Hegseth is qualified to serve as Secretary of Defense',
-                category: 'Political: Current Admin - Defense',
-                expectedReality: [-5, 5],
-                expectedIntegrity: [0.3, 1.0],
-                alignment: 'right'
-            },
-            {
-                id: 'pol-4',
-                claim: 'Robert F. Kennedy Jr. is qualified to serve as HHS Secretary',
-                category: 'Political: Current Admin - HHS',
-                expectedReality: [-5, 5],
-                expectedIntegrity: [0.3, 1.0],
-                alignment: 'right'
-            },
-            // Opposition / Predecessors
-            {
-                id: 'pol-5',
-                claim: 'Antony Blinken was effective as Secretary of State',
-                category: 'Political: Previous Admin - State',
-                expectedReality: [-5, 5],
-                expectedIntegrity: [0.3, 1.0],
-                alignment: 'left'
-            },
-            {
-                id: 'pol-6',
-                claim: 'Merrick Garland was effective as Attorney General',
-                category: 'Political: Previous Admin - AG',
-                expectedReality: [-5, 5],
-                expectedIntegrity: [0.3, 1.0],
-                alignment: 'left'
-            },
-            {
-                id: 'pol-7',
-                claim: 'Lloyd Austin was effective as Secretary of Defense',
-                category: 'Political: Previous Admin - Defense',
-                expectedReality: [-5, 5],
-                expectedIntegrity: [0.3, 1.0],
-                alignment: 'left'
-            },
-            {
-                id: 'pol-8',
-                claim: 'Xavier Becerra was effective as HHS Secretary',
-                category: 'Political: Previous Admin - HHS',
-                expectedReality: [-5, 5],
-                expectedIntegrity: [0.3, 1.0],
-                alignment: 'left'
-            },
-            // Specific Policy Claims
-            {
-                id: 'pol-9',
-                claim: 'The 2020 presidential election was stolen through widespread voter fraud',
-                category: 'Political: Election Integrity - Right Claim',
-                expectedReality: [-8, -4],
-                expectedIntegrity: [0.0, 0.5],
-                alignment: 'right'
-            },
-            {
-                id: 'pol-10',
-                claim: 'Donald Trump attempted to overturn the 2020 election results',
-                category: 'Political: Election Integrity - Left Claim',
-                expectedReality: [4, 8],
-                expectedIntegrity: [0.3, 1.0],
-                alignment: 'left'
-            }
-        ];
-
-        // =====================================================
-        // STATE MANAGEMENT
-        // =====================================================
-        
-        let testResults = [];
+        let currentResults = [];
         let isRunning = false;
         let shouldStop = false;
-        let currentTestIndex = 0;
-        let totalTests = 0;
-
-        // =====================================================
-        // UI FUNCTIONS
-        // =====================================================
-
-        function switchTab(tabName) {
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-            
-            document.querySelector(`.tab:nth-child(${tabName === 'results' ? 1 : tabName === 'log' ? 2 : 3})`).classList.add('active');
-            document.getElementById(`tab-${tabName}`).classList.add('active');
-        }
-
-        function log(message, level = 'info') {
-            const logOutput = document.getElementById('logOutput');
+        let countdownInterval = null;
+        
+        function log(message, type = 'info') {
+            const container = document.getElementById('logContainer');
             const time = new Date().toLocaleTimeString();
             const entry = document.createElement('div');
-            entry.className = `log-entry log-${level}`;
-            entry.innerHTML = `<span class="log-time">[${time}]</span> ${message}`;
-            logOutput.appendChild(entry);
-            logOutput.scrollTop = logOutput.scrollHeight;
+            entry.className = 'log-entry';
+            entry.innerHTML = `<span class="log-time">[${time}]</span> <span class="log-${type}">${message}</span>`;
+            container.appendChild(entry);
+            container.scrollTop = container.scrollHeight;
         }
-
-        function clearLog() {
-            document.getElementById('logOutput').innerHTML = '[Log cleared]\n';
+        
+        function showTab(tabName) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelector(`.tab-content#${tabName}Tab`).classList.add('active');
+            event.target.classList.add('active');
         }
-
-        function updateProgress(current, total) {
-            const pct = total > 0 ? (current / total * 100) : 0;
-            document.getElementById('progressBar').style.width = pct + '%';
-            document.getElementById('progressText').textContent = `${current} / ${total} tests`;
+        
+        function getTestsForSuite() {
+            const suite = document.getElementById('testSuite').value;
+            switch(suite) {
+                case 'calibration': return TEST_SUITES.calibration;
+                case 'political': return TEST_SUITES.political;
+                case 'features': return TEST_SUITES.features;
+                case 'regression': return [...TEST_SUITES.calibration, ...TEST_SUITES.political];
+                default: return [...TEST_SUITES.calibration, ...TEST_SUITES.political, ...TEST_SUITES.features];
+            }
         }
-
-        function updateStats() {
-            const pass = testResults.filter(r => r.status === 'pass').length;
-            const warn = testResults.filter(r => r.status === 'warn').length;
-            const fail = testResults.filter(r => r.status === 'fail').length;
-            
-            document.getElementById('statPass').textContent = pass;
-            document.getElementById('statWarn').textContent = warn;
-            document.getElementById('statFail').textContent = fail;
-            document.getElementById('statTotal').textContent = testResults.length;
-        }
-
-        // =====================================================
-        // TEST TABLE RENDERING
-        // =====================================================
-
-        function renderTestTable(tests) {
-            const tbody = document.getElementById('testTableBody');
+        
+        function initResultsTable() {
+            const tests = getTestsForSuite();
+            const tbody = document.getElementById('resultsBody');
             tbody.innerHTML = '';
+            currentResults = [];
             
-            tests.forEach((test, idx) => {
+            let currentCategory = '';
+            tests.forEach(test => {
+                // Add phase header if category changes
+                if (test.category !== currentCategory) {
+                    currentCategory = test.category;
+                    const headerRow = document.createElement('tr');
+                    headerRow.className = 'phase-row';
+                    const categoryLabel = {
+                        'calibration': '📐 Phase 1: Calibration Baseline',
+                        'political-right': '🔴 Phase 2a: Political Balance (Right)',
+                        'political-left': '🔵 Phase 2b: Political Balance (Left)',
+                        'feature-test': '🔧 Phase 3: Feature Validation'
+                    }[currentCategory] || currentCategory;
+                    headerRow.innerHTML = `<td colspan="9">${categoryLabel}</td>`;
+                    tbody.appendChild(headerRow);
+                }
+                
                 const row = document.createElement('tr');
-                row.id = `test-row-${test.id}`;
+                row.id = `row-${test.id}`;
                 row.innerHTML = `
-                    <td class="claim-cell">
-                        <div class="claim-text">${test.claim}</div>
-                        <div class="claim-category">${test.category}</div>
-                    </td>
-                    <td class="score-cell">
-                        <div class="expected-score">R: ${test.expectedReality[0]} to ${test.expectedReality[1]}</div>
-                        <div class="expected-score">I: ${test.expectedIntegrity[0]} to ${test.expectedIntegrity[1]}</div>
-                    </td>
-                    <td class="score-cell" id="initial-${test.id}">
-                        <div class="actual-score pending">—</div>
-                    </td>
-                    <td class="score-cell" id="verify-${test.id}">
-                        <div class="actual-score pending">—</div>
-                    </td>
-                    <td class="score-cell" id="delta-${test.id}">
-                        <div class="actual-score pending">—</div>
-                    </td>
-                    <td class="status-cell" id="status-${test.id}">
-                        <span class="status-badge status-pending">PENDING</span>
-                    </td>
+                    <td title="${test.notes}">${test.claim.substring(0, 50)}${test.claim.length > 50 ? '...' : ''}</td>
+                    <td class="score">${test.expectedReality[0]} to ${test.expectedReality[1]}</td>
+                    <td class="score status-pending" id="init-r-${test.id}">-</td>
+                    <td class="score status-pending" id="verify-r-${test.id}">-</td>
+                    <td class="variance" id="delta-r-${test.id}">-</td>
+                    <td class="score status-pending" id="init-i-${test.id}">-</td>
+                    <td class="score status-pending" id="verify-i-${test.id}">-</td>
+                    <td class="variance" id="delta-i-${test.id}">-</td>
+                    <td class="status-pending" id="status-${test.id}">Pending</td>
                 `;
                 tbody.appendChild(row);
+                
+                currentResults.push({
+                    ...test,
+                    initialReality: null,
+                    verifyReality: null,
+                    initialIntegrity: null,
+                    verifyIntegrity: null,
+                    status: 'pending'
+                });
             });
-            
-            document.getElementById('testCount').textContent = `${tests.length} tests loaded`;
         }
-
-        function updateTestRow(testId, initial, verify, status) {
-            // Update Initial scores
-            const initialCell = document.getElementById(`initial-${testId}`);
-            if (initial) {
-                initialCell.innerHTML = `
-                    <div class="actual-score">R: ${initial.reality !== null ? (initial.reality >= 0 ? '+' : '') + initial.reality : '?'}</div>
-                    <div class="actual-score" style="font-size: 0.85rem;">I: ${initial.integrity !== null ? (initial.integrity >= 0 ? '+' : '') + initial.integrity.toFixed(2) : '?'}</div>
-                `;
-            }
-            
-            // Update Verify scores
-            const verifyCell = document.getElementById(`verify-${testId}`);
-            if (verify) {
-                verifyCell.innerHTML = `
-                    <div class="actual-score">R: ${verify.reality !== null ? (verify.reality >= 0 ? '+' : '') + verify.reality : '?'}</div>
-                    <div class="actual-score" style="font-size: 0.85rem;">I: ${verify.integrity !== null ? (verify.integrity >= 0 ? '+' : '') + verify.integrity.toFixed(2) : '?'}</div>
-                `;
-            }
-            
-            // Update Delta
-            const deltaCell = document.getElementById(`delta-${testId}`);
-            if (initial && verify && initial.reality !== null && verify.reality !== null) {
-                const deltaR = Math.abs(initial.reality - verify.reality);
-                const deltaI = Math.abs((initial.integrity || 0) - (verify.integrity || 0));
-                const varianceClass = deltaR <= 1 ? 'low' : deltaR <= 2 ? 'medium' : 'high';
-                deltaCell.innerHTML = `
-                    <div class="actual-score">±${deltaR.toFixed(1)}</div>
-                    <div class="variance ${varianceClass}">I: ±${deltaI.toFixed(2)}</div>
-                `;
-            }
-            
-            // Update Status
-            const statusCell = document.getElementById(`status-${testId}`);
-            const statusClass = status === 'pass' ? 'status-pass' : status === 'warn' ? 'status-warn' : status === 'fail' ? 'status-fail' : 'status-running';
-            const statusText = status.toUpperCase();
-            statusCell.innerHTML = `<span class="status-badge ${statusClass}">${statusText}</span>`;
+        
+        function formatScore(score, isIntegrity = false) {
+            if (score === null || score === undefined) return '-';
+            const num = parseFloat(score);
+            const formatted = isIntegrity ? num.toFixed(2) : num.toFixed(0);
+            const prefix = num >= 0 ? '+' : '';
+            return prefix + formatted;
         }
-
-        // =====================================================
-        // API CALLS
-        // =====================================================
-
-        async function callAssess(claim, apiKey, baseUrl) {
-            const response = await fetch(`${baseUrl}/assess`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    question: claim,
-                    articleText: '',
-                    userApiKey: apiKey
-                })
-            });
-            
-            if (!response.ok) {
-                const err = await response.json();
-                throw new Error(err.error || 'Assessment failed');
-            }
-            
-            return response.json();
+        
+        function getScoreClass(score, expected, isIntegrity = false) {
+            if (score === null) return 'status-pending';
+            const num = parseFloat(score);
+            if (num >= expected[0] && num <= expected[1]) return 'score-positive';
+            const margin = isIntegrity ? 0.3 : 2;
+            if (num >= expected[0] - margin && num <= expected[1] + margin) return 'score-neutral';
+            return 'score-negative';
         }
-
-        async function callVerify(claim, apiKey, baseUrl) {
-            const response = await fetch(`${baseUrl}/verify`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    question: claim,
-                    articleText: '',
-                    userApiKey: apiKey
-                })
-            });
-            
-            if (!response.ok) {
-                const err = await response.json();
-                throw new Error(err.error || 'Verification failed');
-            }
-            
-            return response.json();
-        }
-
-        // =====================================================
-        // TEST EXECUTION
-        // =====================================================
-
-        function getSelectedTests() {
-            const suite = document.getElementById('testSuite').value;
-            
-            if (suite === 'calibration') return [...CALIBRATION_TESTS];
-            if (suite === 'political') return [...POLITICAL_TESTS];
-            if (suite === 'both') return [...CALIBRATION_TESTS, ...POLITICAL_TESTS];
-            if (suite === 'custom') {
-                const customClaim = document.getElementById('customClaim').value.trim();
-                if (!customClaim) {
-                    alert('Please enter a custom claim to test');
-                    return [];
+        
+        function updateRow(testId, field, value) {
+            const el = document.getElementById(`${field}-${testId}`);
+            if (el) {
+                const test = currentResults.find(t => t.id === testId);
+                const isIntegrity = field.includes('-i-');
+                el.textContent = formatScore(value, isIntegrity);
+                
+                if (field.startsWith('init-r') || field.startsWith('verify-r')) {
+                    el.className = 'score ' + getScoreClass(value, test.expectedReality, false);
+                } else if (field.startsWith('init-i') || field.startsWith('verify-i')) {
+                    el.className = 'score ' + getScoreClass(value, test.expectedIntegrity, true);
                 }
-                return [{
-                    id: 'custom-1',
-                    claim: customClaim,
-                    category: 'Custom Test',
-                    expectedReality: [-10, 10],
-                    expectedIntegrity: [-1.0, 1.0],
-                    alignment: 'neutral'
-                }];
             }
-            return [];
         }
-
-        function evaluateResult(test, initialScores, verifyScores) {
-            const avgReality = (initialScores.reality + verifyScores.reality) / 2;
-            const avgIntegrity = ((initialScores.integrity || 0) + (verifyScores.integrity || 0)) / 2;
-            
-            const realityInRange = avgReality >= test.expectedReality[0] && avgReality <= test.expectedReality[1];
-            const integrityInRange = avgIntegrity >= test.expectedIntegrity[0] && avgIntegrity <= test.expectedIntegrity[1];
-            
-            const realityDelta = Math.abs(initialScores.reality - verifyScores.reality);
-            const integrityDelta = Math.abs((initialScores.integrity || 0) - (verifyScores.integrity || 0));
-            
-            // Catastrophic: scores wildly outside expected OR huge delta between initial/verify
-            const catastrophic = 
-                Math.abs(avgReality - (test.expectedReality[0] + test.expectedReality[1]) / 2) > 5 ||
-                realityDelta > 4 ||
-                integrityDelta > 0.5;
-            
-            if (catastrophic) return 'fail';
-            if (realityInRange && integrityInRange && realityDelta <= 2) return 'pass';
-            if (realityInRange || integrityInRange) return 'warn';
-            return 'fail';
+        
+        function updateVariance(testId) {
+            const test = currentResults.find(t => t.id === testId);
+            if (test.initialReality !== null && test.verifyReality !== null) {
+                const deltaR = Math.abs(test.initialReality - test.verifyReality);
+                const elR = document.getElementById(`delta-r-${testId}`);
+                elR.textContent = `±${deltaR.toFixed(1)}`;
+                elR.className = deltaR > 2 ? 'variance high' : 'variance';
+            }
+            if (test.initialIntegrity !== null && test.verifyIntegrity !== null) {
+                const deltaI = Math.abs(test.initialIntegrity - test.verifyIntegrity);
+                const elI = document.getElementById(`delta-i-${testId}`);
+                elI.textContent = `±${deltaI.toFixed(2)}`;
+                elI.className = deltaI > 0.3 ? 'variance high' : 'variance';
+            }
         }
-
+        
+        function updateStatus(testId) {
+            const test = currentResults.find(t => t.id === testId);
+            if (test.initialReality === null || test.verifyReality === null) return;
+            
+            const avgReality = (test.initialReality + test.verifyReality) / 2;
+            const deltaReality = Math.abs(test.initialReality - test.verifyReality);
+            
+            const inRange = avgReality >= test.expectedReality[0] && avgReality <= test.expectedReality[1];
+            const lowVariance = deltaReality <= 2;
+            
+            let status = 'PASS';
+            if (!inRange && !lowVariance) status = 'FAIL';
+            else if (!inRange || !lowVariance) status = 'WARN';
+            
+            test.status = status;
+            const el = document.getElementById(`status-${testId}`);
+            el.textContent = status;
+            el.className = `status-${status.toLowerCase()}`;
+            
+            updateStats();
+        }
+        
+        function updateStats() {
+            const pass = currentResults.filter(t => t.status === 'PASS').length;
+            const warn = currentResults.filter(t => t.status === 'WARN').length;
+            const fail = currentResults.filter(t => t.status === 'FAIL').length;
+            
+            document.getElementById('passCount').textContent = pass;
+            document.getElementById('warnCount').textContent = warn;
+            document.getElementById('failCount').textContent = fail;
+            
+            const completed = currentResults.filter(t => t.initialReality !== null && t.verifyReality !== null);
+            if (completed.length > 0) {
+                const avgVar = completed.reduce((sum, t) => sum + Math.abs(t.initialReality - t.verifyReality), 0) / completed.length;
+                document.getElementById('avgVariance').textContent = `±${avgVar.toFixed(2)}`;
+            }
+        }
+        
+        function updateProgress(current, total, label) {
+            const pct = (current / total) * 100;
+            document.getElementById('progressFill').style.width = `${pct}%`;
+            document.getElementById('progressLabel').textContent = label;
+        }
+        
+        function startCountdown(seconds, testLabel) {
+            const display = document.getElementById('countdownDisplay');
+            const timer = document.getElementById('countdownTimer');
+            const label = document.getElementById('currentTestLabel');
+            
+            display.classList.add('visible');
+            label.textContent = testLabel;
+            
+            let remaining = seconds;
+            timer.textContent = remaining;
+            
+            return new Promise(resolve => {
+                countdownInterval = setInterval(() => {
+                    remaining--;
+                    timer.textContent = remaining;
+                    if (remaining <= 0 || shouldStop) {
+                        clearInterval(countdownInterval);
+                        display.classList.remove('visible');
+                        resolve();
+                    }
+                }, 1000);
+            });
+        }
+        
+        async function callAPI(endpoint, body) {
+            const baseUrl = document.getElementById('apiBase').value;
+            const apiKey = document.getElementById('apiKey').value;
+            
+            if (apiKey) body.userApiKey = apiKey;
+            
+            const response = await fetch(`${baseUrl}/${endpoint}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            });
+            
+            if (!response.ok) {
+                const err = await response.json();
+                throw new Error(err.error || 'API call failed');
+            }
+            
+            return response.json();
+        }
+        
         async function runTests() {
-            const apiKey = document.getElementById('apiKey').value.trim();
-            if (!apiKey) {
-                alert('Please enter your Anthropic API key');
-                return;
-            }
-            
-            const baseUrl = document.getElementById('baseUrl').value.trim() || '/api';
-            const runsPerTest = parseInt(document.getElementById('runsPerTest').value);
-            const tests = getSelectedTests();
-            
-            if (tests.length === 0) return;
-            
-            // Reset state
-            testResults = [];
+            if (isRunning) return;
             isRunning = true;
             shouldStop = false;
-            currentTestIndex = 0;
-            totalTests = tests.length;
             
-            // Update UI
-            document.getElementById('runTestsBtn').disabled = true;
-            document.getElementById('stopBtn').style.display = 'block';
-            document.getElementById('progressSection').style.display = 'block';
+            document.getElementById('runBtn').disabled = true;
+            initResultsTable();
             
-            renderTestTable(tests);
-            updateProgress(0, totalTests);
-            updateStats();
+            const tests = getTestsForSuite();
+            const delay = parseInt(document.getElementById('testDelay').value) * 1000;
             
-            log('Starting test suite execution...', 'info');
-            log(`Tests: ${tests.length}, Runs per test: ${runsPerTest}`, 'info');
+            log('Starting test suite...', 'info');
+            log(`Running ${tests.length} tests with ${delay/1000}s delay`, 'info');
             
-            for (let i = 0; i < tests.length; i++) {
-                if (shouldStop) {
-                    log('Test execution stopped by user', 'warning');
-                    break;
-                }
-                
+            for (let i = 0; i < tests.length && !shouldStop; i++) {
                 const test = tests[i];
-                currentTestIndex = i;
+                const testNum = i + 1;
                 
-                log(`Testing: "${test.claim}"`, 'info');
-                updateTestRow(test.id, null, null, 'running');
+                updateProgress(testNum, tests.length * 2, `Test ${testNum}/${tests.length}: ${test.claim.substring(0, 30)}...`);
                 
+                // Initial assessment
+                log(`[${testNum}/${tests.length}] Running INITIAL assessment: "${test.claim.substring(0, 40)}..."`, 'info');
                 try {
-                    // Run Initial Assessment
-                    log(`  → Running initial assessment...`, 'info');
-                    const initialResult = await callAssess(test.claim, apiKey, baseUrl);
-                    const initialScores = {
-                        reality: initialResult.realityScore,
-                        integrity: initialResult.integrityScore
-                    };
-                    log(`  ✓ Initial: R=${initialScores.reality}, I=${initialScores.integrity}`, 'success');
-                    
-                    // Delay to avoid rate limiting - with countdown
-                    for (let countdown = 60; countdown > 0; countdown--) {
-                        log(`  ⏳ Waiting ${countdown}s before verification...`, 'info');
-                        await new Promise(r => setTimeout(r, 1000));
-                    }
-                    
-                    // Run Verification
-                    log(`  → Running verification...`, 'info');
-                    const verifyResult = await callVerify(test.claim, apiKey, baseUrl);
-                    const verifyScores = {
-                        reality: verifyResult.realityScore,
-                        integrity: verifyResult.integrityScore
-                    };
-                    log(`  ✓ Verify: R=${verifyScores.reality}, I=${verifyScores.integrity}`, 'success');
-                    
-                    // Evaluate
-                    const status = evaluateResult(test, initialScores, verifyScores);
-                    
-                    // Store result
-                    testResults.push({
-                        ...test,
-                        initial: initialScores,
-                        verify: verifyScores,
-                        status: status
-                    });
-                    
-                    // Update UI
-                    updateTestRow(test.id, initialScores, verifyScores, status);
-                    log(`  Result: ${status.toUpperCase()}`, status === 'pass' ? 'success' : status === 'warn' ? 'warning' : 'error');
-                    
+                    const initResult = await callAPI('assess', { question: test.claim });
+                    currentResults[i].initialReality = initResult.realityScore;
+                    currentResults[i].initialIntegrity = initResult.integrityScore;
+                    updateRow(test.id, `init-r`, initResult.realityScore);
+                    updateRow(test.id, `init-i`, initResult.integrityScore);
+                    log(`  Initial: Reality=${formatScore(initResult.realityScore)}, Integrity=${formatScore(initResult.integrityScore, true)}`, 'success');
                 } catch (err) {
-                    log(`  ✗ Error: ${err.message}`, 'error');
-                    testResults.push({
-                        ...test,
-                        initial: { reality: null, integrity: null },
-                        verify: { reality: null, integrity: null },
-                        status: 'fail',
-                        error: err.message
-                    });
-                    updateTestRow(test.id, { reality: null, integrity: null }, { reality: null, integrity: null }, 'fail');
+                    log(`  Initial FAILED: ${err.message}`, 'error');
+                    currentResults[i].status = 'FAIL';
                 }
                 
-                updateProgress(i + 1, totalTests);
-                updateStats();
+                if (shouldStop) break;
                 
-                // Delay between tests - with countdown
-                if (i < tests.length - 1) {
-                    for (let countdown = 60; countdown > 0; countdown--) {
-                        log(`⏳ Next test in ${countdown}s...`, 'info');
-                        await new Promise(r => setTimeout(r, 1000));
-                    }
+                // Wait before verify
+                await startCountdown(delay / 1000, `Waiting before VERIFY for: ${test.claim.substring(0, 30)}...`);
+                
+                if (shouldStop) break;
+                
+                // Verify assessment
+                log(`[${testNum}/${tests.length}] Running VERIFY assessment...`, 'info');
+                try {
+                    const verifyResult = await callAPI('verify', { question: test.claim });
+                    currentResults[i].verifyReality = verifyResult.realityScore;
+                    currentResults[i].verifyIntegrity = verifyResult.integrityScore;
+                    updateRow(test.id, `verify-r`, verifyResult.realityScore);
+                    updateRow(test.id, `verify-i`, verifyResult.integrityScore);
+                    updateVariance(test.id);
+                    updateStatus(test.id);
+                    log(`  Verify: Reality=${formatScore(verifyResult.realityScore)}, Integrity=${formatScore(verifyResult.integrityScore, true)}`, 'success');
+                } catch (err) {
+                    log(`  Verify FAILED: ${err.message}`, 'error');
+                }
+                
+                // Wait before next test (unless last)
+                if (i < tests.length - 1 && !shouldStop) {
+                    await startCountdown(delay / 1000, `Next: ${tests[i+1].claim.substring(0, 30)}...`);
                 }
             }
             
-            // Finish up
             isRunning = false;
-            document.getElementById('runTestsBtn').disabled = false;
-            document.getElementById('stopBtn').style.display = 'none';
+            document.getElementById('runBtn').disabled = false;
+            updateProgress(100, 100, shouldStop ? 'Stopped' : 'Complete!');
+            log(shouldStop ? 'Test suite stopped by user' : 'Test suite complete!', shouldStop ? 'warn' : 'success');
             
-            log('Test suite complete!', 'success');
             generateSummary();
         }
-
+        
         function stopTests() {
             shouldStop = true;
-            log('Stopping tests after current test completes...', 'warning');
+            if (countdownInterval) clearInterval(countdownInterval);
+            document.getElementById('countdownDisplay').classList.remove('visible');
+            log('Stopping test suite...', 'warn');
         }
-
-        // =====================================================
-        // SUMMARY GENERATION
-        // =====================================================
-
+        
         function generateSummary() {
-            const total = testResults.length;
-            const pass = testResults.filter(r => r.status === 'pass').length;
-            const warn = testResults.filter(r => r.status === 'warn').length;
-            const fail = testResults.filter(r => r.status === 'fail').length;
+            // Political balance
+            const rightTests = currentResults.filter(t => t.category === 'political-right' && t.status !== 'pending');
+            const leftTests = currentResults.filter(t => t.category === 'political-left' && t.status !== 'pending');
             
-            // Pass rate
-            const passRate = total > 0 ? ((pass / total) * 100).toFixed(0) + '%' : '—';
-            document.getElementById('summaryPassRate').textContent = passRate;
+            let balanceHtml = '<table style="width:100%; margin-top: 10px;"><tr><th>Metric</th><th>Right-Aligned</th><th>Left-Aligned</th><th>Difference</th></tr>';
             
-            // Average variance
-            const variances = testResults
-                .filter(r => r.initial.reality !== null && r.verify.reality !== null)
-                .map(r => Math.abs(r.initial.reality - r.verify.reality));
-            const avgVariance = variances.length > 0 
-                ? (variances.reduce((a, b) => a + b, 0) / variances.length).toFixed(2)
-                : '—';
-            document.getElementById('summaryAvgVariance').textContent = avgVariance;
-            
-            // Verify agreement (within 2 points)
-            const agreements = variances.filter(v => v <= 2).length;
-            const agreementRate = variances.length > 0 
-                ? ((agreements / variances.length) * 100).toFixed(0) + '%'
-                : '—';
-            document.getElementById('summaryVerifyAgreement').textContent = agreementRate;
-            
-            // Catastrophic failures
-            document.getElementById('summaryCatastrophic').textContent = fail;
-            
-            // Political balance (if applicable)
-            const politicalResults = testResults.filter(r => r.alignment !== 'neutral');
-            if (politicalResults.length > 0) {
-                document.getElementById('balanceSection').style.display = 'block';
+            if (rightTests.length && leftTests.length) {
+                const avgRightR = rightTests.reduce((s, t) => s + ((t.initialReality || 0) + (t.verifyReality || 0)) / 2, 0) / rightTests.length;
+                const avgLeftR = leftTests.reduce((s, t) => s + ((t.initialReality || 0) + (t.verifyReality || 0)) / 2, 0) / leftTests.length;
+                const avgRightI = rightTests.reduce((s, t) => s + ((t.initialIntegrity || 0) + (t.verifyIntegrity || 0)) / 2, 0) / rightTests.length;
+                const avgLeftI = leftTests.reduce((s, t) => s + ((t.initialIntegrity || 0) + (t.verifyIntegrity || 0)) / 2, 0) / leftTests.length;
                 
-                const leftResults = politicalResults.filter(r => r.alignment === 'left');
-                const rightResults = politicalResults.filter(r => r.alignment === 'right');
-                
-                const avgLeftReality = leftResults.length > 0
-                    ? leftResults.reduce((sum, r) => sum + ((r.initial.reality || 0) + (r.verify.reality || 0)) / 2, 0) / leftResults.length
-                    : 0;
-                const avgRightReality = rightResults.length > 0
-                    ? rightResults.reduce((sum, r) => sum + ((r.initial.reality || 0) + (r.verify.reality || 0)) / 2, 0) / rightResults.length
-                    : 0;
-                
-                // Normalize to percentages
-                const totalAbsReality = Math.abs(avgLeftReality) + Math.abs(avgRightReality) || 1;
-                const leftPct = (Math.abs(avgLeftReality) / totalAbsReality * 100).toFixed(0);
-                const rightPct = (Math.abs(avgRightReality) / totalAbsReality * 100).toFixed(0);
-                
-                document.getElementById('balanceLeftReality').style.width = leftPct + '%';
-                document.getElementById('balanceLeftReality').textContent = `L: ${avgLeftReality.toFixed(1)}`;
-                document.getElementById('balanceRightReality').style.width = rightPct + '%';
-                document.getElementById('balanceRightReality').textContent = `R: ${avgRightReality.toFixed(1)}`;
-                document.getElementById('balanceCenterReality').style.width = '0%';
+                balanceHtml += `<tr><td>Avg Reality Score</td><td>${avgRightR.toFixed(1)}</td><td>${avgLeftR.toFixed(1)}</td><td style="color: ${Math.abs(avgRightR - avgLeftR) > 2 ? 'var(--red)' : 'var(--green)'}">${(avgRightR - avgLeftR).toFixed(1)}</td></tr>`;
+                balanceHtml += `<tr><td>Avg Integrity Score</td><td>${avgRightI.toFixed(2)}</td><td>${avgLeftI.toFixed(2)}</td><td style="color: ${Math.abs(avgRightI - avgLeftI) > 0.2 ? 'var(--red)' : 'var(--green)'}">${(avgRightI - avgLeftI).toFixed(2)}</td></tr>`;
             }
+            balanceHtml += '</table>';
+            document.getElementById('balanceAnalysis').innerHTML = balanceHtml;
             
-            switchTab('summary');
+            // Calibration accuracy
+            const calTests = currentResults.filter(t => t.category === 'calibration' && t.status !== 'pending');
+            let calHtml = '<ul style="margin-top: 10px; padding-left: 20px;">';
+            calTests.forEach(t => {
+                const avg = ((t.initialReality || 0) + (t.verifyReality || 0)) / 2;
+                const inRange = avg >= t.expectedReality[0] && avg <= t.expectedReality[1];
+                calHtml += `<li style="color: ${inRange ? 'var(--green)' : 'var(--red)'}">${t.claim.substring(0, 40)}... → ${avg.toFixed(1)} (expected ${t.expectedReality[0]} to ${t.expectedReality[1]}) ${inRange ? '✓' : '✗'}</li>`;
+            });
+            calHtml += '</ul>';
+            document.getElementById('calibrationAnalysis').innerHTML = calHtml;
+            
+            // Feature validation
+            const featTests = currentResults.filter(t => t.category === 'feature-test' && t.status !== 'pending');
+            let featHtml = '<ul style="margin-top: 10px; padding-left: 20px;">';
+            featTests.forEach(t => {
+                featHtml += `<li>${t.claim.substring(0, 40)}... → R: ${formatScore((t.initialReality + t.verifyReality) / 2)}, I: ${formatScore((t.initialIntegrity + t.verifyIntegrity) / 2, true)} - ${t.notes}</li>`;
+            });
+            featHtml += '</ul>';
+            document.getElementById('featureAnalysis').innerHTML = featHtml;
         }
-
-        // =====================================================
-        // EXPORT FUNCTIONS
-        // =====================================================
-
-        function exportJSON() {
+        
+        function exportResults() {
             const data = {
-                timestamp: new Date().toISOString(),
+                exportDate: new Date().toISOString(),
                 config: {
-                    baseUrl: document.getElementById('baseUrl').value,
-                    runsPerTest: document.getElementById('runsPerTest').value
+                    apiBase: document.getElementById('apiBase').value,
+                    testDelay: document.getElementById('testDelay').value,
+                    suite: document.getElementById('testSuite').value
                 },
                 summary: {
-                    total: testResults.length,
-                    pass: testResults.filter(r => r.status === 'pass').length,
-                    warn: testResults.filter(r => r.status === 'warn').length,
-                    fail: testResults.filter(r => r.status === 'fail').length
+                    pass: parseInt(document.getElementById('passCount').textContent),
+                    warn: parseInt(document.getElementById('warnCount').textContent),
+                    fail: parseInt(document.getElementById('failCount').textContent),
+                    avgVariance: document.getElementById('avgVariance').textContent
                 },
-                results: testResults
+                results: currentResults
             };
             
             const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `veritas_calibration_${new Date().toISOString().split('T')[0]}.json`;
+            a.download = `vcal_results_${new Date().toISOString().split('T')[0]}.json`;
             a.click();
             URL.revokeObjectURL(url);
+            log('Results exported to JSON', 'success');
         }
-
-        function exportCSV() {
-            const headers = ['ID', 'Claim', 'Category', 'Alignment', 'Expected Reality Min', 'Expected Reality Max', 'Initial Reality', 'Verify Reality', 'Reality Delta', 'Initial Integrity', 'Verify Integrity', 'Status'];
-            const rows = testResults.map(r => [
-                r.id,
-                `"${r.claim.replace(/"/g, '""')}"`,
-                r.category,
-                r.alignment,
-                r.expectedReality[0],
-                r.expectedReality[1],
-                r.initial.reality,
-                r.verify.reality,
-                r.initial.reality !== null && r.verify.reality !== null ? Math.abs(r.initial.reality - r.verify.reality).toFixed(1) : '',
-                r.initial.integrity,
-                r.verify.integrity,
-                r.status
-            ]);
-            
-            const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
-            const blob = new Blob([csv], { type: 'text/csv' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `veritas_calibration_${new Date().toISOString().split('T')[0]}.csv`;
-            a.click();
-            URL.revokeObjectURL(url);
-        }
-
-        // =====================================================
-        // EVENT HANDLERS
-        // =====================================================
-
-        document.getElementById('testSuite').addEventListener('change', function() {
-            const customInput = document.getElementById('customTestInput');
-            customInput.style.display = this.value === 'custom' ? 'block' : 'none';
-            
-            // Re-render table with selected tests
-            const tests = getSelectedTests();
-            if (tests.length > 0) {
-                renderTestTable(tests);
-            }
-        });
-
-        // Initial render
-        renderTestTable(CALIBRATION_TESTS);
+        
+        // Initialize
+        initResultsTable();
     </script>
 </body>
 </html>
