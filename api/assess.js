@@ -51,15 +51,11 @@ function buildPrompt(question, articleText) {
     
     prompt += '## STEP 0: TEMPORAL VERIFICATION (MANDATORY)\n';
     prompt += 'Before ANY analysis, you must:\n';
-    prompt += '1. Identify all entities in the claim (people, organizations, positions)\n';
+    prompt += '1. Identify all entities in the claim (people, organizations, positions, companies)\n';
     prompt += '2. Search for CURRENT status of each entity as of ' + currentDate + '\n';
     prompt += '3. Note any changes since your training cutoff\n';
-    prompt += '4. Only THEN proceed to assessment\n\n';
-    prompt += '**CRITICAL: THE BINARY TEST**\n';
-    prompt += 'After verification, ask: "Is this a BINARY STATE claim or a DYNAMIC CONDITION claim?"\n';
-    prompt += '- BINARY (single verifiable fact): BYPASS the weighted formula. Score -10 if false, +10 if true directly.\n';
-    prompt += '- DYNAMIC (trends, interpretive): Use standard four-factor weighted assessment.\n';
-    prompt += 'See "Temporal State Claims" in Edge Cases for the full framework.\n\n';
+    prompt += '4. Determine if this is a BINARY or DYNAMIC claim (see Edge Cases)\n';
+    prompt += '5. Only THEN proceed to assessment\n\n';
     prompt += 'Example: If asked about "the FBI Director," search "current FBI Director ' + now.getFullYear() + '" BEFORE assuming you know who it is.\n\n';
     
     // ============================================
@@ -424,49 +420,67 @@ function buildPrompt(question, articleText) {
     prompt += '- "There\'s a teapot orbiting Mars" — No way to investigate → Absence is NOT evidence against\n';
     prompt += '- "This drug cures cancer" — Extensive trials show no effect → Absence IS evidence against\n\n';
     
-    // Temporal State Claims (Binary vs Dynamic framework)
-    prompt += '### Temporal State Claims (Current Status Assertions)\n\n';
-    prompt += 'Claims about current state require a two-step analysis: VERB TENSE and WORD TYPE.\n\n';
+    // Temporal State Claims - Clean Framework
+    prompt += '### Temporal State Claims\n\n';
+    prompt += 'Claims about current state require determining: Is this BINARY or DYNAMIC?\n\n';
     
-    prompt += '**STEP 1: VERB ANALYSIS**\n';
-    prompt += 'Identify the main verb and its tense:\n\n';
-    prompt += '| Tense | Verbs | VERITAS Question |\n';
-    prompt += '|-------|-------|------------------|\n';
-    prompt += '| Present | is, are, remains, exists, holds, serves, owns, heads, chairs, runs, governs, reigns | "Is this true RIGHT NOW?" → Binary test may apply |\n';
-    prompt += '| Past | was, were, remained, existed, held, served, owned, headed | "Was this true at that time?" → Historical verification |\n';
-    prompt += '| Future | will be, will remain, will serve | "Prediction" → Cannot determine Reality |\n';
-    prompt += '| Continuous | has been, have been, has remained | "Ongoing state" → Check if still true NOW |\n\n';
+    prompt += '**THE PRESENT TENSE TEST**\n\n';
+    prompt += 'A claim is BINARY if it meets BOTH conditions:\n';
+    prompt += '1. The main verb is in PRESENT TENSE (asserting something is true NOW)\n';
+    prompt += '2. The assertion is VERIFIABLE against an objective source (records, registries, documented status)\n\n';
     
-    prompt += '**STEP 2: BINARY vs DYNAMIC WORD TEST**\n';
-    prompt += 'After identifying a present-tense state verb, examine what follows:\n\n';
-    prompt += '**BINARY (checkable against official record/roster/registry):**\n';
-    prompt += '- Roles/Titles: "is the President/CEO/Director/Chair"\n';
-    prompt += '- Membership: "is a member of," "belongs to," "is enrolled at"\n';
-    prompt += '- Existence: "exists as a nation/company," "is alive"\n';
-    prompt += '- Legal status: "is married to," "is employed by," "is licensed"\n';
-    prompt += '- Ownership: "owns the company," "holds the patent"\n\n';
-    prompt += '**DYNAMIC (requires judgment, degree, or interpretation):**\n';
-    prompt += '- Comparatives/Superlatives: "is the leading," "is the best," "is the most"\n';
-    prompt += '- Qualities: "is strong," "is effective," "is popular"\n';
-    prompt += '- Perceptions: "seems," "appears," "feels," "looks"\n';
-    prompt += '- Trends: "is growing," "is declining," "is trending"\n\n';
+    prompt += '**Present tense verbs include:**\n';
+    prompt += '- State of being: is, are, exists, remains, stays\n';
+    prompt += '- Roles/positions: serves, holds, chairs, heads, leads, runs, governs, reigns, presides, occupies\n';
+    prompt += '- Business operations: manufactures, produces, makes, builds, sells, operates, employs, offers\n';
+    prompt += '- Ownership/membership: owns, controls, belongs, holds (title/stock), possesses\n';
+    prompt += '- Status: lives, resides, functions, works\n';
+    prompt += '- ANY other verb in simple present tense that asserts a current, verifiable fact\n\n';
     
-    prompt += '**WORD CONTEXT TEST:**\n';
-    prompt += 'Some words are binary OR fluid depending on context:\n';
-    prompt += '- "current President" (BINARY - one holder) vs "current trends" (DYNAMIC)\n';
-    prompt += '- "active member" (BINARY - on roster or not) vs "active lifestyle" (DYNAMIC)\n';
-    prompt += '- "running for office" (BINARY - candidate or not) vs "running smoothly" (DYNAMIC)\n';
-    prompt += '- "leads the company" as CEO (BINARY - role) vs "leads the market" (DYNAMIC - ranking)\n';
-    prompt += 'ASK: "Can I verify this against an official record, roster, or registry?" If YES → BINARY.\n\n';
+    prompt += '**The test is NOT "is this verb on a list?" but rather:**\n';
+    prompt += '"Is this a present tense assertion that can be verified against official records, business filings, government registries, or documented operational status?"\n\n';
     
-    prompt += '**SCORING BINARY STATE CLAIMS — CRITICAL OVERRIDE:**\n';
-    prompt += 'For BINARY STATE claims, BYPASS the weighted four-factor calculation entirely.\n';
-    prompt += 'The weighted formula is designed for nuanced claims, not binary facts.\n\n';
-    prompt += '1. Determine the CURRENT STATE through temporal verification\n';
-    prompt += '2. If the claim is FALSE: **FINAL REALITY SCORE = -10** (do not calculate, just assign)\n';
-    prompt += '3. If the claim is TRUE: **FINAL REALITY SCORE = +10** (do not calculate, just assign)\n';
-    prompt += '4. In the Reality Score Breakdown, note: "BINARY CLAIM OVERRIDE: Weighted calculation bypassed"\n';
-    prompt += '5. NO PARTIAL CREDIT for historical accuracy. "Was true" ≠ "Is true"\n\n';
+    prompt += '**BINARY EXAMPLES (verifiable against objective source):**\n';
+    prompt += '- "Joe Biden is the President" → Check official records → Binary\n';
+    prompt += '- "BlackBerry manufactures smartphones" → Check company operations → Binary\n';
+    prompt += '- "The UK belongs to the EU" → Check membership records → Binary\n';
+    prompt += '- "Tesla produces electric vehicles" → Check company operations → Binary\n';
+    prompt += '- "She holds a medical license" → Check licensing board → Binary\n\n';
+    
+    prompt += '**DYNAMIC EXAMPLES (requires interpretation or degree):**\n';
+    prompt += '- "Tesla leads the EV market" → "Leads" is comparative/ranking → Dynamic\n';
+    prompt += '- "The economy is strong" → Interpretive, no single source → Dynamic\n';
+    prompt += '- "AI is transforming healthcare" → Trend/degree claim → Dynamic\n';
+    prompt += '- "She seems qualified" → Perception verb → Dynamic\n\n';
+    
+    prompt += '**VERB TENSE ROUTING:**\n';
+    prompt += '| Tense | Example | VERITAS Action |\n';
+    prompt += '|-------|---------|----------------|\n';
+    prompt += '| Present | "X is/makes/owns" | Apply binary test → if binary, bypass formula |\n';
+    prompt += '| Past | "X was/made/owned" | Historical verification (was it true then?) |\n';
+    prompt += '| Future | "X will be/make" | Cannot determine Reality (prediction) |\n';
+    prompt += '| Continuous | "X has been" | Check if still true NOW |\n\n';
+    
+    prompt += '**SCORING BINARY CLAIMS — CRITICAL:**\n';
+    prompt += 'When a claim is BINARY, BYPASS the weighted four-factor calculation entirely:\n\n';
+    prompt += '1. Complete temporal verification to determine current state\n';
+    prompt += '2. If the claim is TRUE: **FINAL REALITY SCORE = +10**\n';
+    prompt += '3. If the claim is FALSE: **FINAL REALITY SCORE = -10**\n';
+    prompt += '4. Do NOT run the weighted calculation — it distorts binary facts\n';
+    prompt += '5. Note in output: "BINARY CLAIM: [TRUE/FALSE] — Weighted calculation bypassed"\n\n';
+    
+    prompt += '**WHY BYPASS THE FORMULA?**\n';
+    prompt += 'The four-factor weighted formula can produce scores like -6 for claims that are definitively false.\n';
+    prompt += 'This happens because Source Reliability (+8) and Logical Coherence (+8) pull the score UP,\n';
+    prompt += 'even when those good sources are telling you the claim is FALSE.\n';
+    prompt += 'Binary facts need binary scores: +10 or -10, nothing in between.\n\n';
+    
+    prompt += '**INTEGRITY FOR BARE CLAIMS:**\n';
+    prompt += 'When no source material is provided (just a claim to evaluate), Integrity CANNOT be meaningfully assessed.\n';
+    prompt += 'There is no article, no presentation, no evidence handling to evaluate — only a bare assertion.\n';
+    prompt += '- Set Integrity Score to N/A\n';
+    prompt += '- In the Integrity Score Breakdown, note: "N/A — No source material provided to assess presentation honesty"\n';
+    prompt += '- Do NOT guess at claimant intent or fabricate an Integrity score\n\n';
     
     // ============================================
     // SECTION 7: YOUR TASK
