@@ -539,21 +539,36 @@ function buildPrompt(question, articleText) {
     prompt += '**KEY INSIGHT:** These claims aren\'t "somewhat false" — they\'re comprehensively refuted.\n';
     prompt += 'Score them accordingly. A myth with 50+ years of disconfirming evidence is not a -5.\n\n';
     
+    // Contested Scientific Classifications
+    prompt += '### Contested Scientific Classifications\n\n';
+    prompt += 'Some claims involve definitions that are technically official but scientifically contested:\n\n';
+    prompt += '**EXAMPLES:**\n';
+    prompt += '- "Pluto is a planet" (IAU says no since 2006, but debate continues among astronomers)\n';
+    prompt += '- "Viruses are living organisms" (definitional dispute, not factual)\n';
+    prompt += '- "Tomatoes are vegetables" (botanical vs culinary definition)\n';
+    prompt += '- "There are X number of continents" (varies by convention: 5, 6, or 7)\n\n';
+    prompt += '**HOW TO DISTINGUISH FROM DEBUNKED CLAIMS:**\n';
+    prompt += '- Debunked: Evidence DISPROVES the claim (sugar/hyperactivity has been tested and refuted)\n';
+    prompt += '- Contested: A DEFINITION was changed or is disputed (Pluto wasn\'t "proven" not to be a planet)\n\n';
+    prompt += '**SCORING CONTESTED CLASSIFICATIONS:**\n';
+    prompt += '- Do NOT score -10 unless the classification is completely uncontested\n';
+    prompt += '- Acknowledge the definitional nature of the dispute\n';
+    prompt += '- Score -6 to -8 range: "False by current official definition, but definition itself has credible challengers"\n';
+    prompt += '- Note in output: "CONTESTED CLASSIFICATION — official definition applied, dissent acknowledged"\n\n';
+    prompt += '**CONTRAST WITH TRUE BINARY CLAIMS:**\n';
+    prompt += '- "The USSR exists as a country" → Not contested, definitively false → -10\n';
+    prompt += '- "BlackBerry manufactures smartphones" → Verifiable operations ceased → -10\n';
+    prompt += '- "Pluto is classified as a planet" → Official definition exists but is contested → -7 to -8\n\n';
+    
     prompt += '**INTEGRITY N/A CONDITIONS:**\n';
-    prompt += 'Set Integrity Score to N/A when ANY of these conditions apply:\n\n';
-    prompt += '**Condition 1: BARE CLAIM** — No source material provided (just a claim to evaluate)\n';
-    prompt += '- There is no article, no presentation, no evidence handling to evaluate\n';
-    prompt += '- Output: "N/A — No source material provided to assess presentation honesty"\n\n';
-    prompt += '**Condition 2: BINARY FACTUAL CLAIM** — Simple true/false with no "presentation" to assess\n';
-    prompt += '- The claim is just a verifiable fact, not an article or argument\n';
-    prompt += '- Output: "N/A — Binary factual claim; no presentation quality applicable"\n\n';
-    prompt += '**Condition 3: PURE OPINION** — No factual assertions to evaluate\n';
-    prompt += '- Content is entirely subjective preference with no truth claims\n';
-    prompt += '- Output: "N/A — Pure opinion; no factual presentation to assess"\n\n';
-    prompt += '**Condition 4: INSUFFICIENT CONTENT** — Too brief to assess\n';
-    prompt += '- Single sentence or headline without supporting content\n';
-    prompt += '- Output: "N/A — Insufficient content for integrity assessment"\n\n';
-    prompt += 'When N/A applies, skip the Integrity calculation entirely and just report the condition.\n\n';
+    prompt += 'Set Integrity Score to N/A ONLY when the Reality Score is a STRICT BINARY result (+10 or -10).\n\n';
+    prompt += 'WHY: Binary claims (e.g., "Joe Biden is President") have no "presentation quality" to assess.\n';
+    prompt += 'The claim is simply true or false — there is no evidence handling, no counter-arguments, no rhetorical choices.\n\n';
+    prompt += 'FOR ALL OTHER CLAIMS: You MUST calculate an Integrity score, even for bare claims.\n';
+    prompt += 'The web search results you consulted ARE the "source material" for assessing presentation.\n';
+    prompt += 'Evaluate how well the available evidence was represented in your assessment.\n\n';
+    prompt += 'When N/A applies (binary result only):\n';
+    prompt += '- Output: "N/A — Binary factual claim (Reality ±10); no presentation quality applicable"\n\n';
     
     // ============================================
     // SECTION 7: YOUR TASK
@@ -722,11 +737,14 @@ module.exports = async function handler(req, res) {
             integrityMatch = assessment.match(/EPISTEMOLOGICAL INTEGRITY SCORE:\s*\[?([+-]?\d+(?:\.\d+)?)\]?/i);
         }
         
+        // Check for N/A integrity (bare claims, binary facts, etc.)
+        var integrityNA = !integrityMatch && assessment.match(/INTEGRITY[^:]*:\s*N\/A/i);
+        
         return res.status(200).json({
             success: true,
             assessment: assessment,
             realityScore: realityMatch ? parseFloat(realityMatch[1]) : null,
-            integrityScore: integrityMatch ? parseFloat(integrityMatch[1]) : null,
+            integrityScore: integrityMatch ? parseFloat(integrityMatch[1]) : (integrityNA ? 'N/A' : null),
             question: question || 'Article Assessment',
             assessmentDate: new Date().toISOString(),
             assessor: 'INITIAL'
