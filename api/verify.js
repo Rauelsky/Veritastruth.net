@@ -436,14 +436,38 @@ function buildPrompt(question, articleText) {
     
     // Temporal State Claims (Binary vs Dynamic framework)
     prompt += '### Temporal State Claims (Current Status Assertions)\n\n';
-    prompt += 'Claims using "current," "currently," "is," or "now" require determining: Is this a BINARY STATE or a DYNAMIC CONDITION?\n\n';
+    prompt += 'Claims about current state require a two-step analysis: VERB TENSE and WORD TYPE.\n\n';
     
-    prompt += '**BINARY STATE CLAIMS** — Either TRUE or FALSE right now, no middle ground:\n';
-    prompt += '- "X is the current President/CEO/Director" → Either X holds that role or X does not\n';
-    prompt += '- "X currently exists as a nation/company/entity" → Either it exists or it doesn\'t\n';
-    prompt += '- "X is currently alive" → Either alive or dead\n';
-    prompt += '- "X is currently married to Y" → Either married or not\n';
-    prompt += '- "X is currently a member of Y" → Either a member or not\n\n';
+    prompt += '**STEP 1: VERB ANALYSIS**\n';
+    prompt += 'Identify the main verb and its tense:\n\n';
+    prompt += '| Tense | Verbs | VERITAS Question |\n';
+    prompt += '|-------|-------|------------------|\n';
+    prompt += '| Present | is, are, remains, exists, holds, serves, owns, heads, chairs, runs, governs, reigns | "Is this true RIGHT NOW?" → Binary test may apply |\n';
+    prompt += '| Past | was, were, remained, existed, held, served, owned, headed | "Was this true at that time?" → Historical verification |\n';
+    prompt += '| Future | will be, will remain, will serve | "Prediction" → Cannot determine Reality |\n';
+    prompt += '| Continuous | has been, have been, has remained | "Ongoing state" → Check if still true NOW |\n\n';
+    
+    prompt += '**STEP 2: BINARY vs DYNAMIC WORD TEST**\n';
+    prompt += 'After identifying a present-tense state verb, examine what follows:\n\n';
+    prompt += '**BINARY (checkable against official record/roster/registry):**\n';
+    prompt += '- Roles/Titles: "is the President/CEO/Director/Chair"\n';
+    prompt += '- Membership: "is a member of," "belongs to," "is enrolled at"\n';
+    prompt += '- Existence: "exists as a nation/company," "is alive"\n';
+    prompt += '- Legal status: "is married to," "is employed by," "is licensed"\n';
+    prompt += '- Ownership: "owns the company," "holds the patent"\n\n';
+    prompt += '**DYNAMIC (requires judgment, degree, or interpretation):**\n';
+    prompt += '- Comparatives/Superlatives: "is the leading," "is the best," "is the most"\n';
+    prompt += '- Qualities: "is strong," "is effective," "is popular"\n';
+    prompt += '- Perceptions: "seems," "appears," "feels," "looks"\n';
+    prompt += '- Trends: "is growing," "is declining," "is trending"\n\n';
+    
+    prompt += '**WORD CONTEXT TEST:**\n';
+    prompt += 'Some words are binary OR fluid depending on context:\n';
+    prompt += '- "current President" (BINARY - one holder) vs "current trends" (DYNAMIC)\n';
+    prompt += '- "active member" (BINARY - on roster or not) vs "active lifestyle" (DYNAMIC)\n';
+    prompt += '- "running for office" (BINARY - candidate or not) vs "running smoothly" (DYNAMIC)\n';
+    prompt += '- "leads the company" as CEO (BINARY - role) vs "leads the market" (DYNAMIC - ranking)\n';
+    prompt += 'ASK: "Can I verify this against an official record, roster, or registry?" If YES → BINARY.\n\n';
     
     prompt += '**SCORING BINARY STATE CLAIMS — CRITICAL OVERRIDE:**\n';
     prompt += 'For BINARY STATE claims, BYPASS the weighted four-factor calculation entirely.\n';
@@ -452,33 +476,7 @@ function buildPrompt(question, articleText) {
     prompt += '2. If the claim is FALSE: **FINAL REALITY SCORE = -10** (do not calculate, just assign)\n';
     prompt += '3. If the claim is TRUE: **FINAL REALITY SCORE = +10** (do not calculate, just assign)\n';
     prompt += '4. In the Reality Score Breakdown, note: "BINARY CLAIM OVERRIDE: Weighted calculation bypassed"\n';
-    prompt += '5. NO PARTIAL CREDIT for historical accuracy. "Was true" ≠ "Is true"\n';
-    prompt += '6. The word "current" eliminates all wiggle room — it means NOW, not recently, not usually\n\n';
-    
-    prompt += '**DYNAMIC CONDITION CLAIMS** — Inherently in flux, degrees of truth apply:\n';
-    prompt += '- "AI is currently a growing field" → Trend claim, assess evidence\n';
-    prompt += '- "The economy is currently strong" → Interpretive, depends on metrics\n';
-    prompt += '- "Remote work is currently popular" → Degree claim, varies by context\n';
-    prompt += '- "Climate change is currently accelerating" → Scientific claim requiring evidence assessment\n\n';
-    
-    prompt += '**SCORING DYNAMIC CONDITION CLAIMS:**\n';
-    prompt += 'Use standard four-factor assessment. These claims have legitimate uncertainty.\n\n';
-    
-    prompt += '**THE BINARY TEST:** Ask yourself: "Can this claim be verified by checking a single fact?"\n';
-    prompt += '- If YES (who holds office, whether entity exists, membership status) → BINARY, score hard\n';
-    prompt += '- If NO (trends, conditions, interpretive states) → DYNAMIC, score with nuance\n\n';
-    
-    prompt += '**EXAMPLES:**\n';
-    prompt += '- "Joe Biden is the current President" (Dec 2025): BINARY → Check who is President → Not Biden → Score: -10\n';
-    prompt += '- "The USSR currently exists as a nation": BINARY → Check if USSR exists → It doesn\'t → Score: -10\n';
-    prompt += '- "Queen Elizabeth II is the reigning monarch": BINARY → Check if alive/reigning → She\'s dead → Score: -10\n';
-    prompt += '- "Donald Trump is the current President" (Dec 2025): BINARY → Check who is President → It\'s Trump → Score: +10\n';
-    prompt += '- "Electric vehicles are currently gaining market share": DYNAMIC → Assess trend data → Score based on evidence\n\n';
-    
-    prompt += '**INTEGRITY SCORING FOR BINARY STATE CLAIMS:**\n';
-    prompt += '- If the claimant likely doesn\'t know about the state change: Integrity 0 to +0.3 (honest mistake)\n';
-    prompt += '- If the claimant should reasonably know: Integrity -0.3 to -0.6 (negligent)\n';
-    prompt += '- If the claimant demonstrably knows and asserts anyway: Integrity -0.7 to -1.0 (dishonest)\n\n';
+    prompt += '5. NO PARTIAL CREDIT for historical accuracy. "Was true" ≠ "Is true"\n\n';
     
     // ============================================
     // SECTION 7: YOUR TASK
