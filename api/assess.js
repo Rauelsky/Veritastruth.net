@@ -57,8 +57,8 @@ function buildPrompt(question, articleText) {
     prompt += '4. Only THEN proceed to assessment\n\n';
     prompt += '**CRITICAL: THE BINARY TEST**\n';
     prompt += 'After verification, ask: "Is this a BINARY STATE claim or a DYNAMIC CONDITION claim?"\n';
-    prompt += '- BINARY (single verifiable fact): Score -10 if false, +10 if true. NO PARTIAL CREDIT.\n';
-    prompt += '- DYNAMIC (trends, interpretive): Use standard four-factor assessment.\n';
+    prompt += '- BINARY (single verifiable fact): BYPASS the weighted formula. Score -10 if false, +10 if true directly.\n';
+    prompt += '- DYNAMIC (trends, interpretive): Use standard four-factor weighted assessment.\n';
     prompt += 'See "Temporal State Claims" in Edge Cases for the full framework.\n\n';
     prompt += 'Example: If asked about "the FBI Director," search "current FBI Director ' + now.getFullYear() + '" BEFORE assuming you know who it is.\n\n';
     
@@ -435,12 +435,15 @@ function buildPrompt(question, articleText) {
     prompt += '- "X is currently married to Y" → Either married or not\n';
     prompt += '- "X is currently a member of Y" → Either a member or not\n\n';
     
-    prompt += '**SCORING BINARY STATE CLAIMS:**\n';
+    prompt += '**SCORING BINARY STATE CLAIMS — CRITICAL OVERRIDE:**\n';
+    prompt += 'For BINARY STATE claims, BYPASS the weighted four-factor calculation entirely.\n';
+    prompt += 'The weighted formula is designed for nuanced claims, not binary facts.\n\n';
     prompt += '1. Determine the CURRENT STATE through temporal verification\n';
-    prompt += '2. If the claim matches current state: Score +9 to +10 (verified true)\n';
-    prompt += '3. If the claim does NOT match current state: Score -9 to -10 (definitively false)\n';
-    prompt += '4. NO PARTIAL CREDIT for historical accuracy. "Was true" ≠ "Is true"\n';
-    prompt += '5. The word "current" eliminates all wiggle room — it means NOW, not recently, not usually\n\n';
+    prompt += '2. If the claim is FALSE: **FINAL REALITY SCORE = -10** (do not calculate, just assign)\n';
+    prompt += '3. If the claim is TRUE: **FINAL REALITY SCORE = +10** (do not calculate, just assign)\n';
+    prompt += '4. In the Reality Score Breakdown, note: "BINARY CLAIM OVERRIDE: Weighted calculation bypassed"\n';
+    prompt += '5. NO PARTIAL CREDIT for historical accuracy. "Was true" ≠ "Is true"\n';
+    prompt += '6. The word "current" eliminates all wiggle room — it means NOW, not recently, not usually\n\n';
     
     prompt += '**DYNAMIC CONDITION CLAIMS** — Inherently in flux, degrees of truth apply:\n';
     prompt += '- "AI is currently a growing field" → Trend claim, assess evidence\n';
