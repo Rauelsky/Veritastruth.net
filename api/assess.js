@@ -232,6 +232,49 @@ function buildPrompt(question, articleText) {
     prompt += '**-1.0 Complete Failure:** Pure manipulation with no honest argument. Propaganda techniques throughout. Complete contempt for reader\'s reasoning.\n\n';
     
     // ============================================
+    // SECTION 3C: OBSERVABLE INTEGRITY CHECKLIST (NEW - Integrity 2.0)
+    // ============================================
+    prompt += '## OBSERVABLE INTEGRITY — EVIDENCE-BASED ASSESSMENT\n\n';
+    prompt += 'IMPORTANT: The Integrity score must be based on OBSERVABLE evidence, not impressions.\n';
+    prompt += 'For each factor below, document what you FOUND, not what you guess.\n\n';
+    
+    prompt += '### THE OBSERVABLE INTEGRITY CHECKLIST\n\n';
+    prompt += 'Complete this checklist BEFORE calculating the Integrity score:\n\n';
+    
+    prompt += '**CHECK A: SOURCE CITATION**\n';
+    prompt += '- Question: Are relevant available sources cited for factual claims made?\n';
+    prompt += '- Assessment: Y (yes, adequate), P (partial/some gaps), N (no/inadequate), or N/A (no factual claims)\n';
+    prompt += '- If P or N: LIST the specific sources that exist and SHOULD have been cited\n';
+    prompt += '- Example: "Missing: CDC 2024 data on vaccine efficacy, WHO position statement"\n\n';
+    
+    prompt += '**CHECK B: LIMITATION ACKNOWLEDGMENT**\n';
+    prompt += '- Question: Does the content acknowledge its own limitations or areas of uncertainty?\n';
+    prompt += '- Assessment: Y (yes), P (partial), N (no), or N/A (pure factual statement)\n';
+    prompt += '- If P or N: LIST the specific limitations that exist but weren\'t acknowledged\n';
+    prompt += '- Example: "Unacknowledged: Sample size limitations, geographic constraints of study"\n\n';
+    
+    prompt += '**CHECK C: COUNTER-ARGUMENT ENGAGEMENT**\n';
+    prompt += '- Question: Does the content address or acknowledge meritorious opposing viewpoints?\n';
+    prompt += '- Assessment: Y (yes), P (partial), N (no), or N/A (no contested claims)\n';
+    prompt += '- If P or N: LIST the specific counter-arguments that have merit and SHOULD be addressed\n';
+    prompt += '- Example: "Missing: Smith et al. 2023 finding opposite results, Industry position on costs"\n\n';
+    
+    prompt += '**CHECK D: FALLACY PRESENCE**\n';
+    prompt += '- Question: Does the content contain identifiable logical fallacies?\n';
+    prompt += '- Assessment: Y (fallacies found), N (no fallacies), or N/A (insufficient content)\n';
+    prompt += '- If Y: LIST each fallacy with the specific text that demonstrates it\n';
+    prompt += '- Example: "Ad hominem: \'Only idiots believe...\'; Straw man: misrepresents opposing view as..."\n\n';
+    
+    prompt += '**USING THE CHECKLIST TO SCORE:**\n';
+    prompt += 'The checklist informs but does not mechanically determine the Integrity score.\n';
+    prompt += '- All Y\'s and no fallacies → High Integrity (+0.5 to +1.0)\n';
+    prompt += '- Mix of Y/P with minor fallacies → Moderate Integrity (0 to +0.5)\n';
+    prompt += '- Multiple P/N\'s with fallacies → Low Integrity (-0.5 to 0)\n';
+    prompt += '- All N\'s with significant fallacies → Very Low Integrity (-1.0 to -0.5)\n\n';
+    prompt += 'The key is: Your score must be JUSTIFIED by the checklist findings.\n';
+    prompt += 'If you score -0.6, you should be able to point to specific missing sources, unacknowledged limitations, or detected fallacies.\n\n';
+    
+    // ============================================
     // SECTION 4: SUMMARY SCORING SCALES (retained from v3)
     // ============================================
     prompt += '## SCORING SCALES — QUICK REFERENCE\n\n';
@@ -475,12 +518,42 @@ function buildPrompt(question, articleText) {
     prompt += 'even when those good sources are telling you the claim is FALSE.\n';
     prompt += 'Binary facts need binary scores: +10 or -10, nothing in between.\n\n';
     
-    prompt += '**INTEGRITY FOR BARE CLAIMS:**\n';
-    prompt += 'When no source material is provided (just a claim to evaluate), Integrity CANNOT be meaningfully assessed.\n';
-    prompt += 'There is no article, no presentation, no evidence handling to evaluate — only a bare assertion.\n';
-    prompt += '- Set Integrity Score to N/A\n';
-    prompt += '- In the Integrity Score Breakdown, note: "N/A — No source material provided to assess presentation honesty"\n';
-    prompt += '- Do NOT guess at claimant intent or fabricate an Integrity score\n\n';
+    // Debunked Scientific Claims
+    prompt += '### Debunked Scientific Claims (Folk Wisdom Myths)\n\n';
+    prompt += 'Claims that are widely believed but scientifically debunked require careful handling:\n\n';
+    prompt += '**EXAMPLES OF DEBUNKED FOLK WISDOM:**\n';
+    prompt += '- "Sugar causes hyperactivity in children" (debunked by multiple studies)\n';
+    prompt += '- "MSG causes headaches" (no scientific support for "Chinese Restaurant Syndrome")\n';
+    prompt += '- "We only use 10% of our brains" (neuroscience shows we use all of it)\n';
+    prompt += '- "Cracking knuckles causes arthritis" (long-term studies found no link)\n';
+    prompt += '- "Hair and fingernails grow after death" (optical illusion from skin shrinkage)\n';
+    prompt += '- "Goldfish have 3-second memory" (they can remember for months)\n';
+    prompt += '- "Lightning never strikes the same place twice" (it frequently does)\n\n';
+    prompt += '**SCORING DEBUNKED CLAIMS:**\n';
+    prompt += 'These are NOT binary in the same way as "Who is President?" They require scientific assessment.\n';
+    prompt += 'However, the scientific evidence is OVERWHELMING against them. Apply these guidelines:\n\n';
+    prompt += '- If scientific consensus is clear and strong (meta-analyses, systematic reviews debunk): Score -7 to -9\n';
+    prompt += '- If the myth has been DEFINITIVELY disproven with no credible dissent: Score -9 to -10\n';
+    prompt += '- Do NOT let the formula pull you toward -4 or -5 for thoroughly debunked claims\n';
+    prompt += '- The Evidence Quality should drive the score — if EQ is -8, final score should be near -8\n\n';
+    prompt += '**KEY INSIGHT:** These claims aren\'t "somewhat false" — they\'re comprehensively refuted.\n';
+    prompt += 'Score them accordingly. A myth with 50+ years of disconfirming evidence is not a -5.\n\n';
+    
+    prompt += '**INTEGRITY N/A CONDITIONS:**\n';
+    prompt += 'Set Integrity Score to N/A when ANY of these conditions apply:\n\n';
+    prompt += '**Condition 1: BARE CLAIM** — No source material provided (just a claim to evaluate)\n';
+    prompt += '- There is no article, no presentation, no evidence handling to evaluate\n';
+    prompt += '- Output: "N/A — No source material provided to assess presentation honesty"\n\n';
+    prompt += '**Condition 2: BINARY FACTUAL CLAIM** — Simple true/false with no "presentation" to assess\n';
+    prompt += '- The claim is just a verifiable fact, not an article or argument\n';
+    prompt += '- Output: "N/A — Binary factual claim; no presentation quality applicable"\n\n';
+    prompt += '**Condition 3: PURE OPINION** — No factual assertions to evaluate\n';
+    prompt += '- Content is entirely subjective preference with no truth claims\n';
+    prompt += '- Output: "N/A — Pure opinion; no factual presentation to assess"\n\n';
+    prompt += '**Condition 4: INSUFFICIENT CONTENT** — Too brief to assess\n';
+    prompt += '- Single sentence or headline without supporting content\n';
+    prompt += '- Output: "N/A — Insufficient content for integrity assessment"\n\n';
+    prompt += 'When N/A applies, skip the Integrity calculation entirely and just report the condition.\n\n';
     
     // ============================================
     // SECTION 7: YOUR TASK
@@ -514,8 +587,20 @@ function buildPrompt(question, articleText) {
     prompt += '- Evidence Ceiling Check: [PASS if result ≤ EQ+2, otherwise ADJUSTED to EQ+2]\n';
     prompt += '- **FINAL REALITY SCORE: [X]** (integer from -10 to +10)\n\n';
     
-    // Integrity Score Breakdown
-    prompt += '**INTEGRITY SCORE BREAKDOWN**\n';
+    // Integrity Score Breakdown - Updated with Observable Checklist
+    prompt += '**INTEGRITY SCORE BREAKDOWN**\n\n';
+    prompt += 'First, complete the Observable Integrity Checklist:\n';
+    prompt += '| Check | Result | Evidence |\n';
+    prompt += '|-------|--------|----------|\n';
+    prompt += '| A. Sources Cited | [Y/P/N/N/A] | [what\'s cited vs. what should be] |\n';
+    prompt += '| B. Limitations Acknowledged | [Y/P/N/N/A] | [acknowledged/missing] |\n';
+    prompt += '| C. Counter-Arguments Addressed | [Y/P/N/N/A] | [addressed/missing] |\n';
+    prompt += '| D. Fallacies Present | [Y/N/N/A] | [none/list with examples] |\n\n';
+    prompt += 'Missing Sources (if any): [List specific sources that should have been cited]\n';
+    prompt += 'Unacknowledged Limitations (if any): [List specific limitations not mentioned]\n';
+    prompt += 'Missing Counter-Arguments (if any): [List specific opposing views not addressed]\n';
+    prompt += 'Fallacies Found (if any): [Fallacy name]: "[quoted text]" - [explanation]\n\n';
+    prompt += 'Then calculate the weighted score:\n';
     prompt += '- Evidence Handling (40%): [score from -1.0 to +1.0] — [1-2 sentence on honesty in evidence selection/presentation]\n';
     prompt += '- Epistemological Integrity (30%): [score] — [1-2 sentence on reasoning honesty, special pleading, tribal reasoning]\n';
     prompt += '- Source Integrity (20%): [score] — [1-2 sentence on transparency of attribution, conflicts disclosed]\n';
