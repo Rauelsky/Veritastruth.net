@@ -55,12 +55,11 @@ function buildPrompt(question, articleText) {
     prompt += '2. Search for CURRENT status of each entity as of ' + currentDate + '\n';
     prompt += '3. Note any changes since your training cutoff\n';
     prompt += '4. Only THEN proceed to assessment\n\n';
-    prompt += '**CRITICAL SCORING RULE FOR CURRENT-STATE CLAIMS:**\n';
-    prompt += 'If a claim asserts something is CURRENTLY true, and your temporal verification shows it is NOT currently true:\n';
-    prompt += '- This is a DEFINITIVELY FALSE claim (Reality Score: -9 to -10)\n';
-    prompt += '- Do NOT give partial credit for historical accuracy\n';
-    prompt += '- "X is the current Y" when X is NOT the current Y = WRONG, period\n';
-    prompt += '- See "Temporal State Claims" in Edge Cases for full guidance\n\n';
+    prompt += '**CRITICAL: THE BINARY TEST**\n';
+    prompt += 'After verification, ask: "Is this a BINARY STATE claim or a DYNAMIC CONDITION claim?"\n';
+    prompt += '- BINARY (single verifiable fact): Score -10 if false, +10 if true. NO PARTIAL CREDIT.\n';
+    prompt += '- DYNAMIC (trends, interpretive): Use standard four-factor assessment.\n';
+    prompt += 'See "Temporal State Claims" in Edge Cases for the full framework.\n\n';
     prompt += 'Example: If asked about "the FBI Director," search "current FBI Director ' + now.getFullYear() + '" BEFORE assuming you know who it is.\n\n';
     
     // ============================================
@@ -427,28 +426,46 @@ function buildPrompt(question, articleText) {
     
     // Temporal State Claims (NEW - addressing Biden/Kash Patel syndrome)
     prompt += '### Temporal State Claims (Current Status Assertions)\n\n';
-    prompt += 'Claims asserting CURRENT status (who holds a position, what is true NOW) require special handling:\n\n';
-    prompt += '**CRITICAL RULE:** A claim about current status is evaluated ONLY against current reality.\n';
-    prompt += 'Historical accuracy is IRRELEVANT to scoring. If someone claims "X is currently Y" and X is NOT currently Y, the claim is FALSE.\n\n';
-    prompt += '**SCORING TEMPORAL STATE CLAIMS:**\n';
-    prompt += '1. After temporal verification, determine: Is this claim TRUE or FALSE as of today?\n';
-    prompt += '2. If DEMONSTRABLY FALSE (verified state change):\n';
-    prompt += '   - Evidence Quality: -9 to -10 (definitive evidence AGAINST the claim exists)\n';
-    prompt += '   - The claim is not "partially true" — it is WRONG about current state\n';
-    prompt += '3. If TRUE: Score normally based on evidence quality\n';
-    prompt += '4. If UNCERTAIN (e.g., recent change, conflicting reports): Score 0 to -3\n\n';
-    prompt += '**WHY NO PARTIAL CREDIT:**\n';
-    prompt += '"Joe Biden is the current President" (in 2025) is not a nuanced claim deserving analysis.\n';
-    prompt += 'It is a binary factual assertion that is simply WRONG. Scoring it -6 or -7 implies ambiguity where none exists.\n';
-    prompt += 'The same standard applies to "Kash Patel leads the FBI" or any other verifiable current-state claim.\n\n';
-    prompt += '**INTEGRITY SCORING FOR TEMPORAL CLAIMS:**\n';
+    prompt += 'Claims using "current," "currently," "is," or "now" require determining: Is this a BINARY STATE or a DYNAMIC CONDITION?\n\n';
+    
+    prompt += '**BINARY STATE CLAIMS** — Either TRUE or FALSE right now, no middle ground:\n';
+    prompt += '- "X is the current President/CEO/Director" → Either X holds that role or X does not\n';
+    prompt += '- "X currently exists as a nation/company/entity" → Either it exists or it doesn\'t\n';
+    prompt += '- "X is currently alive" → Either alive or dead\n';
+    prompt += '- "X is currently married to Y" → Either married or not\n';
+    prompt += '- "X is currently a member of Y" → Either a member or not\n\n';
+    
+    prompt += '**SCORING BINARY STATE CLAIMS:**\n';
+    prompt += '1. Determine the CURRENT STATE through temporal verification\n';
+    prompt += '2. If the claim matches current state: Score +9 to +10 (verified true)\n';
+    prompt += '3. If the claim does NOT match current state: Score -9 to -10 (definitively false)\n';
+    prompt += '4. NO PARTIAL CREDIT for historical accuracy. "Was true" ≠ "Is true"\n';
+    prompt += '5. The word "current" eliminates all wiggle room — it means NOW, not recently, not usually\n\n';
+    
+    prompt += '**DYNAMIC CONDITION CLAIMS** — Inherently in flux, degrees of truth apply:\n';
+    prompt += '- "AI is currently a growing field" → Trend claim, assess evidence\n';
+    prompt += '- "The economy is currently strong" → Interpretive, depends on metrics\n';
+    prompt += '- "Remote work is currently popular" → Degree claim, varies by context\n';
+    prompt += '- "Climate change is currently accelerating" → Scientific claim requiring evidence assessment\n\n';
+    
+    prompt += '**SCORING DYNAMIC CONDITION CLAIMS:**\n';
+    prompt += 'Use standard four-factor assessment. These claims have legitimate uncertainty.\n\n';
+    
+    prompt += '**THE BINARY TEST:** Ask yourself: "Can this claim be verified by checking a single fact?"\n';
+    prompt += '- If YES (who holds office, whether entity exists, membership status) → BINARY, score hard\n';
+    prompt += '- If NO (trends, conditions, interpretive states) → DYNAMIC, score with nuance\n\n';
+    
+    prompt += '**EXAMPLES:**\n';
+    prompt += '- "Joe Biden is the current President" (Dec 2025): BINARY → Check who is President → Not Biden → Score: -10\n';
+    prompt += '- "The USSR currently exists as a nation": BINARY → Check if USSR exists → It doesn\'t → Score: -10\n';
+    prompt += '- "Queen Elizabeth II is the reigning monarch": BINARY → Check if alive/reigning → She\'s dead → Score: -10\n';
+    prompt += '- "Donald Trump is the current President" (Dec 2025): BINARY → Check who is President → It\'s Trump → Score: +10\n';
+    prompt += '- "Electric vehicles are currently gaining market share": DYNAMIC → Assess trend data → Score based on evidence\n\n';
+    
+    prompt += '**INTEGRITY SCORING FOR BINARY STATE CLAIMS:**\n';
     prompt += '- If the claimant likely doesn\'t know about the state change: Integrity 0 to +0.3 (honest mistake)\n';
     prompt += '- If the claimant should reasonably know: Integrity -0.3 to -0.6 (negligent)\n';
     prompt += '- If the claimant demonstrably knows and asserts anyway: Integrity -0.7 to -1.0 (dishonest)\n\n';
-    prompt += '**EXAMPLES:**\n';
-    prompt += '- "Joe Biden is the current President" (asked Dec 2025): Reality -10 (definitively false), Integrity 0 (depends on claimant\'s knowledge)\n';
-    prompt += '- "The FBI Director is Christopher Wray" (if Wray has been replaced): Reality -9 to -10, verify current status first\n';
-    prompt += '- "Elon Musk owns Twitter" (if still true): Reality +9 to +10 (verified current state)\n\n';
     
     // ============================================
     // SECTION 7: YOUR TASK
