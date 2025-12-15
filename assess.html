@@ -1,0 +1,1339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VERITAS — Truth Assessment Engine</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Scientific Dark Theme */
+            --bg-primary: #0a0f1a;
+            --bg-secondary: #111827;
+            --bg-card: #1a2332;
+            --bg-tertiary: #1e293b;
+            --bg-input: #0d1117;
+            
+            /* Accent Colors */
+            --accent-teal: #0d9488;
+            --accent-teal-dim: #0f766e;
+            --accent-cyan: #22d3ee;
+            --accent-blue: #3b82f6;
+            --accent-green: #10b981;
+            --accent-amber: #f59e0b;
+            --accent-red: #ef4444;
+            --accent-purple: #8b5cf6;
+            
+            /* Text Colors */
+            --text-primary: #e2e8f0;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --text-dim: #475569;
+            
+            /* Borders */
+            --border-subtle: #1e293b;
+            --border-medium: #334155;
+            --border-accent: var(--accent-teal);
+            
+            /* Score Colors */
+            --score-positive: #10b981;
+            --score-negative: #f87171;
+            --score-neutral: #fbbf24;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .site-header {
+            background: linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
+            border-bottom: 1px solid var(--accent-teal);
+            padding: 16px 24px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .logo-mark {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--accent-teal) 0%, var(--accent-cyan) 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--bg-primary);
+        }
+
+        .logo-text {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: 2px;
+        }
+
+        .tagline {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .version-badge {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            background: var(--bg-tertiary);
+            padding: 6px 12px;
+            border-radius: 20px;
+            border: 1px solid var(--border-medium);
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            margin-bottom: 24px;
+            overflow: hidden;
+        }
+
+        .card-header {
+            background: var(--bg-tertiary);
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border-subtle);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .card-header-icon { font-size: 1.5rem; }
+        .card-title { font-size: 1.1rem; font-weight: 600; }
+        .card-subtitle { font-size: 0.85rem; color: var(--text-secondary); }
+
+        .card-body { padding: 24px; }
+
+        /* Form Elements */
+        .form-group { margin-bottom: 20px; }
+
+        .form-label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .form-input, textarea {
+            width: 100%;
+            background: var(--bg-input);
+            border: 1px solid var(--border-medium);
+            border-radius: 8px;
+            padding: 14px 16px;
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 0.95rem;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .form-input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--accent-teal);
+            box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.15);
+        }
+
+        textarea { min-height: 120px; resize: vertical; }
+
+        .char-counter {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-align: right;
+            margin-top: 6px;
+        }
+
+        .char-counter.warning { color: var(--accent-amber); }
+        .char-counter.danger { color: var(--accent-red); }
+
+        /* Buttons */
+        .btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-teal) 0%, var(--accent-teal-dim) 100%);
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(13, 148, 136, 0.3);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-medium);
+        }
+
+        .btn-secondary:hover { border-color: var(--accent-teal); color: var(--accent-teal); }
+
+        .button-row {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        /* Error Display */
+        .error {
+            display: none;
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 20px;
+            color: #fca5a5;
+        }
+
+        .error.visible { display: block; }
+
+        /* ================================
+           PROCESSING OVERLAY
+           ================================ */
+        .processing-overlay {
+            display: none;
+            background: var(--bg-card);
+            border: 1px solid var(--accent-teal);
+            border-radius: 12px;
+            padding: 48px;
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .processing-overlay.visible { display: block; }
+
+        .processing-icon {
+            width: 60px;
+            height: 60px;
+            border: 3px solid var(--border-medium);
+            border-top-color: var(--accent-teal);
+            border-radius: 50%;
+            margin: 0 auto 24px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .processing-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .processing-status {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 24px;
+        }
+
+        .countdown-container {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .countdown-block {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-medium);
+            border-radius: 8px;
+            padding: 16px 24px;
+            min-width: 80px;
+        }
+
+        .countdown-value {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--accent-teal);
+        }
+
+        .countdown-label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .progress-bar {
+            height: 4px;
+            background: var(--border-medium);
+            border-radius: 2px;
+            overflow: hidden;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-teal), var(--accent-cyan));
+            transition: width 0.3s ease;
+        }
+
+        /* ================================
+           RESULTS SECTION
+           ================================ */
+        .results-section {
+            display: none;
+        }
+
+        .results-section.visible { display: block; }
+
+        /* Score Panel */
+        .score-panel {
+            background: var(--bg-card);
+            border: 1px solid var(--accent-teal);
+            border-radius: 12px;
+            padding: 32px;
+            margin-bottom: 24px;
+        }
+
+        .score-header { margin-bottom: 24px; }
+
+        .claim-display {
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .claim-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .claim-text {
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        /* Score Grid */
+        .score-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        @media (max-width: 768px) {
+            .score-grid { grid-template-columns: 1fr; }
+        }
+
+        .score-card {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-subtle);
+            border-radius: 10px;
+            padding: 24px;
+            text-align: center;
+        }
+
+        .score-card.reality { border-top: 3px solid var(--accent-green); }
+        .score-card.integrity { border-top: 3px solid var(--accent-purple); }
+
+        .score-label {
+            font-size: 0.75rem;
+            color: var(--text-primary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+
+        .score-value {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .score-value.positive { color: var(--score-positive); }
+        .score-value.negative { color: var(--score-negative); }
+        .score-value.neutral { color: var(--score-neutral); }
+
+        .score-descriptor {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        /* Score Bar */
+        .score-bar-container {
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .score-bar {
+            height: 8px;
+            border-radius: 4px;
+            position: relative;
+            overflow: visible;
+        }
+
+        .score-bar.reality {
+            background: linear-gradient(90deg, #7f1d1d 0%, #b91c1c 20%, #f59e0b 50%, #22c55e 80%, #15803d 100%);
+        }
+
+        .score-bar.integrity {
+            background: linear-gradient(90deg, #134e4a 0%, #0d9488 35%, #5eead4 65%, #ccfbf1 100%);
+        }
+
+        .score-marker {
+            position: absolute;
+            top: -4px;
+            width: 16px;
+            height: 16px;
+            background: white;
+            border: 2px solid var(--bg-primary);
+            border-radius: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .score-bar-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-top: 8px;
+        }
+
+        /* ================================
+           ASSESSMENT DETAILS (Collapsible)
+           ================================ */
+        .assessment-content {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+
+        .assessment-header {
+            background: var(--bg-tertiary);
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border-subtle);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .assessment-header h3 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        /* Collapsible Sections */
+        .collapsible-section {
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .collapsible-section:last-child { border-bottom: none; }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 20px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+            user-select: none;
+        }
+
+        .section-header:hover { background: var(--bg-tertiary); }
+
+        .section-header h4 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: white;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 14px;
+            border-radius: 4px;
+            margin: 0;
+            min-width: 260px;
+        }
+
+        .section-toggle {
+            width: 24px;
+            height: 24px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-medium);
+            border-radius: 4px;
+            color: var(--text-secondary);
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        /* Section Header Colors */
+        .section-header.truth h4 { background: rgba(16, 185, 129, 0.7); }
+        .section-header.reality h4 { background: rgba(59, 130, 246, 0.7); }
+        .section-header.integrity h4 { background: rgba(139, 92, 246, 0.7); }
+        .section-header.sources h4 { background: rgba(139, 92, 246, 0.7); }
+
+        /* Alternating row backgrounds */
+        .collapsible-section:nth-child(odd) .section-header { background: rgba(30, 41, 59, 0.5); }
+        .collapsible-section:nth-child(even) .section-header { background: rgba(15, 23, 42, 0.6); }
+
+        .section-content {
+            display: none;
+            padding: 20px 24px;
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .section-content.expanded { display: block; }
+
+        .section-content p {
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+            line-height: 1.7;
+        }
+
+        .section-content p:last-child { margin-bottom: 0; }
+
+        .section-content strong { color: var(--text-primary); }
+
+        .section-content ul {
+            list-style: disc;
+            margin-left: 20px;
+            color: var(--text-secondary);
+        }
+
+        .section-content li { margin-bottom: 8px; }
+
+        /* Calculation Box */
+        .calculation-box {
+            margin-top: 16px;
+            padding: 12px 16px;
+            background: var(--bg-input);
+            border: 1px solid var(--accent-teal);
+            border-radius: 6px;
+            text-align: center;
+            font-family: 'IBM Plex Mono', monospace;
+        }
+
+        /* Integrity Dimensions */
+        .integrity-dimension {
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+
+        .dimension-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            padding: 8px 12px;
+            border-radius: 4px;
+            margin-bottom: 12px;
+            display: inline-block;
+        }
+
+        .dimension-title.observable { background: rgba(168, 85, 247, 0.2); border-left: 3px solid var(--accent-purple); }
+        .dimension-title.comparative { background: rgba(139, 92, 246, 0.2); border-left: 3px solid var(--accent-purple); }
+        .dimension-title.biased { background: rgba(13, 148, 136, 0.2); border-left: 3px solid var(--accent-teal); }
+
+        .dim-score {
+            font-family: 'IBM Plex Mono', monospace;
+            color: var(--score-positive);
+            font-weight: 700;
+        }
+
+        .dimension-desc {
+            font-style: italic;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+        }
+
+        /* Integrity Table */
+        .integrity-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 12px 0;
+            font-size: 0.9rem;
+        }
+
+        .integrity-table th, .integrity-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .integrity-table th {
+            color: var(--text-muted);
+            font-weight: 500;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+        }
+
+        .integrity-table td { color: var(--text-secondary); }
+
+        .check-yes { color: var(--score-positive); font-weight: 600; }
+        .check-no { color: var(--text-muted); font-weight: 600; }
+        .check-partial { color: var(--accent-amber); font-weight: 600; }
+
+        .integrity-calculation {
+            margin-top: 20px;
+            padding: 16px;
+            background: var(--bg-input);
+            border-radius: 6px;
+            border: 1px solid var(--accent-purple);
+            text-align: center;
+            font-family: 'IBM Plex Mono', monospace;
+        }
+
+        /* ================================
+           FURTHER ANALYSIS (Amplify/Verify)
+           ================================ */
+        .options-panel {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .options-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .options-header h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        @media (max-width: 768px) {
+            .options-grid { grid-template-columns: 1fr; }
+        }
+
+        .option-card {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-subtle);
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .option-card h4 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .option-card p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+
+        .btn-amplify {
+            width: 100%;
+            background: linear-gradient(135deg, var(--accent-purple) 0%, #6d28d9 100%);
+            color: white;
+        }
+
+        .btn-verify {
+            width: 100%;
+            background: linear-gradient(135deg, var(--accent-green) 0%, #059669 100%);
+            color: white;
+        }
+
+        .btn-amplify:disabled, .btn-verify:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* Cooldown Timer */
+        .cooldown-notice {
+            display: none;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--accent-amber);
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 16px;
+            text-align: center;
+        }
+
+        .cooldown-notice.visible { display: block; }
+
+        .cooldown-notice p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+        }
+
+        .cooldown-timer {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--accent-amber);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container { padding: 16px; }
+            .score-panel { padding: 20px; }
+            .countdown-container { flex-wrap: wrap; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="site-header">
+        <div class="header-content">
+            <div class="logo-section">
+                <div class="logo-mark">V</div>
+                <div>
+                    <div class="logo-text">VERITAS</div>
+                    <div class="tagline">Truth Assessment Engine</div>
+                </div>
+            </div>
+            <div class="version-badge">v4.1 — Track A</div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Input Card -->
+        <div class="card" id="inputCard">
+            <div class="card-header">
+                <div class="card-header-icon">📝</div>
+                <div>
+                    <div class="card-title">Claim Assessment</div>
+                    <div class="card-subtitle">Enter a claim or question to evaluate</div>
+                </div>
+            </div>
+
+            <div class="card-body">
+                <div class="error" id="errorBox"></div>
+
+                <div class="form-group">
+                    <label class="form-label">Claim or Question</label>
+                    <textarea id="question" class="form-input" maxlength="600" placeholder="Enter the claim you want to assess...
+
+Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateCharCounter()"></textarea>
+                    <div class="char-counter" id="charCounter">0 / 280 characters</div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Article Text (Optional)</label>
+                    <textarea id="articleText" class="form-input" placeholder="Paste article text here for analysis, or leave blank to assess just the claim above..."></textarea>
+                </div>
+
+                <div class="button-row">
+                    <button class="btn btn-primary" id="assessBtn" onclick="runAssessment()">
+                        <span>⚡</span> Run Assessment
+                    </button>
+                    <button class="btn btn-secondary" onclick="clearForm()">Clear</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Processing Overlay -->
+        <div class="processing-overlay" id="processingOverlay">
+            <div class="processing-icon"></div>
+            <div class="processing-title">Assessment in Progress</div>
+            <div class="processing-status">Searching current sources and analyzing evidence...</div>
+            
+            <div class="countdown-container">
+                <div class="countdown-block">
+                    <div class="countdown-value" id="countdownMin">00</div>
+                    <div class="countdown-label">Minutes</div>
+                </div>
+                <div class="countdown-block">
+                    <div class="countdown-value" id="countdownSec">00</div>
+                    <div class="countdown-label">Seconds</div>
+                </div>
+            </div>
+            
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 0%;"></div>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div class="results-section" id="resultsSection">
+            <!-- Score Panel -->
+            <div class="score-panel">
+                <div class="score-header">
+                    <div class="claim-display">
+                        <div class="claim-label">Claim Assessed</div>
+                        <div class="claim-text" id="claimText">—</div>
+                    </div>
+                </div>
+
+                <div class="score-grid">
+                    <div class="score-card reality">
+                        <div class="score-label">Reality Score</div>
+                        <div class="score-value" id="realityScoreValue">—</div>
+                        <div class="score-descriptor" id="realityDescriptor">—</div>
+                        <div class="score-bar-container">
+                            <div class="score-bar reality">
+                                <div class="score-marker" id="realityMarker" style="left: 50%;"></div>
+                            </div>
+                            <div class="score-bar-labels">
+                                <span>-10</span>
+                                <span>0</span>
+                                <span>+10</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="score-card integrity">
+                        <div class="score-label">Integrity Score</div>
+                        <div class="score-value" id="integrityScoreValue">—</div>
+                        <div class="score-descriptor" id="integrityDescriptor">—</div>
+                        <div class="score-bar-container">
+                            <div class="score-bar integrity">
+                                <div class="score-marker" id="integrityMarker" style="left: 50%;"></div>
+                            </div>
+                            <div class="score-bar-labels">
+                                <span>-1.0</span>
+                                <span>0</span>
+                                <span>+1.0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Assessment Content -->
+            <div class="assessment-content">
+                <div class="assessment-header">
+                    <span>📋</span>
+                    <h3>Assessment Details</h3>
+                </div>
+
+                <div class="collapsible-section">
+                    <div class="section-header truth" onclick="toggleSection('truth')">
+                        <h4>🔍 The Underlying Reality</h4>
+                        <button class="section-toggle" id="truthToggle">+</button>
+                    </div>
+                    <div class="section-content" id="truthContent">
+                        <p id="truthContentText">Loading...</p>
+                    </div>
+                </div>
+
+                <div class="collapsible-section">
+                    <div class="section-header reality" onclick="toggleSection('reality')">
+                        <h4>📊 Reality Score Breakdown</h4>
+                        <button class="section-toggle" id="realityToggle">+</button>
+                    </div>
+                    <div class="section-content" id="realityContent">
+                        <p id="realityContentText">Loading...</p>
+                    </div>
+                </div>
+
+                <div class="collapsible-section">
+                    <div class="section-header integrity" onclick="toggleSection('integrity')">
+                        <h4>🔬 Integrity Score Breakdown</h4>
+                        <button class="section-toggle" id="integrityToggle">+</button>
+                    </div>
+                    <div class="section-content" id="integrityContent">
+                        <p id="integrityContentText">Loading...</p>
+                    </div>
+                </div>
+
+                <div class="collapsible-section">
+                    <div class="section-header sources" onclick="toggleSection('sources')">
+                        <h4>📖 Key Sources Referenced</h4>
+                        <button class="section-toggle" id="sourcesToggle">+</button>
+                    </div>
+                    <div class="section-content" id="sourcesContent">
+                        <ul id="sourcesContentList">
+                            <li>Loading...</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Post-Assessment Options -->
+            <div class="options-panel" id="optionsPanel">
+                <div class="options-header">
+                    <span>🔬</span>
+                    <h3>Further Analysis</h3>
+                </div>
+
+                <div class="options-grid">
+                    <div class="option-card">
+                        <h4><span>🔍</span> Amplify</h4>
+                        <p>Stress-test the assessment — challenge assumptions, explore alternative interpretations, find blind spots.</p>
+                        <button class="btn btn-amplify" id="amplifyBtn" onclick="runAmplify()" disabled>Amplify Analysis</button>
+                    </div>
+                    <div class="option-card">
+                        <h4><span>✓</span> Verify</h4>
+                        <p>Get an independent second evaluation — fresh eyes, identical methodology, compare scores.</p>
+                        <button class="btn btn-verify" id="verifyBtn" onclick="runVerify()" disabled>Run Verification</button>
+                    </div>
+                </div>
+
+                <div class="cooldown-notice" id="cooldownNotice">
+                    <p>Deep analysis requires preparation. Available in:</p>
+                    <div class="cooldown-timer" id="cooldownTimer">0:60</div>
+                </div>
+            </div>
+
+            <!-- New Assessment Button -->
+            <div style="text-align: center; margin-top: 24px;">
+                <button class="btn btn-secondary" onclick="clearForm()">↻ New Assessment</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ================================
+        // STATE VARIABLES
+        // ================================
+        var lastAssessment = null;
+        var processingTimer = null;
+        var processingSeconds = 0;
+        var cooldownTimer = null;
+        var cooldownSeconds = 0;
+
+        // ================================
+        // UTILITY FUNCTIONS
+        // ================================
+        function updateCharCounter() {
+            var textarea = document.getElementById('question');
+            var counter = document.getElementById('charCounter');
+            var len = textarea.value.length;
+            counter.textContent = len + ' / 280 characters';
+            
+            counter.className = 'char-counter';
+            if (len > 280) {
+                counter.classList.add('danger');
+            } else if (len > 200) {
+                counter.classList.add('warning');
+            }
+        }
+
+        function toggleSection(sectionId) {
+            var content = document.getElementById(sectionId + 'Content');
+            var toggle = document.getElementById(sectionId + 'Toggle');
+            if (content && toggle) {
+                content.classList.toggle('expanded');
+                toggle.textContent = content.classList.contains('expanded') ? '−' : '+';
+            }
+        }
+
+        function clearForm() {
+            document.getElementById('question').value = '';
+            document.getElementById('articleText').value = '';
+            document.getElementById('errorBox').classList.remove('visible');
+            document.getElementById('inputCard').style.display = 'block';
+            document.getElementById('processingOverlay').classList.remove('visible');
+            document.getElementById('resultsSection').classList.remove('visible');
+            updateCharCounter();
+            
+            // Reset collapsible sections
+            ['truth', 'reality', 'integrity', 'sources'].forEach(function(id) {
+                var content = document.getElementById(id + 'Content');
+                var toggle = document.getElementById(id + 'Toggle');
+                if (content) content.classList.remove('expanded');
+                if (toggle) toggle.textContent = '+';
+            });
+        }
+
+        // ================================
+        // PROCESSING TIMER
+        // ================================
+        function startProcessingTimer() {
+            processingSeconds = 0;
+            updateProcessingDisplay();
+            
+            if (processingTimer) clearInterval(processingTimer);
+            
+            processingTimer = setInterval(function() {
+                processingSeconds++;
+                updateProcessingDisplay();
+            }, 1000);
+        }
+
+        function stopProcessingTimer() {
+            if (processingTimer) {
+                clearInterval(processingTimer);
+                processingTimer = null;
+            }
+        }
+
+        function updateProcessingDisplay() {
+            var mins = Math.floor(processingSeconds / 60);
+            var secs = processingSeconds % 60;
+            document.getElementById('countdownMin').textContent = mins.toString().padStart(2, '0');
+            document.getElementById('countdownSec').textContent = secs.toString().padStart(2, '0');
+            
+            // Progress bar - assume ~90 seconds typical
+            var progress = Math.min((processingSeconds / 90) * 100, 95);
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+
+        function showProcessing() {
+            document.getElementById('inputCard').style.display = 'none';
+            document.getElementById('resultsSection').classList.remove('visible');
+            document.getElementById('processingOverlay').classList.add('visible');
+            startProcessingTimer();
+        }
+
+        function hideProcessing() {
+            stopProcessingTimer();
+            document.getElementById('processingOverlay').classList.remove('visible');
+            document.getElementById('progressFill').style.width = '100%';
+        }
+
+        // ================================
+        // COOLDOWN TIMER
+        // ================================
+        function startCooldown() {
+            cooldownSeconds = 60;
+            document.getElementById('cooldownNotice').classList.add('visible');
+            document.getElementById('amplifyBtn').disabled = true;
+            document.getElementById('verifyBtn').disabled = true;
+            updateCooldownDisplay();
+            
+            if (cooldownTimer) clearInterval(cooldownTimer);
+            
+            cooldownTimer = setInterval(function() {
+                cooldownSeconds--;
+                updateCooldownDisplay();
+                
+                if (cooldownSeconds <= 0) {
+                    clearInterval(cooldownTimer);
+                    document.getElementById('cooldownNotice').classList.remove('visible');
+                    document.getElementById('amplifyBtn').disabled = false;
+                    document.getElementById('verifyBtn').disabled = false;
+                }
+            }, 1000);
+        }
+
+        function updateCooldownDisplay() {
+            var mins = Math.floor(cooldownSeconds / 60);
+            var secs = cooldownSeconds % 60;
+            document.getElementById('cooldownTimer').textContent = mins + ':' + secs.toString().padStart(2, '0');
+        }
+
+        // ================================
+        // SCORE DISPLAY
+        // ================================
+        function getRealityDescriptor(score) {
+            if (score >= 9) return 'Near-Certain';
+            if (score >= 7) return 'Highly Likely';
+            if (score >= 5) return 'Probable';
+            if (score >= 3) return 'Leaning True';
+            if (score >= 1) return 'Slightly True';
+            if (score >= -1) return 'Uncertain';
+            if (score >= -3) return 'Slightly False';
+            if (score >= -5) return 'Leaning False';
+            if (score >= -7) return 'Probably False';
+            if (score >= -9) return 'Highly Unlikely';
+            return 'Near-Certainly False';
+        }
+
+        function getIntegrityDescriptor(score) {
+            if (score >= 0.8) return 'High Honesty';
+            if (score >= 0.5) return 'Good Faith';
+            if (score >= 0.2) return 'Mixed Signals';
+            if (score >= -0.2) return 'Neutral';
+            if (score >= -0.5) return 'Some Concerns';
+            if (score >= -0.8) return 'Low Integrity';
+            return 'Deceptive';
+        }
+
+        function getScoreClass(score, isIntegrity) {
+            if (isIntegrity) {
+                if (score >= 0.3) return 'positive';
+                if (score <= -0.3) return 'negative';
+                return 'neutral';
+            } else {
+                if (score >= 3) return 'positive';
+                if (score <= -3) return 'negative';
+                return 'neutral';
+            }
+        }
+
+        function updateScoreDisplay(realityScore, integrityScore) {
+            var realityEl = document.getElementById('realityScoreValue');
+            var integrityEl = document.getElementById('integrityScoreValue');
+            
+            // Reality Score
+            if (realityScore !== null && realityScore !== undefined) {
+                var rScore = parseInt(realityScore);
+                realityEl.textContent = (rScore >= 0 ? '+' : '') + rScore;
+                realityEl.className = 'score-value ' + getScoreClass(rScore, false);
+                document.getElementById('realityDescriptor').textContent = getRealityDescriptor(rScore);
+                
+                // Position marker (score -10 to +10 maps to 0% to 100%)
+                var realityPos = ((rScore + 10) / 20) * 100;
+                document.getElementById('realityMarker').style.left = realityPos + '%';
+            } else {
+                realityEl.textContent = '—';
+                realityEl.className = 'score-value';
+                document.getElementById('realityDescriptor').textContent = '—';
+            }
+            
+            // Integrity Score
+            if (integrityScore !== null && integrityScore !== undefined) {
+                var iScore = parseFloat(integrityScore);
+                integrityEl.textContent = (iScore >= 0 ? '+' : '') + iScore.toFixed(1);
+                integrityEl.className = 'score-value ' + getScoreClass(iScore, true);
+                document.getElementById('integrityDescriptor').textContent = getIntegrityDescriptor(iScore);
+                
+                // Position marker (score -1 to +1 maps to 0% to 100%)
+                var integrityPos = ((iScore + 1) / 2) * 100;
+                document.getElementById('integrityMarker').style.left = integrityPos + '%';
+            } else {
+                integrityEl.textContent = '—';
+                integrityEl.className = 'score-value';
+                document.getElementById('integrityDescriptor').textContent = '—';
+            }
+        }
+
+        // ================================
+        // CONTENT PARSING
+        // ================================
+        function parseAssessmentSections(text) {
+            var sections = {
+                truth: '',
+                reality: '',
+                integrity: '',
+                sources: []
+            };
+            
+            // Extract Underlying Reality
+            var truthMatch = text.match(/\*\*(?:THE )?UNDERLYING (?:TRUTH|REALITY)\*\*([\s\S]*?)(?=\*\*[A-Z]|\n##|$)/i);
+            if (truthMatch) sections.truth = truthMatch[1].trim();
+            
+            // Extract Reality Score Breakdown
+            var realityMatch = text.match(/\*\*REALITY SCORE BREAKDOWN\*\*([\s\S]*?)(?=\*\*INTEGRITY|\*\*KEY SOURCES|$)/i);
+            if (realityMatch) sections.reality = realityMatch[1].trim();
+            
+            // Extract Integrity Score Breakdown
+            var integrityMatch = text.match(/\*\*INTEGRITY SCORE BREAKDOWN\*\*([\s\S]*?)(?=\*\*KEY SOURCES|$)/i);
+            if (integrityMatch) sections.integrity = integrityMatch[1].trim();
+            
+            // Extract Sources
+            var sourcesMatch = text.match(/\*\*KEY SOURCES(?: REFERENCED)?\*\*([\s\S]*?)$/i);
+            if (sourcesMatch) {
+                var sourceLines = sourcesMatch[1].trim().split('\n');
+                sourceLines.forEach(function(line) {
+                    line = line.replace(/^[\-\*\•]\s*/, '').trim();
+                    if (line.length > 0) sections.sources.push(line);
+                });
+            }
+            
+            return sections;
+        }
+
+        function formatMarkdown(text) {
+            if (!text) return '';
+            
+            // Convert **bold** to <strong>
+            text = text.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+            
+            // Convert *italic* to <em>
+            text = text.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+            
+            // Convert newlines to paragraphs
+            var paragraphs = text.split(/\n\n+/);
+            text = paragraphs.map(function(p) {
+                p = p.trim();
+                if (p.length === 0) return '';
+                return '<p>' + p.replace(/\n/g, '<br>') + '</p>';
+            }).join('');
+            
+            return text;
+        }
+
+        function renderAssessmentContent(assessment) {
+            var sections = parseAssessmentSections(assessment);
+            
+            // Truth section
+            document.getElementById('truthContentText').innerHTML = formatMarkdown(sections.truth) || '<p>Not available in this assessment.</p>';
+            
+            // Reality section
+            document.getElementById('realityContentText').innerHTML = formatMarkdown(sections.reality) || '<p>Not available in this assessment.</p>';
+            
+            // Integrity section
+            document.getElementById('integrityContentText').innerHTML = formatMarkdown(sections.integrity) || '<p>Not available in this assessment.</p>';
+            
+            // Sources section
+            var sourcesList = document.getElementById('sourcesContentList');
+            sourcesList.innerHTML = '';
+            if (sections.sources.length > 0) {
+                sections.sources.forEach(function(src) {
+                    var li = document.createElement('li');
+                    li.textContent = src;
+                    sourcesList.appendChild(li);
+                });
+            } else {
+                sourcesList.innerHTML = '<li>No sources listed</li>';
+            }
+        }
+
+        // ================================
+        // RUN ASSESSMENT
+        // ================================
+        function runAssessment() {
+            var question = document.getElementById('question').value.trim();
+            var articleText = document.getElementById('articleText').value.trim();
+            var errorBox = document.getElementById('errorBox');
+            var btn = document.getElementById('assessBtn');
+            
+            if (!question && !articleText) {
+                errorBox.textContent = 'Please enter a claim or question to assess.';
+                errorBox.classList.add('visible');
+                return;
+            }
+            
+            errorBox.classList.remove('visible');
+            btn.disabled = true;
+            btn.textContent = 'Assessing...';
+            
+            showProcessing();
+            
+            fetch('/api/assess', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    question: question,
+                    articleText: articleText,
+                    track: 'a'
+                })
+            })
+            .then(function(res) {
+                if (!res.ok) {
+                    return res.json().then(function(err) {
+                        throw new Error(err.error || 'Assessment failed');
+                    });
+                }
+                return res.json();
+            })
+            .then(function(data) {
+                console.log('Assessment response:', data);
+                
+                // Update claim display
+                document.getElementById('claimText').textContent = '"' + question + '"';
+                
+                // Update scores
+                updateScoreDisplay(data.realityScore, data.integrityScore);
+                
+                // Render assessment content
+                renderAssessmentContent(data.assessment);
+                
+                // Store for Amplify/Verify
+                lastAssessment = {
+                    question: question,
+                    articleText: articleText,
+                    assessment: data.assessment,
+                    realityScore: data.realityScore,
+                    integrityScore: data.integrityScore
+                };
+                
+                // Show results
+                hideProcessing();
+                document.getElementById('resultsSection').classList.add('visible');
+                
+                // Start cooldown
+                startCooldown();
+                
+                // Scroll to results
+                document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth' });
+            })
+            .catch(function(err) {
+                hideProcessing();
+                document.getElementById('inputCard').style.display = 'block';
+                errorBox.textContent = 'Error: ' + err.message;
+                errorBox.classList.add('visible');
+            })
+            .finally(function() {
+                btn.disabled = false;
+                btn.textContent = '⚡ Run Assessment';
+            });
+        }
+
+        // ================================
+        // AMPLIFY / VERIFY (Placeholder)
+        // ================================
+        function runAmplify() {
+            alert('Amplify functionality coming soon!\n\nThis will stress-test the assessment by challenging assumptions and exploring alternative interpretations.');
+        }
+
+        function runVerify() {
+            alert('Verify functionality coming soon!\n\nThis will run an independent second assessment for comparison.');
+        }
+    </script>
+</body>
+</html>
