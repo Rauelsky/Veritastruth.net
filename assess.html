@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VERITAS Assessment Tool v4.0</title>
+    <title>VERITAS Assessment Tool v4.1</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -203,12 +203,12 @@
         }
 
         .track-tab.active {
-            background: linear-gradient(135deg, var(--accent-blue) 0%, #2563eb 100%);
+            background: linear-gradient(135deg, var(--accent-teal) 0%, var(--accent-teal-dim) 100%);
             color: white;
         }
 
         .track-tab.track-b.active {
-            background: linear-gradient(135deg, var(--track-b-teal) 0%, var(--track-b-teal-dark) 100%);
+            background: linear-gradient(135deg, var(--accent-purple) 0%, #7c3aed 100%);
         }
 
         .track-tab:hover:not(.active) {
@@ -216,8 +216,8 @@
         }
 
         .track-description {
-            background: rgba(59, 130, 246, 0.1);
-            border: 1px solid rgba(59, 130, 246, 0.3);
+            background: rgba(13, 148, 136, 0.1);
+            border: 1px solid rgba(13, 148, 136, 0.3);
             border-radius: 8px;
             padding: 12px 16px;
             margin-bottom: 20px;
@@ -226,8 +226,8 @@
         }
 
         .track-description.track-b {
-            background: rgba(13, 148, 136, 0.1);
-            border-color: rgba(13, 148, 136, 0.3);
+            background: rgba(139, 92, 246, 0.1);
+            border-color: rgba(139, 92, 246, 0.3);
             color: var(--text-secondary);
         }
 
@@ -242,15 +242,15 @@
 
         /* Claim Type Selection (Track B) - Dark Theme */
         .claim-type-confirmation {
-            background: rgba(13, 148, 136, 0.1);
-            border: 1px solid rgba(13, 148, 136, 0.3);
+            background: rgba(139, 92, 246, 0.1);
+            border: 1px solid rgba(139, 92, 246, 0.3);
             border-radius: 12px;
             padding: 20px;
             margin-bottom: 20px;
         }
 
         .claim-type-confirmation h4 {
-            color: var(--track-b-teal-dark);
+            color: var(--accent-purple);
             margin-bottom: 12px;
         }
 
@@ -270,12 +270,12 @@
         }
 
         .claim-type-option:hover {
-            border-color: var(--track-b-teal);
+            border-color: var(--accent-purple);
         }
 
         .claim-type-option.selected {
-            border-color: var(--track-b-teal);
-            background: rgba(13, 148, 136, 0.15);
+            border-color: var(--accent-purple);
+            background: rgba(139, 92, 246, 0.15);
         }
 
         .claim-type-option strong {
@@ -318,8 +318,8 @@
         }
         .ws-input-group input:focus {
             outline: none;
-            border-color: var(--track-b-teal);
-            box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.15);
+            border-color: var(--accent-purple);
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15);
         }
 
         /* Criteria Selection (Track B) - Dark Theme */
@@ -371,12 +371,12 @@
         }
 
         .criteria-item:hover:not(.disabled) {
-            border-color: var(--track-b-teal);
+            border-color: var(--accent-purple);
         }
 
         .criteria-item.selected {
-            border-color: var(--track-b-teal);
-            background: rgba(13, 148, 136, 0.15);
+            border-color: var(--accent-purple);
+            background: rgba(139, 92, 246, 0.15);
         }
 
         .criteria-item.disabled {
@@ -399,8 +399,8 @@
         }
 
         .criteria-item.selected .criteria-checkbox {
-            background: var(--track-b-teal);
-            border-color: var(--track-b-teal);
+            background: var(--accent-purple);
+            border-color: var(--accent-purple);
             color: white;
         }
 
@@ -433,7 +433,7 @@
 
         .btn-add-criteria {
             padding: 12px 20px;
-            background: var(--track-b-teal);
+            background: var(--accent-purple);
             color: white;
             border: none;
             border-radius: 8px;
@@ -443,7 +443,7 @@
         }
 
         .btn-add-criteria:hover {
-            background: var(--track-b-teal-dark);
+            background: #7c3aed;
         }
 
         .custom-criteria-error {
@@ -459,14 +459,14 @@
 
         /* Track B Button */
         .btn-track-b {
-            background: linear-gradient(135deg, var(--track-b-teal) 0%, var(--track-b-teal-dark) 100%);
+            background: linear-gradient(135deg, var(--accent-purple) 0%, #7c3aed 100%);
             color: white;
             flex: 1;
         }
 
         .btn-track-b:hover:not(:disabled) {
             transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(13, 148, 136, 0.35);
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.35);
         }
 
         .btn-track-b:disabled {
@@ -492,14 +492,14 @@
             text-align: center;
         }
         .trackb-amplify-section .btn-amplify {
-            background: linear-gradient(135deg, var(--track-b-teal) 0%, var(--track-b-teal-dark) 100%);
+            background: linear-gradient(135deg, var(--accent-purple) 0%, #7c3aed 100%);
         }
         .trackb-amplify-section .btn-amplify:hover {
-            background: linear-gradient(135deg, var(--track-b-teal-dark) 0%, #065f5a 100%);
+            background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
         }
 
         .trackb-header {
-            background: linear-gradient(135deg, var(--track-b-teal) 0%, var(--track-b-teal-dark) 100%);
+            background: linear-gradient(135deg, var(--accent-purple) 0%, #7c3aed 100%);
             color: white;
             padding: 16px 20px;
             border-radius: 12px 12px 0 0;
@@ -779,8 +779,8 @@
 
         /* Timing Notice Styles - Dark Theme */
         .timing-notice {
-            background: rgba(59, 130, 246, 0.1);
-            border: 1px solid rgba(59, 130, 246, 0.3);
+            background: rgba(13, 148, 136, 0.1);
+            border: 1px solid rgba(13, 148, 136, 0.3);
             border-radius: 8px;
             padding: 12px 16px;
             margin-bottom: 16px;
@@ -836,8 +836,8 @@
         }
 
         .mode-hint {
-            background: rgba(59, 130, 246, 0.1);
-            border: 1px solid rgba(59, 130, 246, 0.3);
+            background: rgba(13, 148, 136, 0.1);
+            border: 1px solid rgba(13, 148, 136, 0.3);
             border-radius: 8px;
             padding: 12px 16px;
             margin-bottom: 20px;
@@ -859,6 +859,70 @@
             margin-top: 6px;
             color: var(--text-secondary);
             font-size: 0.85rem;
+        }
+
+        /* ============================================
+           PROCESSING TIMER (Count UP) - Compact Style
+           ============================================ */
+        .processing-timer {
+            display: none;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--accent-teal);
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .processing-timer.track-b {
+            border-color: var(--accent-purple);
+        }
+
+        .processing-timer.track-b .processing-time {
+            color: var(--accent-purple);
+        }
+
+        .processing-timer.track-b .progress-fill {
+            background: linear-gradient(90deg, var(--accent-purple), #9a8aad);
+        }
+
+        .processing-timer.visible {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .processing-title {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .processing-time {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--accent-teal);
+        }
+
+        .progress-bar {
+            height: 4px;
+            background: var(--bg-input);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-top: 12px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-teal), var(--accent-cyan));
+            border-radius: 2px;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
         /* Buttons - Dark Theme */
@@ -2380,7 +2444,7 @@
                 <span class="tagline">Truth through Transparency</span>
             </div>
                 <div id="claimTypeBadgeContainer"></div>
-            <span class="version-badge" id="versionBadge">VERACITY ENGINE™ v4.0 — Track A</span>
+            <span class="version-badge" id="versionBadge">VERACITY ENGINE™ v4.1 — Track A</span>
         </div>
     </header>
 
@@ -2516,6 +2580,16 @@
                 <button class="btn btn-clear" onclick="clearForm()">🗑️ Clear</button>
                 <button class="btn btn-track-b" id="assessBtnTrackB" onclick="runTrackBAssessment()">🎯 Assess Selected Criteria</button>
             </div>
+            
+            <!-- Processing Timer (hidden by default) -->
+            <div class="processing-timer" id="processingTimer">
+                <div class="processing-title">Assessment in progress. Elapsed time:</div>
+                <div class="processing-time" id="processingTime">0:00</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+            </div>
+            
             <p class="free-tier-note">5 free assessments per day • Powered by Claude with web search</p>
         </div>
 
@@ -2835,6 +2909,10 @@
         var currentQuestion = '';
         var amplifyCooldownTimer = null;
         var amplifyCooldownSeconds = 0;
+        
+        // Timer variables
+        var timerInterval = null;
+        var elapsedSeconds = 0;
 
         // ================================
         // TRACK A: STATE VARIABLES
@@ -2909,6 +2987,65 @@
         };
 
         // ================================
+        // TIMER FUNCTIONS
+        // ================================
+        function startTimer() {
+            elapsedSeconds = 0;
+            updateTimerDisplay();
+            
+            timerInterval = setInterval(function() {
+                elapsedSeconds++;
+                updateTimerDisplay();
+                updateProgressBar();
+            }, 1000);
+        }
+
+        function stopTimer() {
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+        }
+
+        function updateTimerDisplay() {
+            var minutes = Math.floor(elapsedSeconds / 60);
+            var seconds = elapsedSeconds % 60;
+            document.getElementById('processingTime').textContent = minutes + ':' + seconds.toString().padStart(2, '0');
+        }
+
+        function updateProgressBar() {
+            var progress = Math.min((elapsedSeconds / 45) * 100, 95);
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+
+        function showProcessingTimer() {
+            var timer = document.getElementById('processingTimer');
+            timer.classList.add('visible');
+            
+            // Add track-b class for purple styling
+            if (currentTrack === 'b') {
+                timer.classList.add('track-b');
+            } else {
+                timer.classList.remove('track-b');
+            }
+            
+            document.getElementById('assessBtn').disabled = true;
+            var trackBBtn = document.getElementById('assessBtnTrackB');
+            if (trackBBtn) trackBBtn.disabled = true;
+            document.getElementById('progressFill').style.width = '0%';
+            startTimer();
+        }
+
+        function hideProcessingTimer() {
+            document.getElementById('processingTimer').classList.remove('visible');
+            document.getElementById('assessBtn').disabled = false;
+            var trackBBtn = document.getElementById('assessBtnTrackB');
+            if (trackBBtn) trackBBtn.disabled = false;
+            document.getElementById('progressFill').style.width = '100%';
+            stopTimer();
+        }
+
+        // ================================
         // TRACK SWITCHING
         // ================================
         function setTrack(track) {
@@ -2931,7 +3068,7 @@
                 trackBButtons.style.display = 'flex';
                 trackDescription.className = 'track-description track-b';
                 trackDescription.innerHTML = '<strong>Track B</strong> assesses subjective claims through criteria YOU select. Pick what matters to you — VERITAS evaluates each criterion independently without forcing a single "right answer."';
-                versionBadge.textContent = 'VERACITY ENGINE™ v4.0 — Track B';
+                versionBadge.textContent = 'VERACITY ENGINE™ v4.1 — Track B';
                 renderCriteriaList();
             } else {
                 trackBTab.classList.remove('active');
@@ -2942,7 +3079,7 @@
                 trackAButtons.style.display = 'flex';
                 trackDescription.className = 'track-description';
                 trackDescription.innerHTML = '<strong>Track A</strong> assesses factual claims using evidence quality, source reliability, and logical coherence. Best for questions with objectively verifiable answers.';
-                versionBadge.textContent = 'VERACITY ENGINE™ v4.0 — Track A';
+                versionBadge.textContent = 'VERACITY ENGINE™ v4.1 — Track A';
             }
         }
 
@@ -3089,6 +3226,7 @@
             errorBox.classList.remove('visible');
             btn.disabled = true;
             btn.textContent = '🎯 Assessing...';
+            showProcessingTimer();
             currentQuestion = question;
             
             // Gather 5 W's context
@@ -3110,6 +3248,8 @@
                 userApiKey: userApiKey
             };
             
+            console.log('Track B Assessment Request:', requestBody);
+            
             fetch('/api/assess', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -3124,15 +3264,38 @@
                 });
             })
             .then(function(data) {
+                console.log('Track B Assessment Response:', data);
                 renderTrackBResults(data);
                 results.classList.add('visible');
+                
+                // Store last assessment for Amplify/Verify
+                lastAssessment = {
+                    question: question,
+                    articleText: '',
+                    assessment: data.assessment,
+                    realityScore: data.realityScore,
+                    integrityScore: data.integrityScore,
+                    track: 'b',
+                    claimType: selectedClaimType,
+                    criteria: selectedCriteria,
+                    customCriteria: customCriteriaList
+                };
+                
+                // Show the post-assessment options panel
+                document.getElementById('postAssessmentOptions').style.display = 'block';
+                
+                // Start the cooldown timer for both buttons
+                startAmplifyCooldown();
+                
                 results.scrollIntoView({ behavior: 'smooth', block: 'start' });
             })
             .catch(function(err) {
+                console.error('Track B Assessment Error:', err);
                 errorBox.textContent = 'Error: ' + err.message;
                 errorBox.classList.add('visible');
             })
             .finally(function() {
+                hideProcessingTimer();
                 btn.disabled = false;
                 btn.textContent = '🎯 Assess Selected Criteria';
             });
@@ -4050,6 +4213,7 @@
             errorBox.classList.remove('visible');
             btn.disabled = true;
             btn.textContent = 'Analyzing with web search...';
+            showProcessingTimer();
             results.classList.remove('visible');
             document.getElementById('amplifiedResults').classList.remove('visible');
             document.getElementById('secondAssessmentResults').classList.remove('visible');
@@ -4118,6 +4282,7 @@
                 errorBox.classList.add('visible');
             })
             .finally(function() {
+                hideProcessingTimer();
                 btn.disabled = false;
                 btn.textContent = 'Assess with VERITAS';
             });
