@@ -27,9 +27,66 @@ function checkRateLimit(key) {
 }
 
 // ============================================
-// PROMPT BUILDER - INTEGRITY 2.0
+// CRITERIA DEFINITIONS (must match frontend)
 // ============================================
-function buildPrompt(question, articleText, track, claimType) {
+const CRITERIA_SETS = {
+    qualification: {
+        label: 'Person Qualification',
+        criteria: [
+            { id: 'legal', label: 'Legal Eligibility', description: 'Does the person meet legal/constitutional requirements for the role?' },
+            { id: 'experience', label: 'Experience & Credentials', description: 'What relevant experience, education, or credentials does the person have?' },
+            { id: 'record', label: 'Historical Record', description: 'What is their track record in similar or related roles?' },
+            { id: 'alignment', label: 'Value Alignment', description: 'How do their stated values align with the role\'s requirements?' },
+            { id: 'controversies', label: 'Controversies & Concerns', description: 'What documented concerns, controversies, or red flags exist?' }
+        ]
+    },
+    policy: {
+        label: 'Policy Effectiveness',
+        criteria: [
+            { id: 'goals', label: 'Stated Goals Clarity', description: 'Are the policy\'s goals clearly defined and measurable?' },
+            { id: 'outcomes', label: 'Measurable Outcomes', description: 'What evidence exists about the policy\'s actual outcomes?' },
+            { id: 'costbenefit', label: 'Cost/Benefit Analysis', description: 'How do the costs compare to the benefits?' },
+            { id: 'alternatives', label: 'Comparison to Alternatives', description: 'How does this policy compare to alternative approaches?' },
+            { id: 'implementation', label: 'Implementation Challenges', description: 'What practical challenges affect implementation?' }
+        ]
+    },
+    product: {
+        label: 'Product/Service Quality',
+        criteria: [
+            { id: 'audience', label: 'Who benefits from this product or service?', description: 'For whom is this product/service appropriate?' },
+            { id: 'measure', label: 'Success Criteria', description: 'By what measure is success/quality defined?' },
+            { id: 'comparison', label: 'Comparison to Alternatives', description: 'How does it compare to alternatives?' },
+            { id: 'timeframe', label: 'Timeframe Considerations', description: 'What are short-term vs long-term implications?' },
+            { id: 'credibility', label: 'Source Credibility', description: 'What conflicts of interest or biases exist in claims about it?' }
+        ]
+    },
+    prediction: {
+        label: 'Prediction/Forecast',
+        criteria: [
+            { id: 'trackrecord', label: 'Predictor Track Record', description: 'What is the predictor\'s history of accuracy?' },
+            { id: 'transparency', label: 'Model Transparency', description: 'Is the reasoning/model behind the prediction transparent?' },
+            { id: 'baserates', label: 'Base Rates Acknowledged', description: 'Are historical base rates considered?' },
+            { id: 'uncertainty', label: 'Uncertainty Quantified', description: 'Is uncertainty appropriately acknowledged and quantified?' },
+            { id: 'falsifiability', label: 'Falsifiability Defined', description: 'What would prove the prediction wrong?' }
+        ]
+    },
+    generic: {
+        label: 'General Assessment',
+        criteria: [
+            { id: 'evidence', label: 'Evidence Quality', description: 'What evidence supports or refutes this claim?' },
+            { id: 'expertise', label: 'Source Expertise', description: 'Do the sources have relevant expertise?' },
+            { id: 'audience', label: 'Who benefits?', description: 'Who gains or loses if this claim is accepted?' },
+            { id: 'alternatives', label: 'Alternative Perspectives', description: 'What competing viewpoints exist?' },
+            { id: 'outcomes', label: 'Measurable Outcomes', description: 'What concrete outcomes can be measured?' },
+            { id: 'timeframe', label: 'Timeframe Considerations', description: 'What are short-term vs long-term implications?' }
+        ]
+    }
+};
+
+// ============================================
+// PROMPT BUILDER - TRACK A (Factual)
+// ============================================
+function buildTrackAPrompt(question, articleText) {
     var now = new Date();
     var currentDate = now.toLocaleDateString('en-US', { 
         weekday: 'long', 
@@ -41,9 +98,7 @@ function buildPrompt(question, articleText, track, claimType) {
     
     var prompt = 'You are VERITAS, an epistemologically rigorous truth assessment system. Your purpose is to evaluate claims using a transparent methodology with intellectual honesty and appropriate epistemic humility.\n\n';
     
-    // ============================================
-    // SECTION 1: TEMPORAL AWARENESS
-    // ============================================
+    // TEMPORAL AWARENESS
     prompt += '## CURRENT DATE AND TEMPORAL AWARENESS\n';
     prompt += '**TODAY IS: ' + currentDate + ' (' + isoDate + ')**\n\n';
     prompt += 'CRITICAL: Your training data has a knowledge cutoff. Before making ANY assessment:\n';
@@ -54,101 +109,47 @@ function buildPrompt(question, articleText, track, claimType) {
     prompt += '3. Search for recent news/developments even if you think you know the answer\n';
     prompt += '4. If the claim involves events from the past 2 years, ALWAYS verify current status\n\n';
     
-    // ============================================
-    // SECTION 2: TRACK-SPECIFIC CONTEXT
-    // ============================================
-    if (track === 'b' && claimType) {
-        prompt += '## CLAIM TYPE CONTEXT\n';
-        prompt += 'This is a Track B (Subjective/Complex) assessment.\n';
-        prompt += 'Claim Type: ' + claimType.toUpperCase() + '\n\n';
-        
-        if (claimType === 'person') {
-            prompt += 'This claim relates to a PERSON - their actions, character, or behavior.\n';
-            prompt += 'Focus on: verifiable actions, documented statements, credible witness accounts.\n';
-            prompt += 'Be cautious of: character assassination, unverified rumors, motivated reasoning.\n\n';
-        } else if (claimType === 'thing') {
-            prompt += 'This claim relates to a THING - something that exists or is rumored to exist.\n';
-            prompt += 'Focus on: physical evidence, scientific documentation, expert verification.\n';
-            prompt += 'Be cautious of: marketing claims, wishful thinking, lack of controlled studies.\n\n';
-        } else if (claimType === 'event') {
-            prompt += 'This claim relates to an EVENT or CONDITION - something that happened, is happening, or will happen.\n';
-            prompt += 'Focus on: contemporaneous documentation, multiple independent accounts, physical evidence.\n';
-            prompt += 'Be cautious of: revisionist narratives, single-source claims, politically motivated framing.\n\n';
-        } else if (claimType === 'prediction') {
-            prompt += 'This claim is a PREDICTION about a future outcome.\n';
-            prompt += 'IMPORTANT: Reality Score assesses the REASONING and EVIDENCE behind the prediction, not whether it will come true.\n';
-            prompt += 'Focus on: track record of predictor, quality of underlying model, acknowledged uncertainties.\n';
-            prompt += 'Be cautious of: overconfidence, unfalsifiable predictions, motivated predictions.\n\n';
-        }
-    } else {
-        prompt += '## ASSESSMENT TYPE\n';
-        prompt += 'This is a Track A (Factual) assessment.\n';
-        prompt += 'Focus on verifiable facts, documented evidence, and expert consensus.\n\n';
-    }
+    // ASSESSMENT TYPE
+    prompt += '## ASSESSMENT TYPE\n';
+    prompt += 'This is a Track A (Factual) assessment.\n';
+    prompt += 'Focus on verifiable facts, documented evidence, and expert consensus.\n\n';
     
-    // ============================================
-    // SECTION 3: THE FOUR-FACTOR FRAMEWORK (Reality)
-    // ============================================
+    // FOUR-FACTOR FRAMEWORK
     prompt += '## THE FOUR-FACTOR REALITY ASSESSMENT FRAMEWORK\n\n';
     prompt += 'VERITAS uses four weighted factors to derive the Reality Score (-10 to +10).\n\n';
-    
     prompt += '### Factor 1: Evidence Quality (EQ) — 40% Weight\n';
     prompt += 'The strength, relevance, and sufficiency of supporting evidence.\n';
     prompt += 'Score from -10 (fabricated/no evidence) to +10 (overwhelming convergent evidence).\n\n';
-    
     prompt += '### Factor 2: Epistemological Soundness (ES) — 30% Weight\n';
     prompt += 'The rigor of reasoning processes.\n';
     prompt += 'Score from -10 (completely unsound) to +10 (rigorous methodology).\n\n';
-    
     prompt += '### Factor 3: Source Reliability (SR) — 20% Weight\n';
     prompt += 'Tier 1 (+8 to +10): Peer-reviewed, government stats\n';
     prompt += 'Tier 2 (+5 to +7): Expert commentary, institutional reports\n';
     prompt += 'Tier 3 (+2 to +4): Advocacy orgs, corporate comms\n';
     prompt += 'Tier 4 (-10 to +1): Anonymous, unverified, known unreliable\n\n';
-    
     prompt += '### Factor 4: Logical Coherence (LC) — 10% Weight\n';
     prompt += 'Score from -10 (incoherent/fallacious) to +10 (rigorous logic).\n\n';
-    
     prompt += '**Reality Score = (EQ × 0.40) + (ES × 0.30) + (SR × 0.20) + (LC × 0.10)**\n';
     prompt += 'Evidence Ceiling: Final score cannot exceed EQ + 2\n\n';
     
-    // ============================================
-    // SECTION 4: INTEGRITY 2.0 FRAMEWORK
-    // ============================================
+    // INTEGRITY 2.0 FRAMEWORK
     prompt += '## INTEGRITY 2.0 FRAMEWORK\n\n';
     prompt += 'The Integrity Score (-1.0 to +1.0) measures HOW claims are presented, independent of truth.\n';
     prompt += 'It has THREE dimensions, each weighted at 33%:\n\n';
-    
     prompt += '### Dimension 1: Observable Integrity (33%)\n';
     prompt += 'Binary Y/N/P checklist:\n';
     prompt += '- **Sources Cited**: Y (adequate), P (partial), N (none/inadequate)\n';
     prompt += '- **Limitations Acknowledged**: Y/P/N\n';
     prompt += '- **Counter-Arguments Addressed**: Y/P/N\n';
     prompt += '- **Fallacies Present**: Y (fallacies found = bad), N (none = good)\n\n';
-    prompt += 'Convert to score: Y=1.0, P=0.5, N=0.0. For Fallacies: N=1.0, Y=0.0\n';
-    prompt += 'Observable Score = (SourcesCited + Limitations + CounterArgs + (1-Fallacies)) / 4\n';
-    prompt += 'Then convert 0-1 scale to -1.0 to +1.0: (score × 2) - 1\n\n';
-    
     prompt += '### Dimension 2: Comparative Integrity (33%)\n';
     prompt += 'How does this compare to quality discourse on this topic?\n';
-    prompt += '- **Percentile**: 0-100 ranking vs typical coverage\n';
-    prompt += '- **Baseline**: What quality sources typically include\n';
-    prompt += '- **Gaps**: What best-in-class sources would add\n\n';
-    prompt += 'Convert percentile to score: ((percentile / 100) × 2) - 1\n\n';
-    
+    prompt += '- **Percentile**: 0-100 ranking vs typical coverage\n\n';
     prompt += '### Dimension 3: Bias Integrity (33%)\n';
-    prompt += 'Detection of presentation patterns signaling advocacy:\n';
-    prompt += '- **Inflammatory Language**: Loaded terms, dismissive framing\n';
-    prompt += '- **Playbook Patterns**: Known propaganda/advocacy techniques\n';
-    prompt += '- **Inaccuracies**: Factual errors in supporting arguments\n';
-    prompt += '- **One-Sided Framing**: Presenting only favorable evidence\n\n';
-    prompt += 'Score from -1.0 (severe bias) to +1.0 (exemplary balance)\n\n';
+    prompt += 'Detection of presentation patterns signaling advocacy.\n\n';
     
-    prompt += '**Final Integrity = (Observable × 0.33) + (Comparative × 0.33) + (Bias × 0.33)**\n\n';
-    
-    // ============================================
-    // SECTION 5: YOUR TASK
-    // ============================================
+    // TASK
     prompt += '## YOUR TASK\n\n';
     prompt += 'Assessment Date: ' + currentDate + '\n\n';
     
@@ -159,18 +160,15 @@ function buildPrompt(question, articleText, track, claimType) {
         prompt += 'Evaluate this claim/question: ' + question + '\n\n';
     }
     
-    // ============================================
-    // SECTION 6: REQUIRED OUTPUT FORMAT (STRUCTURED)
-    // ============================================
+    // OUTPUT FORMAT
     prompt += '## REQUIRED OUTPUT FORMAT\n\n';
     prompt += 'You MUST provide your response in TWO parts:\n\n';
     prompt += '### PART 1: STRUCTURED DATA (JSON)\n';
-    prompt += 'Begin with a JSON block wrapped in ```json tags containing ALL scores and structured data.\n';
-    prompt += 'This JSON must be VALID and COMPLETE:\n\n';
+    prompt += 'Begin with a JSON block wrapped in ```json tags:\n\n';
     prompt += '```json\n';
     prompt += '{\n';
     prompt += '  "realityScore": <integer -10 to +10>,\n';
-    prompt += '  "integrityScore": <float -1.0 to +1.0, one decimal>,\n';
+    prompt += '  "integrityScore": <float -1.0 to +1.0>,\n';
     prompt += '  "realityFactors": {\n';
     prompt += '    "evidenceQuality": { "score": <-10 to +10>, "explanation": "<1-2 sentences>" },\n';
     prompt += '    "epistemologicalSoundness": { "score": <-10 to +10>, "explanation": "<1-2 sentences>" },\n';
@@ -180,60 +178,196 @@ function buildPrompt(question, articleText, track, claimType) {
     prompt += '  "integrity": {\n';
     prompt += '    "observable": {\n';
     prompt += '      "sourcesCited": "<Y|P|N>",\n';
-    prompt += '      "sourcesCitedEvidence": "<what is/isn\'t cited>",\n';
+    prompt += '      "sourcesCitedEvidence": "<evidence>",\n';
     prompt += '      "limitationsAcknowledged": "<Y|P|N>",\n';
-    prompt += '      "limitationsEvidence": "<what is/isn\'t acknowledged>",\n';
+    prompt += '      "limitationsEvidence": "<evidence>",\n';
     prompt += '      "counterArgumentsAddressed": "<Y|P|N>",\n';
-    prompt += '      "counterArgumentsEvidence": "<what is/isn\'t addressed>",\n';
+    prompt += '      "counterArgumentsEvidence": "<evidence>",\n';
     prompt += '      "fallaciesPresent": "<Y|N>",\n';
-    prompt += '      "fallaciesEvidence": "<none OR list of fallacies found>",\n';
+    prompt += '      "fallaciesEvidence": "<evidence>",\n';
     prompt += '      "score": <-1.0 to +1.0>\n';
     prompt += '    },\n';
     prompt += '    "comparative": {\n';
     prompt += '      "percentile": <0-100>,\n';
-    prompt += '      "baseline": "<what quality sources typically include>",\n';
-    prompt += '      "gaps": ["<gap 1>", "<gap 2>", ...],\n';
+    prompt += '      "baseline": "<description>",\n';
+    prompt += '      "gaps": ["<gap>", ...],\n';
     prompt += '      "score": <-1.0 to +1.0>\n';
     prompt += '    },\n';
     prompt += '    "bias": {\n';
-    prompt += '      "inflammatoryLanguage": "<none detected OR examples>",\n';
-    prompt += '      "playbookPatterns": ["<pattern 1>", ...] or [],\n';
-    prompt += '      "inaccuracies": ["<inaccuracy 1>", ...] or [],\n';
+    prompt += '      "inflammatoryLanguage": "<assessment>",\n';
+    prompt += '      "playbookPatterns": [],\n';
+    prompt += '      "inaccuracies": [],\n';
     prompt += '      "oneSidedFraming": "<assessment>",\n';
     prompt += '      "score": <-1.0 to +1.0>\n';
     prompt += '    }\n';
     prompt += '  },\n';
     prompt += '  "underlyingReality": {\n';
-    prompt += '    "coreFinding": "<2-3 sentences on what is actually true>",\n';
-    prompt += '    "howWeKnow": "<2-3 sentences on the evidence basis>",\n';
-    prompt += '    "whyItMatters": "<1-2 sentences on significance>"\n';
+    prompt += '    "coreFinding": "<what is true>",\n';
+    prompt += '    "howWeKnow": "<evidence basis>",\n';
+    prompt += '    "whyItMatters": "<significance>"\n';
     prompt += '  },\n';
-    prompt += '  "sources": ["<source 1>", "<source 2>", ...]\n';
+    prompt += '  "sources": ["<source>", ...]\n';
     prompt += '}\n';
     prompt += '```\n\n';
     
     prompt += '### PART 2: NARRATIVE ASSESSMENT\n';
-    prompt += 'After the JSON, provide a human-readable assessment with these sections:\n\n';
-    prompt += '**CLAIM BEING TESTED**\n';
-    prompt += '[State the specific claim]\n\n';
-    prompt += '**VERITAS ASSESSMENT**\n';
-    prompt += '[2-3 sentence conclusion]\n\n';
-    prompt += '**EVIDENCE ANALYSIS**\n';
-    prompt += '[Key evidence for and against]\n\n';
-    prompt += '**WHAT WE CAN BE CONFIDENT ABOUT**\n';
-    prompt += '[High-confidence findings]\n\n';
-    prompt += '**WHAT REMAINS GENUINELY UNCERTAIN**\n';
-    prompt += '[Areas of legitimate uncertainty]\n\n';
-    prompt += '**BOTTOM LINE**\n';
-    prompt += '[Final assessment for a general reader]\n';
+    prompt += 'After JSON, provide human-readable sections:\n';
+    prompt += '**CLAIM BEING TESTED**, **VERITAS ASSESSMENT**, **EVIDENCE ANALYSIS**, ';
+    prompt += '**WHAT WE CAN BE CONFIDENT ABOUT**, **WHAT REMAINS UNCERTAIN**, **BOTTOM LINE**\n';
     
     return prompt;
 }
 
 // ============================================
-// RESPONSE PARSER - Extract structured data
+// PROMPT BUILDER - TRACK B (Criteria-Based)
 // ============================================
-function parseAssessmentResponse(assessment) {
+function buildTrackBPrompt(question, claimType, criteria, customCriteria, fiveWsContext) {
+    var now = new Date();
+    var currentDate = now.toLocaleDateString('en-US', { 
+        weekday: 'long', 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+    });
+    var isoDate = now.toISOString().split('T')[0];
+    
+    var prompt = 'You are VERITAS Track B, a criteria-based assessment system for subjective or complex claims. ';
+    prompt += 'Your purpose is to evaluate claims against SPECIFIC CRITERIA selected by the user, ';
+    prompt += 'providing independent scores for each criterion rather than forcing a single overall judgment.\n\n';
+    
+    // TEMPORAL AWARENESS
+    prompt += '## CURRENT DATE\n';
+    prompt += '**TODAY IS: ' + currentDate + ' (' + isoDate + ')**\n\n';
+    prompt += 'Search for current information before making assessments. Do not rely on potentially outdated training data.\n\n';
+    
+    // CLAIM TYPE CONTEXT
+    var claimTypeLabel = CRITERIA_SETS[claimType] ? CRITERIA_SETS[claimType].label : 'General Assessment';
+    prompt += '## CLAIM TYPE: ' + claimTypeLabel.toUpperCase() + '\n\n';
+    
+    // 5 W's CONTEXT (if provided)
+    if (fiveWsContext) {
+        prompt += '## CONTEXTUAL INFORMATION PROVIDED BY USER\n';
+        if (fiveWsContext.who) prompt += '- **Who**: ' + fiveWsContext.who + '\n';
+        if (fiveWsContext.what) prompt += '- **What**: ' + fiveWsContext.what + '\n';
+        if (fiveWsContext.when) prompt += '- **When**: ' + fiveWsContext.when + '\n';
+        if (fiveWsContext.where) prompt += '- **Where**: ' + fiveWsContext.where + '\n';
+        if (fiveWsContext.how) prompt += '- **How/Impact**: ' + fiveWsContext.how + '\n';
+        prompt += '\n';
+    }
+    
+    // THE CLAIM
+    prompt += '## THE CLAIM TO ASSESS\n';
+    prompt += '"' + question + '"\n\n';
+    
+    // BUILD CRITERIA LIST
+    prompt += '## CRITERIA TO ASSESS\n';
+    prompt += 'The user has selected the following criteria. You MUST assess EACH ONE independently:\n\n';
+    
+    var allCriteria = [];
+    var criteriaSet = CRITERIA_SETS[claimType] || CRITERIA_SETS.generic;
+    
+    // Helper function to find criterion by id in the array
+    function findCriterionById(criteriaArray, id) {
+        for (var i = 0; i < criteriaArray.length; i++) {
+            if (criteriaArray[i].id === id) {
+                return criteriaArray[i];
+            }
+        }
+        return null;
+    }
+    
+    // Add selected standard criteria
+    if (criteria && criteria.length > 0) {
+        criteria.forEach(function(criterionId) {
+            var criterionDef = findCriterionById(criteriaSet.criteria, criterionId);
+            if (criterionDef) {
+                allCriteria.push({
+                    id: criterionId,
+                    label: criterionDef.label,
+                    description: criterionDef.description,
+                    isCustom: false
+                });
+                prompt += '### ' + criterionDef.label + '\n';
+                prompt += criterionDef.description + '\n\n';
+            } else {
+                console.log('Warning: Criterion not found:', criterionId, 'in claimType:', claimType);
+            }
+        });
+    }
+    
+    // Add custom criteria
+    if (customCriteria && customCriteria.length > 0) {
+        customCriteria.forEach(function(customText, idx) {
+            allCriteria.push({
+                id: 'custom_' + idx,
+                label: customText,
+                description: 'User-defined criterion',
+                isCustom: true
+            });
+            prompt += '### ' + customText + ' (Custom)\n';
+            prompt += 'User-defined criterion to assess.\n\n';
+        });
+    }
+    
+    // SCORING INSTRUCTIONS
+    prompt += '## SCORING INSTRUCTIONS\n\n';
+    prompt += 'For EACH criterion, provide:\n';
+    prompt += '- **Score**: -10 to +10 where:\n';
+    prompt += '  - +10 = Strongly supports/affirms (overwhelming evidence)\n';
+    prompt += '  - +5 to +9 = Moderately to strongly supports\n';
+    prompt += '  - +1 to +4 = Slightly supports\n';
+    prompt += '  - 0 = Neutral/insufficient evidence either way\n';
+    prompt += '  - -1 to -4 = Slightly contradicts/undermines\n';
+    prompt += '  - -5 to -9 = Moderately to strongly contradicts\n';
+    prompt += '  - -10 = Strongly contradicts (overwhelming counter-evidence)\n';
+    prompt += '- **Confidence**: HIGH, MEDIUM, or LOW\n';
+    prompt += '- **Summary**: 2-3 sentence explanation with specific evidence\n\n';
+    
+    prompt += 'IMPORTANT: Each criterion gets its OWN score. Do NOT average them into a single score.\n';
+    prompt += 'Different criteria may point in different directions - this is valuable information.\n\n';
+    
+    // OUTPUT FORMAT
+    prompt += '## REQUIRED OUTPUT FORMAT\n\n';
+    prompt += '```json\n';
+    prompt += '{\n';
+    prompt += '  "trackB": {\n';
+    prompt += '    "claimType": "' + claimType + '",\n';
+    prompt += '    "claimTypeLabel": "' + claimTypeLabel + '",\n';
+    prompt += '    "criteriaAssessed": [\n';
+    
+    allCriteria.forEach(function(c, idx) {
+        prompt += '      {\n';
+        prompt += '        "id": "' + c.id + '",\n';
+        prompt += '        "label": "' + c.label + '",\n';
+        prompt += '        "score": <-10 to +10>,\n';
+        prompt += '        "confidence": "<HIGH|MEDIUM|LOW>",\n';
+        prompt += '        "summary": "<2-3 sentences with evidence>"\n';
+        prompt += '      }' + (idx < allCriteria.length - 1 ? ',' : '') + '\n';
+    });
+    
+    prompt += '    ],\n';
+    prompt += '    "criteriaNotAssessed": [<list any criteria from the set that were NOT selected>],\n';
+    prompt += '    "fullPicture": "<2-3 sentences synthesizing what the criteria collectively reveal>",\n';
+    prompt += '    "divergenceNote": "<if criteria scores diverge significantly, explain why>"\n';
+    prompt += '  },\n';
+    prompt += '  "sources": ["<source 1>", "<source 2>", ...]\n';
+    prompt += '}\n';
+    prompt += '```\n\n';
+    
+    prompt += '### NARRATIVE SECTION\n';
+    prompt += 'After JSON, provide:\n';
+    prompt += '**CLAIM BEING ASSESSED**: [restate the claim]\n';
+    prompt += '**CRITERIA ANALYSIS**: [discuss each criterion\'s findings]\n';
+    prompt += '**THE FULL PICTURE**: [what do these criteria together reveal?]\n';
+    prompt += '**WHAT THIS DOES NOT TELL US**: [limitations of this assessment]\n';
+    
+    return prompt;
+}
+
+// ============================================
+// RESPONSE PARSER - TRACK A
+// ============================================
+function parseTrackAResponse(assessment) {
     var result = {
         realityScore: null,
         integrityScore: null,
@@ -244,7 +378,6 @@ function parseAssessmentResponse(assessment) {
         narrative: assessment
     };
     
-    // Try to extract JSON block
     var jsonMatch = assessment.match(/```json\s*([\s\S]*?)\s*```/);
     if (jsonMatch && jsonMatch[1]) {
         try {
@@ -255,40 +388,45 @@ function parseAssessmentResponse(assessment) {
             result.integrity = parsed.integrity;
             result.underlyingReality = parsed.underlyingReality;
             result.sources = parsed.sources;
-            
-            // Extract narrative (everything after JSON block)
-            var narrativeStart = assessment.indexOf('```', assessment.indexOf('```json') + 7);
-            if (narrativeStart !== -1) {
-                narrativeStart = assessment.indexOf('```', narrativeStart) + 3;
-                result.narrative = assessment.substring(narrativeStart).trim();
-            }
         } catch (e) {
-            console.error('JSON parse error:', e);
-            // Fall back to regex extraction
+            console.error('Track A JSON parse error:', e);
         }
     }
     
-    // Fallback: regex extraction if JSON parsing failed
+    // Fallback regex extraction
     if (result.realityScore === null) {
         var realityMatch = assessment.match(/["\']?realityScore["\']?\s*:\s*([+-]?\d+)/i) ||
-                          assessment.match(/FINAL REALITY SCORE:\s*\[?([+-]?\d+)\]?/i) ||
                           assessment.match(/REALITY SCORE:\s*\[?([+-]?\d+)\]?/i);
-        if (realityMatch) {
-            result.realityScore = parseInt(realityMatch[1]);
-        }
+        if (realityMatch) result.realityScore = parseInt(realityMatch[1]);
     }
     
     if (result.integrityScore === null) {
         var integrityMatch = assessment.match(/["\']?integrityScore["\']?\s*:\s*([+-]?\d+\.?\d*)/i) ||
-                            assessment.match(/FINAL INTEGRITY SCORE:\s*\[?([+-]?\d+\.?\d*)\]?/i) ||
                             assessment.match(/INTEGRITY SCORE:\s*\[?([+-]?\d+\.?\d*)\]?/i);
-        if (integrityMatch) {
-            result.integrityScore = parseFloat(integrityMatch[1]);
-        }
-        
-        // Check for N/A integrity
-        if (result.integrityScore === null && assessment.match(/INTEGRITY[^:]*:\s*N\/A/i)) {
-            result.integrityScore = 'N/A';
+        if (integrityMatch) result.integrityScore = parseFloat(integrityMatch[1]);
+    }
+    
+    return result;
+}
+
+// ============================================
+// RESPONSE PARSER - TRACK B
+// ============================================
+function parseTrackBResponse(assessment) {
+    var result = {
+        trackB: null,
+        sources: null,
+        narrative: assessment
+    };
+    
+    var jsonMatch = assessment.match(/```json\s*([\s\S]*?)\s*```/);
+    if (jsonMatch && jsonMatch[1]) {
+        try {
+            var parsed = JSON.parse(jsonMatch[1]);
+            result.trackB = parsed.trackB;
+            result.sources = parsed.sources;
+        } catch (e) {
+            console.error('Track B JSON parse error:', e);
         }
     }
     
@@ -321,11 +459,19 @@ module.exports = async function handler(req, res) {
         var question = body.question || '';
         var articleText = body.articleText || '';
         var track = body.track || 'a';
-        var claimType = body.claimType || null;
+        var claimType = body.claimType || 'generic';
+        var criteria = body.criteria || [];
+        var customCriteria = body.customCriteria || [];
+        var fiveWsContext = body.fiveWsContext || null;
         var userApiKey = body.userApiKey || '';
         
+        // Validation
         if (!question && !articleText) {
             return res.status(400).json({ error: 'Please provide a question or article text' });
+        }
+        
+        if (track === 'b' && criteria.length === 0 && customCriteria.length === 0) {
+            return res.status(400).json({ error: 'Track B requires at least one criterion to assess' });
         }
         
         // Rate limiting (skip if user provides their own key)
@@ -347,7 +493,22 @@ module.exports = async function handler(req, res) {
         }
         
         var anthropic = new Anthropic({ apiKey: apiKey });
-        var prompt = buildPrompt(question, articleText, track, claimType);
+        
+        // Build appropriate prompt based on track
+        var prompt;
+        if (track === 'b') {
+            console.log('=== TRACK B ASSESSMENT ===');
+            console.log('Question:', question);
+            console.log('Claim Type:', claimType);
+            console.log('Criteria:', criteria);
+            console.log('Custom Criteria:', customCriteria);
+            console.log('5Ws Context:', fiveWsContext);
+            prompt = buildTrackBPrompt(question, claimType, criteria, customCriteria, fiveWsContext);
+            console.log('Prompt length:', prompt.length);
+        } else {
+            prompt = buildTrackAPrompt(question, articleText);
+        }
+        
         var message;
         
         // Try with web search first, fall back without if it fails
@@ -382,26 +543,51 @@ module.exports = async function handler(req, res) {
             return res.status(500).json({ error: 'No assessment generated' });
         }
         
-        // Parse the response
-        var parsed = parseAssessmentResponse(assessment);
-        
-        return res.status(200).json({
-            success: true,
-            assessment: assessment,
-            realityScore: parsed.realityScore,
-            integrityScore: parsed.integrityScore,
-            structured: {
-                realityFactors: parsed.realityFactors,
-                integrity: parsed.integrity,
-                underlyingReality: parsed.underlyingReality,
-                sources: parsed.sources
-            },
-            question: question || 'Article Assessment',
-            track: track,
-            claimType: claimType,
-            assessmentDate: new Date().toISOString(),
-            assessor: 'INITIAL'
-        });
+        // Parse response based on track
+        if (track === 'b') {
+            console.log('=== TRACK B RESPONSE ===');
+            console.log('Raw assessment length:', assessment.length);
+            console.log('First 500 chars:', assessment.substring(0, 500));
+            var parsed = parseTrackBResponse(assessment);
+            console.log('Parsed trackB:', parsed.trackB);
+            console.log('Parsed sources:', parsed.sources);
+            
+            return res.status(200).json({
+                success: true,
+                assessment: assessment,
+                realityScore: null,  // Track B doesn't have a single reality score
+                integrityScore: null,
+                structured: {
+                    trackB: parsed.trackB,
+                    sources: parsed.sources
+                },
+                question: question,
+                track: 'b',
+                claimType: claimType,
+                assessmentDate: new Date().toISOString(),
+                assessor: 'INITIAL'
+            });
+        } else {
+            var parsed = parseTrackAResponse(assessment);
+            
+            return res.status(200).json({
+                success: true,
+                assessment: assessment,
+                realityScore: parsed.realityScore,
+                integrityScore: parsed.integrityScore,
+                structured: {
+                    realityFactors: parsed.realityFactors,
+                    integrity: parsed.integrity,
+                    underlyingReality: parsed.underlyingReality,
+                    sources: parsed.sources
+                },
+                question: question || 'Article Assessment',
+                track: 'a',
+                claimType: claimType,
+                assessmentDate: new Date().toISOString(),
+                assessor: 'INITIAL'
+            });
+        }
         
     } catch (err) {
         console.error('Assessment error:', err);
