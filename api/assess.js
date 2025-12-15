@@ -419,15 +419,35 @@ function parseTrackBResponse(assessment) {
         narrative: assessment
     };
     
+    console.log('parseTrackBResponse: Looking for JSON block...');
     var jsonMatch = assessment.match(/```json\s*([\s\S]*?)\s*```/);
+    
     if (jsonMatch && jsonMatch[1]) {
+        console.log('parseTrackBResponse: Found JSON block, length:', jsonMatch[1].length);
+        console.log('parseTrackBResponse: JSON preview:', jsonMatch[1].substring(0, 300));
         try {
             var parsed = JSON.parse(jsonMatch[1]);
+            console.log('parseTrackBResponse: JSON parsed successfully');
+            console.log('parseTrackBResponse: Keys in parsed:', Object.keys(parsed));
             result.trackB = parsed.trackB;
             result.sources = parsed.sources;
+            
+            if (result.trackB) {
+                console.log('parseTrackBResponse: trackB found with keys:', Object.keys(result.trackB));
+                if (result.trackB.criteriaAssessed) {
+                    console.log('parseTrackBResponse: criteriaAssessed count:', result.trackB.criteriaAssessed.length);
+                }
+            } else {
+                console.log('parseTrackBResponse: WARNING - trackB is null/undefined in parsed JSON');
+                console.log('parseTrackBResponse: Full parsed object:', JSON.stringify(parsed, null, 2).substring(0, 500));
+            }
         } catch (e) {
-            console.error('Track B JSON parse error:', e);
+            console.error('parseTrackBResponse: JSON parse error:', e.message);
+            console.error('parseTrackBResponse: Problematic JSON:', jsonMatch[1].substring(0, 500));
         }
+    } else {
+        console.log('parseTrackBResponse: No JSON block found in response');
+        console.log('parseTrackBResponse: Looking for ```json in:', assessment.substring(0, 200));
     }
     
     return result;
@@ -552,6 +572,15 @@ module.exports = async function handler(req, res) {
             console.log('Parsed trackB:', parsed.trackB);
             console.log('Parsed sources:', parsed.sources);
             
+            // Debug info to help troubleshoot
+            var debugInfo = {
+                assessmentLength: assessment.length,
+                hasJsonBlock: assessment.includes('```json'),
+                trackBExists: !!parsed.trackB,
+                trackBKeys: parsed.trackB ? Object.keys(parsed.trackB) : [],
+                criteriaCount: (parsed.trackB && parsed.trackB.criteriaAssessed) ? parsed.trackB.criteriaAssessed.length : 0
+            };
+            
             return res.status(200).json({
                 success: true,
                 assessment: assessment,
@@ -565,7 +594,8 @@ module.exports = async function handler(req, res) {
                 track: 'b',
                 claimType: claimType,
                 assessmentDate: new Date().toISOString(),
-                assessor: 'INITIAL'
+                assessor: 'INITIAL',
+                _debug: debugInfo  // Include debug info in response
             });
         } else {
             var parsed = parseTrackAResponse(assessment);
