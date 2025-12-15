@@ -21,10 +21,12 @@ module.exports = async function handler(req, res) {
         }
         
         var question = body.question || '';
-        var assessment = body.assessment || '';
+        var initialAssessment = body.initialAssessment || body.assessment || '';
+        var realityScore = body.realityScore;
+        var integrityScore = body.integrityScore;
         var userApiKey = body.userApiKey || '';
         
-        if (!assessment) {
+        if (!initialAssessment) {
             return res.status(400).json({ error: 'No assessment provided to amplify' });
         }
         
@@ -36,41 +38,83 @@ module.exports = async function handler(req, res) {
         
         var anthropic = new Anthropic({ apiKey: apiKey });
         
-        var prompt = 'You are VERITAS performing an AMPLIFIED ASSESSMENT - a deeper epistemic analysis that challenges and extends an initial assessment.\n\n';
-        prompt += '## ORIGINAL QUESTION/CLAIM\n' + question + '\n\n';
-        prompt += '## INITIAL ASSESSMENT\n' + assessment + '\n\n';
-        prompt += '## YOUR TASK\n';
+        var prompt = 'You are VERITAS AMPLIFY — performing a deep epistemic stress-test of an initial assessment.\n\n';
+        
+        prompt += '## ORIGINAL CLAIM/QUESTION\n';
+        prompt += question + '\n\n';
+        
+        prompt += '## INITIAL ASSESSMENT\n';
+        if (realityScore !== undefined) {
+            prompt += 'Reality Score: ' + realityScore + '\n';
+        }
+        if (integrityScore !== undefined) {
+            prompt += 'Integrity Score: ' + integrityScore + '\n';
+        }
+        prompt += '\n' + initialAssessment + '\n\n';
+        
+        prompt += '## YOUR TASK: AMPLIFIED ANALYSIS\n';
         prompt += 'Provide a deeper analysis that:\n';
-        prompt += '1. Challenges assumptions in the initial assessment\n';
-        prompt += '2. Explores alternative interpretations\n';
-        prompt += '3. Identifies what might be missing\n';
-        prompt += '4. Stress-tests the conclusions\n\n';
+        prompt += '1. CHALLENGES assumptions in the initial assessment\n';
+        prompt += '2. EXPLORES alternative interpretations of the same evidence\n';
+        prompt += '3. IDENTIFIES blind spots — what might be missing?\n';
+        prompt += '4. STRESS-TESTS conclusions — how robust are they?\n';
+        prompt += '5. CONSIDERS what would change the assessment significantly\n\n';
+        
         prompt += '## REQUIRED OUTPUT FORMAT\n\n';
-        prompt += '**AMPLIFICATION SUMMARY**\n[2-3 sentences on what this deeper analysis reveals]\n\n';
-        prompt += '**MISSING PERSPECTIVES**\n[What viewpoints or evidence sources were not adequately considered?]\n\n';
-        prompt += '**ALTERNATIVE FRAMINGS**\n[How might someone with different priors interpret the same evidence?]\n\n';
-        prompt += '**WHAT WOULD CHANGE THE ASSESSMENT**\n[What new evidence or arguments could shift the scores significantly?]\n\n';
-        prompt += '**EPISTEMIC HUMILITY CHECK**\n[Where is the initial assessment most vulnerable to being wrong?]\n\n';
-        prompt += '**BOTTOM LINE**\n[Final amplified assessment - does deeper analysis confirm, modify, or challenge the initial assessment?]';
+        prompt += '```json\n';
+        prompt += '{\n';
+        prompt += '  "amplificationSummary": "<2-3 sentences on key findings>",\n';
+        prompt += '  "challengedAssumptions": ["<assumption 1>", "<assumption 2>", ...],\n';
+        prompt += '  "alternativeInterpretations": ["<interpretation 1>", ...],\n';
+        prompt += '  "blindSpots": ["<blind spot 1>", ...],\n';
+        prompt += '  "wouldChangeAssessment": ["<what would shift scores>", ...],\n';
+        prompt += '  "epistemicVulnerabilities": ["<where most likely wrong>", ...],\n';
+        prompt += '  "confidenceAdjustment": {\n';
+        prompt += '    "direction": "<up|down|unchanged>",\n';
+        prompt += '    "magnitude": "<slight|moderate|significant>",\n';
+        prompt += '    "reason": "<explanation>"\n';
+        prompt += '  },\n';
+        prompt += '  "bottomLine": "<final amplified assessment>"\n';
+        prompt += '}\n';
+        prompt += '```\n\n';
+        
+        prompt += 'After JSON, provide a narrative explanation of your amplified analysis.\n';
         
         var message = await anthropic.messages.create({
             model: 'claude-sonnet-4-20250514',
-            max_tokens: 4000,
+            max_tokens: 8000,
             messages: [{ role: 'user', content: prompt }]
         });
         
         var amplified = '';
-        if (message.content && message.content[0] && message.content[0].text) {
-            amplified = message.content[0].text;
+        for (var i = 0; i < message.content.length; i++) {
+            if (message.content[i].type === 'text') {
+                amplified += message.content[i].text;
+            }
         }
         
         if (!amplified) {
             return res.status(500).json({ error: 'No amplified analysis generated' });
         }
         
+        // Parse structured data if available
+        var structured = null;
+        var jsonMatch = amplified.match(/```json\s*([\s\S]*?)\s*```/);
+        if (jsonMatch && jsonMatch[1]) {
+            try {
+                structured = JSON.parse(jsonMatch[1]);
+            } catch (e) {
+                console.error('Amplify JSON parse error:', e);
+            }
+        }
+        
         return res.status(200).json({
             success: true,
-            amplified: amplified
+            amplified: amplified,
+            structured: structured,
+            originalQuestion: question,
+            originalRealityScore: realityScore,
+            originalIntegrityScore: integrityScore
         });
         
     } catch (err) {

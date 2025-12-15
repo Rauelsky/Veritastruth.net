@@ -23,8 +23,10 @@ module.exports = async function handler(req, res) {
         var question = body.question || '';
         var initialAssessment = body.initialAssessment || '';
         var verifyAssessment = body.verifyAssessment || '';
-        var initialScore = body.initialScore;
-        var verifyScore = body.verifyScore;
+        var initialRealityScore = body.initialRealityScore || body.initialScore;
+        var verifyRealityScore = body.verifyRealityScore || body.verifyScore;
+        var initialIntegrityScore = body.initialIntegrityScore;
+        var verifyIntegrityScore = body.verifyIntegrityScore;
         var userApiKey = body.userApiKey || '';
         
         if (!initialAssessment || !verifyAssessment) {
@@ -39,100 +41,148 @@ module.exports = async function handler(req, res) {
         
         var anthropic = new Anthropic({ apiKey: apiKey });
         
-        var prompt = 'You are VERITAS ADJUDICATOR — an independent arbiter tasked with resolving divergent assessments.\n\n';
+        var prompt = 'You are VERITAS ADJUDICATOR — an independent arbiter resolving divergent assessments.\n\n';
+        
         prompt += '## CONTEXT\n';
-        prompt += 'Two independent VERITAS assessors evaluated the same claim and reached different conclusions.\n';
-        prompt += 'Your job is NOT to re-assess the claim, but to determine which assessment demonstrates better reasoning and source quality.\n\n';
+        prompt += 'Two independent VERITAS assessors evaluated the same claim and may have reached different conclusions.\n';
+        prompt += 'Your job is to determine which assessment demonstrates better reasoning and source quality,\n';
+        prompt += 'and to produce a FINAL authoritative score.\n\n';
         
         prompt += '## THE CLAIM BEING ASSESSED\n';
         prompt += question + '\n\n';
         
-        prompt += '## ASSESSMENT A (Initial) — Reality Score: ' + initialScore + '\n';
-        prompt += '---BEGIN ASSESSMENT A---\n';
-        prompt += initialAssessment + '\n';
-        prompt += '---END ASSESSMENT A---\n\n';
+        prompt += '## ASSESSMENT A (Initial)\n';
+        prompt += 'Reality Score: ' + initialRealityScore + '\n';
+        if (initialIntegrityScore !== undefined) {
+            prompt += 'Integrity Score: ' + initialIntegrityScore + '\n';
+        }
+        prompt += '---\n' + initialAssessment + '\n---\n\n';
         
-        prompt += '## ASSESSMENT B (Verify) — Reality Score: ' + verifyScore + '\n';
-        prompt += '---BEGIN ASSESSMENT B---\n';
-        prompt += verifyAssessment + '\n';
-        prompt += '---END ASSESSMENT B---\n\n';
+        prompt += '## ASSESSMENT B (Verification)\n';
+        prompt += 'Reality Score: ' + verifyRealityScore + '\n';
+        if (verifyIntegrityScore !== undefined) {
+            prompt += 'Integrity Score: ' + verifyIntegrityScore + '\n';
+        }
+        prompt += '---\n' + verifyAssessment + '\n---\n\n';
         
         prompt += '## YOUR TASK\n';
         prompt += 'Evaluate which assessment is superior based on:\n';
-        prompt += '1. **Source Quality**: Which assessment cited more authoritative, relevant sources?\n';
-        prompt += '2. **Reasoning Rigor**: Which assessment showed clearer logical progression?\n';
-        prompt += '3. **Evidence Completeness**: Which assessment considered more relevant evidence?\n';
-        prompt += '4. **Appropriate Confidence**: Which assessment calibrated uncertainty appropriately?\n\n';
+        prompt += '1. **Source Quality**: Which cited more authoritative, relevant sources?\n';
+        prompt += '2. **Reasoning Rigor**: Which showed clearer logical progression?\n';
+        prompt += '3. **Evidence Completeness**: Which considered more relevant evidence?\n';
+        prompt += '4. **Appropriate Confidence**: Which calibrated uncertainty appropriately?\n\n';
         
         prompt += '## REQUIRED OUTPUT FORMAT\n\n';
-        prompt += '**SOURCE QUALITY COMPARISON**\n';
-        prompt += 'Assessment A sources: [brief evaluation]\n';
-        prompt += 'Assessment B sources: [brief evaluation]\n';
-        prompt += 'Winner on sources: [A or B]\n\n';
+        prompt += '```json\n';
+        prompt += '{\n';
+        prompt += '  "comparison": {\n';
+        prompt += '    "sourceQuality": {\n';
+        prompt += '      "assessmentA": "<brief evaluation>",\n';
+        prompt += '      "assessmentB": "<brief evaluation>",\n';
+        prompt += '      "winner": "<A|B|TIE>"\n';
+        prompt += '    },\n';
+        prompt += '    "reasoningRigor": {\n';
+        prompt += '      "assessmentA": "<brief evaluation>",\n';
+        prompt += '      "assessmentB": "<brief evaluation>",\n';
+        prompt += '      "winner": "<A|B|TIE>"\n';
+        prompt += '    },\n';
+        prompt += '    "evidenceCompleteness": {\n';
+        prompt += '      "assessmentA": "<brief evaluation>",\n';
+        prompt += '      "assessmentB": "<brief evaluation>",\n';
+        prompt += '      "winner": "<A|B|TIE>"\n';
+        prompt += '    },\n';
+        prompt += '    "confidenceCalibration": {\n';
+        prompt += '      "assessmentA": "<brief evaluation>",\n';
+        prompt += '      "assessmentB": "<brief evaluation>",\n';
+        prompt += '      "winner": "<A|B|TIE>"\n';
+        prompt += '    }\n';
+        prompt += '  },\n';
+        prompt += '  "adjudication": {\n';
+        prompt += '    "winner": "<A|B>",\n';
+        prompt += '    "confidence": <0.5 to 1.0>,\n';
+        prompt += '    "finalRealityScore": <-10 to +10>,\n';
+        prompt += '    "finalIntegrityScore": <-1.0 to +1.0>,\n';
+        prompt += '    "justification": "<2-3 sentences>"\n';
+        prompt += '  }\n';
+        prompt += '}\n';
+        prompt += '```\n\n';
         
-        prompt += '**REASONING COMPARISON**\n';
-        prompt += 'Assessment A reasoning: [brief evaluation]\n';
-        prompt += 'Assessment B reasoning: [brief evaluation]\n';
-        prompt += 'Winner on reasoning: [A or B]\n\n';
-        
-        prompt += '**EVIDENCE COMPLETENESS**\n';
-        prompt += 'Assessment A coverage: [brief evaluation]\n';
-        prompt += 'Assessment B coverage: [brief evaluation]\n';
-        prompt += 'Winner on completeness: [A or B]\n\n';
-        
-        prompt += '**FINAL ADJUDICATION**\n';
-        prompt += 'WINNER: [A or B]\n';
-        prompt += 'CONFIDENCE: [0.5 to 1.0 — how clearly superior is the winner?]\n';
-        prompt += 'RECOMMENDED FINAL SCORE: [weighted score based on winner]\n';
-        prompt += 'JUSTIFICATION: [2-3 sentences explaining the decision]\n';
+        prompt += 'After JSON, provide a brief narrative explanation of your adjudication.\n';
         
         var message = await anthropic.messages.create({
             model: 'claude-sonnet-4-20250514',
-            max_tokens: 4000,
+            max_tokens: 6000,
             messages: [{ role: 'user', content: prompt }]
         });
         
         var adjudication = '';
-        if (message.content && message.content[0] && message.content[0].text) {
-            adjudication = message.content[0].text;
+        for (var i = 0; i < message.content.length; i++) {
+            if (message.content[i].type === 'text') {
+                adjudication += message.content[i].text;
+            }
         }
         
         if (!adjudication) {
             return res.status(500).json({ error: 'No adjudication generated' });
         }
         
-        // Parse the winner and confidence from the response
-        var winnerMatch = adjudication.match(/WINNER:\s*(A|B)/i);
-        var confidenceMatch = adjudication.match(/CONFIDENCE:\s*([0-9.]+)/i);
-        var recommendedMatch = adjudication.match(/RECOMMENDED FINAL SCORE:\s*([+-]?\d+(?:\.\d+)?)/i);
+        // Parse structured data
+        var structured = null;
+        var winner = null;
+        var confidence = 0.5;
+        var finalRealityScore = null;
+        var finalIntegrityScore = null;
         
-        var winner = winnerMatch ? winnerMatch[1].toUpperCase() : null;
-        var confidence = confidenceMatch ? parseFloat(confidenceMatch[1]) : 0.5;
-        var recommendedScore = recommendedMatch ? parseFloat(recommendedMatch[1]) : null;
-        
-        // Calculate weighted final score if we have all the pieces
-        var finalScore = null;
-        if (winner && initialScore !== undefined && verifyScore !== undefined) {
-            if (recommendedScore !== null) {
-                finalScore = recommendedScore;
-            } else {
-                // Weight toward winner based on confidence
-                var winnerScore = (winner === 'A') ? initialScore : verifyScore;
-                var loserScore = (winner === 'A') ? verifyScore : initialScore;
-                finalScore = (winnerScore * confidence) + (loserScore * (1 - confidence));
-                finalScore = Math.round(finalScore * 10) / 10; // Round to 1 decimal
+        var jsonMatch = adjudication.match(/```json\s*([\s\S]*?)\s*```/);
+        if (jsonMatch && jsonMatch[1]) {
+            try {
+                structured = JSON.parse(jsonMatch[1]);
+                if (structured.adjudication) {
+                    winner = structured.adjudication.winner;
+                    confidence = structured.adjudication.confidence || 0.5;
+                    finalRealityScore = structured.adjudication.finalRealityScore;
+                    finalIntegrityScore = structured.adjudication.finalIntegrityScore;
+                }
+            } catch (e) {
+                console.error('Adjudicate JSON parse error:', e);
             }
+        }
+        
+        // Fallback regex extraction
+        if (!winner) {
+            var winnerMatch = adjudication.match(/["\']?winner["\']?\s*:\s*["\']?(A|B)["\']?/i);
+            if (winnerMatch) winner = winnerMatch[1].toUpperCase();
+        }
+        
+        if (confidence === 0.5) {
+            var confidenceMatch = adjudication.match(/["\']?confidence["\']?\s*:\s*([0-9.]+)/i);
+            if (confidenceMatch) confidence = parseFloat(confidenceMatch[1]);
+        }
+        
+        if (finalRealityScore === null) {
+            var scoreMatch = adjudication.match(/["\']?finalRealityScore["\']?\s*:\s*([+-]?\d+)/i);
+            if (scoreMatch) finalRealityScore = parseInt(scoreMatch[1]);
+        }
+        
+        // Calculate weighted score if not provided
+        if (finalRealityScore === null && winner && initialRealityScore !== undefined && verifyRealityScore !== undefined) {
+            var winnerScore = (winner === 'A') ? initialRealityScore : verifyRealityScore;
+            var loserScore = (winner === 'A') ? verifyRealityScore : initialRealityScore;
+            finalRealityScore = Math.round((winnerScore * confidence) + (loserScore * (1 - confidence)));
         }
         
         return res.status(200).json({
             success: true,
             adjudication: adjudication,
+            structured: structured,
             winner: winner,
             confidence: confidence,
-            recommendedScore: recommendedScore,
-            finalScore: finalScore,
-            initialScore: initialScore,
-            verifyScore: verifyScore
+            finalRealityScore: finalRealityScore,
+            finalIntegrityScore: finalIntegrityScore,
+            initialRealityScore: initialRealityScore,
+            verifyRealityScore: verifyRealityScore,
+            initialIntegrityScore: initialIntegrityScore,
+            verifyIntegrityScore: verifyIntegrityScore
         });
         
     } catch (err) {
