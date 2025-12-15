@@ -584,6 +584,9 @@
             font-size: 10px;
             color: white;
             font-weight: 500;
+            word-wrap: break-word;
+            max-width: 100%;
+            line-height: 1.3;
         }
 
         /* Articles Panel */
@@ -1114,8 +1117,9 @@
             }
 
             .veritas-logo img {
-                width: 45px;
+                width: 55px;
                 height: auto;
+                filter: brightness(1.2);
             }
 
             /* Vertical stacked tabs with favicon left, vertical text right */
@@ -1148,17 +1152,17 @@
 
             /* End Demo button with 2-line layout */
             .end-demo-button {
-                width: 60px !important;
+                width: calc(100% - 6px) !important;
                 margin-top: 15px;
-                padding: 6px 5px !important;
-                font-size: 9px !important;
+                padding: 8px 4px !important;
+                font-size: 10px !important;
                 display: flex !important;
                 flex-direction: column !important;
                 align-items: center !important;
                 justify-content: center !important;
-                gap: 2px;
+                gap: 1px;
                 white-space: nowrap;
-                line-height: 1.2 !important;
+                line-height: 1.1 !important;
             }
 
             .end-demo-button span {
@@ -2059,14 +2063,24 @@
             background: linear-gradient(135deg, #c41230 0%, #8b0000 100%);
             color: white;
             border: 2px solid rgba(255, 255, 255, 0.2);
-            padding: 12px 24px 12px 6px;
+            padding: 10px 8px;
             border-radius: 8px;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
-            width: calc(100% - 40px);
+            width: calc(100% - 24px);
             text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1px;
+            line-height: 1.2;
+        }
+        
+        .end-demo-button span {
+            display: block;
         }
 
         .end-demo-button:hover {
@@ -3449,12 +3463,12 @@
     <!-- VERITAS Sidebar -->
     <div class="veritas-sidebar">
         <div class="veritas-logo">
-            <img src="logo-square-transparent.png" alt="VERITAS" style="width: 50px; height: auto; display: block; margin: 0 auto;">
+            <img src="logo-square-transparent.png" alt="VERITAS" style="width: 70px; height: auto; display: block; margin: 0 auto; filter: brightness(1.2);">
         </div>
 
         <div class="topic-button active" onclick="showTopic('election-fraud')" id="electionFraudBtn">
             <div class="topic-icon">⚖️</div>
-            <div class="topic-label">Election Fraud</div>
+            <div class="topic-label">Election<br>Fraud</div>
         </div>
 
         <div class="topic-button" onclick="showTopic('immigration')" id="immigrationBtn">
@@ -3464,12 +3478,12 @@
 
         <div class="topic-button" onclick="showTopic('national-debt')" id="nationalDebtBtn">
             <div class="topic-icon">💰</div>
-            <div class="topic-label">National Debt</div>
+            <div class="topic-label">National<br>Debt</div>
         </div>
 
         <div class="topic-button" onclick="showTopic('gender-identity')" id="genderIdentityBtn">
             <div class="topic-icon">🏥</div>
-            <div class="topic-label">Gender Identity</div>
+            <div class="topic-label">Gender<br>Identity</div>
         </div>
 
         <button class="end-demo-button" onclick="window.location.href='index.html'"><span>End</span><span>Demo</span></button>
