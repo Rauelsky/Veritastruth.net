@@ -249,11 +249,36 @@ function buildTrackAPrompt(question, articleText) {
     prompt += '- Teach the reader WHY this factor matters for evaluating truth\n';
     prompt += '- Provide SPECIFIC examples from the claim being assessed\n';
     prompt += '- Help the reader develop better critical thinking skills\n';
-    prompt += '- Be 3-5 sentences, not just 1-2\n\n';
+    prompt += '- Be substantive (3-5 sentences minimum for explanations)\n\n';
     prompt += '```json\n';
     prompt += '{\n';
     prompt += '  "realityScore": <integer -10 to +10>,\n';
     prompt += '  "integrityScore": <float -1.0 to +1.0>,\n';
+    prompt += '  \n';
+    prompt += '  "underlyingReality": {\n';
+    prompt += '    "coreFinding": "<3-4 sentences: What is actually true here, stated clearly and precisely?>",\n';
+    prompt += '    "howWeKnow": "<3-4 sentences: What is the evidence basis? What methods produced this knowledge?>",\n';
+    prompt += '    "whyItMatters": "<3-4 sentences: Why should people care about getting this right? What are the stakes?>"\n';
+    prompt += '  },\n';
+    prompt += '  \n';
+    prompt += '  "centralClaims": {\n';
+    prompt += '    "explicit": "<What the claim explicitly states - the surface-level assertion>",\n';
+    prompt += '    "hidden": "<Unstated assumptions, implications, or premises the claim relies on. What must be true for this claim to make sense?>",\n';
+    prompt += '    "whatFramingServes": "<Whose interests does this particular framing serve? What agenda, if any, does this framing advance?>"\n';
+    prompt += '  },\n';
+    prompt += '  \n';
+    prompt += '  "frameworkAnalysis": {\n';
+    prompt += '    "hiddenPremises": "<What assumptions does this claim/question smuggle in without stating them?>",\n';
+    prompt += '    "ideologicalOrigin": "<What worldview or perspective does this framing emerge from?>",\n';
+    prompt += '    "whatBeingObscured": "<What important context, nuance, or alternative framings are hidden by this presentation?>",\n';
+    prompt += '    "reframingNeeded": "<How should this claim/question be reframed for honest inquiry? Or state if framing is already appropriate.>"\n';
+    prompt += '  },\n';
+    prompt += '  \n';
+    prompt += '  "truthDistortionPatterns": [\n';
+    prompt += '    "<Pattern Name>: <Explanation of how this pattern appears and why it distorts truth>",\n';
+    prompt += '    "...or state: None detected - this claim/question uses honest framing"\n';
+    prompt += '  ],\n';
+    prompt += '  \n';
     prompt += '  "realityFactors": {\n';
     prompt += '    "evidenceQuality": { \n';
     prompt += '      "score": <-10 to +10>, \n';
@@ -272,6 +297,7 @@ function buildTrackAPrompt(question, articleText) {
     prompt += '      "explanation": "<3-5 sentences: Does the argument follow logically? Are there fallacies? What logical principles apply? How can readers spot logical problems?>" \n';
     prompt += '    }\n';
     prompt += '  },\n';
+    prompt += '  \n';
     prompt += '  "integrity": {\n';
     prompt += '    "observable": {\n';
     prompt += '      "sourcesCited": "<Y|P|N>",\n';
@@ -298,23 +324,57 @@ function buildTrackAPrompt(question, articleText) {
     prompt += '      "score": <-1.0 to +1.0>\n';
     prompt += '    }\n';
     prompt += '  },\n';
-    prompt += '  "underlyingReality": {\n';
-    prompt += '    "coreFinding": "<3-4 sentences: What is actually true here, stated clearly and precisely?>",\n';
-    prompt += '    "howWeKnow": "<3-4 sentences: What is the evidence basis? What methods produced this knowledge?>",\n';
-    prompt += '    "whyItMatters": "<3-4 sentences: Why should people care about getting this right? What are the stakes?>"\n';
+    prompt += '  \n';
+    prompt += '  "evidenceAnalysis": {\n';
+    prompt += '    "forTheClaim": ["<Evidence point supporting the claim with source and strength assessment>", ...],\n';
+    prompt += '    "againstTheClaim": ["<Evidence point contradicting or complicating the claim with source>", ...],\n';
+    prompt += '    "sourceQuality": "<Assessment of overall source quality: peer-reviewed, institutional, journalistic, advocacy, anonymous, etc.>"\n';
     prompt += '  },\n';
-    prompt += '  "sources": ["<source with brief description of what it contributes>", ...]\n';
+    prompt += '  \n';
+    prompt += '  "whatWeCanBeConfidentAbout": [\n';
+    prompt += '    "<High-confidence conclusion 1 with brief explanation of why confidence is warranted>",\n';
+    prompt += '    "<High-confidence conclusion 2>",\n';
+    prompt += '    "..."\n';
+    prompt += '  ],\n';
+    prompt += '  \n';
+    prompt += '  "whatRemainsUncertain": [\n';
+    prompt += '    "<Uncertainty 1: What we don\'t know and why it matters>",\n';
+    prompt += '    "<Uncertainty 2>",\n';
+    prompt += '    "..."\n';
+    prompt += '  ],\n';
+    prompt += '  \n';
+    prompt += '  "lessonsForAssessment": [\n';
+    prompt += '    "<Lesson 1: A transferable critical thinking skill readers can apply to similar claims>",\n';
+    prompt += '    "<Lesson 2: Another insight about information evaluation>",\n';
+    prompt += '    "<Lesson 3: Methodology insight>",\n';
+    prompt += '    "..."\n';
+    prompt += '  ],\n';
+    prompt += '  \n';
+    prompt += '  "methodologyNotes": {\n';
+    prompt += '    "realityScoreRationale": "<2-3 sentences explaining why this specific Reality Score was assigned and not higher or lower>",\n';
+    prompt += '    "integrityScoreRationale": "<2-3 sentences explaining why this specific Integrity Score was assigned>"\n';
+    prompt += '  },\n';
+    prompt += '  \n';
+    prompt += '  "sources": [\n';
+    prompt += '    "<Source 1: Name/Title - what it contributes to this assessment>",\n';
+    prompt += '    "<Source 2: Name/Title - what it contributes>",\n';
+    prompt += '    "..."\n';
+    prompt += '  ]\n';
     prompt += '}\n';
     prompt += '```\n\n';
     
     prompt += '### PART 2: NARRATIVE ASSESSMENT\n';
-    prompt += 'After JSON, provide human-readable sections with EDUCATIONAL depth:\n';
-    prompt += '**CLAIM BEING TESTED** - Restate the claim clearly\n';
-    prompt += '**VERITAS ASSESSMENT** - Overall finding with nuance\n';
-    prompt += '**EVIDENCE ANALYSIS** - Deep dive into what the evidence shows and doesn\'t show\n';
-    prompt += '**CRITICAL THINKING LESSON** - What can readers learn about evaluating similar claims?\n';
-    prompt += '**WHAT WE CAN BE CONFIDENT ABOUT** - High-confidence conclusions\n';
-    prompt += '**WHAT REMAINS UNCERTAIN** - Honest acknowledgment of unknowns\n';
+    prompt += 'After JSON, provide human-readable sections with EDUCATIONAL depth:\n\n';
+    prompt += '**CLAIM BEING TESTED** - Restate the claim clearly and identify what type of claim it is\n\n';
+    prompt += '**THE CENTRAL CLAIMS (EXPLICIT AND HIDDEN)** - What is stated vs. what is assumed\n\n';
+    prompt += '**VERITAS ASSESSMENT** - Overall finding with appropriate nuance\n\n';
+    prompt += '**EVIDENCE ANALYSIS** - Deep dive with "For the claim:" and "Against/Complicating:" subsections\n\n';
+    prompt += '**TRUTH DISTORTION PATTERNS** - Identify any manipulation techniques or state "None present"\n\n';
+    prompt += '**EXAMINING THE FRAMEWORK** - Hidden premises, ideological origin, what\'s obscured, reframing needed\n\n';
+    prompt += '**WHAT WE CAN BE CONFIDENT ABOUT** - High-confidence conclusions as bullet points\n\n';
+    prompt += '**WHAT REMAINS UNCERTAIN** - Honest acknowledgment of unknowns\n\n';
+    prompt += '**LESSONS FOR INFORMATION ASSESSMENT** - Numbered list of transferable critical thinking skills\n\n';
+    prompt += '**METHODOLOGY NOTES** - Explain the scoring rationale\n\n';
     prompt += '**BOTTOM LINE** - Clear, actionable conclusion\n';
     
     return prompt;
@@ -476,6 +536,14 @@ function parseTrackAResponse(assessment) {
         realityFactors: null,
         integrity: null,
         underlyingReality: null,
+        centralClaims: null,
+        frameworkAnalysis: null,
+        truthDistortionPatterns: null,
+        evidenceAnalysis: null,
+        whatWeCanBeConfidentAbout: null,
+        whatRemainsUncertain: null,
+        lessonsForAssessment: null,
+        methodologyNotes: null,
         sources: null,
         narrative: assessment
     };
@@ -489,6 +557,14 @@ function parseTrackAResponse(assessment) {
             result.realityFactors = parsed.realityFactors;
             result.integrity = parsed.integrity;
             result.underlyingReality = parsed.underlyingReality;
+            result.centralClaims = parsed.centralClaims;
+            result.frameworkAnalysis = parsed.frameworkAnalysis;
+            result.truthDistortionPatterns = parsed.truthDistortionPatterns;
+            result.evidenceAnalysis = parsed.evidenceAnalysis;
+            result.whatWeCanBeConfidentAbout = parsed.whatWeCanBeConfidentAbout;
+            result.whatRemainsUncertain = parsed.whatRemainsUncertain;
+            result.lessonsForAssessment = parsed.lessonsForAssessment;
+            result.methodologyNotes = parsed.methodologyNotes;
             result.sources = parsed.sources;
         } catch (e) {
             console.error('Track A JSON parse error:', e);
@@ -729,6 +805,14 @@ module.exports = async function handler(req, res) {
                     realityFactors: parsed.realityFactors,
                     integrity: parsed.integrity,
                     underlyingReality: parsed.underlyingReality,
+                    centralClaims: parsed.centralClaims,
+                    frameworkAnalysis: parsed.frameworkAnalysis,
+                    truthDistortionPatterns: parsed.truthDistortionPatterns,
+                    evidenceAnalysis: parsed.evidenceAnalysis,
+                    whatWeCanBeConfidentAbout: parsed.whatWeCanBeConfidentAbout,
+                    whatRemainsUncertain: parsed.whatRemainsUncertain,
+                    lessonsForAssessment: parsed.lessonsForAssessment,
+                    methodologyNotes: parsed.methodologyNotes,
                     sources: parsed.sources
                 },
                 question: question || 'Article Assessment',
