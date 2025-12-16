@@ -1,4 +1,74 @@
 const Anthropic = require('@anthropic-ai/sdk');
+const https = require('https');
+const http = require('http');
+
+// ============================================
+// URL CONTENT FETCHER
+// ============================================
+async function fetchUrlContent(url) {
+    return new Promise((resolve, reject) => {
+        const protocol = url.startsWith('https') ? https : http;
+        const options = {
+            timeout: 15000,
+            headers: {
+                'User-Agent': 'VERITAS/1.0 (Truth Assessment Engine)',
+                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+            }
+        };
+        
+        const req = protocol.get(url, options, (res) => {
+            // Handle redirects
+            if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
+                fetchUrlContent(res.headers.location).then(resolve).catch(reject);
+                return;
+            }
+            
+            if (res.statusCode !== 200) {
+                reject(new Error(`Failed to fetch URL: HTTP ${res.statusCode}`));
+                return;
+            }
+            
+            let data = '';
+            res.setEncoding('utf8');
+            res.on('data', chunk => { data += chunk; });
+            res.on('end', () => {
+                // Basic HTML to text extraction
+                let text = data;
+                
+                // Remove scripts and styles
+                text = text.replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '');
+                text = text.replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '');
+                
+                // Remove HTML tags
+                text = text.replace(/<[^>]+>/g, ' ');
+                
+                // Decode HTML entities
+                text = text.replace(/&nbsp;/g, ' ');
+                text = text.replace(/&amp;/g, '&');
+                text = text.replace(/&lt;/g, '<');
+                text = text.replace(/&gt;/g, '>');
+                text = text.replace(/&quot;/g, '"');
+                text = text.replace(/&#39;/g, "'");
+                
+                // Clean up whitespace
+                text = text.replace(/\s+/g, ' ').trim();
+                
+                // Limit to reasonable size (first 15000 chars)
+                if (text.length > 15000) {
+                    text = text.substring(0, 15000) + '... [content truncated]';
+                }
+                
+                resolve(text);
+            });
+        });
+        
+        req.on('error', reject);
+        req.on('timeout', () => {
+            req.destroy();
+            reject(new Error('URL fetch timeout'));
+        });
+    });
+}
 
 // ============================================
 // RATE LIMITING (5 free per day per IP)
@@ -478,6 +548,7 @@ module.exports = async function handler(req, res) {
         
         var question = body.question || '';
         var articleText = body.articleText || '';
+        var articleUrl = body.articleUrl || '';
         var track = body.track || 'a';
         var claimType = body.claimType || 'generic';
         var criteria = body.criteria || [];
@@ -485,9 +556,23 @@ module.exports = async function handler(req, res) {
         var fiveWsContext = body.fiveWsContext || null;
         var userApiKey = body.userApiKey || '';
         
+        // Fetch URL content if provided
+        if (articleUrl && !articleText) {
+            try {
+                console.log('Fetching content from URL:', articleUrl);
+                articleText = await fetchUrlContent(articleUrl);
+                console.log('Fetched content length:', articleText.length);
+            } catch (urlError) {
+                console.error('URL fetch error:', urlError.message);
+                return res.status(400).json({ 
+                    error: 'Failed to fetch URL: ' + urlError.message 
+                });
+            }
+        }
+        
         // Validation
         if (!question && !articleText) {
-            return res.status(400).json({ error: 'Please provide a question or article text' });
+            return res.status(400).json({ error: 'Please provide a question, URL, or article text' });
         }
         
         if (track === 'b' && criteria.length === 0 && customCriteria.length === 0) {
@@ -496,8 +581,10 @@ module.exports = async function handler(req, res) {
         
         // Rate limiting (skip if user provides their own key)
         var apiKey = userApiKey;
+        var remaining = null;
         if (!apiKey) {
             var rateCheck = checkRateLimit(getRateLimitKey(req));
+            remaining = rateCheck.remaining;
             if (!rateCheck.allowed) {
                 return res.status(429).json({ 
                     error: 'Daily free limit reached (5 assessments per day). Add your own API key for unlimited use.', 
@@ -595,6 +682,7 @@ module.exports = async function handler(req, res) {
                 claimType: claimType,
                 assessmentDate: new Date().toISOString(),
                 assessor: 'INITIAL',
+                remaining: remaining,
                 _debug: debugInfo  // Include debug info in response
             });
         } else {
@@ -615,7 +703,8 @@ module.exports = async function handler(req, res) {
                 track: 'a',
                 claimType: claimType,
                 assessmentDate: new Date().toISOString(),
-                assessor: 'INITIAL'
+                assessor: 'INITIAL',
+                remaining: remaining
             });
         }
         
