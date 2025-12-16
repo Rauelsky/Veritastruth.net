@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VERITAS Layout - Two Column Final</title>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0f1a;
+            --bg-secondary: #111827;
+            --bg-card: #1a2332;
+            --bg-tertiary: #1e293b;
+            --text-primary: #e2e8f0;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --border-subtle: #1e293b;
+            --accent-teal: #0d9488;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'IBM Plex Sans', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            padding: 24px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: var(--accent-teal);
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            margin-bottom: 32px;
+        }
+
+        .assessment-content {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .assessment-header {
+            background: var(--bg-tertiary);
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border-subtle);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .assessment-header h3 {
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+
+        /* Two-column grid with gutter */
+        .two-column-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+        }
+
+        .column-left {
+            border-right: 1px solid var(--border-subtle);
+        }
+
+        .column-right {
+            /* No left border needed since left column has right border */
+        }
+
+        .collapsible-section {
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .collapsible-section:last-child {
+            border-bottom: none;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: center; /* Center the content group */
+            padding: 10px 16px;
+            cursor: pointer;
+            background: rgba(20, 28, 40, 0.4);
+        }
+
+        .section-header:hover {
+            background: rgba(30, 41, 59, 0.5);
+        }
+
+        .section-header .button-group {
+            display: flex;
+            align-items: center;
+            gap: 12px; /* ~1/2" space between toggle and button */
+        }
+
+        /* Toggle button with 3D effect - NOW ON LEFT */
+        .section-toggle {
+            width: 26px;
+            height: 26px;
+            background: linear-gradient(180deg, #3a4555 0%, #2a3342 100%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            color: var(--text-secondary);
+            font-size: 1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            flex-shrink: 0;
+            
+            /* 3D effect */
+            box-shadow: 
+                0 2px 0 rgba(0, 0, 0, 0.3),
+                0 3px 5px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            border-bottom: 2px solid rgba(0, 0, 0, 0.4);
+        }
+
+        .section-toggle:hover {
+            background: linear-gradient(180deg, #4a5565 0%, #3a4555 100%);
+        }
+
+        .section-toggle:active {
+            box-shadow: 
+                0 1px 0 rgba(0, 0, 0, 0.3),
+                inset 0 1px 3px rgba(0, 0, 0, 0.3);
+            transform: translateY(1px);
+        }
+
+        /* Base button style - width based on "Truth Distortion Patterns" + 1/4" (~24px) */
+        .section-header h4 {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: 5px;
+            margin: 0;
+            width: 230px; /* Fixed width for all buttons */
+            text-align: center;
+            
+            /* 3D effect */
+            box-shadow: 
+                0 2px 0 rgba(0, 0, 0, 0.3),
+                0 4px 6px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.15),
+                inset 0 -2px 4px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-bottom: 2px solid rgba(0, 0, 0, 0.3);
+        }
+
+        /* All buttons same height as double-line (52px) */
+        .section-header h4.single-line,
+        .section-header h4.double-line {
+            height: 52px;
+            line-height: 1.25;
+        }
+
+        /* SUPER MUTED COLOR PALETTE with 3D gradients */
+        .section-header.reality h4 { 
+            background: linear-gradient(180deg, rgba(85, 115, 175, 0.55) 0%, rgba(55, 80, 140, 0.55) 100%);
+        }
+        .section-header.integrity h4 { 
+            background: linear-gradient(180deg, rgba(115, 95, 165, 0.55) 0%, rgba(80, 60, 130, 0.55) 100%);
+        }
+        .section-header.truth h4 { 
+            background: linear-gradient(180deg, rgba(20, 140, 115, 0.55) 0%, rgba(12, 95, 80, 0.55) 100%);
+        }
+        .section-header.claims h4 { 
+            background: linear-gradient(180deg, rgba(200, 145, 70, 0.5) 0%, rgba(150, 105, 45, 0.5) 100%);
+        }
+        .section-header.framework h4 { 
+            background: linear-gradient(180deg, rgba(170, 95, 135, 0.5) 0%, rgba(125, 65, 100, 0.5) 100%);
+        }
+        .section-header.distortion h4 { 
+            background: linear-gradient(180deg, rgba(180, 85, 85, 0.55) 0%, rgba(135, 55, 55, 0.55) 100%);
+        }
+        .section-header.evidence h4 { 
+            background: linear-gradient(180deg, rgba(75, 145, 165, 0.5) 0%, rgba(50, 110, 130, 0.5) 100%);
+        }
+        .section-header.confident h4 { 
+            background: linear-gradient(180deg, rgba(20, 140, 115, 0.55) 0%, rgba(12, 95, 80, 0.55) 100%);
+        }
+        .section-header.uncertain h4 { 
+            background: linear-gradient(180deg, rgba(200, 155, 60, 0.5) 0%, rgba(150, 115, 35, 0.5) 100%);
+        }
+        .section-header.lessons h4 { 
+            background: linear-gradient(180deg, rgba(95, 105, 175, 0.55) 0%, rgba(65, 72, 140, 0.55) 100%);
+        }
+        .section-header.methodology h4 { 
+            background: linear-gradient(180deg, rgba(115, 125, 135, 0.6) 0%, rgba(80, 90, 100, 0.6) 100%);
+        }
+        .section-header.sources h4 { 
+            background: linear-gradient(180deg, rgba(115, 95, 165, 0.55) 0%, rgba(80, 60, 130, 0.55) 100%);
+        }
+
+        /* =============================================
+           INTEGRITY CHILD BUTTONS (Observable, Comparative, Bias)
+           Same 3D styling as parent buttons
+           ============================================= */
+        .integrity-children {
+            padding: 8px 16px 12px 16px;
+            background: rgba(15, 20, 30, 0.5);
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .integrity-child {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+        }
+
+        .integrity-child h5 {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 6px 10px;
+            border-radius: 4px;
+            margin: 0;
+            width: 200px; /* Slightly narrower for children */
+            height: 32px;
+            text-align: center;
+            
+            /* 3D effect - same as parent */
+            box-shadow: 
+                0 2px 0 rgba(0, 0, 0, 0.3),
+                0 3px 5px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.15),
+                inset 0 -2px 4px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-bottom: 2px solid rgba(0, 0, 0, 0.3);
+            
+            /* Muted purple like parent */
+            background: linear-gradient(180deg, rgba(100, 85, 145, 0.5) 0%, rgba(70, 55, 115, 0.5) 100%);
+        }
+
+        .integrity-child .child-toggle {
+            width: 22px;
+            height: 22px;
+            background: linear-gradient(180deg, #3a4555 0%, #2a3342 100%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            
+            /* 3D effect */
+            box-shadow: 
+                0 2px 0 rgba(0, 0, 0, 0.3),
+                0 2px 4px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            border-bottom: 2px solid rgba(0, 0, 0, 0.4);
+        }
+
+        .note {
+            margin-top: 32px;
+            padding: 16px;
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        .note strong {
+            color: var(--text-primary);
+        }
+    </style>
+</head>
+<body>
+    <h1>VERITAS Assessment Sections</h1>
+    <p class="subtitle">Two-Column Layout with Reality/Integrity at Top</p>
+
+    <div class="assessment-content">
+        <div class="assessment-header">
+            <span>📋</span>
+            <h3>Assessment Details</h3>
+        </div>
+
+        <div class="two-column-grid">
+            <!-- LEFT COLUMN -->
+            <div class="column-left">
+                <!-- Reality Score Breakdown FIRST -->
+                <div class="collapsible-section">
+                    <div class="section-header reality">
+                        <div class="button-group">
+                            <button class="section-toggle">+</button>
+                            <h4 class="single-line"><span class="icon">📊</span> Reality Score Breakdown</h4>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="collapsible-section">
+                    <div class="section-header truth">
+                        <div class="button-group">
+                            <button class="section-toggle">+</button>
+                            <h4 class="single-line"><span class="icon">🔍</span> The Underlying Reality</h4>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="collapsible-section">
+                    <div class="section-header claims">
+                        <div class="button-group">
+                            <button class="section-toggle">+</button>
+                            <h4 class="double-line"><span class="icon">🎯</span> Central Claims<br>(Explicit & Hidden)</h4>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="collapsible-section">
+                    <div class="section-header framework">
+                        <div class="button-group">
+                            <button class="section-toggle">+</button>
+                            <h4 class="single-line"><span class="icon">🧩</span> Examining the Framework</h4>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="collapsible-section">
+                    <div class="section-header distortion">
+                        <div class="button-group">
+                            <button class="section-toggle">+</button>
+                            <h4 class="single-line"><span class="icon">⚠️</span> Truth Distortion Patterns</h4>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="collapsible-section">
+                    <div class="section-header evidence">
+                        <div class="button-group">
+                            <button class="section-toggle">+</button>
+                            <h4 class="single-line"><span class="icon">⚖️</span> Evidence Analysis</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT COLUMN -->
+            <div class="column-right">
+                <!-- Integrity Score Breakdown FIRST -->
+                <div class="collapsible-section">
+                    <div class="section-header integrity">
+                        <div class="button-group">
+                            <button class="section-toggle">+</button>
+                            <h4 class="single-line"><span class="icon">🔬</span> Integrity Score Breakdown</h4>
+                        </div>
+                    </div>
+                    <!-- Children collapsed by default - shown when expanded -->
+                </div>
+
+                <div class="collapsible-section">
+                    <div class="section-header confident">
+                        <div class="button-group">
+                            <button class="section-toggle">+</button>
+                            <h4 class="double-line"><span class="icon">✓</span> What We Can Be<br>Confident About</h4>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="collapsible-section">
+                    <div class="section-header uncertain">
+                        <div class="button-group">
+                            <button class="section-toggle">+</button>
+                            <h4 class="single-line"><span class="icon">❓</span> What Remains Uncertain</h4>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="collapsible-section">
+                    <div class="section-header lessons">
+                        <div class="button-group">
+                            <button class="section-toggle">+</button>
+                            <h4 class="double-line"><span class="icon">💡</span> Lessons for<br>Information Assessment</h4>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="collapsible-section">
+                    <div class="section-header methodology">
+                        <div class="button-group">
+                            <button class="section-toggle">+</button>
+                            <h4 class="single-line"><span class="icon">📝</span> Methodology Notes</h4>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="collapsible-section">
+                    <div class="section-header sources">
+                        <div class="button-group">
+                            <button class="section-toggle">+</button>
+                            <h4 class="single-line"><span class="icon">📖</span> Key Sources Referenced</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="note">
+        <strong>Layout Specs:</strong><br>
+        • Two columns with vertical gutter (border) between them<br>
+        • <strong>Left column:</strong> Reality Score Breakdown at top, followed by truth-related sections<br>
+        • <strong>Right column:</strong> Integrity Score Breakdown at top (shown expanded with child buttons)<br>
+        • Child buttons (Observable, Comparative, Bias) have same 3D styling as parents<br>
+        • All buttons maintain fixed width and 3D effect<br>
+        • Double-height buttons for long labels
+    </div>
+</body>
+</html>
