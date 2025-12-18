@@ -666,6 +666,51 @@
             gap: 0;
         }
 
+        /* Mobile: Enable horizontal scrolling for two-column layout */
+        @media (max-width: 768px) {
+            .two-column-grid {
+                display: flex;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                scroll-snap-type: x mandatory;
+            }
+            
+            .two-column-grid > .column-left,
+            .two-column-grid > .column-right {
+                flex: 0 0 100%;
+                min-width: 100%;
+                scroll-snap-align: start;
+            }
+            
+            .two-column-grid > .column-left {
+                border-right: none;
+                border-bottom: 2px solid var(--accent-blue);
+            }
+            
+            /* Scroll indicator hint */
+            .two-column-grid::after {
+                content: '';
+                flex: 0 0 1px;
+            }
+        }
+        
+        /* Add a swipe hint for mobile users */
+        .scroll-hint {
+            display: none;
+            text-align: center;
+            padding: 8px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            background: rgba(20, 28, 40, 0.6);
+            border-bottom: 1px solid var(--border-subtle);
+        }
+        
+        @media (max-width: 768px) {
+            .scroll-hint {
+                display: block;
+            }
+        }
+
         .column-left {
             border-right: 1px solid var(--border-subtle);
         }
@@ -1727,6 +1772,238 @@
             color: white;
         }
 
+        /* Side-by-Side Full Comparison Modal */
+        .compare-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 1100;
+            overflow: hidden;
+        }
+
+        .compare-modal-overlay.visible { display: flex; }
+
+        .compare-modal {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .compare-modal-header {
+            background: linear-gradient(135deg, var(--accent-purple) 0%, #6d28d9 100%);
+            padding: 12px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .compare-modal-header h2 {
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .compare-modal-close {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            font-size: 1.25rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+
+        .compare-modal-close:hover { background: rgba(255, 255, 255, 0.3); }
+
+        .compare-modal-body {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+
+        .compare-column {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border-right: 2px solid var(--border-medium);
+        }
+
+        .compare-column:last-child {
+            border-right: none;
+        }
+
+        .compare-column-header {
+            padding: 12px 16px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            flex-shrink: 0;
+        }
+
+        .compare-column.initial .compare-column-header {
+            background: linear-gradient(135deg, rgba(20, 184, 166, 0.3) 0%, rgba(20, 184, 166, 0.1) 100%);
+            color: var(--accent-teal);
+            border-bottom: 2px solid var(--accent-teal);
+        }
+
+        .compare-column.verification .compare-column-header {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.3) 0%, rgba(16, 185, 129, 0.1) 100%);
+            color: var(--accent-green);
+            border-bottom: 2px solid var(--accent-green);
+        }
+
+        .compare-column-scores {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            padding: 12px;
+            background: var(--bg-tertiary);
+            border-bottom: 1px solid var(--border-subtle);
+            flex-shrink: 0;
+        }
+
+        .compare-score-item {
+            text-align: center;
+        }
+
+        .compare-score-label {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .compare-score-value {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .compare-column-content {
+            flex: 1;
+            overflow-y: auto;
+            background: var(--bg-card);
+        }
+
+        /* Comparison sections within each column */
+        .compare-section {
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .compare-section:last-child {
+            border-bottom: none;
+        }
+
+        .compare-section-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 16px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+            user-select: none;
+            background: rgba(20, 28, 40, 0.4);
+            gap: 10px;
+        }
+
+        .compare-section-header:hover { background: rgba(30, 41, 59, 0.5); }
+
+        .compare-section-header h4 {
+            font-size: 0.8rem;
+            color: var(--text-primary);
+            margin: 0;
+        }
+
+        .compare-section-toggle {
+            width: 22px;
+            height: 22px;
+            background: linear-gradient(180deg, #3a4555 0%, #2a3342 100%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .compare-section-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            background: var(--bg-secondary);
+        }
+
+        .compare-section-content.expanded {
+            max-height: 2000px;
+        }
+
+        .compare-section-content-inner {
+            padding: 16px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* Button to open comparison */
+        .btn-compare {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, var(--accent-purple) 0%, #6d28d9 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 16px;
+        }
+
+        .btn-compare:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+        }
+
+        /* Mobile: Stack columns vertically */
+        @media (max-width: 900px) {
+            .compare-modal-body {
+                flex-direction: column;
+            }
+            
+            .compare-column {
+                border-right: none;
+                border-bottom: 2px solid var(--border-medium);
+                max-height: 50%;
+            }
+            
+            .compare-column:last-child {
+                border-bottom: none;
+            }
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .container { padding: 16px; }
@@ -1915,6 +2192,10 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
                 <div class="assessment-header">
                     <span>📋</span>
                     <h3>Assessment Details</h3>
+                </div>
+
+                <div class="scroll-hint">
+                    👈 Swipe left/right to see all analysis sections 👉
                 </div>
 
                 <div class="two-column-grid">
@@ -3222,7 +3503,130 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
             if (e.target.classList.contains('verify-modal-overlay')) {
                 closeVerifyModal();
             }
+            if (e.target.classList.contains('compare-modal-overlay')) {
+                closeCompareModal();
+            }
         });
+
+        // ================================
+        // SIDE-BY-SIDE COMPARISON MODAL
+        // ================================
+        function openCompareModal() {
+            if (!lastAssessment || !lastVerification) {
+                alert('Both assessments required for comparison.');
+                return;
+            }
+            
+            // Populate scores
+            var initReality = lastAssessment.realityScore;
+            var initIntegrity = lastAssessment.integrityScore;
+            var verifyReality = lastVerification.realityScore;
+            var verifyIntegrity = lastVerification.integrityScore;
+            
+            var initRealityEl = document.getElementById('compareInitialReality');
+            initRealityEl.textContent = (initReality >= 0 ? '+' : '') + initReality;
+            initRealityEl.className = 'compare-score-value ' + getScoreClass(initReality, false);
+            
+            var initIntegrityEl = document.getElementById('compareInitialIntegrity');
+            initIntegrityEl.textContent = (initIntegrity >= 0 ? '+' : '') + parseFloat(initIntegrity).toFixed(1);
+            initIntegrityEl.className = 'compare-score-value ' + getScoreClass(initIntegrity, true);
+            
+            var verifyRealityEl = document.getElementById('compareVerifyReality');
+            verifyRealityEl.textContent = (verifyReality >= 0 ? '+' : '') + verifyReality;
+            verifyRealityEl.className = 'compare-score-value ' + getScoreClass(verifyReality, false);
+            
+            var verifyIntegrityEl = document.getElementById('compareVerifyIntegrity');
+            verifyIntegrityEl.textContent = (verifyIntegrity >= 0 ? '+' : '') + parseFloat(verifyIntegrity).toFixed(1);
+            verifyIntegrityEl.className = 'compare-score-value ' + getScoreClass(verifyIntegrity, true);
+            
+            // Populate content columns
+            populateCompareColumn('initialCompareContent', lastAssessment.structured, 'initial');
+            populateCompareColumn('verifyCompareContent', lastVerification.structured, 'verify');
+            
+            // Show modal
+            document.getElementById('compareModal').classList.add('visible');
+        }
+        
+        function closeCompareModal() {
+            document.getElementById('compareModal').classList.remove('visible');
+        }
+        
+        function populateCompareColumn(containerId, structured, prefix) {
+            var container = document.getElementById(containerId);
+            container.innerHTML = '';
+            
+            var sections = [
+                { key: 'realityBreakdown', title: '📊 Reality Score Breakdown', icon: 'reality' },
+                { key: 'integrityBreakdown', title: '🔬 Integrity Score Breakdown', icon: 'integrity' },
+                { key: 'underlyingReality', title: '🔍 The Underlying Reality', icon: 'truth' },
+                { key: 'centralClaims', title: '🎯 Central Claims', icon: 'claims' },
+                { key: 'frameworkAnalysis', title: '🧩 Framework Analysis', icon: 'framework' },
+                { key: 'truthDistortionPatterns', title: '⚠️ Truth Distortion Patterns', icon: 'distortion' },
+                { key: 'evidenceAnalysis', title: '⚖️ Evidence Analysis', icon: 'evidence' }
+            ];
+            
+            sections.forEach(function(section, index) {
+                var content = structured && structured[section.key] ? structured[section.key] : 'Not available';
+                var sectionId = prefix + '_' + section.key;
+                
+                var sectionHtml = '<div class="compare-section">' +
+                    '<div class="compare-section-header" onclick="toggleCompareSection(\'' + sectionId + '\')">' +
+                    '<button class="compare-section-toggle" id="' + sectionId + 'Toggle">+</button>' +
+                    '<h4>' + section.title + '</h4>' +
+                    '</div>' +
+                    '<div class="compare-section-content" id="' + sectionId + 'Content">' +
+                    '<div class="compare-section-content-inner">' + formatCompareContent(content) + '</div>' +
+                    '</div>' +
+                    '</div>';
+                    
+                container.innerHTML += sectionHtml;
+            });
+        }
+        
+        function formatCompareContent(content) {
+            if (!content) return '<p style="color: var(--text-muted); font-style: italic;">Not available</p>';
+            
+            if (typeof content === 'string') {
+                // Convert newlines to paragraphs
+                return content.split('\n').filter(function(p) { return p.trim(); }).map(function(p) {
+                    return '<p style="margin-bottom: 8px;">' + p + '</p>';
+                }).join('');
+            }
+            
+            if (Array.isArray(content)) {
+                return '<ul style="margin: 0; padding-left: 20px;">' + 
+                    content.map(function(item) {
+                        if (typeof item === 'object' && item.claim) {
+                            return '<li style="margin-bottom: 8px;"><strong>' + item.claim + '</strong>' + 
+                                (item.assessment ? '<br><span style="color: var(--text-muted);">' + item.assessment + '</span>' : '') + '</li>';
+                        }
+                        return '<li style="margin-bottom: 4px;">' + item + '</li>';
+                    }).join('') + '</ul>';
+            }
+            
+            if (typeof content === 'object') {
+                var html = '';
+                for (var key in content) {
+                    if (content.hasOwnProperty(key)) {
+                        var label = key.replace(/([A-Z])/g, ' $1').replace(/^./, function(s) { return s.toUpperCase(); });
+                        html += '<p style="margin-bottom: 8px;"><strong>' + label + ':</strong> ' + 
+                            (typeof content[key] === 'object' ? JSON.stringify(content[key]) : content[key]) + '</p>';
+                    }
+                }
+                return html || '<p style="color: var(--text-muted); font-style: italic;">Not available</p>';
+            }
+            
+            return '<p>' + String(content) + '</p>';
+        }
+        
+        function toggleCompareSection(sectionId) {
+            var content = document.getElementById(sectionId + 'Content');
+            var toggle = document.getElementById(sectionId + 'Toggle');
+            if (content && toggle) {
+                content.classList.toggle('expanded');
+                toggle.textContent = content.classList.contains('expanded') ? '−' : '+';
+            }
+        }
     </script>
     <!-- Verify Modal -->
     <div class="verify-modal-overlay" id="verifyModal">
@@ -3276,6 +3680,13 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
                     <div class="alignment-status" id="alignmentStatus">
                         <h3 id="alignmentTitle">Checking alignment...</h3>
                         <p id="alignmentMessage"></p>
+                    </div>
+                    
+                    <!-- Compare Full Details Button -->
+                    <div style="text-align: center;">
+                        <button class="btn-compare" onclick="openCompareModal()">
+                            <span>📊</span> Compare Full Details Side-by-Side
+                        </button>
                     </div>
                     
                     <!-- Consensus Section (only shows when divergent) -->
@@ -3424,6 +3835,53 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
                                 <p class="amplify-bottomline-text" id="bottomlineText"></p>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Side-by-Side Comparison Modal -->
+    <div class="compare-modal-overlay" id="compareModal">
+        <div class="compare-modal">
+            <div class="compare-modal-header">
+                <h2><span>📊</span> Side-by-Side Assessment Comparison</h2>
+                <button class="compare-modal-close" onclick="closeCompareModal()">&times;</button>
+            </div>
+            <div class="compare-modal-body">
+                <!-- Initial Assessment Column -->
+                <div class="compare-column initial">
+                    <div class="compare-column-header">Initial Assessment</div>
+                    <div class="compare-column-scores">
+                        <div class="compare-score-item">
+                            <div class="compare-score-label">Reality</div>
+                            <div class="compare-score-value" id="compareInitialReality">—</div>
+                        </div>
+                        <div class="compare-score-item">
+                            <div class="compare-score-label">Integrity</div>
+                            <div class="compare-score-value" id="compareInitialIntegrity">—</div>
+                        </div>
+                    </div>
+                    <div class="compare-column-content" id="initialCompareContent">
+                        <!-- Sections populated by JS -->
+                    </div>
+                </div>
+                
+                <!-- Verification Assessment Column -->
+                <div class="compare-column verification">
+                    <div class="compare-column-header">Verification Assessment</div>
+                    <div class="compare-column-scores">
+                        <div class="compare-score-item">
+                            <div class="compare-score-label">Reality</div>
+                            <div class="compare-score-value" id="compareVerifyReality">—</div>
+                        </div>
+                        <div class="compare-score-item">
+                            <div class="compare-score-label">Integrity</div>
+                            <div class="compare-score-value" id="compareVerifyIntegrity">—</div>
+                        </div>
+                    </div>
+                    <div class="compare-column-content" id="verifyCompareContent">
+                        <!-- Sections populated by JS -->
                     </div>
                 </div>
             </div>
