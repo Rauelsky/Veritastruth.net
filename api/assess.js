@@ -1,3984 +1,831 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VERITAS — Truth Assessment Engine</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            /* Scientific Dark Theme */
-            --bg-primary: #0a0f1a;
-            --bg-secondary: #111827;
-            --bg-card: #1a2332;
-            --bg-tertiary: #1e293b;
-            --bg-input: #0d1117;
-            
-            /* Accent Colors */
-            --accent-teal: #0d9488;
-            --accent-teal-dim: #0f766e;
-            --accent-cyan: #22d3ee;
-            --accent-blue: #3b82f6;
-            --accent-green: #10b981;
-            --accent-amber: #f59e0b;
-            --accent-red: #ef4444;
-            --accent-purple: #8b5cf6;
-            
-            /* Text Colors */
-            --text-primary: #e2e8f0;
-            --text-secondary: #94a3b8;
-            --text-muted: #64748b;
-            --text-dim: #475569;
-            
-            /* Borders */
-            --border-subtle: #1e293b;
-            --border-medium: #334155;
-            --border-accent: var(--accent-teal);
-            
-            /* Score Colors */
-            --score-positive: #10b981;
-            --score-negative: #f87171;
-            --score-neutral: #fbbf24;
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        body {
-            font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            min-height: 100vh;
-            line-height: 1.6;
-        }
-
-        /* Header */
-        .site-header {
-            background: linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
-            border-bottom: 1px solid var(--accent-teal);
-            padding: 16px 24px;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .header-content {
-            max-width: 1100px;
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .logo-section {
-            display: flex;
-            flex-direction: column;
-            gap: 0;
-        }
-
-        .logo-row {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .logo-img {
-            height: 36px;
-            width: auto;
-        }
-
-        .logo-fallback {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .logo-mark {
-            width: 36px;
-            height: 36px;
-            background: linear-gradient(135deg, var(--accent-teal) 0%, var(--accent-cyan) 100%);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 1.1rem;
-            color: var(--bg-primary);
-        }
-
-        .logo-text {
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            letter-spacing: 2px;
-        }
-
-        .tagline {
-            font-size: 0.7rem;
-            color: var(--text-muted);
-            margin-left: 48px; /* Align with V in VERITAS (logo-img width + gap) */
-            margin-top: -2px; /* Moved 4px closer to logo */
-            letter-spacing: 0.5px;
-        }
-
-        .version-badge {
-            font-size: 0.7rem;
-            color: var(--text-muted);
-            background: var(--bg-tertiary);
-            padding: 6px 12px;
-            border-radius: 20px;
-            border: 1px solid var(--border-medium);
-        }
-
-        .container {
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 24px;
-        }
-
-        /* Cards */
-        .card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-subtle);
-            border-radius: 12px;
-            margin-bottom: 24px;
-            overflow: hidden;
-        }
-
-        .card-header {
-            background: var(--bg-tertiary);
-            padding: 20px 24px;
-            border-bottom: 1px solid var(--border-subtle);
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .card-header-icon { font-size: 1.5rem; }
-        .card-title { font-size: 1.1rem; font-weight: 600; }
-        .card-subtitle { font-size: 0.85rem; color: var(--text-secondary); }
-
-        .card-body { padding: 24px; }
-
-        /* Form Elements */
-        .form-group { margin-bottom: 20px; }
-
-        .form-label {
-            display: block;
-            font-size: 0.85rem;
-            font-weight: 500;
-            color: var(--text-secondary);
-            margin-bottom: 8px;
-        }
-
-        .form-input, textarea {
-            width: 100%;
-            background: var(--bg-input);
-            border: 1px solid var(--border-medium);
-            border-radius: 8px;
-            padding: 14px 16px;
-            color: var(--text-primary);
-            font-family: inherit;
-            font-size: 0.95rem;
-            transition: border-color 0.2s ease, box-shadow 0.2s ease;
-        }
-
-        .form-input:focus, textarea:focus {
-            outline: none;
-            border-color: var(--accent-teal);
-            box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.15);
-        }
-
-        textarea { min-height: 120px; resize: vertical; }
-
-        .char-counter {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            text-align: right;
-            margin-top: 6px;
-        }
-
-        .char-counter.warning { color: var(--accent-amber); }
-        .char-counter.danger { color: var(--accent-red); }
-
-        .field-hint {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            margin-top: 4px;
-        }
-
-        .field-hint a {
-            color: var(--accent-teal);
-            text-decoration: none;
-        }
-
-        .field-hint a:hover { text-decoration: underline; }
-
-        /* Usage Counter */
-        .usage-counter {
-            background: rgba(13, 148, 136, 0.1);
-            border: 1px solid rgba(13, 148, 136, 0.3);
-            border-radius: 8px;
-            padding: 10px 16px;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .usage-icon { font-size: 1.1rem; }
-
-        .usage-text {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-        }
-
-        .usage-text strong {
-            color: var(--accent-teal);
-            font-family: 'IBM Plex Mono', monospace;
-        }
-
-        .usage-hint {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-        }
-
-        .usage-counter.exhausted {
-            background: rgba(239, 68, 68, 0.1);
-            border-color: rgba(239, 68, 68, 0.3);
-        }
-
-        .usage-counter.exhausted .usage-text strong {
-            color: var(--accent-red);
-        }
-
-        /* API Key Section */
-        .api-key-section {
-            background: var(--bg-tertiary);
-            border: 1px solid var(--border-subtle);
-            border-radius: 8px;
-            margin-bottom: 20px;
-            overflow: hidden;
-        }
-
-        .api-key-toggle {
-            padding: 12px 16px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            cursor: pointer;
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-        }
-
-        .api-key-toggle:hover { background: var(--bg-card); }
-
-        .toggle-icon {
-            font-size: 1rem;
-            color: var(--text-muted);
-        }
-
-        .api-key-content {
-            display: none;
-            padding: 0 16px 16px;
-        }
-
-        .api-key-content.expanded { display: block; }
-
-        /* Buttons */
-        .btn {
-            padding: 14px 28px;
-            border: none;
-            border-radius: 8px;
-            font-family: inherit;
-            font-size: 0.95rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, var(--accent-teal) 0%, var(--accent-teal-dim) 100%);
-            color: white;
-        }
-
-        .btn-primary:hover:not(:disabled) {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(13, 148, 136, 0.3);
-        }
-
-        .btn-primary:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-
-        .btn-secondary {
-            background: var(--bg-tertiary);
-            color: var(--text-secondary);
-            border: 1px solid var(--border-medium);
-        }
-
-        .btn-secondary:hover { border-color: var(--accent-teal); color: var(--accent-teal); }
-
-        .button-row {
-            display: flex;
-            gap: 12px;
-            margin-top: 24px;
-        }
-
-        /* Error Display */
-        .error {
-            display: none;
-            background: rgba(239, 68, 68, 0.15);
-            border: 1px solid rgba(239, 68, 68, 0.4);
-            border-radius: 8px;
-            padding: 16px;
-            margin-bottom: 20px;
-            color: #fca5a5;
-        }
-
-        .error.visible { display: block; }
-
-        /* ================================
-           PROCESSING INDICATOR (Compact)
-           ================================ */
-        .processing-indicator {
-            display: none;
-            background: var(--bg-tertiary);
-            border: 1px solid var(--accent-teal);
-            border-radius: 8px;
-            padding: 16px 20px;
-            margin-top: 20px;
-        }
-
-        .processing-indicator.visible { display: block; }
-
-        .processing-row {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .processing-icon {
-            width: 32px;
-            height: 32px;
-            border: 2px solid var(--border-medium);
-            border-top-color: var(--accent-teal);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            flex-shrink: 0;
-        }
-
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        .processing-text {
-            flex: 1;
-        }
-
-        .processing-title {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: var(--text-primary);
-        }
-
-        .processing-status {
-            color: var(--text-secondary);
-            font-size: 0.8rem;
-        }
-
-        .processing-timer {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            flex-shrink: 0;
-        }
-
-        .timer-block {
-            background: var(--bg-input);
-            border: 1px solid var(--border-medium);
-            border-radius: 4px;
-            padding: 6px 10px;
-            text-align: center;
-            min-width: 45px;
-        }
-
-        .timer-value {
-            font-family: 'IBM Plex Mono', monospace;
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: var(--accent-teal);
-        }
-
-        .timer-label {
-            font-size: 0.6rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-        }
-
-        .progress-bar {
-            height: 3px;
-            background: var(--border-medium);
-            border-radius: 2px;
-            overflow: hidden;
-            margin-top: 12px;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--accent-teal), var(--accent-cyan));
-            transition: width 0.3s ease;
-        }
-
-        /* ================================
-           RESULTS SECTION
-           ================================ */
-        .results-section {
-            display: none;
-        }
-
-        .results-section.visible { display: block; }
-
-        /* Score Panel */
-        .score-panel {
-            background: var(--bg-card);
-            border: 1px solid var(--accent-teal);
-            border-radius: 12px;
-            padding: 32px;
-            margin-bottom: 24px;
-        }
-
-        .score-header { margin-bottom: 24px; }
-
-        .claim-display {
-            background: var(--bg-tertiary);
-            border-radius: 8px;
-            padding: 20px;
-            text-align: center;
-        }
-
-        .claim-label {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 8px;
-        }
-
-        .claim-text {
-            font-size: 1.1rem;
-            color: var(--text-primary);
-            font-weight: 500;
-        }
-
-        /* Score Grid */
-        .score-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-        }
-
-        @media (max-width: 768px) {
-            .score-grid { grid-template-columns: 1fr; gap: 8px; }
-        }
-
-        .score-card {
-            background: var(--bg-tertiary);
-            border: 1px solid var(--border-subtle);
-            border-radius: 8px;
-            padding: 12px 16px;
-            text-align: center;
-        }
-
-        .score-card.reality { border-top: 3px solid var(--accent-green); }
-        .score-card.integrity { border-top: 3px solid var(--accent-purple); }
-
-        .score-label {
-            font-size: 0.65rem;
-            color: var(--text-primary);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 4px;
-        }
-
-        .score-value {
-            font-family: 'IBM Plex Mono', monospace;
-            font-size: 2rem;
-            font-weight: 700;
-            margin-bottom: 2px;
-            line-height: 1;
-        }
-
-        .score-value.positive { color: var(--score-positive); }
-        .score-value.negative { color: var(--score-negative); }
-        .score-value.neutral { color: var(--score-neutral); }
-
-        .score-descriptor {
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-            margin-bottom: 6px;
-        }
-
-        .score-brief {
-            font-size: 0.65rem;
-            color: var(--text-muted);
-            margin-top: 8px;
-            padding-top: 8px;
-            border-top: 1px solid var(--border-subtle);
-            line-height: 1.4;
-            font-style: italic;
-        }
-
-        /* Score Bar */
-        .score-bar-container {
-            padding-top: 4px;
-            border-top: 1px solid var(--border-subtle);
-        }
-
-        .score-bar {
-            height: 3px;
-            border-radius: 2px;
-            position: relative;
-            overflow: visible;
-        }
-
-        .score-bar.reality {
-            background: linear-gradient(90deg, #7f1d1d 0%, #b91c1c 20%, #f59e0b 50%, #22c55e 80%, #15803d 100%);
-        }
-
-        .score-bar.integrity {
-            background: linear-gradient(90deg, #134e4a 0%, #0d9488 35%, #5eead4 65%, #ccfbf1 100%);
-        }
-
-        .score-marker {
-            position: absolute;
-            top: -3px;
-            width: 9px;
-            height: 9px;
-            background: white;
-            border: 2px solid var(--bg-primary);
-            border-radius: 50%;
-            transform: translateX(-50%);
-            box-shadow: 0 1px 2px rgba(0,0,0,0.3);
-        }
-
-        .score-bar-labels {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.55rem;
-            color: var(--text-muted);
-            margin-top: 2px;
-        }
-
-        /* Integrity Sub-bars */
-        .integrity-sub-bars {
-            margin-top: 6px;
-            padding-top: 4px;
-            border-top: 1px solid var(--border-subtle);
-        }
-
-        .integrity-sub-bar {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            margin-bottom: 1px;
-        }
-
-        .integrity-sub-bar:last-child { margin-bottom: 0; }
-
-        .sub-bar-label {
-            font-size: 0.5rem;
-            color: var(--text-muted);
-            width: 62px;
-            flex-shrink: 0;
-            text-align: right;
-        }
-
-        .sub-bar-track {
-            flex: 1;
-            height: 2px;
-            background: var(--border-medium);
-            border-radius: 1px;
-            position: relative;
-        }
-
-        .sub-bar-fill {
-            height: 100%;
-            border-radius: 1px;
-            position: absolute;
-            left: 50%;
-            transition: width 0.3s ease;
-        }
-
-        .sub-bar-fill.positive {
-            background: var(--accent-green);
-        }
-
-        .sub-bar-fill.negative {
-            background: var(--accent-red);
-            transform: scaleX(-1);
-            transform-origin: left center;
-        }
-
-        .sub-bar-value {
-            font-family: 'IBM Plex Mono', monospace;
-            font-size: 0.5rem;
-            color: var(--text-secondary);
-            width: 28px;
-            text-align: left;
-            flex-shrink: 0;
-        }
-
-        /* ================================
-           ASSESSMENT DETAILS (Two-Column Layout)
-           ================================ */
-        .assessment-content {
-            background: var(--bg-card);
-            border: 1px solid var(--border-subtle);
-            border-radius: 12px;
-            overflow: hidden;
-            margin-bottom: 24px;
-        }
-
-        .assessment-header {
-            background: var(--bg-tertiary);
-            padding: 16px 20px;
-            border-bottom: 1px solid var(--border-subtle);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .assessment-header h3 {
-            font-size: 0.95rem;
-            font-weight: 600;
-            color: var(--text-primary);
-        }
-
-        /* Two-column grid */
-        .two-column-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 0;
-        }
-
-        /* Mobile: Enable horizontal scrolling for two-column layout */
-        @media (max-width: 768px) {
-            .two-column-grid {
-                display: flex;
-                overflow-x: auto;
-                -webkit-overflow-scrolling: touch;
-                scroll-snap-type: x mandatory;
+const Anthropic = require('@anthropic-ai/sdk');
+const https = require('https');
+const http = require('http');
+
+// ============================================
+// URL CONTENT FETCHER
+// ============================================
+async function fetchUrlContent(url) {
+    return new Promise((resolve, reject) => {
+        const protocol = url.startsWith('https') ? https : http;
+        const options = {
+            timeout: 15000,
+            headers: {
+                'User-Agent': 'VERITAS/1.0 (Truth Assessment Engine)',
+                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
             }
-            
-            .two-column-grid > .column-left,
-            .two-column-grid > .column-right {
-                flex: 0 0 100%;
-                min-width: 100%;
-                scroll-snap-align: start;
-            }
-            
-            .two-column-grid > .column-left {
-                border-right: none;
-                border-bottom: 2px solid var(--accent-blue);
-            }
-            
-            /* Scroll indicator hint */
-            .two-column-grid::after {
-                content: '';
-                flex: 0 0 1px;
-            }
-        }
+        };
         
-        /* Add a swipe hint for mobile users */
-        .scroll-hint {
-            display: none;
-            text-align: center;
-            padding: 8px;
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            background: rgba(20, 28, 40, 0.6);
-            border-bottom: 1px solid var(--border-subtle);
-        }
+        const req = protocol.get(url, options, (res) => {
+            // Handle redirects
+            if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
+                fetchUrlContent(res.headers.location).then(resolve).catch(reject);
+                return;
+            }
+            
+            if (res.statusCode !== 200) {
+                reject(new Error(`Failed to fetch URL: HTTP ${res.statusCode}`));
+                return;
+            }
+            
+            let data = '';
+            res.setEncoding('utf8');
+            res.on('data', chunk => { data += chunk; });
+            res.on('end', () => {
+                // Basic HTML to text extraction
+                let text = data;
+                
+                // Remove scripts and styles
+                text = text.replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '');
+                text = text.replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '');
+                
+                // Remove HTML tags
+                text = text.replace(/<[^>]+>/g, ' ');
+                
+                // Decode HTML entities
+                text = text.replace(/&nbsp;/g, ' ');
+                text = text.replace(/&amp;/g, '&');
+                text = text.replace(/&lt;/g, '<');
+                text = text.replace(/&gt;/g, '>');
+                text = text.replace(/&quot;/g, '"');
+                text = text.replace(/&#39;/g, "'");
+                
+                // Clean up whitespace
+                text = text.replace(/\s+/g, ' ').trim();
+                
+                // Limit to reasonable size (first 15000 chars)
+                if (text.length > 15000) {
+                    text = text.substring(0, 15000) + '... [content truncated]';
+                }
+                
+                resolve(text);
+            });
+        });
         
-        @media (max-width: 768px) {
-            .scroll-hint {
-                display: block;
+        req.on('error', reject);
+        req.on('timeout', () => {
+            req.destroy();
+            reject(new Error('URL fetch timeout'));
+        });
+    });
+}
+
+// ============================================
+// RATE LIMITING (5 free per day per IP)
+// ============================================
+const rateLimitMap = new Map();
+const FREE_LIMIT = 5;
+const RATE_LIMIT_WINDOW = 24 * 60 * 60 * 1000;
+
+function getRateLimitKey(req) {
+    var ip = req.headers['x-forwarded-for']?.split(',')[0] || req.headers['x-real-ip'] || 'unknown';
+    return 'rate:' + ip;
+}
+
+function checkRateLimit(key) {
+    var now = Date.now();
+    var record = rateLimitMap.get(key);
+    if (!record || (now - record.windowStart) > RATE_LIMIT_WINDOW) {
+        rateLimitMap.set(key, { count: 1, windowStart: now });
+        return { allowed: true, remaining: FREE_LIMIT - 1 };
+    }
+    if (record.count >= FREE_LIMIT) {
+        return { allowed: false, remaining: 0, resetAt: new Date(record.windowStart + RATE_LIMIT_WINDOW).toISOString() };
+    }
+    record.count++;
+    return { allowed: true, remaining: FREE_LIMIT - record.count };
+}
+
+// ============================================
+// CRITERIA DEFINITIONS (must match frontend)
+// ============================================
+const CRITERIA_SETS = {
+    qualification: {
+        label: 'Person Qualification',
+        criteria: [
+            { id: 'legal', label: 'Legal Eligibility', description: 'Does the person meet legal/constitutional requirements for the role?' },
+            { id: 'experience', label: 'Experience & Credentials', description: 'What relevant experience, education, or credentials does the person have?' },
+            { id: 'record', label: 'Historical Record', description: 'What is their track record in similar or related roles?' },
+            { id: 'alignment', label: 'Value Alignment', description: 'How do their stated values align with the role\'s requirements?' },
+            { id: 'controversies', label: 'Controversies & Concerns', description: 'What documented concerns, controversies, or red flags exist?' }
+        ]
+    },
+    policy: {
+        label: 'Policy Effectiveness',
+        criteria: [
+            { id: 'goals', label: 'Stated Goals Clarity', description: 'Are the policy\'s goals clearly defined and measurable?' },
+            { id: 'outcomes', label: 'Measurable Outcomes', description: 'What evidence exists about the policy\'s actual outcomes?' },
+            { id: 'costbenefit', label: 'Cost/Benefit Analysis', description: 'How do the costs compare to the benefits?' },
+            { id: 'alternatives', label: 'Comparison to Alternatives', description: 'How does this policy compare to alternative approaches?' },
+            { id: 'implementation', label: 'Implementation Challenges', description: 'What practical challenges affect implementation?' }
+        ]
+    },
+    product: {
+        label: 'Product/Service Quality',
+        criteria: [
+            { id: 'audience', label: 'Who benefits from this product or service?', description: 'For whom is this product/service appropriate?' },
+            { id: 'measure', label: 'Success Criteria', description: 'By what measure is success/quality defined?' },
+            { id: 'comparison', label: 'Comparison to Alternatives', description: 'How does it compare to alternatives?' },
+            { id: 'timeframe', label: 'Timeframe Considerations', description: 'What are short-term vs long-term implications?' },
+            { id: 'credibility', label: 'Source Credibility', description: 'What conflicts of interest or biases exist in claims about it?' }
+        ]
+    },
+    prediction: {
+        label: 'Prediction/Forecast',
+        criteria: [
+            { id: 'trackrecord', label: 'Predictor Track Record', description: 'What is the predictor\'s history of accuracy?' },
+            { id: 'transparency', label: 'Model Transparency', description: 'Is the reasoning/model behind the prediction transparent?' },
+            { id: 'baserates', label: 'Base Rates Acknowledged', description: 'Are historical base rates considered?' },
+            { id: 'uncertainty', label: 'Uncertainty Quantified', description: 'Is uncertainty appropriately acknowledged and quantified?' },
+            { id: 'falsifiability', label: 'Falsifiability Defined', description: 'What would prove the prediction wrong?' }
+        ]
+    },
+    generic: {
+        label: 'General Assessment',
+        criteria: [
+            { id: 'evidence', label: 'Evidence Quality', description: 'What evidence supports or refutes this claim?' },
+            { id: 'expertise', label: 'Source Expertise', description: 'Do the sources have relevant expertise?' },
+            { id: 'audience', label: 'Who benefits?', description: 'Who gains or loses if this claim is accepted?' },
+            { id: 'alternatives', label: 'Alternative Perspectives', description: 'What competing viewpoints exist?' },
+            { id: 'outcomes', label: 'Measurable Outcomes', description: 'What concrete outcomes can be measured?' },
+            { id: 'timeframe', label: 'Timeframe Considerations', description: 'What are short-term vs long-term implications?' }
+        ]
+    }
+};
+
+// ============================================
+// PROMPT BUILDER - TRACK A (Factual)
+// ============================================
+function buildTrackAPrompt(question, articleText) {
+    var now = new Date();
+    var currentDate = now.toLocaleDateString('en-US', { 
+        weekday: 'long', 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+    });
+    var isoDate = now.toISOString().split('T')[0];
+    
+    var prompt = 'You are VERITAS, an epistemologically rigorous truth assessment system. Your purpose is to evaluate claims using a transparent methodology with intellectual honesty and appropriate epistemic humility.\n\n';
+    
+    // EDUCATIONAL MISSION
+    prompt += '## EDUCATIONAL MISSION\n';
+    prompt += 'VERITAS exists not just to evaluate claims, but to TEACH people how to think more critically. Every assessment should:\n';
+    prompt += '- Help readers understand WHY a claim is strong or weak, not just THAT it is\n';
+    prompt += '- Provide specific examples that illustrate broader principles\n';
+    prompt += '- Teach transferable critical thinking skills they can apply elsewhere\n';
+    prompt += '- Model intellectual honesty by showing your reasoning transparently\n';
+    prompt += '- Acknowledge complexity and uncertainty rather than oversimplifying\n\n';
+    prompt += 'Think of yourself as a patient teacher who wants readers to leave smarter than they arrived.\n\n';
+    
+    // TEMPORAL AWARENESS
+    prompt += '## CURRENT DATE AND TEMPORAL AWARENESS\n';
+    prompt += '**TODAY IS: ' + currentDate + ' (' + isoDate + ')**\n\n';
+    prompt += 'CRITICAL: Your training data has a knowledge cutoff. Before making ANY assessment:\n';
+    prompt += '1. ASSUME your knowledge of current positions, roles, and recent events may be OUTDATED\n';
+    prompt += '2. For ANY claim involving WHO holds a position, WHO is in charge, or CURRENT status:\n';
+    prompt += '   - You MUST search FIRST before stating anything\n';
+    prompt += '   - Do NOT trust your training data for positions/roles - people change jobs\n';
+    prompt += '3. Search for recent news/developments even if you think you know the answer\n';
+    prompt += '4. If the claim involves events from the past 2 years, ALWAYS verify current status\n\n';
+    
+    // ASSESSMENT TYPE
+    prompt += '## ASSESSMENT TYPE\n';
+    prompt += 'This is a Track A (Factual) assessment.\n';
+    prompt += 'Focus on verifiable facts, documented evidence, and expert consensus.\n\n';
+    
+    // FOUR-FACTOR FRAMEWORK
+    prompt += '## THE FOUR-FACTOR REALITY ASSESSMENT FRAMEWORK\n\n';
+    prompt += 'VERITAS uses four weighted factors to derive the Reality Score (-10 to +10).\n\n';
+    prompt += '### Factor 1: Evidence Quality (EQ) — 40% Weight\n';
+    prompt += 'The strength, relevance, and sufficiency of supporting evidence.\n';
+    prompt += 'Score from -10 (fabricated/no evidence) to +10 (overwhelming convergent evidence).\n\n';
+    prompt += '### Factor 2: Epistemological Soundness (ES) — 30% Weight\n';
+    prompt += 'The rigor of reasoning processes.\n';
+    prompt += 'Score from -10 (completely unsound) to +10 (rigorous methodology).\n\n';
+    prompt += '### Factor 3: Source Reliability (SR) — 20% Weight\n';
+    prompt += 'Tier 1 (+8 to +10): Peer-reviewed, government stats\n';
+    prompt += 'Tier 2 (+5 to +7): Expert commentary, institutional reports\n';
+    prompt += 'Tier 3 (+2 to +4): Advocacy orgs, corporate comms\n';
+    prompt += 'Tier 4 (-10 to +1): Anonymous, unverified, known unreliable\n\n';
+    prompt += '### Factor 4: Logical Coherence (LC) — 10% Weight\n';
+    prompt += 'Score from -10 (incoherent/fallacious) to +10 (rigorous logic).\n\n';
+    prompt += '**Reality Score = (EQ × 0.40) + (ES × 0.30) + (SR × 0.20) + (LC × 0.10)**\n';
+    prompt += 'Evidence Ceiling: Final score cannot exceed EQ + 2\n\n';
+    
+    // INTEGRITY 2.0 FRAMEWORK
+    prompt += '## INTEGRITY 2.0 FRAMEWORK\n\n';
+    prompt += 'The Integrity Score (-1.0 to +1.0) measures HOW claims are presented, independent of truth.\n';
+    prompt += 'It has THREE dimensions, each weighted at 33%:\n\n';
+    prompt += '### Dimension 1: Observable Integrity (33%)\n';
+    prompt += 'Binary Y/N/P checklist:\n';
+    prompt += '- **Sources Cited**: Y (adequate), P (partial), N (none/inadequate)\n';
+    prompt += '- **Limitations Acknowledged**: Y/P/N\n';
+    prompt += '- **Counter-Arguments Addressed**: Y/P/N\n';
+    prompt += '- **Fallacies Present**: Y (fallacies found = bad), N (none = good)\n\n';
+    prompt += '### Dimension 2: Comparative Integrity (33%)\n';
+    prompt += 'How does this compare to quality discourse on this topic?\n';
+    prompt += '- **Percentile**: 0-100 ranking vs typical coverage\n\n';
+    prompt += '### Dimension 3: Bias Integrity (33%)\n';
+    prompt += 'Detection of presentation patterns signaling advocacy.\n\n';
+    
+    // TASK
+    prompt += '## YOUR TASK\n\n';
+    prompt += 'Assessment Date: ' + currentDate + '\n\n';
+    
+    if (articleText) {
+        prompt += 'Analyze this article:\n\n---\n' + articleText + '\n---\n\n';
+        prompt += 'Question about the article: ' + question + '\n\n';
+    } else {
+        prompt += 'Evaluate this claim/question: ' + question + '\n\n';
+    }
+    
+    // OUTPUT FORMAT
+    prompt += '## REQUIRED OUTPUT FORMAT\n\n';
+    prompt += 'You MUST provide your response in TWO parts:\n\n';
+    prompt += '### PART 1: STRUCTURED DATA (JSON)\n';
+    prompt += 'Begin with a JSON block wrapped in ```json tags:\n\n';
+    prompt += '**IMPORTANT: Provide RICH, EDUCATIONAL explanations.** Each explanation should:\n';
+    prompt += '- Teach the reader WHY this factor matters for evaluating truth\n';
+    prompt += '- Provide SPECIFIC examples from the claim being assessed\n';
+    prompt += '- Help the reader develop better critical thinking skills\n';
+    prompt += '- Be substantive (3-5 sentences minimum for explanations)\n\n';
+    prompt += '```json\n';
+    prompt += '{\n';
+    prompt += '  "realityScore": <integer -10 to +10>,\n';
+    prompt += '  "integrityScore": <float -1.0 to +1.0>,\n';
+    prompt += '  \n';
+    prompt += '  "underlyingReality": {\n';
+    prompt += '    "coreFinding": "<3-4 sentences: What is actually true here, stated clearly and precisely?>",\n';
+    prompt += '    "howWeKnow": "<3-4 sentences: What is the evidence basis? What methods produced this knowledge?>",\n';
+    prompt += '    "whyItMatters": "<3-4 sentences: Why should people care about getting this right? What are the stakes?>"\n';
+    prompt += '  },\n';
+    prompt += '  \n';
+    prompt += '  "centralClaims": {\n';
+    prompt += '    "explicit": "<What the claim explicitly states - the surface-level assertion>",\n';
+    prompt += '    "hidden": "<Unstated assumptions, implications, or premises the claim relies on. What must be true for this claim to make sense?>",\n';
+    prompt += '    "whatFramingServes": "<Whose interests does this particular framing serve? What agenda, if any, does this framing advance?>"\n';
+    prompt += '  },\n';
+    prompt += '  \n';
+    prompt += '  "frameworkAnalysis": {\n';
+    prompt += '    "hiddenPremises": "<What assumptions does this claim/question smuggle in without stating them?>",\n';
+    prompt += '    "ideologicalOrigin": "<What worldview or perspective does this framing emerge from?>",\n';
+    prompt += '    "whatBeingObscured": "<What important context, nuance, or alternative framings are hidden by this presentation?>",\n';
+    prompt += '    "reframingNeeded": "<How should this claim/question be reframed for honest inquiry? Or state if framing is already appropriate.>"\n';
+    prompt += '  },\n';
+    prompt += '  \n';
+    prompt += '  "truthDistortionPatterns": [\n';
+    prompt += '    "<Pattern Name>: <Explanation of how this pattern appears and why it distorts truth>",\n';
+    prompt += '    "...or state: None detected - this claim/question uses honest framing"\n';
+    prompt += '  ],\n';
+    prompt += '  \n';
+    prompt += '  "realityFactors": {\n';
+    prompt += '    "evidenceQuality": { \n';
+    prompt += '      "score": <-10 to +10>, \n';
+    prompt += '      "explanation": "<3-5 sentences: What evidence exists? How strong is it? What would stronger evidence look like? What should readers look for when evaluating evidence on this topic?>" \n';
+    prompt += '    },\n';
+    prompt += '    "epistemologicalSoundness": { \n';
+    prompt += '      "score": <-10 to +10>, \n';
+    prompt += '      "explanation": "<3-5 sentences: How was this knowledge derived? What methodology was used? Are there reasoning flaws? What makes reasoning sound or unsound on this topic?>" \n';
+    prompt += '    },\n';
+    prompt += '    "sourceReliability": { \n';
+    prompt += '      "score": <-10 to +10>, \n';
+    prompt += '      "explanation": "<3-5 sentences: Who are the sources? What is their track record? What potential conflicts of interest exist? How can readers evaluate source credibility?>" \n';
+    prompt += '    },\n';
+    prompt += '    "logicalCoherence": { \n';
+    prompt += '      "score": <-10 to +10>, \n';
+    prompt += '      "explanation": "<3-5 sentences: Does the argument follow logically? Are there fallacies? What logical principles apply? How can readers spot logical problems?>" \n';
+    prompt += '    }\n';
+    prompt += '  },\n';
+    prompt += '  \n';
+    prompt += '  "integrity": {\n';
+    prompt += '    "observable": {\n';
+    prompt += '      "sourcesCited": "<Y|P|N>",\n';
+    prompt += '      "sourcesCitedEvidence": "<2-3 sentences explaining what sources were or weren\'t cited and why this matters>",\n';
+    prompt += '      "limitationsAcknowledged": "<Y|P|N>",\n';
+    prompt += '      "limitationsEvidence": "<2-3 sentences explaining what limitations were or weren\'t acknowledged and why honest discourse requires this>",\n';
+    prompt += '      "counterArgumentsAddressed": "<Y|P|N>",\n';
+    prompt += '      "counterArgumentsEvidence": "<2-3 sentences explaining what counter-arguments exist and whether they were engaged with fairly>",\n';
+    prompt += '      "fallaciesPresent": "<Y|N>",\n';
+    prompt += '      "fallaciesEvidence": "<2-3 sentences naming any specific fallacies found and explaining why they undermine the argument>",\n';
+    prompt += '      "score": <-1.0 to +1.0>\n';
+    prompt += '    },\n';
+    prompt += '    "comparative": {\n';
+    prompt += '      "percentile": <0-100>,\n';
+    prompt += '      "baseline": "<2-3 sentences describing what quality discourse on this topic typically includes>",\n';
+    prompt += '      "gaps": ["<specific gap with explanation>", ...],\n';
+    prompt += '      "score": <-1.0 to +1.0>\n';
+    prompt += '    },\n';
+    prompt += '    "bias": {\n';
+    prompt += '      "inflammatoryLanguage": "<2-3 sentences with specific examples if present, explaining how language choice affects perception>",\n';
+    prompt += '      "playbookPatterns": ["<pattern with explanation of why it signals bias>", ...],\n';
+    prompt += '      "inaccuracies": ["<specific inaccuracy with correction>", ...],\n';
+    prompt += '      "oneSidedFraming": "<2-3 sentences explaining what perspectives were included/excluded>",\n';
+    prompt += '      "score": <-1.0 to +1.0>\n';
+    prompt += '    }\n';
+    prompt += '  },\n';
+    prompt += '  \n';
+    prompt += '  "evidenceAnalysis": {\n';
+    prompt += '    "forTheClaim": ["<Evidence point supporting the claim with source and strength assessment>", ...],\n';
+    prompt += '    "againstTheClaim": ["<Evidence point contradicting or complicating the claim with source>", ...],\n';
+    prompt += '    "sourceQuality": "<Assessment of overall source quality: peer-reviewed, institutional, journalistic, advocacy, anonymous, etc.>"\n';
+    prompt += '  },\n';
+    prompt += '  \n';
+    prompt += '  "whatWeCanBeConfidentAbout": [\n';
+    prompt += '    "<High-confidence conclusion 1 with brief explanation of why confidence is warranted>",\n';
+    prompt += '    "<High-confidence conclusion 2>",\n';
+    prompt += '    "..."\n';
+    prompt += '  ],\n';
+    prompt += '  \n';
+    prompt += '  "whatRemainsUncertain": [\n';
+    prompt += '    "<Uncertainty 1: What we don\'t know and why it matters>",\n';
+    prompt += '    "<Uncertainty 2>",\n';
+    prompt += '    "..."\n';
+    prompt += '  ],\n';
+    prompt += '  \n';
+    prompt += '  "lessonsForAssessment": [\n';
+    prompt += '    "<Lesson 1: A transferable critical thinking skill readers can apply to similar claims>",\n';
+    prompt += '    "<Lesson 2: Another insight about information evaluation>",\n';
+    prompt += '    "<Lesson 3: Methodology insight>",\n';
+    prompt += '    "..."\n';
+    prompt += '  ],\n';
+    prompt += '  \n';
+    prompt += '  "methodologyNotes": {\n';
+    prompt += '    "realityScoreRationale": "<2-3 sentences explaining why this specific Reality Score was assigned and not higher or lower>",\n';
+    prompt += '    "integrityScoreRationale": "<2-3 sentences explaining why this specific Integrity Score was assigned>"\n';
+    prompt += '  },\n';
+    prompt += '  \n';
+    prompt += '  "sources": [\n';
+    prompt += '    "<Source 1: Name/Title - what it contributes to this assessment>",\n';
+    prompt += '    "<Source 2: Name/Title - what it contributes>",\n';
+    prompt += '    "..."\n';
+    prompt += '  ]\n';
+    prompt += '}\n';
+    prompt += '```\n\n';
+    
+    prompt += '### PART 2: NARRATIVE ASSESSMENT\n';
+    prompt += 'After JSON, provide human-readable sections with EDUCATIONAL depth:\n\n';
+    prompt += '**CLAIM BEING TESTED** - Restate the claim clearly and identify what type of claim it is\n\n';
+    prompt += '**THE CENTRAL CLAIMS (EXPLICIT AND HIDDEN)** - What is stated vs. what is assumed\n\n';
+    prompt += '**VERITAS ASSESSMENT** - Overall finding with appropriate nuance\n\n';
+    prompt += '**EVIDENCE ANALYSIS** - Deep dive with "For the claim:" and "Against/Complicating:" subsections\n\n';
+    prompt += '**TRUTH DISTORTION PATTERNS** - Identify any manipulation techniques or state "None present"\n\n';
+    prompt += '**EXAMINING THE FRAMEWORK** - Hidden premises, ideological origin, what\'s obscured, reframing needed\n\n';
+    prompt += '**WHAT WE CAN BE CONFIDENT ABOUT** - High-confidence conclusions as bullet points\n\n';
+    prompt += '**WHAT REMAINS UNCERTAIN** - Honest acknowledgment of unknowns\n\n';
+    prompt += '**LESSONS FOR INFORMATION ASSESSMENT** - Numbered list of transferable critical thinking skills\n\n';
+    prompt += '**METHODOLOGY NOTES** - Explain the scoring rationale\n\n';
+    prompt += '**BOTTOM LINE** - Clear, actionable conclusion\n';
+    
+    return prompt;
+}
+
+// ============================================
+// PROMPT BUILDER - TRACK B (Criteria-Based)
+// ============================================
+function buildTrackBPrompt(question, claimType, criteria, customCriteria, fiveWsContext) {
+    var now = new Date();
+    var currentDate = now.toLocaleDateString('en-US', { 
+        weekday: 'long', 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+    });
+    var isoDate = now.toISOString().split('T')[0];
+    
+    var prompt = 'You are VERITAS Track B, a criteria-based assessment system for subjective or complex claims. ';
+    prompt += 'Your purpose is to evaluate claims against SPECIFIC CRITERIA selected by the user, ';
+    prompt += 'providing independent scores for each criterion rather than forcing a single overall judgment.\n\n';
+    
+    // TEMPORAL AWARENESS
+    prompt += '## CURRENT DATE\n';
+    prompt += '**TODAY IS: ' + currentDate + ' (' + isoDate + ')**\n\n';
+    prompt += 'Search for current information before making assessments. Do not rely on potentially outdated training data.\n\n';
+    
+    // CLAIM TYPE CONTEXT
+    var claimTypeLabel = CRITERIA_SETS[claimType] ? CRITERIA_SETS[claimType].label : 'General Assessment';
+    prompt += '## CLAIM TYPE: ' + claimTypeLabel.toUpperCase() + '\n\n';
+    
+    // 5 W's CONTEXT (if provided)
+    if (fiveWsContext) {
+        prompt += '## CONTEXTUAL INFORMATION PROVIDED BY USER\n';
+        if (fiveWsContext.who) prompt += '- **Who**: ' + fiveWsContext.who + '\n';
+        if (fiveWsContext.what) prompt += '- **What**: ' + fiveWsContext.what + '\n';
+        if (fiveWsContext.when) prompt += '- **When**: ' + fiveWsContext.when + '\n';
+        if (fiveWsContext.where) prompt += '- **Where**: ' + fiveWsContext.where + '\n';
+        if (fiveWsContext.how) prompt += '- **How/Impact**: ' + fiveWsContext.how + '\n';
+        prompt += '\n';
+    }
+    
+    // THE CLAIM
+    prompt += '## THE CLAIM TO ASSESS\n';
+    prompt += '"' + question + '"\n\n';
+    
+    // BUILD CRITERIA LIST
+    prompt += '## CRITERIA TO ASSESS\n';
+    prompt += 'The user has selected the following criteria. You MUST assess EACH ONE independently:\n\n';
+    
+    var allCriteria = [];
+    var criteriaSet = CRITERIA_SETS[claimType] || CRITERIA_SETS.generic;
+    
+    // Helper function to find criterion by id in the array
+    function findCriterionById(criteriaArray, id) {
+        for (var i = 0; i < criteriaArray.length; i++) {
+            if (criteriaArray[i].id === id) {
+                return criteriaArray[i];
             }
         }
-
-        .column-left {
-            border-right: 1px solid var(--border-subtle);
-        }
-
-        /* Collapsible Sections */
-        .collapsible-section {
-            border-bottom: 1px solid var(--border-subtle);
-        }
-
-        .collapsible-section:last-child { border-bottom: none; }
-
-        .section-header {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 10px 16px;
-            cursor: pointer;
-            transition: background 0.2s ease;
-            user-select: none;
-            background: rgba(20, 28, 40, 0.4);
-        }
-
-        .section-header:hover { background: rgba(30, 41, 59, 0.5); }
-
-        .section-header .button-group {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        /* Toggle button with 3D effect - on left */
-        .section-toggle {
-            width: 26px;
-            height: 26px;
-            background: linear-gradient(180deg, #3a4555 0%, #2a3342 100%);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 5px;
-            color: var(--text-secondary);
-            font-size: 1rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            flex-shrink: 0;
-            box-shadow: 
-                0 2px 0 rgba(0, 0, 0, 0.3),
-                0 3px 5px rgba(0, 0, 0, 0.2),
-                inset 0 1px 0 rgba(255, 255, 255, 0.1);
-            border-bottom: 2px solid rgba(0, 0, 0, 0.4);
-        }
-
-        .section-toggle:hover {
-            background: linear-gradient(180deg, #4a5565 0%, #3a4555 100%);
-        }
-
-        .section-toggle:active {
-            box-shadow: 
-                0 1px 0 rgba(0, 0, 0, 0.3),
-                inset 0 1px 3px rgba(0, 0, 0, 0.3);
-            transform: translateY(1px);
-        }
-
-        /* Base button style - fixed width, uniform height */
-        .section-header h4 {
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            padding: 8px 12px;
-            border-radius: 5px;
-            margin: 0;
-            width: 230px;
-            height: 52px;
-            text-align: center;
-            line-height: 1.25;
-            box-shadow: 
-                0 2px 0 rgba(0, 0, 0, 0.3),
-                0 4px 6px rgba(0, 0, 0, 0.2),
-                inset 0 1px 0 rgba(255, 255, 255, 0.15),
-                inset 0 -2px 4px rgba(0, 0, 0, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-bottom: 2px solid rgba(0, 0, 0, 0.3);
-        }
-
-        /* SUPER MUTED COLOR PALETTE with 3D gradients */
-        .section-header.reality h4 { 
-            background: linear-gradient(180deg, rgba(85, 115, 175, 0.55) 0%, rgba(55, 80, 140, 0.55) 100%);
-        }
-        .section-header.integrity h4 { 
-            background: linear-gradient(180deg, rgba(115, 95, 165, 0.55) 0%, rgba(80, 60, 130, 0.55) 100%);
-        }
-        .section-header.truth h4 { 
-            background: linear-gradient(180deg, rgba(20, 140, 115, 0.55) 0%, rgba(12, 95, 80, 0.55) 100%);
-        }
-        .section-header.claims h4 { 
-            background: linear-gradient(180deg, rgba(200, 145, 70, 0.5) 0%, rgba(150, 105, 45, 0.5) 100%);
-        }
-        .section-header.framework h4 { 
-            background: linear-gradient(180deg, rgba(170, 95, 135, 0.5) 0%, rgba(125, 65, 100, 0.5) 100%);
-        }
-        .section-header.distortion h4 { 
-            background: linear-gradient(180deg, rgba(180, 85, 85, 0.55) 0%, rgba(135, 55, 55, 0.55) 100%);
-        }
-        .section-header.evidence h4 { 
-            background: linear-gradient(180deg, rgba(75, 145, 165, 0.5) 0%, rgba(50, 110, 130, 0.5) 100%);
-        }
-        .section-header.confident h4 { 
-            background: linear-gradient(180deg, rgba(20, 140, 115, 0.55) 0%, rgba(12, 95, 80, 0.55) 100%);
-        }
-        .section-header.uncertain h4 { 
-            background: linear-gradient(180deg, rgba(200, 155, 60, 0.5) 0%, rgba(150, 115, 35, 0.5) 100%);
-        }
-        .section-header.lessons h4 { 
-            background: linear-gradient(180deg, rgba(95, 105, 175, 0.55) 0%, rgba(65, 72, 140, 0.55) 100%);
-        }
-        .section-header.methodology h4 { 
-            background: linear-gradient(180deg, rgba(115, 125, 135, 0.6) 0%, rgba(80, 90, 100, 0.6) 100%);
-        }
-        .section-header.sources h4 { 
-            background: linear-gradient(180deg, rgba(115, 95, 165, 0.55) 0%, rgba(80, 60, 130, 0.55) 100%);
-        }
-
-        .section-content {
-            display: none;
-            padding: 16px 20px;
-            background: var(--bg-secondary);
-            border-top: 1px solid var(--border-subtle);
-            max-width: 100%;
-            overflow-x: auto;
-        }
-
-        .section-content.expanded { display: block; }
-
-        .section-content p {
-            color: var(--text-secondary);
-            margin-bottom: 16px;
-            line-height: 1.7;
-        }
-
-        .section-content p:last-child { margin-bottom: 0; }
-
-        .section-content strong { color: var(--text-primary); }
-
-        .section-content ul, .section-content ol {
-            margin-left: 20px;
-            color: var(--text-secondary);
-        }
-
-        .section-content li { margin-bottom: 8px; }
-
-        /* Calculation Box */
-        .calculation-box {
-            margin-top: 16px;
-            padding: 12px 16px;
-            background: var(--bg-input);
-            border: 1px solid var(--accent-teal);
-            border-radius: 6px;
-            text-align: center;
-            font-family: 'IBM Plex Mono', monospace;
-        }
-
-        /* Integrity Dimensions - child buttons with same 3D styling */
-        .integrity-children {
-            padding: 12px 16px 16px 16px;
-            background: rgba(15, 20, 30, 0.5);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .integrity-dimension {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            cursor: pointer;
-        }
-
-        .integrity-dimension .child-toggle {
-            width: 22px;
-            height: 22px;
-            background: linear-gradient(180deg, #3a4555 0%, #2a3342 100%);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 4px;
-            color: var(--text-secondary);
-            font-size: 0.85rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            flex-shrink: 0;
-            box-shadow: 
-                0 2px 0 rgba(0, 0, 0, 0.3),
-                0 2px 4px rgba(0, 0, 0, 0.2),
-                inset 0 1px 0 rgba(255, 255, 255, 0.1);
-            border-bottom: 2px solid rgba(0, 0, 0, 0.4);
-        }
-
-        .integrity-dimension .child-toggle:hover {
-            background: linear-gradient(180deg, #4a5565 0%, #3a4555 100%);
-        }
-
-        .dimension-title {
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            padding: 6px 10px;
-            border-radius: 4px;
-            margin: 0;
-            width: 200px;
-            height: 42px;
-            text-align: center;
-            box-shadow: 
-                0 2px 0 rgba(0, 0, 0, 0.3),
-                0 3px 5px rgba(0, 0, 0, 0.2),
-                inset 0 1px 0 rgba(255, 255, 255, 0.15),
-                inset 0 -2px 4px rgba(0, 0, 0, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-bottom: 2px solid rgba(0, 0, 0, 0.3);
-            background: linear-gradient(180deg, rgba(100, 85, 145, 0.5) 0%, rgba(70, 55, 115, 0.5) 100%);
-        }
-
-        .dim-score {
-            font-family: 'IBM Plex Mono', monospace;
-            color: var(--score-positive);
-            font-weight: 700;
-        }
-
-        .dimension-content {
-            display: none;
-            padding: 12px 16px;
-            background: rgba(0,0,0,0.15);
-            margin-top: 8px;
-            border-radius: 6px;
-        }
-
-        .dimension-content.expanded {
-            display: block;
-        }
-
-        .dimension-desc {
-            font-style: italic;
-            color: var(--text-muted);
-            margin-bottom: 12px;
-            font-size: 0.85rem;
-        }
-
-        /* Integrity Table */
-        .integrity-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 12px 0;
-            font-size: 0.9rem;
-        }
-
-        .integrity-table th, .integrity-table td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid var(--border-subtle);
-        }
-
-        .integrity-table th {
-            color: var(--text-muted);
-            font-weight: 500;
-            font-size: 0.75rem;
-            text-transform: uppercase;
-        }
-
-        .integrity-table td { color: var(--text-secondary); }
-
-        .check-yes { color: var(--score-positive); font-weight: 600; }
-        .check-no { color: var(--text-muted); font-weight: 600; }
-        .check-partial { color: var(--accent-amber); font-weight: 600; }
-
-        .integrity-calculation {
-            margin-top: 20px;
-            padding: 16px;
-            background: var(--bg-input);
-            border-radius: 6px;
-            border: 1px solid var(--accent-purple);
-            text-align: center;
-            font-family: 'IBM Plex Mono', monospace;
-        }
-
-        /* ================================
-           FURTHER ANALYSIS (Amplify/Verify)
-           ================================ */
-        .options-panel {
-            background: var(--bg-card);
-            border: 1px solid var(--border-subtle);
-            border-radius: 12px;
-            padding: 24px;
-            margin-bottom: 24px;
-        }
-
-        .options-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 20px;
-            padding-bottom: 16px;
-            border-bottom: 1px solid var(--border-subtle);
-        }
-
-        .options-header h3 {
-            font-size: 1rem;
-            font-weight: 600;
-            color: var(--text-primary);
-        }
-
-        .options-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-        }
-
-        @media (max-width: 768px) {
-            .options-grid { grid-template-columns: 1fr; }
-        }
-
-        .option-card {
-            background: var(--bg-tertiary);
-            border: 1px solid var(--border-subtle);
-            border-radius: 10px;
-            padding: 20px;
-        }
-
-        .option-card h4 {
-            font-size: 0.95rem;
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .option-card p {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            margin-bottom: 16px;
-            line-height: 1.5;
-        }
-
-        .btn-amplify {
-            width: 100%;
-            background: linear-gradient(135deg, var(--accent-purple) 0%, #6d28d9 100%);
-            color: white;
-        }
-
-        .btn-verify {
-            width: 100%;
-            background: linear-gradient(135deg, var(--accent-green) 0%, #059669 100%);
-            color: white;
-        }
-
-        .btn-amplify:disabled, .btn-verify:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-
-        /* Cooldown Timer - Muted Gold */
-        .cooldown-notice {
-            display: none;
-            background: linear-gradient(135deg, rgba(180, 140, 60, 0.08) 0%, rgba(140, 100, 40, 0.12) 100%);
-            border: 1px solid rgba(180, 140, 60, 0.4);
-            border-radius: 8px;
-            padding: 12px 20px;
-            margin-top: 16px;
-            text-align: center;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 220, 150, 0.05);
-        }
-
-        .cooldown-notice.visible { display: flex; align-items: center; justify-content: center; gap: 12px; }
-
-        .cooldown-notice p {
-            color: rgba(220, 180, 100, 0.8);
-            font-size: 0.85rem;
-            margin: 0;
-        }
-
-        .cooldown-timer {
-            font-family: 'IBM Plex Mono', monospace;
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: rgba(220, 180, 100, 0.95);
-            text-shadow: 0 0 10px rgba(220, 180, 100, 0.3);
-            letter-spacing: 2px;
-        }
-
-        .cooldown-label {
-            font-size: 0.7rem;
-            color: rgba(180, 140, 60, 0.7);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        /* Amplify Modal */
-        .amplify-modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.85);
-            z-index: 1000;
-            overflow-y: auto;
-            padding: 40px 20px;
-        }
-
-        .amplify-modal-overlay.visible { display: block; }
-
-        .amplify-modal {
-            max-width: 900px;
-            margin: 0 auto;
-            background: var(--bg-card);
-            border: 1px solid var(--accent-purple);
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 20px 60px rgba(139, 92, 246, 0.3);
-        }
-
-        .amplify-modal-header {
-            background: linear-gradient(135deg, var(--accent-purple) 0%, #6d28d9 100%);
-            padding: 20px 24px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .amplify-modal-header h2 {
-            color: white;
-            font-size: 1.25rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .amplify-modal-close {
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
-            color: white;
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            font-size: 1.25rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background 0.2s;
-        }
-
-        .amplify-modal-close:hover { background: rgba(255, 255, 255, 0.3); }
-
-        .amplify-modal-body {
-            padding: 24px;
-        }
-
-        .amplify-summary {
-            background: var(--bg-tertiary);
-            border-left: 4px solid var(--accent-purple);
-            padding: 16px 20px;
-            margin-bottom: 24px;
-            border-radius: 0 8px 8px 0;
-        }
-
-        .amplify-summary h3 {
-            color: var(--accent-purple);
-            font-size: 0.9rem;
-            margin-bottom: 8px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .amplify-summary p {
-            color: var(--text-primary);
-            line-height: 1.7;
-        }
-
-        .amplify-confidence {
-            display: flex;
-            gap: 20px;
-            margin-bottom: 24px;
-            flex-wrap: wrap;
-        }
-
-        .confidence-card {
-            flex: 1;
-            min-width: 200px;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-medium);
-            border-radius: 8px;
-            padding: 16px;
-            text-align: center;
-        }
-
-        .confidence-card.up { border-color: var(--accent-green); }
-        .confidence-card.down { border-color: var(--accent-red); }
-        .confidence-card.unchanged { border-color: var(--accent-amber); }
-
-        .confidence-direction {
-            font-size: 2rem;
-            margin-bottom: 4px;
-        }
-
-        .confidence-card.up .confidence-direction { color: var(--accent-green); }
-        .confidence-card.down .confidence-direction { color: var(--accent-red); }
-        .confidence-card.unchanged .confidence-direction { color: var(--accent-amber); }
-
-        .confidence-label {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .confidence-value {
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-top: 4px;
-        }
-
-        .confidence-reason {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            margin-top: 8px;
-            font-style: italic;
-        }
-
-        /* Amplify Sections */
-        .amplify-sections {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .amplify-section-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            cursor: pointer;
-            padding: 4px 0;
-        }
-
-        .amplify-section-toggle {
-            width: 26px;
-            height: 26px;
-            background: linear-gradient(180deg, rgba(139, 92, 246, 0.4) 0%, rgba(109, 40, 217, 0.4) 100%);
-            border: 1px solid rgba(139, 92, 246, 0.5);
-            border-radius: 5px;
-            color: white;
-            font-size: 1rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            box-shadow: 
-                0 2px 0 rgba(0, 0, 0, 0.3),
-                0 3px 5px rgba(0, 0, 0, 0.2),
-                inset 0 1px 0 rgba(255, 255, 255, 0.1);
-            border-bottom: 2px solid rgba(0, 0, 0, 0.4);
-        }
-
-        .amplify-section-toggle:hover {
-            background: linear-gradient(180deg, rgba(139, 92, 246, 0.6) 0%, rgba(109, 40, 217, 0.6) 100%);
-        }
-
-        .amplify-section-title {
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            padding: 8px 12px;
-            border-radius: 5px;
-            width: 250px;
-            height: 52px;
-            text-align: center;
-            line-height: 1.25;
-            box-shadow: 
-                0 2px 0 rgba(0, 0, 0, 0.3),
-                0 4px 6px rgba(0, 0, 0, 0.2),
-                inset 0 1px 0 rgba(255, 255, 255, 0.15),
-                inset 0 -2px 4px rgba(0, 0, 0, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-bottom: 2px solid rgba(0, 0, 0, 0.3);
-        }
-
-        /* Amplify section color variations */
-        .amplify-section-title.challenges { 
-            background: linear-gradient(180deg, rgba(220, 100, 100, 0.5) 0%, rgba(170, 60, 60, 0.5) 100%);
-        }
-        .amplify-section-title.alternatives { 
-            background: linear-gradient(180deg, rgba(100, 160, 200, 0.5) 0%, rgba(60, 120, 160, 0.5) 100%);
-        }
-        .amplify-section-title.blindspots { 
-            background: linear-gradient(180deg, rgba(200, 160, 80, 0.5) 0%, rgba(160, 120, 50, 0.5) 100%);
-        }
-        .amplify-section-title.stresstests { 
-            background: linear-gradient(180deg, rgba(180, 100, 180, 0.5) 0%, rgba(140, 60, 140, 0.5) 100%);
-        }
-        .amplify-section-title.changes { 
-            background: linear-gradient(180deg, rgba(100, 180, 140, 0.5) 0%, rgba(60, 140, 100, 0.5) 100%);
-        }
-        .amplify-section-title.bottomline { 
-            background: linear-gradient(180deg, rgba(139, 92, 246, 0.55) 0%, rgba(109, 40, 217, 0.55) 100%);
-        }
-
-        .amplify-section-content {
-            display: none;
-            padding: 16px 20px;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-subtle);
-            border-radius: 0 0 8px 8px;
-            margin-top: -4px;
-            margin-left: 38px;
-        }
-
-        .amplify-section-content.expanded { display: block; }
-
-        .amplify-section-content ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .amplify-section-content li {
-            padding: 10px 0;
-            border-bottom: 1px solid var(--border-subtle);
-            color: var(--text-secondary);
-            line-height: 1.6;
-        }
-
-        .amplify-section-content li:last-child { border-bottom: none; }
-
-        .amplify-section-content li::before {
-            content: '→';
-            color: var(--accent-purple);
-            margin-right: 10px;
-        }
-
-        .amplify-bottomline-text {
-            font-size: 1rem;
-            color: var(--text-primary);
-            line-height: 1.8;
-        }
-
-        /* Amplify Processing */
-        .amplify-processing {
-            display: none;
-            text-align: center;
-            padding: 60px 20px;
-        }
-
-        .amplify-processing.visible { display: block; }
-
-        .amplify-spinner {
-            width: 50px;
-            height: 50px;
-            border: 4px solid var(--border-medium);
-            border-top-color: var(--accent-purple);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 20px;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        .amplify-processing p {
-            color: var(--text-secondary);
-            font-size: 0.95rem;
-        }
-
-        .amplify-processing .gathering-label {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: var(--accent-purple);
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        .amplify-processing .timer {
-            font-family: 'IBM Plex Mono', monospace;
-            font-size: 1.5rem;
-            color: var(--accent-purple);
-            margin-top: 12px;
-        }
-
-        /* ================================
-           VERIFY MODAL STYLES
-           ================================ */
-        .verify-modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.85);
-            z-index: 1000;
-            overflow-y: auto;
-            padding: 40px 20px;
-        }
-
-        .verify-modal-overlay.visible { display: block; }
-
-        .verify-modal {
-            max-width: 1000px;
-            margin: 0 auto;
-            background: var(--bg-card);
-            border: 1px solid var(--accent-green);
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 20px 60px rgba(16, 185, 129, 0.3);
-        }
-
-        .verify-modal-header {
-            background: linear-gradient(135deg, var(--accent-green) 0%, #059669 100%);
-            padding: 20px 24px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .verify-modal-header h2 {
-            color: white;
-            font-size: 1.25rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .verify-modal-close {
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
-            color: white;
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            font-size: 1.25rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background 0.2s;
-        }
-
-        .verify-modal-close:hover { background: rgba(255, 255, 255, 0.3); }
-
-        .verify-modal-body {
-            padding: 24px;
-        }
-
-        /* Verify Processing */
-        .verify-processing {
-            display: none;
-            text-align: center;
-            padding: 60px 20px;
-        }
-
-        .verify-processing.visible { display: block; }
-
-        .verify-spinner {
-            width: 50px;
-            height: 50px;
-            border: 4px solid var(--border-medium);
-            border-top-color: var(--accent-green);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 20px;
-        }
-
-        .verify-processing p {
-            color: var(--text-secondary);
-            font-size: 0.95rem;
-        }
-
-        .verify-processing .gathering-label {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: var(--accent-green);
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        .verify-processing .timer {
-            font-family: 'IBM Plex Mono', monospace;
-            font-size: 1.5rem;
-            color: var(--accent-green);
-            margin-top: 12px;
-        }
-
-        /* Side-by-Side Comparison */
-        .comparison-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-bottom: 24px;
-        }
-
-        @media (max-width: 768px) {
-            .comparison-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .comparison-card {
-            background: var(--bg-secondary);
-            border: 2px solid var(--border-medium);
-            border-radius: 10px;
-            overflow: hidden;
-        }
-
-        .comparison-card.initial {
-            border-color: var(--accent-teal);
-        }
-
-        .comparison-card.verification {
-            border-color: var(--accent-green);
-        }
-
-        .comparison-card-header {
-            padding: 12px 16px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .comparison-card.initial .comparison-card-header {
-            background: linear-gradient(135deg, rgba(13, 148, 136, 0.3) 0%, rgba(13, 148, 136, 0.1) 100%);
-            color: var(--accent-teal);
-        }
-
-        .comparison-card.verification .comparison-card-header {
-            background: linear-gradient(135deg, rgba(16, 185, 129, 0.3) 0%, rgba(16, 185, 129, 0.1) 100%);
-            color: var(--accent-green);
-        }
-
-        .comparison-card-body {
-            padding: 16px;
-        }
-
-        .comparison-score-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 0;
-            border-bottom: 1px solid var(--border-subtle);
-        }
-
-        .comparison-score-row:last-child {
-            border-bottom: none;
-        }
-
-        .comparison-score-label {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-        }
-
-        .comparison-score-value {
-            font-family: 'IBM Plex Mono', monospace;
-            font-size: 1.25rem;
-            font-weight: 700;
-        }
-
-        .comparison-score-value.positive { color: var(--score-positive); }
-        .comparison-score-value.negative { color: var(--score-negative); }
-        .comparison-score-value.neutral { color: var(--score-neutral); }
-
-        /* Alignment Status */
-        .alignment-status {
-            text-align: center;
-            padding: 16px;
-            border-radius: 8px;
-            margin-bottom: 24px;
-        }
-
-        .alignment-status.aligned {
-            background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(16, 185, 129, 0.05) 100%);
-            border: 1px solid var(--accent-green);
-        }
-
-        .alignment-status.divergent {
-            background: linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(245, 158, 11, 0.05) 100%);
-            border: 1px solid var(--accent-amber);
-        }
-
-        .alignment-status h3 {
-            font-size: 1.1rem;
-            margin-bottom: 4px;
-        }
-
-        .alignment-status.aligned h3 { color: var(--accent-green); }
-        .alignment-status.divergent h3 { color: var(--accent-amber); }
-
-        .alignment-status p {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-        }
-
-        /* Consensus Section */
-        .consensus-section {
-            display: none;
-            background: var(--bg-tertiary);
-            border: 1px solid var(--accent-amber);
-            border-radius: 10px;
-            padding: 20px;
-            text-align: center;
-        }
-
-        .consensus-section.visible { display: block; }
-
-        .consensus-section h3 {
-            color: var(--accent-amber);
-            font-size: 1.1rem;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .consensus-section p {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            margin-bottom: 16px;
-            line-height: 1.6;
-        }
-
-        .btn-consensus {
-            background: linear-gradient(135deg, var(--accent-amber) 0%, #d97706 100%);
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 6px;
-            font-weight: 600;
-            cursor: pointer;
-            font-size: 0.95rem;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        .btn-consensus:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
-        }
-
-        .btn-consensus:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        /* Adjudication Results */
-        .adjudication-results {
-            display: none;
-            margin-top: 24px;
-        }
-
-        .adjudication-results.visible { display: block; }
-
-        .adjudication-header {
-            background: linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(139, 92, 246, 0.05) 100%);
-            border: 1px solid var(--accent-purple);
-            border-radius: 10px;
-            padding: 20px;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .adjudication-header h3 {
-            color: var(--accent-purple);
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 12px;
-        }
-
-        .final-scores {
-            display: flex;
-            justify-content: center;
-            gap: 40px;
-            margin-bottom: 16px;
-        }
-
-        .final-score-item {
-            text-align: center;
-        }
-
-        .final-score-label {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .final-score-value {
-            font-family: 'IBM Plex Mono', monospace;
-            font-size: 2rem;
-            font-weight: 700;
-        }
-
-        .adjudication-justification {
-            background: var(--bg-secondary);
-            border-radius: 8px;
-            padding: 16px;
-            margin-top: 16px;
-        }
-
-        .adjudication-justification h4 {
-            color: var(--text-muted);
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 8px;
-        }
-
-        .adjudication-justification p {
-            color: var(--text-primary);
-            line-height: 1.7;
-        }
-
-        .winner-badge {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-top: 8px;
-        }
-
-        .winner-badge.initial {
-            background: var(--accent-teal);
-            color: white;
-        }
-
-        .winner-badge.verification {
-            background: var(--accent-green);
-            color: white;
-        }
-
-        /* Side-by-Side Full Comparison Modal */
-        .compare-modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.95);
-            z-index: 1100;
-            overflow: hidden;
-        }
-
-        .compare-modal-overlay.visible { display: flex; }
-
-        .compare-modal {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .compare-modal-header {
-            background: linear-gradient(135deg, var(--accent-purple) 0%, #6d28d9 100%);
-            padding: 12px 24px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-shrink: 0;
-        }
-
-        .compare-modal-header h2 {
-            color: white;
-            font-size: 1.1rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .compare-modal-close {
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
-            color: white;
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            font-size: 1.25rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background 0.2s;
-        }
-
-        .compare-modal-close:hover { background: rgba(255, 255, 255, 0.3); }
-
-        .compare-modal-body {
-            flex: 1;
-            display: flex;
-            overflow: hidden;
-        }
-
-        .compare-column {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            border-right: 2px solid var(--border-medium);
-        }
-
-        .compare-column:last-child {
-            border-right: none;
-        }
-
-        .compare-column-header {
-            padding: 12px 16px;
-            text-align: center;
-            font-weight: 600;
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            flex-shrink: 0;
-        }
-
-        .compare-column.initial .compare-column-header {
-            background: linear-gradient(135deg, rgba(20, 184, 166, 0.3) 0%, rgba(20, 184, 166, 0.1) 100%);
-            color: var(--accent-teal);
-            border-bottom: 2px solid var(--accent-teal);
-        }
-
-        .compare-column.verification .compare-column-header {
-            background: linear-gradient(135deg, rgba(16, 185, 129, 0.3) 0%, rgba(16, 185, 129, 0.1) 100%);
-            color: var(--accent-green);
-            border-bottom: 2px solid var(--accent-green);
-        }
-
-        .compare-column-scores {
-            display: flex;
-            justify-content: center;
-            gap: 24px;
-            padding: 12px;
-            background: var(--bg-tertiary);
-            border-bottom: 1px solid var(--border-subtle);
-            flex-shrink: 0;
-        }
-
-        .compare-score-item {
-            text-align: center;
-        }
-
-        .compare-score-label {
-            font-size: 0.65rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .compare-score-value {
-            font-family: 'IBM Plex Mono', monospace;
-            font-size: 1.5rem;
-            font-weight: 700;
-        }
-
-        .compare-column-content {
-            flex: 1;
-            overflow-y: auto;
-            background: var(--bg-card);
-        }
-
-        /* Comparison sections within each column */
-        .compare-section {
-            border-bottom: 1px solid var(--border-subtle);
-        }
-
-        .compare-section:last-child {
-            border-bottom: none;
-        }
-
-        .compare-section-header {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 10px 16px;
-            cursor: pointer;
-            transition: background 0.2s ease;
-            user-select: none;
-            background: rgba(20, 28, 40, 0.4);
-            gap: 10px;
-        }
-
-        .compare-section-header:hover { background: rgba(30, 41, 59, 0.5); }
-
-        .compare-section-header h4 {
-            font-size: 0.8rem;
-            color: var(--text-primary);
-            margin: 0;
-        }
-
-        .compare-section-toggle {
-            width: 22px;
-            height: 22px;
-            background: linear-gradient(180deg, #3a4555 0%, #2a3342 100%);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 4px;
-            color: var(--text-secondary);
-            font-size: 0.85rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            flex-shrink: 0;
-        }
-
-        .compare-section-content {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease;
-            background: var(--bg-secondary);
-        }
-
-        .compare-section-content.expanded {
-            max-height: 2000px;
-        }
-
-        .compare-section-content-inner {
-            padding: 16px;
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            line-height: 1.6;
-        }
-
-        /* Button to open comparison */
-        .btn-compare {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 10px 20px;
-            background: linear-gradient(135deg, var(--accent-purple) 0%, #6d28d9 100%);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            margin-top: 16px;
-        }
-
-        .btn-compare:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
-        }
-
-        /* Mobile: Stack columns vertically */
-        @media (max-width: 900px) {
-            .compare-modal-body {
-                flex-direction: column;
-            }
-            
-            .compare-column {
-                border-right: none;
-                border-bottom: 2px solid var(--border-medium);
-                max-height: 50%;
-            }
-            
-            .compare-column:last-child {
-                border-bottom: none;
-            }
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .container { padding: 16px; }
-            .score-panel { padding: 20px; }
-            .countdown-container { flex-wrap: wrap; }
-        }
-    </style>
-</head>
-<body>
-    <!-- Header -->
-    <header class="site-header">
-        <div class="header-content">
-            <div class="logo-section">
-                <div class="logo-row">
-                    <img src="/veritas-logo-horizontal.png" alt="VERITAS LLC" class="logo-img" onerror="this.style.display='none'; document.getElementById('fallbackLogo').style.display='flex';">
-                    <div id="fallbackLogo" class="logo-fallback" style="display: none;">
-                        <div class="logo-mark">V</div>
-                        <div class="logo-text">VERITAS</div>
-                    </div>
-                </div>
-                <div class="tagline">Truth Through Transparency</div>
-            </div>
-            <div class="version-badge">v4.1 — Track A</div>
-        </div>
-    </header>
-
-    <div class="container">
-        <!-- Input Card -->
-        <div class="card" id="inputCard">
-            <div class="card-header">
-                <div class="card-header-icon">📝</div>
-                <div>
-                    <div class="card-title">Claim Assessment</div>
-                    <div class="card-subtitle">Enter a claim or question to evaluate</div>
-                </div>
-            </div>
-
-            <div class="card-body">
-                <div class="error" id="errorBox"></div>
-
-                <div class="form-group">
-                    <label class="form-label">Claim or Question</label>
-                    <textarea id="question" class="form-input" maxlength="600" placeholder="Enter the claim you want to assess...
-
-Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateCharCounter()"></textarea>
-                    <div class="char-counter" id="charCounter">0 / 280 characters</div>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label" for="articleUrl">URL to Analyze (Optional)</label>
-                    <input type="url" id="articleUrl" name="articleUrl" class="form-input" placeholder="https://example.com/article-to-assess" autocomplete="off">
-                    <div class="field-hint">VERITAS will fetch and analyze the content at this URL</div>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label" for="articleText">Article Text (Optional)</label>
-                    <textarea id="articleText" name="articleText" class="form-input" placeholder="Or paste article text directly here..."></textarea>
-                </div>
-
-                <!-- API Key Section (Collapsible) -->
-                <div class="api-key-section">
-                    <div class="api-key-toggle" onclick="toggleApiKey()">
-                        <span>🔑 Use Your Own API Key</span>
-                        <span class="toggle-icon" id="apiKeyToggleIcon">+</span>
-                    </div>
-                    <div class="api-key-content" id="apiKeyContent">
-                        <label class="form-label" for="apiKey">API Key</label>
-                        <input type="password" id="apiKey" name="apiKey" class="form-input" placeholder="sk-ant-api..." autocomplete="off">
-                        <div class="field-hint">Your key is never stored. Get one at <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a></div>
-                    </div>
-                </div>
-
-                <!-- Usage Counter -->
-                <div class="usage-counter" id="usageCounter">
-                    <span class="usage-icon">🎟️</span>
-                    <span class="usage-text">Free assessments remaining today: <strong id="remainingCount">5</strong>/5</span>
-                </div>
-
-                <div class="button-row">
-                    <button class="btn btn-primary" id="assessBtn" onclick="runAssessment()">
-                        <span>⚡</span> Run Assessment
-                    </button>
-                    <button class="btn btn-secondary" onclick="clearForm()">Clear</button>
-                </div>
-
-                <!-- Processing Indicator (compact, inside card) -->
-                <div class="processing-indicator" id="processingIndicator">
-                    <div class="processing-row">
-                        <div class="processing-icon"></div>
-                        <div class="processing-text">
-                            <div class="processing-title">Assessment in Progress</div>
-                            <div class="processing-status">Searching sources and analyzing evidence...</div>
-                        </div>
-                        <div class="processing-timer">
-                            <div class="timer-block">
-                                <div class="timer-value" id="timerMin">00</div>
-                                <div class="timer-label">Min</div>
-                            </div>
-                            <div class="timer-block">
-                                <div class="timer-value" id="timerSec">00</div>
-                                <div class="timer-label">Sec</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" id="progressFill" style="width: 0%;"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Results Section -->
-        <div class="results-section" id="resultsSection">
-            <!-- Score Panel -->
-            <div class="score-panel">
-                <div class="score-header">
-                    <div class="claim-display">
-                        <div class="claim-label">Claim Assessed</div>
-                        <div class="claim-text" id="claimText">—</div>
-                    </div>
-                </div>
-
-                <div class="score-grid">
-                    <div class="score-card reality">
-                        <div class="score-label">Reality Score</div>
-                        <div class="score-value" id="realityScoreValue">—</div>
-                        <div class="score-descriptor" id="realityDescriptor">—</div>
-                        <div class="score-bar-container">
-                            <div class="score-bar reality">
-                                <div class="score-marker" id="realityMarker" style="left: 50%;"></div>
-                            </div>
-                            <div class="score-bar-labels">
-                                <span>-10</span>
-                                <span>0</span>
-                                <span>+10</span>
-                            </div>
-                        </div>
-                        <div class="score-brief">How well does this claim align with verifiable reality? (-10 = demonstrably false, +10 = demonstrably true)</div>
-                    </div>
-                    
-                    <div class="score-card integrity">
-                        <div class="score-label">Integrity Score</div>
-                        <div class="score-value" id="integrityScoreValue">—</div>
-                        <div class="score-descriptor" id="integrityDescriptor">—</div>
-                        <div class="score-bar-container">
-                            <div class="score-bar integrity">
-                                <div class="score-marker" id="integrityMarker" style="left: 50%;"></div>
-                            </div>
-                            <div class="score-bar-labels">
-                                <span>-1.0</span>
-                                <span>0</span>
-                                <span>+1.0</span>
-                            </div>
-                        </div>
-                        <!-- Integrity Sub-bars -->
-                        <div class="integrity-sub-bars" id="integritySubBars">
-                            <div class="integrity-sub-bar">
-                                <span class="sub-bar-label">Observable</span>
-                                <div class="sub-bar-track">
-                                    <div class="sub-bar-fill positive" id="observableFill" style="width: 0%;"></div>
-                                </div>
-                                <span class="sub-bar-value" id="observableValue">—</span>
-                            </div>
-                            <div class="integrity-sub-bar">
-                                <span class="sub-bar-label">Comparative</span>
-                                <div class="sub-bar-track">
-                                    <div class="sub-bar-fill positive" id="comparativeFill" style="width: 0%;"></div>
-                                </div>
-                                <span class="sub-bar-value" id="comparativeValue">—</span>
-                            </div>
-                            <div class="integrity-sub-bar">
-                                <span class="sub-bar-label">Bias</span>
-                                <div class="sub-bar-track">
-                                    <div class="sub-bar-fill positive" id="biasFill" style="width: 0%;"></div>
-                                </div>
-                                <span class="sub-bar-value" id="biasValue">—</span>
-                            </div>
-                        </div>
-                        <div class="score-brief">How honestly is this claim presented? (-1.0 = highly misleading, +1.0 = fully transparent)</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Assessment Content - Two Column Layout -->
-            <div class="assessment-content">
-                <div class="assessment-header">
-                    <span>📋</span>
-                    <h3>Assessment Details</h3>
-                </div>
-
-                <div class="scroll-hint">
-                    👈 Swipe left/right to see all analysis sections 👉
-                </div>
-
-                <div class="two-column-grid">
-                    <!-- LEFT COLUMN -->
-                    <div class="column-left">
-                        <!-- Reality Score Breakdown FIRST -->
-                        <div class="collapsible-section">
-                            <div class="section-header reality" onclick="toggleSection('reality')">
-                                <div class="button-group">
-                                    <button class="section-toggle" id="realityToggle">+</button>
-                                    <h4>📊 Reality Score Breakdown</h4>
-                                </div>
-                            </div>
-                            <div class="section-content" id="realityContent">
-                                <p>Loading...</p>
-                            </div>
-                        </div>
-
-                        <div class="collapsible-section">
-                            <div class="section-header truth" onclick="toggleSection('truth')">
-                                <div class="button-group">
-                                    <button class="section-toggle" id="truthToggle">+</button>
-                                    <h4>🔍 The Underlying Reality</h4>
-                                </div>
-                            </div>
-                            <div class="section-content" id="truthContent">
-                                <p>Loading...</p>
-                            </div>
-                        </div>
-
-                        <div class="collapsible-section">
-                            <div class="section-header claims" onclick="toggleSection('claims')">
-                                <div class="button-group">
-                                    <button class="section-toggle" id="claimsToggle">+</button>
-                                    <h4>🎯 Central Claims<br>(Explicit & Hidden)</h4>
-                                </div>
-                            </div>
-                            <div class="section-content" id="claimsContent">
-                                <p>Loading...</p>
-                            </div>
-                        </div>
-
-                        <div class="collapsible-section">
-                            <div class="section-header framework" onclick="toggleSection('framework')">
-                                <div class="button-group">
-                                    <button class="section-toggle" id="frameworkToggle">+</button>
-                                    <h4>🧩 Examining the Framework</h4>
-                                </div>
-                            </div>
-                            <div class="section-content" id="frameworkContent">
-                                <p>Loading...</p>
-                            </div>
-                        </div>
-
-                        <div class="collapsible-section">
-                            <div class="section-header distortion" onclick="toggleSection('distortion')">
-                                <div class="button-group">
-                                    <button class="section-toggle" id="distortionToggle">+</button>
-                                    <h4>⚠️ Truth Distortion Patterns</h4>
-                                </div>
-                            </div>
-                            <div class="section-content" id="distortionContent">
-                                <p>Loading...</p>
-                            </div>
-                        </div>
-
-                        <div class="collapsible-section">
-                            <div class="section-header evidence" onclick="toggleSection('evidence')">
-                                <div class="button-group">
-                                    <button class="section-toggle" id="evidenceToggle">+</button>
-                                    <h4>⚖️ Evidence Analysis</h4>
-                                </div>
-                            </div>
-                            <div class="section-content" id="evidenceContent">
-                                <p>Loading...</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- RIGHT COLUMN -->
-                    <div class="column-right">
-                        <!-- Integrity Score Breakdown FIRST -->
-                        <div class="collapsible-section">
-                            <div class="section-header integrity" onclick="toggleSection('integrity')">
-                                <div class="button-group">
-                                    <button class="section-toggle" id="integrityToggle">+</button>
-                                    <h4>🔬 Integrity Score Breakdown</h4>
-                                </div>
-                            </div>
-                            <div class="section-content" id="integrityContent">
-                                <p>Loading...</p>
-                            </div>
-                        </div>
-
-                        <div class="collapsible-section">
-                            <div class="section-header confident" onclick="toggleSection('confident')">
-                                <div class="button-group">
-                                    <button class="section-toggle" id="confidentToggle">+</button>
-                                    <h4>✓ What We Can Be<br>Confident About</h4>
-                                </div>
-                            </div>
-                            <div class="section-content" id="confidentContent">
-                                <p>Loading...</p>
-                            </div>
-                        </div>
-
-                        <div class="collapsible-section">
-                            <div class="section-header uncertain" onclick="toggleSection('uncertain')">
-                                <div class="button-group">
-                                    <button class="section-toggle" id="uncertainToggle">+</button>
-                                    <h4>❓ What Remains Uncertain</h4>
-                                </div>
-                            </div>
-                            <div class="section-content" id="uncertainContent">
-                                <p>Loading...</p>
-                            </div>
-                        </div>
-
-                        <div class="collapsible-section">
-                            <div class="section-header lessons" onclick="toggleSection('lessons')">
-                                <div class="button-group">
-                                    <button class="section-toggle" id="lessonsToggle">+</button>
-                                    <h4>💡 Lessons for<br>Information Assessment</h4>
-                                </div>
-                            </div>
-                            <div class="section-content" id="lessonsContent">
-                                <p>Loading...</p>
-                            </div>
-                        </div>
-
-                        <div class="collapsible-section">
-                            <div class="section-header methodology" onclick="toggleSection('methodology')">
-                                <div class="button-group">
-                                    <button class="section-toggle" id="methodologyToggle">+</button>
-                                    <h4>📝 Methodology Notes</h4>
-                                </div>
-                            </div>
-                            <div class="section-content" id="methodologyContent">
-                                <p>Loading...</p>
-                            </div>
-                        </div>
-
-                        <div class="collapsible-section">
-                            <div class="section-header sources" onclick="toggleSection('sources')">
-                                <div class="button-group">
-                                    <button class="section-toggle" id="sourcesToggle">+</button>
-                                    <h4>📖 Key Sources Referenced</h4>
-                                </div>
-                            </div>
-                            <div class="section-content" id="sourcesContent">
-                                <p>Loading...</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Post-Assessment Options -->
-            <div class="options-panel" id="optionsPanel">
-                <div class="options-header">
-                    <span>🔬</span>
-                    <h3>Further Analysis</h3>
-                </div>
-
-                <div class="options-grid">
-                    <div class="option-card">
-                        <h4><span>🔍</span> Amplify</h4>
-                        <p>Stress-test the assessment — challenge assumptions, explore alternative interpretations, find blind spots.</p>
-                        <button class="btn btn-amplify" id="amplifyBtn" onclick="runAmplify()" disabled>Amplify Analysis</button>
-                    </div>
-                    <div class="option-card">
-                        <h4><span>✓</span> Verify</h4>
-                        <p>Get an independent second evaluation — fresh eyes, identical methodology, compare scores.</p>
-                        <button class="btn btn-verify" id="verifyBtn" onclick="runVerify()" disabled>Run Verification</button>
-                    </div>
-                </div>
-
-                <div class="cooldown-notice" id="cooldownNotice">
-                    <div>
-                        <span class="cooldown-label">Epistemic Reset</span>
-                        <div class="cooldown-timer" id="cooldownTimer">1:00</div>
-                    </div>
-                    <p>Deep analysis available in</p>
-                </div>
-            </div>
-
-            <!-- New Assessment Button -->
-            <div style="text-align: center; margin-top: 24px;">
-                <button class="btn btn-secondary" onclick="clearForm()">↻ New Assessment</button>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        // ================================
-        // STATE VARIABLES
-        // ================================
-        var lastAssessment = null;
-        var processingTimer = null;
-        var processingSeconds = 0;
-        var cooldownTimer = null;
-        var cooldownSeconds = 0;
-
-        // ================================
-        // UTILITY FUNCTIONS
-        // ================================
-        function updateCharCounter() {
-            var textarea = document.getElementById('question');
-            var counter = document.getElementById('charCounter');
-            var len = textarea.value.length;
-            counter.textContent = len + ' / 280 characters';
-            
-            counter.className = 'char-counter';
-            if (len > 280) {
-                counter.classList.add('danger');
-            } else if (len > 200) {
-                counter.classList.add('warning');
-            }
-        }
-
-        function toggleSection(sectionId) {
-            var content = document.getElementById(sectionId + 'Content');
-            var toggle = document.getElementById(sectionId + 'Toggle');
-            if (content && toggle) {
-                content.classList.toggle('expanded');
-                toggle.textContent = content.classList.contains('expanded') ? '−' : '+';
-            }
-        }
-
-        function toggleApiKey() {
-            var content = document.getElementById('apiKeyContent');
-            var icon = document.getElementById('apiKeyToggleIcon');
-            content.classList.toggle('expanded');
-            icon.textContent = content.classList.contains('expanded') ? '−' : '+';
-        }
-
-        function toggleDimension(dimId) {
-            var content = document.getElementById(dimId + 'Content');
-            var toggle = document.getElementById(dimId + 'Toggle');
-            if (content && toggle) {
-                content.classList.toggle('expanded');
-                toggle.textContent = content.classList.contains('expanded') ? '−' : '+';
-            }
-        }
-
-        function clearForm() {
-            document.getElementById('question').value = '';
-            document.getElementById('articleText').value = '';
-            document.getElementById('articleUrl').value = '';
-            document.getElementById('errorBox').classList.remove('visible');
-            document.getElementById('inputCard').style.display = 'block';
-            document.getElementById('resultsSection').classList.remove('visible');
-            updateCharCounter();
-            
-            // Clear last assessment data
-            lastAssessment = null;
-            
-            // Reset all collapsible sections
-            ['truth', 'claims', 'framework', 'distortion', 'evidence', 'reality', 'integrity', 'confident', 'uncertain', 'lessons', 'methodology', 'sources'].forEach(function(id) {
-                var content = document.getElementById(id + 'Content');
-                var toggle = document.getElementById(id + 'Toggle');
-                if (content) content.classList.remove('expanded');
-                if (toggle) toggle.textContent = '+';
-            });
-            
-            // Reset integrity dimension sections
-            ['observable', 'comparative', 'bias'].forEach(function(id) {
-                var content = document.getElementById(id + 'Content');
-                var toggle = document.getElementById(id + 'Toggle');
-                if (content) content.classList.remove('expanded');
-                if (toggle) toggle.textContent = '+';
-            });
-            
-            // Reset integrity sub-bars
-            ['observable', 'comparative', 'bias'].forEach(function(id) {
-                document.getElementById(id + 'Value').textContent = '—';
-                document.getElementById(id + 'Fill').style.width = '0%';
-            });
-            
-            // Reset amplify modal sections
-            ['challenges', 'alternatives', 'blindspots', 'stresstests', 'changes', 'bottomline'].forEach(function(id) {
-                var content = document.getElementById(id + 'Content');
-                var toggle = document.getElementById(id + 'Toggle');
-                if (content) content.classList.remove('expanded');
-                if (toggle) toggle.textContent = '+';
-            });
-            
-            // Close modals if open
-            closeAmplifyModal();
-            closeVerifyModal();
-            
-            // Reset verification data
-            lastVerification = null;
-        }
-
-        function updateUsageCounter(remaining) {
-            var counter = document.getElementById('usageCounter');
-            var countEl = document.getElementById('remainingCount');
-            countEl.textContent = remaining;
-            
-            if (remaining <= 0) {
-                counter.classList.add('exhausted');
-            } else {
-                counter.classList.remove('exhausted');
-            }
-        }
-
-        // ================================
-        // PROCESSING TIMER
-        // ================================
-        function startProcessingTimer() {
-            processingSeconds = 0;
-            updateProcessingDisplay();
-            
-            if (processingTimer) clearInterval(processingTimer);
-            
-            processingTimer = setInterval(function() {
-                processingSeconds++;
-                updateProcessingDisplay();
-            }, 1000);
-        }
-
-        function stopProcessingTimer() {
-            if (processingTimer) {
-                clearInterval(processingTimer);
-                processingTimer = null;
-            }
-        }
-
-        function updateProcessingDisplay() {
-            var mins = Math.floor(processingSeconds / 60);
-            var secs = processingSeconds % 60;
-            document.getElementById('timerMin').textContent = mins.toString().padStart(2, '0');
-            document.getElementById('timerSec').textContent = secs.toString().padStart(2, '0');
-            
-            // Progress bar - assume ~90 seconds typical
-            var progress = Math.min((processingSeconds / 90) * 100, 95);
-            document.getElementById('progressFill').style.width = progress + '%';
-        }
-
-        function showProcessing() {
-            document.getElementById('processingIndicator').classList.add('visible');
-            document.getElementById('assessBtn').disabled = true;
-            startProcessingTimer();
-        }
-
-        function hideProcessing() {
-            stopProcessingTimer();
-            document.getElementById('processingIndicator').classList.remove('visible');
-            document.getElementById('progressFill').style.width = '100%';
-            document.getElementById('assessBtn').disabled = false;
-        }
-
-        // ================================
-        // COOLDOWN TIMER
-        // ================================
-        function startCooldown() {
-            cooldownSeconds = 60;
-            document.getElementById('cooldownNotice').classList.add('visible');
-            document.getElementById('amplifyBtn').disabled = true;
-            document.getElementById('verifyBtn').disabled = true;
-            updateCooldownDisplay();
-            
-            if (cooldownTimer) clearInterval(cooldownTimer);
-            
-            cooldownTimer = setInterval(function() {
-                cooldownSeconds--;
-                updateCooldownDisplay();
-                
-                if (cooldownSeconds <= 0) {
-                    clearInterval(cooldownTimer);
-                    document.getElementById('cooldownNotice').classList.remove('visible');
-                    document.getElementById('amplifyBtn').disabled = false;
-                    document.getElementById('verifyBtn').disabled = false;
-                }
-            }, 1000);
-        }
-
-        function updateCooldownDisplay() {
-            var mins = Math.floor(cooldownSeconds / 60);
-            var secs = cooldownSeconds % 60;
-            document.getElementById('cooldownTimer').textContent = mins + ':' + secs.toString().padStart(2, '0');
-        }
-
-        // ================================
-        // SCORE DISPLAY
-        // ================================
-        function getRealityDescriptor(score) {
-            if (score >= 9) return 'Near-Certain';
-            if (score >= 7) return 'Highly Likely';
-            if (score >= 5) return 'Probable';
-            if (score >= 3) return 'Leaning True';
-            if (score >= 1) return 'Slightly True';
-            if (score >= -1) return 'Uncertain';
-            if (score >= -3) return 'Slightly False';
-            if (score >= -5) return 'Leaning False';
-            if (score >= -7) return 'Probably False';
-            if (score >= -9) return 'Highly Unlikely';
-            return 'Near-Certainly False';
-        }
-
-        function getIntegrityDescriptor(score) {
-            if (score >= 0.8) return 'High Honesty';
-            if (score >= 0.5) return 'Good Faith';
-            if (score >= 0.2) return 'Mixed Signals';
-            if (score >= -0.2) return 'Neutral';
-            if (score >= -0.5) return 'Some Concerns';
-            if (score >= -0.8) return 'Low Integrity';
-            return 'Deceptive';
-        }
-
-        function getScoreClass(score, isIntegrity) {
-            if (isIntegrity) {
-                if (score >= 0.3) return 'positive';
-                if (score <= -0.3) return 'negative';
-                return 'neutral';
-            } else {
-                if (score >= 3) return 'positive';
-                if (score <= -3) return 'negative';
-                return 'neutral';
-            }
-        }
-
-        function updateScoreDisplay(realityScore, integrityScore) {
-            var realityEl = document.getElementById('realityScoreValue');
-            var integrityEl = document.getElementById('integrityScoreValue');
-            
-            // Reality Score
-            if (realityScore !== null && realityScore !== undefined) {
-                var rScore = parseInt(realityScore);
-                realityEl.textContent = (rScore >= 0 ? '+' : '') + rScore;
-                realityEl.className = 'score-value ' + getScoreClass(rScore, false);
-                document.getElementById('realityDescriptor').textContent = getRealityDescriptor(rScore);
-                
-                // Position marker (score -10 to +10 maps to 0% to 100%)
-                var realityPos = ((rScore + 10) / 20) * 100;
-                document.getElementById('realityMarker').style.left = realityPos + '%';
-            } else {
-                realityEl.textContent = '—';
-                realityEl.className = 'score-value';
-                document.getElementById('realityDescriptor').textContent = '—';
-            }
-            
-            // Integrity Score
-            if (integrityScore !== null && integrityScore !== undefined) {
-                var iScore = parseFloat(integrityScore);
-                integrityEl.textContent = (iScore >= 0 ? '+' : '') + iScore.toFixed(1);
-                integrityEl.className = 'score-value ' + getScoreClass(iScore, true);
-                document.getElementById('integrityDescriptor').textContent = getIntegrityDescriptor(iScore);
-                
-                // Position marker (score -1 to +1 maps to 0% to 100%)
-                var integrityPos = ((iScore + 1) / 2) * 100;
-                document.getElementById('integrityMarker').style.left = integrityPos + '%';
-            } else {
-                integrityEl.textContent = '—';
-                integrityEl.className = 'score-value';
-                document.getElementById('integrityDescriptor').textContent = '—';
-            }
-        }
-
-        function updateIntegritySubBars(integrity) {
-            if (!integrity) return;
-            
-            var dimensions = [
-                { id: 'observable', data: integrity.observable },
-                { id: 'comparative', data: integrity.comparative },
-                { id: 'bias', data: integrity.bias }
-            ];
-            
-            dimensions.forEach(function(dim) {
-                var valueEl = document.getElementById(dim.id + 'Value');
-                var fillEl = document.getElementById(dim.id + 'Fill');
-                
-                if (dim.data && dim.data.score !== undefined) {
-                    var score = parseFloat(dim.data.score);
-                    valueEl.textContent = (score >= 0 ? '+' : '') + score.toFixed(1);
-                    
-                    // Width is based on absolute value (0 to 50% of track from center)
-                    var width = Math.abs(score) * 50; // 50% at +/-1.0
-                    fillEl.style.width = width + '%';
-                    
-                    // Set direction class
-                    fillEl.className = 'sub-bar-fill ' + (score >= 0 ? 'positive' : 'negative');
-                } else {
-                    valueEl.textContent = '—';
-                    fillEl.style.width = '0%';
-                }
-            });
-        }
-
-        // ================================
-        // CONTENT RENDERING (from structured JSON)
-        // ================================
-        function renderAssessmentContent(data) {
-            console.log('renderAssessmentContent called with:', data);
-            
-            var structured = data.structured;
-            console.log('Structured data:', structured);
-            
-            // Render Underlying Reality
-            if (structured && structured.underlyingReality) {
-                var ur = structured.underlyingReality;
-                var truthHtml = '';
-                if (ur.coreFinding) {
-                    truthHtml += '<p><strong>The Core Finding:</strong> ' + ur.coreFinding + '</p>';
-                }
-                if (ur.howWeKnow) {
-                    truthHtml += '<p><strong>How We Know:</strong> ' + ur.howWeKnow + '</p>';
-                }
-                if (ur.whyItMatters) {
-                    truthHtml += '<p><strong>Why This Matters:</strong> ' + ur.whyItMatters + '</p>';
-                }
-                document.getElementById('truthContent').innerHTML = truthHtml || '<p>Not available.</p>';
-            } else {
-                document.getElementById('truthContent').innerHTML = '<p>Structured data not available for this section.</p>';
-            }
-            
-            // Render Central Claims
-            if (structured && structured.centralClaims) {
-                var cc = structured.centralClaims;
-                var claimsHtml = '';
-                if (cc.explicit) {
-                    claimsHtml += '<p><strong>Explicit Claim:</strong> ' + cc.explicit + '</p>';
-                }
-                if (cc.hidden) {
-                    claimsHtml += '<p><strong>Hidden Assumptions:</strong> ' + cc.hidden + '</p>';
-                }
-                if (cc.whatFramingServes) {
-                    claimsHtml += '<p><strong>What This Framing Serves:</strong> ' + cc.whatFramingServes + '</p>';
-                }
-                document.getElementById('claimsContent').innerHTML = claimsHtml || '<p>Not available.</p>';
-            } else {
-                document.getElementById('claimsContent').innerHTML = '<p>Structured data not available for this section.</p>';
-            }
-            
-            // Render Framework Analysis
-            if (structured && structured.frameworkAnalysis) {
-                var fa = structured.frameworkAnalysis;
-                var frameworkHtml = '';
-                if (fa.hiddenPremises) {
-                    frameworkHtml += '<p><strong>Hidden Premises:</strong> ' + fa.hiddenPremises + '</p>';
-                }
-                if (fa.ideologicalOrigin) {
-                    frameworkHtml += '<p><strong>Ideological Origin:</strong> ' + fa.ideologicalOrigin + '</p>';
-                }
-                if (fa.whatBeingObscured) {
-                    frameworkHtml += '<p><strong>What\'s Being Obscured:</strong> ' + fa.whatBeingObscured + '</p>';
-                }
-                if (fa.reframingNeeded) {
-                    frameworkHtml += '<p><strong>Reframing Needed:</strong> ' + fa.reframingNeeded + '</p>';
-                }
-                document.getElementById('frameworkContent').innerHTML = frameworkHtml || '<p>Not available.</p>';
-            } else {
-                document.getElementById('frameworkContent').innerHTML = '<p>Structured data not available for this section.</p>';
-            }
-            
-            // Render Truth Distortion Patterns
-            if (structured && structured.truthDistortionPatterns) {
-                var patterns = structured.truthDistortionPatterns;
-                var distortionHtml = '';
-                if (Array.isArray(patterns) && patterns.length > 0) {
-                    distortionHtml += '<ul>';
-                    patterns.forEach(function(pattern) {
-                        distortionHtml += '<li>' + pattern + '</li>';
-                    });
-                    distortionHtml += '</ul>';
-                } else if (typeof patterns === 'string') {
-                    distortionHtml = '<p>' + patterns + '</p>';
-                }
-                document.getElementById('distortionContent').innerHTML = distortionHtml || '<p>None detected - this claim/question uses honest framing.</p>';
-            } else {
-                document.getElementById('distortionContent').innerHTML = '<p>No distortion patterns analyzed.</p>';
-            }
-            
-            // Render Evidence Analysis
-            if (structured && structured.evidenceAnalysis) {
-                var ea = structured.evidenceAnalysis;
-                var evidenceHtml = '';
-                if (ea.forTheClaim && ea.forTheClaim.length > 0) {
-                    evidenceHtml += '<p><strong>For the Claim:</strong></p><ul>';
-                    ea.forTheClaim.forEach(function(item) {
-                        evidenceHtml += '<li>' + item + '</li>';
-                    });
-                    evidenceHtml += '</ul>';
-                }
-                if (ea.againstTheClaim && ea.againstTheClaim.length > 0) {
-                    evidenceHtml += '<p><strong>Against/Complicating the Claim:</strong></p><ul>';
-                    ea.againstTheClaim.forEach(function(item) {
-                        evidenceHtml += '<li>' + item + '</li>';
-                    });
-                    evidenceHtml += '</ul>';
-                }
-                if (ea.sourceQuality) {
-                    evidenceHtml += '<p><strong>Source Quality:</strong> ' + ea.sourceQuality + '</p>';
-                }
-                document.getElementById('evidenceContent').innerHTML = evidenceHtml || '<p>Not available.</p>';
-            } else {
-                document.getElementById('evidenceContent').innerHTML = '<p>Structured data not available for this section.</p>';
-            }
-            
-            // Render Reality Score Breakdown
-            if (structured && structured.realityFactors) {
-                var rf = structured.realityFactors;
-                var realityHtml = '';
-                
-                if (rf.evidenceQuality) {
-                    realityHtml += '<p><strong>Evidence Quality (40%):</strong> ' + 
-                        (rf.evidenceQuality.score >= 0 ? '+' : '') + rf.evidenceQuality.score + 
-                        ' — ' + rf.evidenceQuality.explanation + '</p>';
-                }
-                if (rf.epistemologicalSoundness) {
-                    realityHtml += '<p><strong>Epistemological Soundness (30%):</strong> ' + 
-                        (rf.epistemologicalSoundness.score >= 0 ? '+' : '') + rf.epistemologicalSoundness.score + 
-                        ' — ' + rf.epistemologicalSoundness.explanation + '</p>';
-                }
-                if (rf.sourceReliability) {
-                    realityHtml += '<p><strong>Source Reliability (20%):</strong> ' + 
-                        (rf.sourceReliability.score >= 0 ? '+' : '') + rf.sourceReliability.score + 
-                        ' — ' + rf.sourceReliability.explanation + '</p>';
-                }
-                if (rf.logicalCoherence) {
-                    realityHtml += '<p><strong>Logical Coherence (10%):</strong> ' + 
-                        (rf.logicalCoherence.score >= 0 ? '+' : '') + rf.logicalCoherence.score + 
-                        ' — ' + rf.logicalCoherence.explanation + '</p>';
-                }
-                
-                // Add weighted calculation
-                if (rf.evidenceQuality && rf.epistemologicalSoundness && rf.sourceReliability && rf.logicalCoherence) {
-                    var eq = rf.evidenceQuality.score;
-                    var es = rf.epistemologicalSoundness.score;
-                    var sr = rf.sourceReliability.score;
-                    var lc = rf.logicalCoherence.score;
-                    var weighted = (eq * 0.40) + (es * 0.30) + (sr * 0.20) + (lc * 0.10);
-                    realityHtml += '<div class="calculation-box"><strong>Weighted Calculation:</strong> (' + eq + ' × 0.40) + (' + es + ' × 0.30) + (' + sr + ' × 0.20) + (' + lc + ' × 0.10) = ' + weighted.toFixed(1) + ' → <strong>' + (data.realityScore >= 0 ? '+' : '') + data.realityScore + '</strong></div>';
-                }
-                
-                document.getElementById('realityContent').innerHTML = realityHtml || '<p>Not available.</p>';
-            } else {
-                document.getElementById('realityContent').innerHTML = '<p>Structured data not available for this section.</p>';
-            }
-            
-            // Render Integrity Score Breakdown
-            if (structured && structured.integrity) {
-                var int = structured.integrity;
-                var intHtml = '<p class="dimension-desc"><em>Integrity 2.0 measures three dimensions of epistemological honesty. Click each to expand.</em></p>';
-                
-                intHtml += '<div class="integrity-children">';
-                
-                // Observable Integrity
-                if (int.observable) {
-                    var obs = int.observable;
-                    intHtml += '<div class="integrity-dimension" onclick="toggleDimension(\'observable\')">';
-                    intHtml += '<button class="child-toggle" id="observableToggle">+</button>';
-                    intHtml += '<h5 class="dimension-title">📋 Observable: <span class="dim-score">' + (obs.score >= 0 ? '+' : '') + obs.score.toFixed(1) + '</span></h5>';
-                    intHtml += '</div>';
-                    intHtml += '<div class="dimension-content" id="observableContent">';
-                    intHtml += '<p class="dimension-desc">Binary checks with explicit evidence:</p>';
-                    intHtml += '<table class="integrity-table">';
-                    intHtml += '<tr><th>Check</th><th>Y/N/P</th><th>Evidence</th></tr>';
-                    intHtml += '<tr><td>Sources Cited</td><td class="check-' + (obs.sourcesCited === 'Y' ? 'yes' : obs.sourcesCited === 'P' ? 'partial' : 'no') + '">' + obs.sourcesCited + '</td><td>' + (obs.sourcesCitedEvidence || '-') + '</td></tr>';
-                    intHtml += '<tr><td>Limitations Acknowledged</td><td class="check-' + (obs.limitationsAcknowledged === 'Y' ? 'yes' : obs.limitationsAcknowledged === 'P' ? 'partial' : 'no') + '">' + obs.limitationsAcknowledged + '</td><td>' + (obs.limitationsEvidence || '-') + '</td></tr>';
-                    intHtml += '<tr><td>Counter-Arguments Addressed</td><td class="check-' + (obs.counterArgumentsAddressed === 'Y' ? 'yes' : obs.counterArgumentsAddressed === 'P' ? 'partial' : 'no') + '">' + obs.counterArgumentsAddressed + '</td><td>' + (obs.counterArgumentsEvidence || '-') + '</td></tr>';
-                    intHtml += '<tr><td>Fallacies Present</td><td class="check-' + (obs.fallaciesPresent === 'N' ? 'yes' : 'no') + '">' + obs.fallaciesPresent + '</td><td>' + (obs.fallaciesEvidence || '-') + '</td></tr>';
-                    intHtml += '</table>';
-                    intHtml += '</div>';
-                }
-                
-                // Comparative Integrity
-                if (int.comparative) {
-                    var comp = int.comparative;
-                    intHtml += '<div class="integrity-dimension" onclick="toggleDimension(\'comparative\')">';
-                    intHtml += '<button class="child-toggle" id="comparativeToggle">+</button>';
-                    intHtml += '<h5 class="dimension-title">📈 Comparative: <span class="dim-score">' + (comp.score >= 0 ? '+' : '') + comp.score.toFixed(1) + '</span></h5>';
-                    intHtml += '</div>';
-                    intHtml += '<div class="dimension-content" id="comparativeContent">';
-                    intHtml += '<p class="dimension-desc">Benchmarked against quality discourse:</p>';
-                    intHtml += '<p><strong>Percentile:</strong> Top ' + (100 - comp.percentile) + '%</p>';
-                    if (comp.baseline) intHtml += '<p><strong>Baseline:</strong> ' + comp.baseline + '</p>';
-                    if (comp.gaps && comp.gaps.length > 0) intHtml += '<p><strong>Gaps:</strong> ' + comp.gaps.join('; ') + '</p>';
-                    intHtml += '</div>';
-                }
-                
-                // Bias Integrity
-                if (int.bias) {
-                    var bias = int.bias;
-                    intHtml += '<div class="integrity-dimension" onclick="toggleDimension(\'bias\')">';
-                    intHtml += '<button class="child-toggle" id="biasToggle">+</button>';
-                    intHtml += '<h5 class="dimension-title">🎯 Bias: <span class="dim-score">' + (bias.score >= 0 ? '+' : '') + bias.score.toFixed(1) + '</span></h5>';
-                    intHtml += '</div>';
-                    intHtml += '<div class="dimension-content" id="biasContent">';
-                    intHtml += '<p class="dimension-desc">Patterns signaling advocacy over accuracy:</p>';
-                    if (bias.inflammatoryLanguage) intHtml += '<p><strong>Inflammatory Language:</strong> ' + bias.inflammatoryLanguage + '</p>';
-                    if (bias.oneSidedFraming) intHtml += '<p><strong>One-Sided Framing:</strong> ' + bias.oneSidedFraming + '</p>';
-                    if (bias.playbookPatterns && bias.playbookPatterns.length > 0) intHtml += '<p><strong>Playbook Patterns:</strong> ' + bias.playbookPatterns.join('; ') + '</p>';
-                    if (bias.inaccuracies && bias.inaccuracies.length > 0) intHtml += '<p><strong>Inaccuracies:</strong> ' + bias.inaccuracies.join('; ') + '</p>';
-                    intHtml += '</div>';
-                }
-                
-                intHtml += '</div>'; // close integrity-children
-                
-                // Weighted calculation
-                if (int.observable && int.comparative && int.bias) {
-                    var intCalc = (int.observable.score * 0.33) + (int.comparative.score * 0.33) + (int.bias.score * 0.33);
-                    intHtml += '<div class="calculation-box"><strong>Weighted:</strong> (' + int.observable.score.toFixed(1) + ' × 0.33) + (' + int.comparative.score.toFixed(1) + ' × 0.33) + (' + int.bias.score.toFixed(1) + ' × 0.33) = <strong>' + (intCalc >= 0 ? '+' : '') + intCalc.toFixed(2) + '</strong></div>';
-                }
-                
-                document.getElementById('integrityContent').innerHTML = intHtml;
-                
-                // Update the sub-bars in the score card
-                updateIntegritySubBars(int);
-            } else {
-                document.getElementById('integrityContent').innerHTML = '<p>Structured data not available for this section.</p>';
-            }
-            
-            // Render What We Can Be Confident About
-            if (structured && structured.whatWeCanBeConfidentAbout && structured.whatWeCanBeConfidentAbout.length > 0) {
-                var confidentHtml = '<ul>';
-                structured.whatWeCanBeConfidentAbout.forEach(function(item) {
-                    confidentHtml += '<li>' + item + '</li>';
+        return null;
+    }
+    
+    // Add selected standard criteria
+    if (criteria && criteria.length > 0) {
+        criteria.forEach(function(criterionId) {
+            var criterionDef = findCriterionById(criteriaSet.criteria, criterionId);
+            if (criterionDef) {
+                allCriteria.push({
+                    id: criterionId,
+                    label: criterionDef.label,
+                    description: criterionDef.description,
+                    isCustom: false
                 });
-                confidentHtml += '</ul>';
-                document.getElementById('confidentContent').innerHTML = confidentHtml;
+                prompt += '### ' + criterionDef.label + '\n';
+                prompt += criterionDef.description + '\n\n';
             } else {
-                document.getElementById('confidentContent').innerHTML = '<p>Not available.</p>';
-            }
-            
-            // Render What Remains Uncertain
-            if (structured && structured.whatRemainsUncertain && structured.whatRemainsUncertain.length > 0) {
-                var uncertainHtml = '<ul>';
-                structured.whatRemainsUncertain.forEach(function(item) {
-                    uncertainHtml += '<li>' + item + '</li>';
-                });
-                uncertainHtml += '</ul>';
-                document.getElementById('uncertainContent').innerHTML = uncertainHtml;
-            } else {
-                document.getElementById('uncertainContent').innerHTML = '<p>Not available.</p>';
-            }
-            
-            // Render Lessons for Information Assessment
-            if (structured && structured.lessonsForAssessment && structured.lessonsForAssessment.length > 0) {
-                var lessonsHtml = '<ol>';
-                structured.lessonsForAssessment.forEach(function(lesson) {
-                    lessonsHtml += '<li>' + lesson + '</li>';
-                });
-                lessonsHtml += '</ol>';
-                document.getElementById('lessonsContent').innerHTML = lessonsHtml;
-            } else {
-                document.getElementById('lessonsContent').innerHTML = '<p>Not available.</p>';
-            }
-            
-            // Render Methodology Notes
-            if (structured && structured.methodologyNotes) {
-                var mn = structured.methodologyNotes;
-                var methodHtml = '';
-                if (mn.realityScoreRationale) {
-                    methodHtml += '<p><strong>Reality Score (' + (data.realityScore >= 0 ? '+' : '') + data.realityScore + '):</strong> ' + mn.realityScoreRationale + '</p>';
-                }
-                if (mn.integrityScoreRationale) {
-                    methodHtml += '<p><strong>Integrity Score (' + (data.integrityScore >= 0 ? '+' : '') + data.integrityScore.toFixed(1) + '):</strong> ' + mn.integrityScoreRationale + '</p>';
-                }
-                document.getElementById('methodologyContent').innerHTML = methodHtml || '<p>Not available.</p>';
-            } else {
-                document.getElementById('methodologyContent').innerHTML = '<p>Structured data not available for this section.</p>';
-            }
-            
-            // Render Sources
-            if (structured && structured.sources && structured.sources.length > 0) {
-                var sourcesHtml = '<ul>';
-                structured.sources.forEach(function(src) {
-                    // Check if it's a URL
-                    if (src.match(/^https?:\/\//)) {
-                        sourcesHtml += '<li><a href="' + src + '" target="_blank" rel="noopener">' + src + '</a></li>';
-                    } else {
-                        sourcesHtml += '<li>' + src + '</li>';
-                    }
-                });
-                sourcesHtml += '</ul>';
-                document.getElementById('sourcesContent').innerHTML = sourcesHtml;
-            } else {
-                document.getElementById('sourcesContent').innerHTML = '<p>No sources listed.</p>';
-            }
-        }
-
-        // ================================
-        // RUN ASSESSMENT
-        // ================================
-        function runAssessment() {
-            var question = document.getElementById('question').value.trim();
-            var articleText = document.getElementById('articleText').value.trim();
-            var articleUrl = document.getElementById('articleUrl').value.trim();
-            var userApiKey = document.getElementById('apiKey').value.trim();
-            var errorBox = document.getElementById('errorBox');
-            var btn = document.getElementById('assessBtn');
-            
-            if (!question && !articleText && !articleUrl) {
-                errorBox.textContent = 'Please enter a claim, URL, or article text to assess.';
-                errorBox.classList.add('visible');
-                return;
-            }
-            
-            errorBox.classList.remove('visible');
-            btn.disabled = true;
-            btn.textContent = 'Assessing...';
-            
-            showProcessing();
-            
-            fetch('/api/assess', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    question: question,
-                    articleText: articleText,
-                    articleUrl: articleUrl,
-                    userApiKey: userApiKey,
-                    track: 'a'
-                })
-            })
-            .then(function(res) {
-                if (!res.ok) {
-                    return res.json().then(function(err) {
-                        // Update usage counter if returned
-                        if (err.remaining !== undefined) {
-                            updateUsageCounter(err.remaining);
-                        }
-                        throw new Error(err.error || 'Assessment failed');
-                    });
-                }
-                return res.json();
-            })
-            .then(function(data) {
-                console.log('Assessment response:', data);
-                console.log('Structured data:', data.structured);
-                
-                // Update usage counter if returned
-                if (data.remaining !== undefined) {
-                    updateUsageCounter(data.remaining);
-                }
-                
-                // Update claim display
-                document.getElementById('claimText').textContent = '"' + question + '"';
-                
-                // Update scores
-                updateScoreDisplay(data.realityScore, data.integrityScore);
-                
-                // Render assessment content from structured data
-                renderAssessmentContent(data);
-                
-                // Store for Amplify/Verify
-                lastAssessment = {
-                    question: question,
-                    articleText: articleText,
-                    articleUrl: articleUrl,
-                    assessment: data.assessment,
-                    realityScore: data.realityScore,
-                    integrityScore: data.integrityScore,
-                    structured: data.structured
-                };
-                
-                // Hide processing, hide input, show results
-                hideProcessing();
-                document.getElementById('inputCard').style.display = 'none';
-                document.getElementById('resultsSection').classList.add('visible');
-                
-                // Start cooldown
-                startCooldown();
-                
-                // Scroll to results
-                document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth' });
-            })
-            .catch(function(err) {
-                console.error('Assessment error:', err);
-                hideProcessing();
-                errorBox.textContent = 'Error: ' + err.message;
-                errorBox.classList.add('visible');
-            })
-            .finally(function() {
-                btn.disabled = false;
-                btn.textContent = '⚡ Run Assessment';
-            });
-        }
-
-        // ================================
-        // AMPLIFY / VERIFY
-        // ================================
-        var amplifyTimer = null;
-        var amplifySeconds = 0;
-
-        function runAmplify() {
-            if (!lastAssessment) {
-                alert('No assessment available to amplify. Please run an initial assessment first.');
-                return;
-            }
-            
-            // Open modal and show processing
-            document.getElementById('amplifyModal').classList.add('visible');
-            document.getElementById('amplifyProcessing').classList.add('visible');
-            document.getElementById('amplifyResults').style.display = 'none';
-            
-            // Start timer
-            amplifySeconds = 0;
-            updateAmplifyTimer();
-            amplifyTimer = setInterval(function() {
-                amplifySeconds++;
-                updateAmplifyTimer();
-            }, 1000);
-            
-            // Get API key if provided
-            var userApiKey = document.getElementById('apiKey').value.trim();
-            
-            // Call the Amplify API
-            fetch('/api/amplify', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    question: lastAssessment.question,
-                    initialAssessment: lastAssessment.assessment,
-                    realityScore: lastAssessment.realityScore,
-                    integrityScore: lastAssessment.integrityScore,
-                    userApiKey: userApiKey
-                })
-            })
-            .then(function(res) {
-                if (!res.ok) {
-                    return res.json().then(function(err) {
-                        throw new Error(err.error || 'Amplification failed');
-                    });
-                }
-                return res.json();
-            })
-            .then(function(data) {
-                console.log('Amplify response:', data);
-                stopAmplifyTimer();
-                renderAmplifyResults(data);
-            })
-            .catch(function(err) {
-                console.error('Amplify error:', err);
-                stopAmplifyTimer();
-                alert('Amplification failed: ' + err.message);
-                closeAmplifyModal();
-            });
-        }
-
-        function updateAmplifyTimer() {
-            var mins = Math.floor(amplifySeconds / 60);
-            var secs = amplifySeconds % 60;
-            document.getElementById('amplifyTimer').textContent = 
-                mins.toString().padStart(2, '0') + ':' + secs.toString().padStart(2, '0');
-        }
-
-        function stopAmplifyTimer() {
-            if (amplifyTimer) {
-                clearInterval(amplifyTimer);
-                amplifyTimer = null;
-            }
-        }
-
-        function closeAmplifyModal() {
-            document.getElementById('amplifyModal').classList.remove('visible');
-            stopAmplifyTimer();
-        }
-
-        function toggleAmplifySection(sectionId) {
-            var content = document.getElementById(sectionId + 'Content');
-            var toggle = document.getElementById(sectionId + 'Toggle');
-            
-            if (content.classList.contains('expanded')) {
-                content.classList.remove('expanded');
-                toggle.textContent = '+';
-            } else {
-                content.classList.add('expanded');
-                toggle.textContent = '−';
-            }
-        }
-
-        function renderAmplifyResults(data) {
-            // Hide processing, show results
-            document.getElementById('amplifyProcessing').classList.remove('visible');
-            document.getElementById('amplifyResults').style.display = 'block';
-            
-            var structured = data.structured || {};
-            
-            // Summary
-            document.getElementById('amplifySummaryText').textContent = 
-                structured.amplificationSummary || 'Analysis complete. See details below.';
-            
-            // Confidence Adjustment
-            var confAdj = structured.confidenceAdjustment || {};
-            var direction = (confAdj.direction || 'unchanged').toLowerCase();
-            var magnitude = confAdj.magnitude || '';
-            var reason = confAdj.reason || 'No adjustment rationale provided.';
-            
-            var confCard = document.getElementById('confidenceCard');
-            var confArrow = document.getElementById('confidenceArrow');
-            var confValue = document.getElementById('confidenceValue');
-            var confReason = document.getElementById('confidenceReason');
-            
-            confCard.className = 'confidence-card ' + direction;
-            
-            if (direction === 'up') {
-                confArrow.textContent = '↑';
-                confValue.textContent = 'Increased' + (magnitude ? ' (' + magnitude + ')' : '');
-            } else if (direction === 'down') {
-                confArrow.textContent = '↓';
-                confValue.textContent = 'Decreased' + (magnitude ? ' (' + magnitude + ')' : '');
-            } else {
-                confArrow.textContent = '→';
-                confValue.textContent = 'Unchanged';
-            }
-            confReason.textContent = reason;
-            
-            // Populate lists
-            populateAmplifyList('challengesList', structured.challengedAssumptions || []);
-            populateAmplifyList('alternativesList', structured.alternativeInterpretations || []);
-            populateAmplifyList('blindspotsList', structured.blindSpots || []);
-            populateAmplifyList('stresstestsList', structured.epistemicVulnerabilities || []);
-            populateAmplifyList('changesList', structured.wouldChangeAssessment || []);
-            
-            // Bottom Line
-            document.getElementById('bottomlineText').textContent = 
-                structured.bottomLine || 'No bottom line analysis provided.';
-            
-            // Auto-expand first section with content
-            var sections = ['challenges', 'alternatives', 'blindspots', 'stresstests', 'changes', 'bottomline'];
-            for (var i = 0; i < sections.length; i++) {
-                var listEl = document.getElementById(sections[i] + 'List');
-                var textEl = document.getElementById(sections[i] + 'Text');
-                var hasContent = (listEl && listEl.children.length > 0) || (textEl && textEl.textContent);
-                if (hasContent) {
-                    toggleAmplifySection(sections[i]);
-                    break;
-                }
-            }
-        }
-
-        function populateAmplifyList(listId, items) {
-            var list = document.getElementById(listId);
-            if (!list) return;
-            
-            list.innerHTML = '';
-            
-            if (!items || items.length === 0) {
-                var li = document.createElement('li');
-                li.textContent = 'None identified.';
-                li.style.fontStyle = 'italic';
-                li.style.color = 'var(--text-muted)';
-                list.appendChild(li);
-                return;
-            }
-            
-            items.forEach(function(item) {
-                var li = document.createElement('li');
-                li.textContent = item;
-                list.appendChild(li);
-            });
-        }
-
-        // Close modal on overlay click
-        document.addEventListener('click', function(e) {
-            if (e.target.classList.contains('amplify-modal-overlay')) {
-                closeAmplifyModal();
+                console.log('Warning: Criterion not found:', criterionId, 'in claimType:', claimType);
             }
         });
-
-        // Close modal on Escape key
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                closeAmplifyModal();
-                closeVerifyModal();
-            }
+    }
+    
+    // Add custom criteria
+    if (customCriteria && customCriteria.length > 0) {
+        customCriteria.forEach(function(customText, idx) {
+            allCriteria.push({
+                id: 'custom_' + idx,
+                label: customText,
+                description: 'User-defined criterion',
+                isCustom: true
+            });
+            prompt += '### ' + customText + ' (Custom)\n';
+            prompt += 'User-defined criterion to assess.\n\n';
         });
+    }
+    
+    // SCORING INSTRUCTIONS
+    prompt += '## SCORING INSTRUCTIONS\n\n';
+    prompt += 'For EACH criterion, provide:\n';
+    prompt += '- **Score**: -10 to +10 where:\n';
+    prompt += '  - +10 = Strongly supports/affirms (overwhelming evidence)\n';
+    prompt += '  - +5 to +9 = Moderately to strongly supports\n';
+    prompt += '  - +1 to +4 = Slightly supports\n';
+    prompt += '  - 0 = Neutral/insufficient evidence either way\n';
+    prompt += '  - -1 to -4 = Slightly contradicts/undermines\n';
+    prompt += '  - -5 to -9 = Moderately to strongly contradicts\n';
+    prompt += '  - -10 = Strongly contradicts (overwhelming counter-evidence)\n';
+    prompt += '- **Confidence**: HIGH, MEDIUM, or LOW\n';
+    prompt += '- **Summary**: 2-3 sentence explanation with specific evidence\n\n';
+    
+    prompt += 'IMPORTANT: Each criterion gets its OWN score. Do NOT average them into a single score.\n';
+    prompt += 'Different criteria may point in different directions - this is valuable information.\n\n';
+    
+    // OUTPUT FORMAT
+    prompt += '## REQUIRED OUTPUT FORMAT\n\n';
+    prompt += '```json\n';
+    prompt += '{\n';
+    prompt += '  "trackB": {\n';
+    prompt += '    "claimType": "' + claimType + '",\n';
+    prompt += '    "claimTypeLabel": "' + claimTypeLabel + '",\n';
+    prompt += '    "criteriaAssessed": [\n';
+    
+    allCriteria.forEach(function(c, idx) {
+        prompt += '      {\n';
+        prompt += '        "id": "' + c.id + '",\n';
+        prompt += '        "label": "' + c.label + '",\n';
+        prompt += '        "score": <-10 to +10>,\n';
+        prompt += '        "confidence": "<HIGH|MEDIUM|LOW>",\n';
+        prompt += '        "summary": "<2-3 sentences with evidence>"\n';
+        prompt += '      }' + (idx < allCriteria.length - 1 ? ',' : '') + '\n';
+    });
+    
+    prompt += '    ],\n';
+    prompt += '    "criteriaNotAssessed": [<list any criteria from the set that were NOT selected>],\n';
+    prompt += '    "fullPicture": "<2-3 sentences synthesizing what the criteria collectively reveal>",\n';
+    prompt += '    "divergenceNote": "<if criteria scores diverge significantly, explain why>"\n';
+    prompt += '  },\n';
+    prompt += '  "sources": ["<source 1>", "<source 2>", ...]\n';
+    prompt += '}\n';
+    prompt += '```\n\n';
+    
+    prompt += '### NARRATIVE SECTION\n';
+    prompt += 'After JSON, provide:\n';
+    prompt += '**CLAIM BEING ASSESSED**: [restate the claim]\n';
+    prompt += '**CRITERIA ANALYSIS**: [discuss each criterion\'s findings]\n';
+    prompt += '**THE FULL PICTURE**: [what do these criteria together reveal?]\n';
+    prompt += '**WHAT THIS DOES NOT TELL US**: [limitations of this assessment]\n';
+    
+    return prompt;
+}
 
-        // ================================
-        // VERIFY / ADJUDICATE
-        // ================================
-        var verifyTimer = null;
-        var verifySeconds = 0;
-        var lastVerification = null;
-        
-        // Divergence thresholds
-        var REALITY_THRESHOLD = 2;      // ≥2 points difference
-        var INTEGRITY_THRESHOLD = 0.2;  // ≥0.2 difference
+// ============================================
+// RESPONSE PARSER - TRACK A
+// ============================================
+function parseTrackAResponse(assessment) {
+    var result = {
+        realityScore: null,
+        integrityScore: null,
+        realityFactors: null,
+        integrity: null,
+        underlyingReality: null,
+        centralClaims: null,
+        frameworkAnalysis: null,
+        truthDistortionPatterns: null,
+        evidenceAnalysis: null,
+        whatWeCanBeConfidentAbout: null,
+        whatRemainsUncertain: null,
+        lessonsForAssessment: null,
+        methodologyNotes: null,
+        sources: null,
+        narrative: assessment
+    };
+    
+    var jsonMatch = assessment.match(/```json\s*([\s\S]*?)\s*```/);
+    if (jsonMatch && jsonMatch[1]) {
+        try {
+            var parsed = JSON.parse(jsonMatch[1]);
+            result.realityScore = parsed.realityScore;
+            result.integrityScore = parsed.integrityScore;
+            result.realityFactors = parsed.realityFactors;
+            result.integrity = parsed.integrity;
+            result.underlyingReality = parsed.underlyingReality;
+            result.centralClaims = parsed.centralClaims;
+            result.frameworkAnalysis = parsed.frameworkAnalysis;
+            result.truthDistortionPatterns = parsed.truthDistortionPatterns;
+            result.evidenceAnalysis = parsed.evidenceAnalysis;
+            result.whatWeCanBeConfidentAbout = parsed.whatWeCanBeConfidentAbout;
+            result.whatRemainsUncertain = parsed.whatRemainsUncertain;
+            result.lessonsForAssessment = parsed.lessonsForAssessment;
+            result.methodologyNotes = parsed.methodologyNotes;
+            result.sources = parsed.sources;
+        } catch (e) {
+            console.error('Track A JSON parse error:', e);
+        }
+    }
+    
+    // Fallback regex extraction
+    if (result.realityScore === null) {
+        var realityMatch = assessment.match(/["\']?realityScore["\']?\s*:\s*([+-]?\d+)/i) ||
+                          assessment.match(/REALITY SCORE:\s*\[?([+-]?\d+)\]?/i);
+        if (realityMatch) result.realityScore = parseInt(realityMatch[1]);
+    }
+    
+    if (result.integrityScore === null) {
+        var integrityMatch = assessment.match(/["\']?integrityScore["\']?\s*:\s*([+-]?\d+\.?\d*)/i) ||
+                            assessment.match(/INTEGRITY SCORE:\s*\[?([+-]?\d+\.?\d*)\]?/i);
+        if (integrityMatch) result.integrityScore = parseFloat(integrityMatch[1]);
+    }
+    
+    return result;
+}
 
-        function runVerify() {
-            if (!lastAssessment) {
-                alert('No assessment available to verify. Please run an initial assessment first.');
-                return;
-            }
+// ============================================
+// RESPONSE PARSER - TRACK B
+// ============================================
+function parseTrackBResponse(assessment) {
+    var result = {
+        trackB: null,
+        sources: null,
+        narrative: assessment
+    };
+    
+    console.log('parseTrackBResponse: Looking for JSON block...');
+    var jsonMatch = assessment.match(/```json\s*([\s\S]*?)\s*```/);
+    
+    if (jsonMatch && jsonMatch[1]) {
+        console.log('parseTrackBResponse: Found JSON block, length:', jsonMatch[1].length);
+        console.log('parseTrackBResponse: JSON preview:', jsonMatch[1].substring(0, 300));
+        try {
+            var parsed = JSON.parse(jsonMatch[1]);
+            console.log('parseTrackBResponse: JSON parsed successfully');
+            console.log('parseTrackBResponse: Keys in parsed:', Object.keys(parsed));
+            result.trackB = parsed.trackB;
+            result.sources = parsed.sources;
             
-            // Open modal and show processing
-            document.getElementById('verifyModal').classList.add('visible');
-            document.getElementById('verifyProcessing').classList.add('visible');
-            document.getElementById('verifyResults').style.display = 'none';
-            
-            // Reset previous results
-            document.getElementById('consensusSection').classList.remove('visible');
-            document.getElementById('adjudicationResults').classList.remove('visible');
-            lastVerification = null;
-            
-            // Start timer
-            verifySeconds = 0;
-            updateVerifyTimer();
-            verifyTimer = setInterval(function() {
-                verifySeconds++;
-                updateVerifyTimer();
-            }, 1000);
-            
-            // Get API key if provided
-            var userApiKey = document.getElementById('apiKey').value.trim();
-            
-            // Call the Verify API
-            fetch('/api/verify', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    question: lastAssessment.question,
-                    articleText: lastAssessment.articleText || '',
-                    track: 'a',
-                    userApiKey: userApiKey
-                })
-            })
-            .then(function(res) {
-                if (!res.ok) {
-                    return res.json().then(function(err) {
-                        throw new Error(err.error || 'Verification failed');
-                    });
+            if (result.trackB) {
+                console.log('parseTrackBResponse: trackB found with keys:', Object.keys(result.trackB));
+                if (result.trackB.criteriaAssessed) {
+                    console.log('parseTrackBResponse: criteriaAssessed count:', result.trackB.criteriaAssessed.length);
                 }
-                return res.json();
-            })
-            .then(function(data) {
-                console.log('Verify response:', data);
-                stopVerifyTimer();
-                lastVerification = data;
-                renderVerifyResults(data);
-            })
-            .catch(function(err) {
-                console.error('Verify error:', err);
-                stopVerifyTimer();
-                alert('Verification failed: ' + err.message);
-                closeVerifyModal();
+            } else {
+                console.log('parseTrackBResponse: WARNING - trackB is null/undefined in parsed JSON');
+                console.log('parseTrackBResponse: Full parsed object:', JSON.stringify(parsed, null, 2).substring(0, 500));
+            }
+        } catch (e) {
+            console.error('parseTrackBResponse: JSON parse error:', e.message);
+            console.error('parseTrackBResponse: Problematic JSON:', jsonMatch[1].substring(0, 500));
+        }
+    } else {
+        console.log('parseTrackBResponse: No JSON block found in response');
+        console.log('parseTrackBResponse: Looking for ```json in:', assessment.substring(0, 200));
+    }
+    
+    return result;
+}
+
+// ============================================
+// MAIN HANDLER
+// ============================================
+module.exports = async function handler(req, res) {
+    res.setHeader('Content-Type', 'application/json');
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    
+    if (req.method === 'OPTIONS') {
+        return res.status(200).end();
+    }
+    
+    if (req.method !== 'POST') {
+        return res.status(405).json({ error: 'Method not allowed' });
+    }
+    
+    try {
+        var body = req.body;
+        if (!body) {
+            return res.status(400).json({ error: 'No request body' });
+        }
+        
+        var question = body.question || '';
+        var articleText = body.articleText || '';
+        var articleUrl = body.articleUrl || '';
+        var track = body.track || 'a';
+        var claimType = body.claimType || 'generic';
+        var criteria = body.criteria || [];
+        var customCriteria = body.customCriteria || [];
+        var fiveWsContext = body.fiveWsContext || null;
+        var userApiKey = body.userApiKey || '';
+        
+        // Fetch URL content if provided
+        if (articleUrl && !articleText) {
+            try {
+                console.log('Fetching content from URL:', articleUrl);
+                articleText = await fetchUrlContent(articleUrl);
+                console.log('Fetched content length:', articleText.length);
+            } catch (urlError) {
+                console.error('URL fetch error:', urlError.message);
+                return res.status(400).json({ 
+                    error: 'Failed to fetch URL: ' + urlError.message 
+                });
+            }
+        }
+        
+        // Validation
+        if (!question && !articleText) {
+            return res.status(400).json({ error: 'Please provide a question, URL, or article text' });
+        }
+        
+        if (track === 'b' && criteria.length === 0 && customCriteria.length === 0) {
+            return res.status(400).json({ error: 'Track B requires at least one criterion to assess' });
+        }
+        
+        // Rate limiting (skip if user provides their own key)
+        var apiKey = userApiKey;
+        var remaining = null;
+        if (!apiKey) {
+            var rateCheck = checkRateLimit(getRateLimitKey(req));
+            remaining = rateCheck.remaining;
+            if (!rateCheck.allowed) {
+                return res.status(429).json({ 
+                    error: 'Daily free limit reached (5 assessments per day). Add your own API key for unlimited use.', 
+                    resetAt: rateCheck.resetAt,
+                    remaining: 0
+                });
+            }
+            apiKey = process.env.ANTHROPIC_API_KEY;
+        }
+        
+        if (!apiKey) {
+            return res.status(500).json({ error: 'No API key configured' });
+        }
+        
+        var anthropic = new Anthropic({ apiKey: apiKey });
+        
+        // Build appropriate prompt based on track
+        var prompt;
+        if (track === 'b') {
+            console.log('=== TRACK B ASSESSMENT ===');
+            console.log('Question:', question);
+            console.log('Claim Type:', claimType);
+            console.log('Criteria:', criteria);
+            console.log('Custom Criteria:', customCriteria);
+            console.log('5Ws Context:', fiveWsContext);
+            prompt = buildTrackBPrompt(question, claimType, criteria, customCriteria, fiveWsContext);
+            console.log('Prompt length:', prompt.length);
+        } else {
+            prompt = buildTrackAPrompt(question, articleText);
+        }
+        
+        var message;
+        
+        // Try with web search first, fall back without if it fails
+        try {
+            message = await anthropic.messages.create({
+                model: 'claude-sonnet-4-20250514',
+                max_tokens: 16000,
+                tools: [{
+                    type: 'web_search_20250305',
+                    name: 'web_search'
+                }],
+                messages: [{ role: 'user', content: prompt }]
             });
-        }
-
-        function updateVerifyTimer() {
-            var mins = Math.floor(verifySeconds / 60);
-            var secs = verifySeconds % 60;
-            document.getElementById('verifyTimer').textContent = 
-                mins.toString().padStart(2, '0') + ':' + secs.toString().padStart(2, '0');
-        }
-
-        function stopVerifyTimer() {
-            if (verifyTimer) {
-                clearInterval(verifyTimer);
-                verifyTimer = null;
-            }
-        }
-
-        function closeVerifyModal() {
-            document.getElementById('verifyModal').classList.remove('visible');
-            stopVerifyTimer();
-        }
-
-        function renderVerifyResults(data) {
-            // Hide processing, show results
-            document.getElementById('verifyProcessing').classList.remove('visible');
-            document.getElementById('verifyResults').style.display = 'block';
-            
-            var initialReality = lastAssessment.realityScore;
-            var initialIntegrity = lastAssessment.integrityScore;
-            var verifyReality = data.realityScore;
-            var verifyIntegrity = data.integrityScore;
-            
-            // Display Initial scores
-            var initRealityEl = document.getElementById('initialRealityDisplay');
-            initRealityEl.textContent = (initialReality >= 0 ? '+' : '') + initialReality;
-            initRealityEl.className = 'comparison-score-value ' + getScoreClass(initialReality, false);
-            
-            var initIntegrityEl = document.getElementById('initialIntegrityDisplay');
-            initIntegrityEl.textContent = (initialIntegrity >= 0 ? '+' : '') + parseFloat(initialIntegrity).toFixed(1);
-            initIntegrityEl.className = 'comparison-score-value ' + getScoreClass(initialIntegrity, true);
-            
-            // Display Verify scores
-            var verifyRealityEl = document.getElementById('verifyRealityDisplay');
-            verifyRealityEl.textContent = (verifyReality >= 0 ? '+' : '') + verifyReality;
-            verifyRealityEl.className = 'comparison-score-value ' + getScoreClass(verifyReality, false);
-            
-            var verifyIntegrityEl = document.getElementById('verifyIntegrityDisplay');
-            verifyIntegrityEl.textContent = (verifyIntegrity >= 0 ? '+' : '') + parseFloat(verifyIntegrity).toFixed(1);
-            verifyIntegrityEl.className = 'comparison-score-value ' + getScoreClass(verifyIntegrity, true);
-            
-            // Check divergence
-            var realityDiff = Math.abs(initialReality - verifyReality);
-            var integrityDiff = Math.abs(initialIntegrity - verifyIntegrity);
-            var isDivergent = realityDiff >= REALITY_THRESHOLD || integrityDiff >= INTEGRITY_THRESHOLD;
-            
-            var alignmentStatus = document.getElementById('alignmentStatus');
-            var alignmentTitle = document.getElementById('alignmentTitle');
-            var alignmentMessage = document.getElementById('alignmentMessage');
-            
-            if (isDivergent) {
-                alignmentStatus.className = 'alignment-status divergent';
-                alignmentTitle.textContent = '⚠️ Assessments Diverge';
-                alignmentMessage.textContent = 'Reality differs by ' + realityDiff + ' points, Integrity by ' + integrityDiff.toFixed(1) + '. Consider seeking consensus.';
-                document.getElementById('consensusSection').classList.add('visible');
-            } else {
-                alignmentStatus.className = 'alignment-status aligned';
-                alignmentTitle.textContent = '✓ Assessments Align';
-                alignmentMessage.textContent = 'Both assessments reached similar conclusions (Reality ±' + realityDiff + ', Integrity ±' + integrityDiff.toFixed(1) + '). High confidence in results.';
-                document.getElementById('consensusSection').classList.remove('visible');
-            }
-        }
-
-        function runAdjudicate() {
-            if (!lastAssessment || !lastVerification) {
-                alert('Both initial and verification assessments required for adjudication.');
-                return;
-            }
-            
-            var btn = document.getElementById('consensusBtn');
-            btn.disabled = true;
-            btn.textContent = 'Adjudicating...';
-            
-            var userApiKey = document.getElementById('apiKey').value.trim();
-            
-            fetch('/api/adjudicate', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    question: lastAssessment.question,
-                    initialAssessment: lastAssessment.assessment,
-                    verifyAssessment: lastVerification.assessment,
-                    initialRealityScore: lastAssessment.realityScore,
-                    verifyRealityScore: lastVerification.realityScore,
-                    initialIntegrityScore: lastAssessment.integrityScore,
-                    verifyIntegrityScore: lastVerification.integrityScore,
-                    userApiKey: userApiKey
-                })
-            })
-            .then(function(res) {
-                if (!res.ok) {
-                    return res.json().then(function(err) {
-                        throw new Error(err.error || 'Adjudication failed');
-                    });
-                }
-                return res.json();
-            })
-            .then(function(data) {
-                console.log('Adjudicate response:', data);
-                renderAdjudicationResults(data);
-            })
-            .catch(function(err) {
-                console.error('Adjudicate error:', err);
-                alert('Adjudication failed: ' + err.message);
-            })
-            .finally(function() {
-                btn.disabled = false;
-                btn.textContent = 'Run Adjudication';
-            });
-        }
-
-        function renderAdjudicationResults(data) {
-            document.getElementById('adjudicationResults').classList.add('visible');
-            
-            // Final scores
-            var finalReality = data.finalRealityScore;
-            var finalIntegrity = data.finalIntegrityScore;
-            
-            var finalRealityEl = document.getElementById('finalRealityDisplay');
-            finalRealityEl.textContent = (finalReality >= 0 ? '+' : '') + finalReality;
-            finalRealityEl.className = 'final-score-value ' + getScoreClass(finalReality, false);
-            
-            var finalIntegrityEl = document.getElementById('finalIntegrityDisplay');
-            if (finalIntegrity !== null && finalIntegrity !== undefined) {
-                finalIntegrityEl.textContent = (finalIntegrity >= 0 ? '+' : '') + parseFloat(finalIntegrity).toFixed(1);
-                finalIntegrityEl.className = 'final-score-value ' + getScoreClass(finalIntegrity, true);
-            } else {
-                finalIntegrityEl.textContent = '—';
-            }
-            
-            // Winner badge
-            var winnerBadge = document.getElementById('winnerBadge');
-            if (data.winner === 'A') {
-                winnerBadge.textContent = 'Initial Assessment Prevailed';
-                winnerBadge.className = 'winner-badge initial';
-            } else if (data.winner === 'B') {
-                winnerBadge.textContent = 'Verification Assessment Prevailed';
-                winnerBadge.className = 'winner-badge verification';
-            } else {
-                winnerBadge.textContent = 'Consensus Reached';
-                winnerBadge.className = 'winner-badge';
-            }
-            
-            // Justification
-            var justification = 'No detailed justification provided.';
-            if (data.structured && data.structured.adjudication && data.structured.adjudication.justification) {
-                justification = data.structured.adjudication.justification;
-            }
-            document.getElementById('adjudicationJustification').textContent = justification;
-            
-            // Scroll to results
-            document.getElementById('adjudicationResults').scrollIntoView({ behavior: 'smooth' });
-        }
-
-        // Close verify modal on overlay click
-        document.addEventListener('click', function(e) {
-            if (e.target.classList.contains('verify-modal-overlay')) {
-                closeVerifyModal();
-            }
-            if (e.target.classList.contains('compare-modal-overlay')) {
-                closeCompareModal();
-            }
-        });
-
-        // ================================
-        // SIDE-BY-SIDE COMPARISON MODAL
-        // ================================
-        function openCompareModal() {
-            if (!lastAssessment || !lastVerification) {
-                alert('Both assessments required for comparison.');
-                return;
-            }
-            
-            // Populate scores
-            var initReality = lastAssessment.realityScore;
-            var initIntegrity = lastAssessment.integrityScore;
-            var verifyReality = lastVerification.realityScore;
-            var verifyIntegrity = lastVerification.integrityScore;
-            
-            var initRealityEl = document.getElementById('compareInitialReality');
-            initRealityEl.textContent = (initReality >= 0 ? '+' : '') + initReality;
-            initRealityEl.className = 'compare-score-value ' + getScoreClass(initReality, false);
-            
-            var initIntegrityEl = document.getElementById('compareInitialIntegrity');
-            initIntegrityEl.textContent = (initIntegrity >= 0 ? '+' : '') + parseFloat(initIntegrity).toFixed(1);
-            initIntegrityEl.className = 'compare-score-value ' + getScoreClass(initIntegrity, true);
-            
-            var verifyRealityEl = document.getElementById('compareVerifyReality');
-            verifyRealityEl.textContent = (verifyReality >= 0 ? '+' : '') + verifyReality;
-            verifyRealityEl.className = 'compare-score-value ' + getScoreClass(verifyReality, false);
-            
-            var verifyIntegrityEl = document.getElementById('compareVerifyIntegrity');
-            verifyIntegrityEl.textContent = (verifyIntegrity >= 0 ? '+' : '') + parseFloat(verifyIntegrity).toFixed(1);
-            verifyIntegrityEl.className = 'compare-score-value ' + getScoreClass(verifyIntegrity, true);
-            
-            // Populate content columns
-            // Handle potential structure differences between initial and verification responses
-            var initialStructured = lastAssessment.structured || lastAssessment;
-            var verifyStructured = lastVerification.structured || lastVerification;
-            
-            console.log('Initial structured data:', initialStructured);
-            console.log('Verify structured data:', verifyStructured);
-            
-            populateCompareColumn('initialCompareContent', initialStructured, 'initial');
-            populateCompareColumn('verifyCompareContent', verifyStructured, 'verify');
-            
-            // Show modal
-            document.getElementById('compareModal').classList.add('visible');
-        }
-        
-        function closeCompareModal() {
-            document.getElementById('compareModal').classList.remove('visible');
-        }
-        
-        function populateCompareColumn(containerId, structured, prefix) {
-            var container = document.getElementById(containerId);
-            container.innerHTML = '';
-            
-            // Debug: log what we're working with
-            console.log('Populating ' + prefix + ' column with:', structured);
-            
-            var sections = [
-                { key: 'realityFactors', title: '📊 Reality Score Breakdown', icon: 'reality' },
-                { key: 'integrity', title: '🔬 Integrity Score Breakdown', icon: 'integrity' },
-                { key: 'underlyingReality', title: '🔍 The Underlying Reality', icon: 'truth' },
-                { key: 'centralClaims', title: '🎯 Central Claims', icon: 'claims' },
-                { key: 'frameworkAnalysis', title: '🧩 Framework Analysis', icon: 'framework' },
-                { key: 'truthDistortionPatterns', title: '⚠️ Truth Distortion Patterns', icon: 'distortion' },
-                { key: 'evidenceAnalysis', title: '⚖️ Evidence Analysis', icon: 'evidence' }
-            ];
-            
-            sections.forEach(function(section, index) {
-                var content = null;
-                
-                // Try to get content from structured data
-                if (structured && structured[section.key]) {
-                    content = structured[section.key];
-                }
-                
-                var sectionId = prefix + '_' + section.key;
-                var formattedContent = formatCompareContent(content, section.key);
-                
-                var sectionHtml = '<div class="compare-section">' +
-                    '<div class="compare-section-header" onclick="toggleCompareSection(\'' + sectionId + '\')">' +
-                    '<button class="compare-section-toggle" id="' + sectionId + 'Toggle">+</button>' +
-                    '<h4>' + section.title + '</h4>' +
-                    '</div>' +
-                    '<div class="compare-section-content" id="' + sectionId + 'Content">' +
-                    '<div class="compare-section-content-inner">' + formattedContent + '</div>' +
-                    '</div>' +
-                    '</div>';
-                    
-                container.innerHTML += sectionHtml;
+        } catch (toolErr) {
+            console.log('Web search unavailable, falling back to base model');
+            message = await anthropic.messages.create({
+                model: 'claude-sonnet-4-20250514',
+                max_tokens: 16000,
+                messages: [{ role: 'user', content: prompt }]
             });
         }
         
-        function formatCompareContent(content, sectionKey) {
-            if (!content) return '<p style="color: var(--text-muted); font-style: italic;">Not available</p>';
-            
-            // Special handling for realityFactors (array of factor objects)
-            if (sectionKey === 'realityFactors' && Array.isArray(content)) {
-                return '<ul style="margin: 0; padding-left: 0; list-style: none;">' + 
-                    content.map(function(factor) {
-                        var score = factor.score !== undefined ? ' <strong style="color: var(--accent-blue);">(' + (factor.score >= 0 ? '+' : '') + factor.score + ')</strong>' : '';
-                        return '<li style="margin-bottom: 12px; padding: 8px; background: rgba(0,0,0,0.2); border-radius: 6px;">' +
-                            '<strong>' + (factor.factor || factor.name || 'Factor') + '</strong>' + score +
-                            (factor.assessment ? '<br><span style="color: var(--text-secondary);">' + factor.assessment + '</span>' : '') +
-                            '</li>';
-                    }).join('') + '</ul>';
+        // Extract text from response
+        var assessment = '';
+        for (var i = 0; i < message.content.length; i++) {
+            if (message.content[i].type === 'text') {
+                assessment += message.content[i].text;
             }
-            
-            // Special handling for integrity (object with dimensions)
-            if (sectionKey === 'integrity' && typeof content === 'object' && !Array.isArray(content)) {
-                var html = '';
-                if (content.observable !== undefined) {
-                    html += '<p style="margin-bottom: 8px;"><strong>Observable Behaviors:</strong> ' + content.observable + '</p>';
-                }
-                if (content.comparative !== undefined) {
-                    html += '<p style="margin-bottom: 8px;"><strong>Comparative Analysis:</strong> ' + content.comparative + '</p>';
-                }
-                if (content.bias !== undefined) {
-                    html += '<p style="margin-bottom: 8px;"><strong>Bias Assessment:</strong> ' + content.bias + '</p>';
-                }
-                if (content.overall !== undefined) {
-                    html += '<p style="margin-bottom: 8px;"><strong>Overall:</strong> ' + content.overall + '</p>';
-                }
-                // Handle any other properties
-                for (var key in content) {
-                    if (content.hasOwnProperty(key) && !['observable', 'comparative', 'bias', 'overall'].includes(key)) {
-                        var label = key.replace(/([A-Z])/g, ' $1').replace(/^./, function(s) { return s.toUpperCase(); });
-                        html += '<p style="margin-bottom: 8px;"><strong>' + label + ':</strong> ' + 
-                            (typeof content[key] === 'object' ? JSON.stringify(content[key]) : content[key]) + '</p>';
-                    }
-                }
-                return html || '<p style="color: var(--text-muted); font-style: italic;">Not available</p>';
-            }
-            
-            // Special handling for underlyingReality (object with coreFinding, howWeKnow, whyItMatters)
-            if (sectionKey === 'underlyingReality' && typeof content === 'object' && !Array.isArray(content)) {
-                var html = '';
-                if (content.coreFinding) {
-                    html += '<p style="margin-bottom: 12px;"><strong style="color: var(--accent-teal);">Core Finding:</strong> ' + content.coreFinding + '</p>';
-                }
-                if (content.howWeKnow) {
-                    html += '<p style="margin-bottom: 12px;"><strong style="color: var(--accent-blue);">How We Know:</strong> ' + content.howWeKnow + '</p>';
-                }
-                if (content.whyItMatters) {
-                    html += '<p style="margin-bottom: 12px;"><strong style="color: var(--accent-purple);">Why It Matters:</strong> ' + content.whyItMatters + '</p>';
-                }
-                return html || formatGenericContent(content);
-            }
-            
-            // Special handling for centralClaims (object with explicit/hidden)
-            if (sectionKey === 'centralClaims' && typeof content === 'object' && !Array.isArray(content)) {
-                var html = '';
-                if (content.explicit) {
-                    html += '<p style="margin-bottom: 8px;"><strong>Explicit:</strong> ' + content.explicit + '</p>';
-                }
-                if (content.hidden) {
-                    html += '<p style="margin-bottom: 8px;"><strong>Hidden:</strong> ' + content.hidden + '</p>';
-                }
-                return html || formatGenericContent(content);
-            }
-            
-            // Generic handling
-            return formatGenericContent(content);
         }
         
-        function formatGenericContent(content) {
-            if (!content) return '<p style="color: var(--text-muted); font-style: italic;">Not available</p>';
-            
-            if (typeof content === 'string') {
-                // Convert newlines to paragraphs
-                return content.split('\n').filter(function(p) { return p.trim(); }).map(function(p) {
-                    return '<p style="margin-bottom: 8px;">' + p + '</p>';
-                }).join('');
-            }
-            
-            if (Array.isArray(content)) {
-                return '<ul style="margin: 0; padding-left: 20px;">' + 
-                    content.map(function(item) {
-                        if (typeof item === 'object' && item.claim) {
-                            return '<li style="margin-bottom: 8px;"><strong>' + item.claim + '</strong>' + 
-                                (item.assessment ? '<br><span style="color: var(--text-muted);">' + item.assessment + '</span>' : '') + '</li>';
-                        }
-                        if (typeof item === 'object') {
-                            return '<li style="margin-bottom: 8px;">' + JSON.stringify(item) + '</li>';
-                        }
-                        return '<li style="margin-bottom: 4px;">' + item + '</li>';
-                    }).join('') + '</ul>';
-            }
-            
-            if (typeof content === 'object') {
-                var html = '';
-                for (var key in content) {
-                    if (content.hasOwnProperty(key)) {
-                        var label = key.replace(/([A-Z])/g, ' $1').replace(/^./, function(s) { return s.toUpperCase(); });
-                        html += '<p style="margin-bottom: 8px;"><strong>' + label + ':</strong> ' + 
-                            (typeof content[key] === 'object' ? JSON.stringify(content[key]) : content[key]) + '</p>';
-                    }
-                }
-                return html || '<p style="color: var(--text-muted); font-style: italic;">Not available</p>';
-            }
-            
-            return '<p>' + String(content) + '</p>';
+        if (!assessment) {
+            return res.status(500).json({ error: 'No assessment generated' });
         }
         
-        function toggleCompareSection(sectionId) {
-            var content = document.getElementById(sectionId + 'Content');
-            var toggle = document.getElementById(sectionId + 'Toggle');
-            if (content && toggle) {
-                content.classList.toggle('expanded');
-                toggle.textContent = content.classList.contains('expanded') ? '−' : '+';
-            }
+        // Parse response based on track
+        if (track === 'b') {
+            console.log('=== TRACK B RESPONSE ===');
+            console.log('Raw assessment length:', assessment.length);
+            console.log('First 500 chars:', assessment.substring(0, 500));
+            var parsed = parseTrackBResponse(assessment);
+            console.log('Parsed trackB:', parsed.trackB);
+            console.log('Parsed sources:', parsed.sources);
+            
+            // Debug info to help troubleshoot
+            var debugInfo = {
+                assessmentLength: assessment.length,
+                hasJsonBlock: assessment.includes('```json'),
+                trackBExists: !!parsed.trackB,
+                trackBKeys: parsed.trackB ? Object.keys(parsed.trackB) : [],
+                criteriaCount: (parsed.trackB && parsed.trackB.criteriaAssessed) ? parsed.trackB.criteriaAssessed.length : 0
+            };
+            
+            return res.status(200).json({
+                success: true,
+                assessment: assessment,
+                realityScore: null,  // Track B doesn't have a single reality score
+                integrityScore: null,
+                structured: {
+                    trackB: parsed.trackB,
+                    sources: parsed.sources
+                },
+                question: question,
+                track: 'b',
+                claimType: claimType,
+                assessmentDate: new Date().toISOString(),
+                assessor: 'INITIAL',
+                remaining: remaining,
+                _debug: debugInfo  // Include debug info in response
+            });
+        } else {
+            var parsed = parseTrackAResponse(assessment);
+            
+            return res.status(200).json({
+                success: true,
+                assessment: assessment,
+                realityScore: parsed.realityScore,
+                integrityScore: parsed.integrityScore,
+                structured: {
+                    realityFactors: parsed.realityFactors,
+                    integrity: parsed.integrity,
+                    underlyingReality: parsed.underlyingReality,
+                    centralClaims: parsed.centralClaims,
+                    frameworkAnalysis: parsed.frameworkAnalysis,
+                    truthDistortionPatterns: parsed.truthDistortionPatterns,
+                    evidenceAnalysis: parsed.evidenceAnalysis,
+                    whatWeCanBeConfidentAbout: parsed.whatWeCanBeConfidentAbout,
+                    whatRemainsUncertain: parsed.whatRemainsUncertain,
+                    lessonsForAssessment: parsed.lessonsForAssessment,
+                    methodologyNotes: parsed.methodologyNotes,
+                    sources: parsed.sources
+                },
+                question: question || 'Article Assessment',
+                track: 'a',
+                claimType: claimType,
+                assessmentDate: new Date().toISOString(),
+                assessor: 'INITIAL',
+                remaining: remaining
+            });
         }
-    </script>
-    <!-- Verify Modal -->
-    <div class="verify-modal-overlay" id="verifyModal">
-        <div class="verify-modal">
-            <div class="verify-modal-header">
-                <h2><span>✓</span> Verification Results</h2>
-                <button class="verify-modal-close" onclick="closeVerifyModal()">&times;</button>
-            </div>
-            <div class="verify-modal-body">
-                <!-- Processing State -->
-                <div class="verify-processing" id="verifyProcessing">
-                    <div class="verify-spinner"></div>
-                    <p class="gathering-label">Gathering Perspective</p>
-                    <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 8px;">Independent evaluation • Fresh analysis • Identical methodology</p>
-                    <div class="timer" id="verifyTimer">00:00</div>
-                </div>
-                
-                <!-- Results -->
-                <div id="verifyResults" style="display: none;">
-                    <!-- Side-by-Side Comparison -->
-                    <div class="comparison-grid">
-                        <div class="comparison-card initial">
-                            <div class="comparison-card-header">Initial Assessment</div>
-                            <div class="comparison-card-body">
-                                <div class="comparison-score-row">
-                                    <span class="comparison-score-label">Reality Score</span>
-                                    <span class="comparison-score-value" id="initialRealityDisplay">—</span>
-                                </div>
-                                <div class="comparison-score-row">
-                                    <span class="comparison-score-label">Integrity Score</span>
-                                    <span class="comparison-score-value" id="initialIntegrityDisplay">—</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="comparison-card verification">
-                            <div class="comparison-card-header">Verification Assessment</div>
-                            <div class="comparison-card-body">
-                                <div class="comparison-score-row">
-                                    <span class="comparison-score-label">Reality Score</span>
-                                    <span class="comparison-score-value" id="verifyRealityDisplay">—</span>
-                                </div>
-                                <div class="comparison-score-row">
-                                    <span class="comparison-score-label">Integrity Score</span>
-                                    <span class="comparison-score-value" id="verifyIntegrityDisplay">—</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Alignment Status -->
-                    <div class="alignment-status" id="alignmentStatus">
-                        <h3 id="alignmentTitle">Checking alignment...</h3>
-                        <p id="alignmentMessage"></p>
-                    </div>
-                    
-                    <!-- Compare Full Details Button -->
-                    <div style="text-align: center;">
-                        <button class="btn-compare" onclick="openCompareModal()">
-                            <span>📊</span> Compare Full Details Side-by-Side
-                        </button>
-                    </div>
-                    
-                    <!-- Consensus Section (only shows when divergent) -->
-                    <div class="consensus-section" id="consensusSection">
-                        <h3><span>🤝</span> Seek Consensus</h3>
-                        <p>The assessments show significant divergence. An independent adjudicator can evaluate both analyses and determine a final authoritative score based on reasoning quality and evidence strength.</p>
-                        <button class="btn-consensus" id="consensusBtn" onclick="runAdjudicate()">Run Adjudication</button>
-                    </div>
-                    
-                    <!-- Adjudication Results (shows after consensus) -->
-                    <div class="adjudication-results" id="adjudicationResults">
-                        <div class="adjudication-header">
-                            <h3>Final Consensus Score</h3>
-                            <div class="final-scores">
-                                <div class="final-score-item">
-                                    <div class="final-score-label">Reality</div>
-                                    <div class="final-score-value" id="finalRealityDisplay">—</div>
-                                </div>
-                                <div class="final-score-item">
-                                    <div class="final-score-label">Integrity</div>
-                                    <div class="final-score-value" id="finalIntegrityDisplay">—</div>
-                                </div>
-                            </div>
-                            <div class="winner-badge" id="winnerBadge">—</div>
-                        </div>
-                        <div class="adjudication-justification">
-                            <h4>Adjudicator's Reasoning</h4>
-                            <p id="adjudicationJustification">Loading...</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Amplify Modal -->
-    <div class="amplify-modal-overlay" id="amplifyModal">
-        <div class="amplify-modal">
-            <div class="amplify-modal-header">
-                <h2><span>🔍</span> Amplified Analysis</h2>
-                <button class="amplify-modal-close" onclick="closeAmplifyModal()">&times;</button>
-            </div>
-            <div class="amplify-modal-body">
-                <!-- Processing State -->
-                <div class="amplify-processing" id="amplifyProcessing">
-                    <div class="amplify-spinner"></div>
-                    <p class="gathering-label">Gathering Perspective</p>
-                    <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 8px;">Challenging assumptions • Exploring alternatives • Finding blind spots</p>
-                    <div class="timer" id="amplifyTimer">00:00</div>
-                </div>
-                
-                <!-- Results -->
-                <div id="amplifyResults" style="display: none;">
-                    <!-- Summary -->
-                    <div class="amplify-summary">
-                        <h3>Amplification Summary</h3>
-                        <p id="amplifySummaryText">Loading...</p>
-                    </div>
-                    
-                    <!-- Confidence Adjustment -->
-                    <div class="amplify-confidence">
-                        <div class="confidence-card" id="confidenceCard">
-                            <div class="confidence-direction" id="confidenceArrow">→</div>
-                            <div class="confidence-label">Confidence Adjustment</div>
-                            <div class="confidence-value" id="confidenceValue">Unchanged</div>
-                            <div class="confidence-reason" id="confidenceReason">Analyzing...</div>
-                        </div>
-                    </div>
-                    
-                    <!-- Collapsible Sections -->
-                    <div class="amplify-sections">
-                        <!-- 1. Challenges to Assumptions -->
-                        <div class="amplify-section">
-                            <div class="amplify-section-header" onclick="toggleAmplifySection('challenges')">
-                                <button class="amplify-section-toggle" id="challengesToggle">+</button>
-                                <div class="amplify-section-title challenges">
-                                    <span>⚠️</span> Challenges to Assumptions
-                                </div>
-                            </div>
-                            <div class="amplify-section-content" id="challengesContent">
-                                <ul id="challengesList"></ul>
-                            </div>
-                        </div>
-                        
-                        <!-- 2. Alternative Interpretations -->
-                        <div class="amplify-section">
-                            <div class="amplify-section-header" onclick="toggleAmplifySection('alternatives')">
-                                <button class="amplify-section-toggle" id="alternativesToggle">+</button>
-                                <div class="amplify-section-title alternatives">
-                                    <span>🔄</span> Alternative Interpretations
-                                </div>
-                            </div>
-                            <div class="amplify-section-content" id="alternativesContent">
-                                <ul id="alternativesList"></ul>
-                            </div>
-                        </div>
-                        
-                        <!-- 3. Blind Spots -->
-                        <div class="amplify-section">
-                            <div class="amplify-section-header" onclick="toggleAmplifySection('blindspots')">
-                                <button class="amplify-section-toggle" id="blindspotsToggle">+</button>
-                                <div class="amplify-section-title blindspots">
-                                    <span>👁️</span> Blind Spots
-                                </div>
-                            </div>
-                            <div class="amplify-section-content" id="blindspotsContent">
-                                <ul id="blindspotsList"></ul>
-                            </div>
-                        </div>
-                        
-                        <!-- 4. Stress Tests -->
-                        <div class="amplify-section">
-                            <div class="amplify-section-header" onclick="toggleAmplifySection('stresstests')">
-                                <button class="amplify-section-toggle" id="stresstestsToggle">+</button>
-                                <div class="amplify-section-title stresstests">
-                                    <span>🔬</span> Stress Tests
-                                </div>
-                            </div>
-                            <div class="amplify-section-content" id="stresstestsContent">
-                                <ul id="stresstestsList"></ul>
-                            </div>
-                        </div>
-                        
-                        <!-- 5. Significant Changes -->
-                        <div class="amplify-section">
-                            <div class="amplify-section-header" onclick="toggleAmplifySection('changes')">
-                                <button class="amplify-section-toggle" id="changesToggle">+</button>
-                                <div class="amplify-section-title changes">
-                                    <span>📊</span> Significant Changes
-                                </div>
-                            </div>
-                            <div class="amplify-section-content" id="changesContent">
-                                <ul id="changesList"></ul>
-                            </div>
-                        </div>
-                        
-                        <!-- 6. Bottom Line Analysis -->
-                        <div class="amplify-section">
-                            <div class="amplify-section-header" onclick="toggleAmplifySection('bottomline')">
-                                <button class="amplify-section-toggle" id="bottomlineToggle">+</button>
-                                <div class="amplify-section-title bottomline">
-                                    <span>📋</span> Bottom Line Analysis
-                                </div>
-                            </div>
-                            <div class="amplify-section-content" id="bottomlineContent">
-                                <p class="amplify-bottomline-text" id="bottomlineText"></p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Side-by-Side Comparison Modal -->
-    <div class="compare-modal-overlay" id="compareModal">
-        <div class="compare-modal">
-            <div class="compare-modal-header">
-                <h2><span>📊</span> Side-by-Side Assessment Comparison</h2>
-                <button class="compare-modal-close" onclick="closeCompareModal()">&times;</button>
-            </div>
-            <div class="compare-modal-body">
-                <!-- Initial Assessment Column -->
-                <div class="compare-column initial">
-                    <div class="compare-column-header">Initial Assessment</div>
-                    <div class="compare-column-scores">
-                        <div class="compare-score-item">
-                            <div class="compare-score-label">Reality</div>
-                            <div class="compare-score-value" id="compareInitialReality">—</div>
-                        </div>
-                        <div class="compare-score-item">
-                            <div class="compare-score-label">Integrity</div>
-                            <div class="compare-score-value" id="compareInitialIntegrity">—</div>
-                        </div>
-                    </div>
-                    <div class="compare-column-content" id="initialCompareContent">
-                        <!-- Sections populated by JS -->
-                    </div>
-                </div>
-                
-                <!-- Verification Assessment Column -->
-                <div class="compare-column verification">
-                    <div class="compare-column-header">Verification Assessment</div>
-                    <div class="compare-column-scores">
-                        <div class="compare-score-item">
-                            <div class="compare-score-label">Reality</div>
-                            <div class="compare-score-value" id="compareVerifyReality">—</div>
-                        </div>
-                        <div class="compare-score-item">
-                            <div class="compare-score-label">Integrity</div>
-                            <div class="compare-score-value" id="compareVerifyIntegrity">—</div>
-                        </div>
-                    </div>
-                    <div class="compare-column-content" id="verifyCompareContent">
-                        <!-- Sections populated by JS -->
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-</body>
-</html>
+        
+    } catch (err) {
+        console.error('Assessment error:', err);
+        return res.status(500).json({ error: 'Assessment failed', message: err.message });
+    }
+};
