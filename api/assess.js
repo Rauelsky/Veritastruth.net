@@ -667,8 +667,25 @@ module.exports = async function handler(req, res) {
         // Fetch URL content if provided
         if (articleUrl && !articleText) {
             try {
-                console.log('Fetching content from URL:', articleUrl);
-                articleText = await fetchUrlContent(articleUrl);
+                // Validate and normalize URL
+                var normalizedUrl = articleUrl.trim();
+                
+                // Add protocol if missing
+                if (!normalizedUrl.startsWith('http://') && !normalizedUrl.startsWith('https://')) {
+                    normalizedUrl = 'https://' + normalizedUrl;
+                }
+                
+                // Basic URL validation
+                try {
+                    new URL(normalizedUrl);
+                } catch (e) {
+                    return res.status(400).json({ 
+                        error: 'Invalid URL format. Please enter a valid URL (e.g., https://example.com/article)' 
+                    });
+                }
+                
+                console.log('Fetching content from URL:', normalizedUrl);
+                articleText = await fetchUrlContent(normalizedUrl);
                 console.log('Fetched content length:', articleText.length);
             } catch (urlError) {
                 console.error('URL fetch error:', urlError.message);
