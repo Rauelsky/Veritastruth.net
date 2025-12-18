@@ -3540,8 +3540,15 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
             verifyIntegrityEl.className = 'compare-score-value ' + getScoreClass(verifyIntegrity, true);
             
             // Populate content columns
-            populateCompareColumn('initialCompareContent', lastAssessment.structured, 'initial');
-            populateCompareColumn('verifyCompareContent', lastVerification.structured, 'verify');
+            // Handle potential structure differences between initial and verification responses
+            var initialStructured = lastAssessment.structured || lastAssessment;
+            var verifyStructured = lastVerification.structured || lastVerification;
+            
+            console.log('Initial structured data:', initialStructured);
+            console.log('Verify structured data:', verifyStructured);
+            
+            populateCompareColumn('initialCompareContent', initialStructured, 'initial');
+            populateCompareColumn('verifyCompareContent', verifyStructured, 'verify');
             
             // Show modal
             document.getElementById('compareModal').classList.add('visible');
@@ -3555,9 +3562,12 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
             var container = document.getElementById(containerId);
             container.innerHTML = '';
             
+            // Debug: log what we're working with
+            console.log('Populating ' + prefix + ' column with:', structured);
+            
             var sections = [
-                { key: 'realityBreakdown', title: '📊 Reality Score Breakdown', icon: 'reality' },
-                { key: 'integrityBreakdown', title: '🔬 Integrity Score Breakdown', icon: 'integrity' },
+                { key: 'realityFactors', title: '📊 Reality Score Breakdown', icon: 'reality' },
+                { key: 'integrity', title: '🔬 Integrity Score Breakdown', icon: 'integrity' },
                 { key: 'underlyingReality', title: '🔍 The Underlying Reality', icon: 'truth' },
                 { key: 'centralClaims', title: '🎯 Central Claims', icon: 'claims' },
                 { key: 'frameworkAnalysis', title: '🧩 Framework Analysis', icon: 'framework' },
@@ -3566,8 +3576,15 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
             ];
             
             sections.forEach(function(section, index) {
-                var content = structured && structured[section.key] ? structured[section.key] : 'Not available';
+                var content = null;
+                
+                // Try to get content from structured data
+                if (structured && structured[section.key]) {
+                    content = structured[section.key];
+                }
+                
                 var sectionId = prefix + '_' + section.key;
+                var formattedContent = formatCompareContent(content, section.key);
                 
                 var sectionHtml = '<div class="compare-section">' +
                     '<div class="compare-section-header" onclick="toggleCompareSection(\'' + sectionId + '\')">' +
@@ -3575,7 +3592,7 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
                     '<h4>' + section.title + '</h4>' +
                     '</div>' +
                     '<div class="compare-section-content" id="' + sectionId + 'Content">' +
-                    '<div class="compare-section-content-inner">' + formatCompareContent(content) + '</div>' +
+                    '<div class="compare-section-content-inner">' + formattedContent + '</div>' +
                     '</div>' +
                     '</div>';
                     
@@ -3583,7 +3600,79 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
             });
         }
         
-        function formatCompareContent(content) {
+        function formatCompareContent(content, sectionKey) {
+            if (!content) return '<p style="color: var(--text-muted); font-style: italic;">Not available</p>';
+            
+            // Special handling for realityFactors (array of factor objects)
+            if (sectionKey === 'realityFactors' && Array.isArray(content)) {
+                return '<ul style="margin: 0; padding-left: 0; list-style: none;">' + 
+                    content.map(function(factor) {
+                        var score = factor.score !== undefined ? ' <strong style="color: var(--accent-blue);">(' + (factor.score >= 0 ? '+' : '') + factor.score + ')</strong>' : '';
+                        return '<li style="margin-bottom: 12px; padding: 8px; background: rgba(0,0,0,0.2); border-radius: 6px;">' +
+                            '<strong>' + (factor.factor || factor.name || 'Factor') + '</strong>' + score +
+                            (factor.assessment ? '<br><span style="color: var(--text-secondary);">' + factor.assessment + '</span>' : '') +
+                            '</li>';
+                    }).join('') + '</ul>';
+            }
+            
+            // Special handling for integrity (object with dimensions)
+            if (sectionKey === 'integrity' && typeof content === 'object' && !Array.isArray(content)) {
+                var html = '';
+                if (content.observable !== undefined) {
+                    html += '<p style="margin-bottom: 8px;"><strong>Observable Behaviors:</strong> ' + content.observable + '</p>';
+                }
+                if (content.comparative !== undefined) {
+                    html += '<p style="margin-bottom: 8px;"><strong>Comparative Analysis:</strong> ' + content.comparative + '</p>';
+                }
+                if (content.bias !== undefined) {
+                    html += '<p style="margin-bottom: 8px;"><strong>Bias Assessment:</strong> ' + content.bias + '</p>';
+                }
+                if (content.overall !== undefined) {
+                    html += '<p style="margin-bottom: 8px;"><strong>Overall:</strong> ' + content.overall + '</p>';
+                }
+                // Handle any other properties
+                for (var key in content) {
+                    if (content.hasOwnProperty(key) && !['observable', 'comparative', 'bias', 'overall'].includes(key)) {
+                        var label = key.replace(/([A-Z])/g, ' $1').replace(/^./, function(s) { return s.toUpperCase(); });
+                        html += '<p style="margin-bottom: 8px;"><strong>' + label + ':</strong> ' + 
+                            (typeof content[key] === 'object' ? JSON.stringify(content[key]) : content[key]) + '</p>';
+                    }
+                }
+                return html || '<p style="color: var(--text-muted); font-style: italic;">Not available</p>';
+            }
+            
+            // Special handling for underlyingReality (object with coreFinding, howWeKnow, whyItMatters)
+            if (sectionKey === 'underlyingReality' && typeof content === 'object' && !Array.isArray(content)) {
+                var html = '';
+                if (content.coreFinding) {
+                    html += '<p style="margin-bottom: 12px;"><strong style="color: var(--accent-teal);">Core Finding:</strong> ' + content.coreFinding + '</p>';
+                }
+                if (content.howWeKnow) {
+                    html += '<p style="margin-bottom: 12px;"><strong style="color: var(--accent-blue);">How We Know:</strong> ' + content.howWeKnow + '</p>';
+                }
+                if (content.whyItMatters) {
+                    html += '<p style="margin-bottom: 12px;"><strong style="color: var(--accent-purple);">Why It Matters:</strong> ' + content.whyItMatters + '</p>';
+                }
+                return html || formatGenericContent(content);
+            }
+            
+            // Special handling for centralClaims (object with explicit/hidden)
+            if (sectionKey === 'centralClaims' && typeof content === 'object' && !Array.isArray(content)) {
+                var html = '';
+                if (content.explicit) {
+                    html += '<p style="margin-bottom: 8px;"><strong>Explicit:</strong> ' + content.explicit + '</p>';
+                }
+                if (content.hidden) {
+                    html += '<p style="margin-bottom: 8px;"><strong>Hidden:</strong> ' + content.hidden + '</p>';
+                }
+                return html || formatGenericContent(content);
+            }
+            
+            // Generic handling
+            return formatGenericContent(content);
+        }
+        
+        function formatGenericContent(content) {
             if (!content) return '<p style="color: var(--text-muted); font-style: italic;">Not available</p>';
             
             if (typeof content === 'string') {
@@ -3599,6 +3688,9 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
                         if (typeof item === 'object' && item.claim) {
                             return '<li style="margin-bottom: 8px;"><strong>' + item.claim + '</strong>' + 
                                 (item.assessment ? '<br><span style="color: var(--text-muted);">' + item.assessment + '</span>' : '') + '</li>';
+                        }
+                        if (typeof item === 'object') {
+                            return '<li style="margin-bottom: 8px;">' + JSON.stringify(item) + '</li>';
                         }
                         return '<li style="margin-bottom: 4px;">' + item + '</li>';
                     }).join('') + '</ul>';
