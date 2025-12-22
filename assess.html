@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VERITAS — Truth Assessment Engine</title>
+    <title>VERITAS — Truth Through Understanding</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -2010,6 +2010,304 @@
             .score-panel { padding: 20px; }
             .countdown-container { flex-wrap: wrap; }
         }
+
+        /* ================================
+           CLASSIFICATION MODAL
+           ================================ */
+        .classify-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 1000;
+            overflow-y: auto;
+            padding: 40px 20px;
+            backdrop-filter: blur(4px);
+        }
+
+        .classify-modal-overlay.visible { display: block; }
+
+        .classify-modal {
+            max-width: 600px;
+            margin: 0 auto;
+            background: var(--bg-card);
+            border: 1px solid var(--accent-teal);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(13, 148, 136, 0.3);
+            animation: modalSlideIn 0.3s ease-out;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .classify-modal-header {
+            background: linear-gradient(135deg, var(--accent-teal) 0%, var(--accent-teal-dim) 100%);
+            padding: 20px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .classify-modal-header h2 {
+            color: white;
+            font-size: 1.25rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .classify-modal-close {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            font-size: 1.25rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+
+        .classify-modal-close:hover { background: rgba(255, 255, 255, 0.3); }
+
+        .classify-modal-body {
+            padding: 24px;
+        }
+
+        .classify-processing {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .classify-spinner {
+            width: 48px;
+            height: 48px;
+            border: 3px solid var(--border-medium);
+            border-top-color: var(--accent-teal);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        .classify-processing p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .classify-result {
+            display: none;
+        }
+
+        .classify-result.visible { display: block; }
+
+        .classify-input-preview {
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+
+        .classify-input-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .classify-input-text {
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .classify-recommendation {
+            background: var(--bg-secondary);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-subtle);
+        }
+
+        .classify-rec-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .classify-rec-icon {
+            font-size: 2rem;
+        }
+
+        .classify-rec-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .classify-rec-subtitle {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .classify-prompt {
+            color: var(--text-primary);
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+
+        .classify-signals {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .classify-signal {
+            background: rgba(13, 148, 136, 0.15);
+            border: 1px solid rgba(13, 148, 136, 0.3);
+            color: var(--accent-cyan);
+            font-size: 0.75rem;
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
+
+        .classify-buttons {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .classify-btn {
+            flex: 1;
+            min-width: 140px;
+            padding: 14px 20px;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .classify-btn-primary {
+            background: linear-gradient(135deg, var(--accent-teal) 0%, var(--accent-teal-dim) 100%);
+            color: white;
+            border: none;
+        }
+
+        .classify-btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(13, 148, 136, 0.4);
+        }
+
+        .classify-btn-secondary {
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--border-medium);
+        }
+
+        .classify-btn-secondary:hover {
+            border-color: var(--accent-teal);
+            color: var(--accent-teal);
+        }
+
+        .classify-btn-explore {
+            background: linear-gradient(135deg, var(--accent-purple) 0%, #6d28d9 100%);
+            color: white;
+            border: none;
+        }
+
+        .classify-btn-explore:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+        }
+
+        .classify-override {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border-subtle);
+            text-align: center;
+        }
+
+        .classify-override-link {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            cursor: pointer;
+            text-decoration: underline;
+            background: none;
+            border: none;
+            font-family: inherit;
+        }
+
+        .classify-override-link:hover {
+            color: var(--text-secondary);
+        }
+
+        /* Track B badge colors */
+        .track-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .track-badge.track-a {
+            background: rgba(13, 148, 136, 0.2);
+            color: var(--accent-cyan);
+            border: 1px solid rgba(13, 148, 136, 0.4);
+        }
+
+        .track-badge.track-b-standard {
+            background: rgba(139, 92, 246, 0.2);
+            color: #c4b5fd;
+            border: 1px solid rgba(139, 92, 246, 0.4);
+        }
+
+        .track-badge.track-b-armor {
+            background: rgba(245, 158, 11, 0.2);
+            color: #fcd34d;
+            border: 1px solid rgba(245, 158, 11, 0.4);
+        }
+
+        .track-badge.track-b-mirror {
+            background: rgba(236, 72, 153, 0.2);
+            color: #f9a8d4;
+            border: 1px solid rgba(236, 72, 153, 0.4);
+        }
+
+        @media (max-width: 500px) {
+            .classify-buttons {
+                flex-direction: column;
+            }
+            .classify-btn {
+                width: 100%;
+            }
+        }
     </style>
 </head>
 <body>
@@ -2026,7 +2324,7 @@
                 </div>
                 <div class="tagline">Truth Through Transparency</div>
             </div>
-            <div class="version-badge">v4.1 — Track A</div>
+            <div class="version-badge">v5.0 — Unified Entry</div>
         </div>
     </header>
 
@@ -2034,10 +2332,10 @@
         <!-- Input Card -->
         <div class="card" id="inputCard">
             <div class="card-header">
-                <div class="card-header-icon">📝</div>
+                <div class="card-header-icon">🧭</div>
                 <div>
-                    <div class="card-title">Claim Assessment</div>
-                    <div class="card-subtitle">Enter a claim or question to evaluate</div>
+                    <div class="card-title">What Would You Like to Explore?</div>
+                    <div class="card-subtitle">Enter a claim, question, or belief — we'll help you find the best path forward</div>
                 </div>
             </div>
 
@@ -2046,9 +2344,13 @@
 
                 <div class="form-group">
                     <label class="form-label">Claim or Question</label>
-                    <textarea id="question" class="form-input" maxlength="600" placeholder="Enter the claim you want to assess...
+                    <textarea id="question" class="form-input" maxlength="600" placeholder="What's on your mind?
 
-Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateCharCounter()"></textarea>
+Examples:
+• 'Did the 2020 election have widespread fraud?'
+• 'Is it true that vaccines cause autism?'
+• 'Why do people believe climate change is a hoax?'
+• 'How can anyone support [political position]?'" oninput="updateCharCounter()"></textarea>
                     <div class="char-counter" id="charCounter">0 / 280 characters</div>
                 </div>
 
@@ -2083,8 +2385,8 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
                 </div>
 
                 <div class="button-row">
-                    <button class="btn btn-primary" id="assessBtn" onclick="runAssessment()">
-                        <span>⚡</span> Run Assessment
+                    <button class="btn btn-primary" id="assessBtn" onclick="classifyInput()">
+                        <span>🧭</span> Begin
                     </button>
                     <button class="btn btn-secondary" onclick="clearForm()">Clear</button>
                 </div>
@@ -3751,6 +4053,215 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
                 toggle.textContent = content.classList.contains('expanded') ? '−' : '+';
             }
         }
+
+        // ================================
+        // CLASSIFICATION MODAL SYSTEM
+        // ================================
+        var lastClassification = null;
+        var classifyInputValue = '';
+
+        function classifyInput() {
+            var question = document.getElementById('question').value.trim();
+            var articleText = document.getElementById('articleText').value.trim();
+            var articleUrl = document.getElementById('articleUrl').value.trim();
+            var errorBox = document.getElementById('errorBox');
+            
+            // Validation
+            if (!question && !articleText && !articleUrl) {
+                errorBox.textContent = 'Please enter a claim, question, URL, or article text.';
+                errorBox.classList.add('visible');
+                return;
+            }
+            errorBox.classList.remove('visible');
+            
+            // Store the input for later
+            classifyInputValue = question || articleText || articleUrl;
+            
+            // Show modal in processing state
+            document.getElementById('classifyModal').classList.add('visible');
+            document.getElementById('classifyProcessing').style.display = 'block';
+            document.getElementById('classifyResult').classList.remove('visible');
+            
+            // Call classification API
+            fetch('/api/classify', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    input: classifyInputValue,
+                    context: articleText ? 'Has article text provided' : (articleUrl ? 'Has URL to analyze' : '')
+                })
+            })
+            .then(function(response) {
+                if (!response.ok) {
+                    throw new Error('Classification failed');
+                }
+                return response.json();
+            })
+            .then(function(data) {
+                lastClassification = data;
+                showClassificationResult(data);
+            })
+            .catch(function(err) {
+                console.error('Classification error:', err);
+                // On error, default to Track A
+                showClassificationResult({
+                    recommended_track: 'A',
+                    confidence: 0.5,
+                    question_type: 'mixed',
+                    signals_detected: [],
+                    user_prompt: 'We\'ll evaluate this claim for factual accuracy.',
+                    reasoning: 'Classification unavailable, defaulting to assessment.'
+                });
+            });
+        }
+
+        function showClassificationResult(data) {
+            document.getElementById('classifyProcessing').style.display = 'none';
+            document.getElementById('classifyResult').classList.add('visible');
+            
+            // Show the input preview
+            document.getElementById('classifyInputText').textContent = 
+                classifyInputValue.length > 200 
+                    ? classifyInputValue.substring(0, 200) + '...' 
+                    : classifyInputValue;
+            
+            // Track configuration
+            var trackConfig = {
+                'A': {
+                    icon: '🔍',
+                    title: 'Evaluate & Assess',
+                    subtitle: 'Track A — Factual Analysis',
+                    btnClass: 'classify-btn-primary',
+                    btnText: '🔍 Run Assessment',
+                    action: 'proceedToTrackA'
+                },
+                'B-standard': {
+                    icon: '💬',
+                    title: 'Understand & Explore',
+                    subtitle: 'Track B — Conversational Exploration',
+                    btnClass: 'classify-btn-explore',
+                    btnText: '💬 Start Conversation',
+                    action: 'proceedToTrackB',
+                    mode: 'standard'
+                },
+                'B-armor': {
+                    icon: '🛡️',
+                    title: 'Understand & Explore',
+                    subtitle: 'Track B — Armor Mode',
+                    btnClass: 'classify-btn-explore',
+                    btnText: '🛡️ Start Conversation',
+                    action: 'proceedToTrackB',
+                    mode: 'armor'
+                },
+                'B-mirror': {
+                    icon: '🪞',
+                    title: 'Understand & Explore',
+                    subtitle: 'Track B — The Mirror',
+                    btnClass: 'classify-btn-explore',
+                    btnText: '🪞 Start Conversation',
+                    action: 'proceedToTrackB',
+                    mode: 'mirror'
+                }
+            };
+            
+            var track = data.recommended_track || 'A';
+            var config = trackConfig[track] || trackConfig['A'];
+            
+            // Update UI
+            document.getElementById('classifyRecIcon').textContent = config.icon;
+            document.getElementById('classifyRecTitle').textContent = config.title;
+            document.getElementById('classifyRecSubtitle').textContent = config.subtitle;
+            document.getElementById('classifyPrompt').textContent = data.user_prompt || 'Ready to proceed.';
+            
+            // Show signals
+            var signalsContainer = document.getElementById('classifySignals');
+            signalsContainer.innerHTML = '';
+            if (data.signals_detected && data.signals_detected.length > 0) {
+                data.signals_detected.forEach(function(signal) {
+                    var badge = document.createElement('span');
+                    badge.className = 'classify-signal';
+                    badge.textContent = signal.replace(/_/g, ' ');
+                    signalsContainer.appendChild(badge);
+                });
+            }
+            
+            // Build primary buttons
+            var buttonsContainer = document.getElementById('classifyButtons');
+            buttonsContainer.innerHTML = '';
+            
+            // Primary action button
+            var primaryBtn = document.createElement('button');
+            primaryBtn.className = 'classify-btn ' + config.btnClass;
+            primaryBtn.innerHTML = config.btnText;
+            primaryBtn.onclick = function() {
+                if (config.action === 'proceedToTrackA') {
+                    proceedToTrackA();
+                } else {
+                    proceedToTrackB(config.mode);
+                }
+            };
+            buttonsContainer.appendChild(primaryBtn);
+            
+            // Cancel button
+            var cancelBtn = document.createElement('button');
+            cancelBtn.className = 'classify-btn classify-btn-secondary';
+            cancelBtn.textContent = 'Cancel';
+            cancelBtn.onclick = closeClassifyModal;
+            buttonsContainer.appendChild(cancelBtn);
+            
+            // Build override buttons
+            var overrideContainer = document.getElementById('classifyOverrideButtons');
+            overrideContainer.innerHTML = '';
+            
+            // Add all track options as overrides
+            Object.keys(trackConfig).forEach(function(key) {
+                if (key !== track) {
+                    var cfg = trackConfig[key];
+                    var btn = document.createElement('button');
+                    btn.className = 'classify-btn classify-btn-secondary';
+                    btn.innerHTML = cfg.icon + ' ' + cfg.title;
+                    btn.onclick = function() {
+                        if (cfg.action === 'proceedToTrackA') {
+                            proceedToTrackA();
+                        } else {
+                            proceedToTrackB(cfg.mode);
+                        }
+                    };
+                    overrideContainer.appendChild(btn);
+                }
+            });
+        }
+
+        function toggleClassifyOverride() {
+            var overrideButtons = document.getElementById('classifyOverrideButtons');
+            var link = document.getElementById('classifyOverrideLink');
+            if (overrideButtons.style.display === 'none') {
+                overrideButtons.style.display = 'flex';
+                link.textContent = 'Hide other options';
+            } else {
+                overrideButtons.style.display = 'none';
+                link.textContent = 'I\'d prefer to use a different approach';
+            }
+        }
+
+        function closeClassifyModal() {
+            document.getElementById('classifyModal').classList.remove('visible');
+            document.getElementById('classifyOverrideButtons').style.display = 'none';
+            document.getElementById('classifyOverrideLink').textContent = 'I\'d prefer to use a different approach';
+        }
+
+        function proceedToTrackA() {
+            closeClassifyModal();
+            // Directly run the existing assessment
+            runAssessment();
+        }
+
+        function proceedToTrackB(mode) {
+            // Redirect to conversation page with the query
+            var query = encodeURIComponent(classifyInputValue);
+            var modeParam = mode || 'standard';
+            window.location.href = '/conversation.html?q=' + query + '&mode=' + modeParam;
+        }
     </script>
     <!-- Verify Modal -->
     <div class="verify-modal-overlay" id="verifyModal">
@@ -4006,6 +4517,58 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
                     </div>
                     <div class="compare-column-content" id="verifyCompareContent">
                         <!-- Sections populated by JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Classification Modal -->
+    <div class="classify-modal-overlay" id="classifyModal">
+        <div class="classify-modal">
+            <div class="classify-modal-header">
+                <h2><span>🧭</span> Finding the Best Path</h2>
+                <button class="classify-modal-close" onclick="closeClassifyModal()">&times;</button>
+            </div>
+            <div class="classify-modal-body">
+                <!-- Processing State -->
+                <div class="classify-processing" id="classifyProcessing">
+                    <div class="classify-spinner"></div>
+                    <p>Analyzing your question...</p>
+                </div>
+                
+                <!-- Results -->
+                <div class="classify-result" id="classifyResult">
+                    <div class="classify-input-preview">
+                        <div class="classify-input-label">Your Question</div>
+                        <div class="classify-input-text" id="classifyInputText"></div>
+                    </div>
+                    
+                    <div class="classify-recommendation">
+                        <div class="classify-rec-header">
+                            <span class="classify-rec-icon" id="classifyRecIcon">🔍</span>
+                            <div>
+                                <div class="classify-rec-title" id="classifyRecTitle">Recommendation</div>
+                                <div class="classify-rec-subtitle" id="classifyRecSubtitle"></div>
+                            </div>
+                        </div>
+                        <p class="classify-prompt" id="classifyPrompt"></p>
+                        <div class="classify-signals" id="classifySignals"></div>
+                    </div>
+                    
+                    <div class="classify-buttons" id="classifyButtons">
+                        <!-- Buttons populated dynamically -->
+                    </div>
+                    
+                    <div class="classify-override">
+                        <button class="classify-override-link" id="classifyOverrideLink" onclick="toggleClassifyOverride()">
+                            I'd prefer to use a different approach
+                        </button>
+                    </div>
+                    
+                    <!-- Override Options (hidden by default) -->
+                    <div class="classify-buttons" id="classifyOverrideButtons" style="display: none; margin-top: 12px;">
+                        <!-- Override buttons populated dynamically -->
                     </div>
                 </div>
             </div>
