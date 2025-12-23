@@ -1836,11 +1836,14 @@
         }
 
         .compare-column {
-            flex: 1;
+            flex: 1 1 50%;
+            max-width: 50%;
+            min-width: 0;
             display: flex;
             flex-direction: column;
             overflow: hidden;
             border-right: 2px solid var(--border-medium);
+            align-items: stretch;
         }
 
         .compare-column:last-child {
@@ -1849,7 +1852,7 @@
 
         .compare-column-header {
             padding: 12px 16px;
-            text-align: center;
+            text-align: left;
             font-weight: 600;
             font-size: 0.9rem;
             text-transform: uppercase;
@@ -1871,16 +1874,16 @@
 
         .compare-column-scores {
             display: flex;
-            justify-content: center;
+            justify-content: flex-start;
             gap: 24px;
-            padding: 12px;
+            padding: 12px 16px;
             background: var(--bg-tertiary);
             border-bottom: 1px solid var(--border-subtle);
             flex-shrink: 0;
         }
 
         .compare-score-item {
-            text-align: center;
+            text-align: left;
         }
 
         .compare-score-label {
@@ -1914,7 +1917,7 @@
         .compare-section-header {
             display: flex;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-start;
             padding: 10px 16px;
             cursor: pointer;
             transition: background 0.2s ease;
@@ -1963,6 +1966,7 @@
             font-size: 0.85rem;
             color: var(--text-secondary);
             line-height: 1.6;
+            text-align: left;
         }
 
         /* Button to open comparison */
@@ -1994,6 +1998,8 @@
             }
             
             .compare-column {
+                flex: 1 1 100%;
+                max-width: 100%;
                 border-right: none;
                 border-bottom: 2px solid var(--border-medium);
                 max-height: 50%;
@@ -2026,7 +2032,7 @@
                 </div>
                 <div class="tagline">Truth Through Transparency</div>
             </div>
-            <div class="version-badge">v4.1 — Track A</div>
+            <div class="version-badge">v4.2 — Track A</div>
         </div>
     </header>
 
@@ -3320,7 +3326,12 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
                     question: lastAssessment.question,
                     articleText: lastAssessment.articleText || '',
                     track: 'a',
-                    userApiKey: userApiKey
+                    userApiKey: userApiKey,
+                    initialAssessment: {
+                        realityScore: lastAssessment.realityScore,
+                        integrityScore: lastAssessment.integrityScore,
+                        structured: lastAssessment.structured
+                    }
                 })
             })
             .then(function(res) {
@@ -3433,10 +3444,10 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
                     question: lastAssessment.question,
                     initialAssessment: lastAssessment.assessment,
                     verifyAssessment: lastVerification.assessment,
-                    initialRealityScore: lastAssessment.realityScore,
-                    verifyRealityScore: lastVerification.realityScore,
-                    initialIntegrityScore: lastAssessment.integrityScore,
-                    verifyIntegrityScore: lastVerification.integrityScore,
+                    initialScore: lastAssessment.realityScore,
+                    verifyScore: lastVerification.realityScore,
+                    initialStructured: lastAssessment.structured,
+                    verifyStructured: lastVerification.structured,
                     userApiKey: userApiKey
                 })
             })
@@ -3763,8 +3774,8 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
                 <!-- Processing State -->
                 <div class="verify-processing" id="verifyProcessing">
                     <div class="verify-spinner"></div>
-                    <p class="gathering-label">Gathering Perspective</p>
-                    <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 8px;">Independent evaluation • Fresh analysis • Identical methodology</p>
+                    <p class="gathering-label">Verification Analysis in Progress</p>
+                    <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 8px;">Researching current sources • Cross-referencing evidence • Fresh philosophical perspective</p>
                     <div class="timer" id="verifyTimer">00:00</div>
                 </div>
                 
