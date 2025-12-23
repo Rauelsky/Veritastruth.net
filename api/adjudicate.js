@@ -1,5 +1,12 @@
 const Anthropic = require('@anthropic-ai/sdk');
 
+// ============================================
+// ADJUDICATE.JS - ENHANCED FOR RESEARCH-BACKED VERIFICATION
+// ============================================
+// The Second Philosopher now brings fresh research to the table.
+// Adjudication must weigh this appropriately.
+// ============================================
+
 module.exports = async function handler(req, res) {
     res.setHeader('Content-Type', 'application/json');
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -23,11 +30,13 @@ module.exports = async function handler(req, res) {
         var question = body.question || '';
         var initialAssessment = body.initialAssessment || '';
         var verifyAssessment = body.verifyAssessment || '';
-        var initialRealityScore = body.initialRealityScore || body.initialScore;
-        var verifyRealityScore = body.verifyRealityScore || body.verifyScore;
-        var initialIntegrityScore = body.initialIntegrityScore;
-        var verifyIntegrityScore = body.verifyIntegrityScore;
+        var initialScore = body.initialScore;
+        var verifyScore = body.verifyScore;
         var userApiKey = body.userApiKey || '';
+        
+        // NEW: Accept structured data for smarter adjudication
+        var initialStructured = body.initialStructured || null;
+        var verifyStructured = body.verifyStructured || null;
         
         if (!initialAssessment || !verifyAssessment) {
             return res.status(400).json({ error: 'Both initial and verify assessments required' });
@@ -41,73 +50,16 @@ module.exports = async function handler(req, res) {
         
         var anthropic = new Anthropic({ apiKey: apiKey });
         
-        var prompt = 'You are VERITAS ADJUDICATOR — an independent arbiter resolving divergent assessments.\n\n';
-        
-        prompt += '## CONTEXT\n';
-        prompt += 'Two independent VERITAS assessors evaluated the same claim and may have reached different conclusions.\n';
-        prompt += 'Your job is to determine which assessment demonstrates better reasoning and source quality,\n';
-        prompt += 'and to produce a FINAL authoritative score.\n\n';
-        
-        prompt += '## THE CLAIM BEING ASSESSED\n';
-        prompt += question + '\n\n';
-        
-        prompt += '## ASSESSMENT A (Initial)\n';
-        prompt += 'Reality Score: ' + initialRealityScore + '\n';
-        if (initialIntegrityScore !== undefined) {
-            prompt += 'Integrity Score: ' + initialIntegrityScore + '\n';
-        }
-        prompt += '---\n' + initialAssessment + '\n---\n\n';
-        
-        prompt += '## ASSESSMENT B (Verification)\n';
-        prompt += 'Reality Score: ' + verifyRealityScore + '\n';
-        if (verifyIntegrityScore !== undefined) {
-            prompt += 'Integrity Score: ' + verifyIntegrityScore + '\n';
-        }
-        prompt += '---\n' + verifyAssessment + '\n---\n\n';
-        
-        prompt += '## YOUR TASK\n';
-        prompt += 'Evaluate which assessment is superior based on:\n';
-        prompt += '1. **Source Quality**: Which cited more authoritative, relevant sources?\n';
-        prompt += '2. **Reasoning Rigor**: Which showed clearer logical progression?\n';
-        prompt += '3. **Evidence Completeness**: Which considered more relevant evidence?\n';
-        prompt += '4. **Appropriate Confidence**: Which calibrated uncertainty appropriately?\n\n';
-        
-        prompt += '## REQUIRED OUTPUT FORMAT\n\n';
-        prompt += '```json\n';
-        prompt += '{\n';
-        prompt += '  "comparison": {\n';
-        prompt += '    "sourceQuality": {\n';
-        prompt += '      "assessmentA": "<brief evaluation>",\n';
-        prompt += '      "assessmentB": "<brief evaluation>",\n';
-        prompt += '      "winner": "<A|B|TIE>"\n';
-        prompt += '    },\n';
-        prompt += '    "reasoningRigor": {\n';
-        prompt += '      "assessmentA": "<brief evaluation>",\n';
-        prompt += '      "assessmentB": "<brief evaluation>",\n';
-        prompt += '      "winner": "<A|B|TIE>"\n';
-        prompt += '    },\n';
-        prompt += '    "evidenceCompleteness": {\n';
-        prompt += '      "assessmentA": "<brief evaluation>",\n';
-        prompt += '      "assessmentB": "<brief evaluation>",\n';
-        prompt += '      "winner": "<A|B|TIE>"\n';
-        prompt += '    },\n';
-        prompt += '    "confidenceCalibration": {\n';
-        prompt += '      "assessmentA": "<brief evaluation>",\n';
-        prompt += '      "assessmentB": "<brief evaluation>",\n';
-        prompt += '      "winner": "<A|B|TIE>"\n';
-        prompt += '    }\n';
-        prompt += '  },\n';
-        prompt += '  "adjudication": {\n';
-        prompt += '    "winner": "<A|B>",\n';
-        prompt += '    "confidence": <0.5 to 1.0>,\n';
-        prompt += '    "finalRealityScore": <-10 to +10>,\n';
-        prompt += '    "finalIntegrityScore": <-1.0 to +1.0>,\n';
-        prompt += '    "justification": "<2-3 sentences>"\n';
-        prompt += '  }\n';
-        prompt += '}\n';
-        prompt += '```\n\n';
-        
-        prompt += 'After JSON, provide a brief narrative explanation of your adjudication.\n';
+        // Build enhanced prompt
+        var prompt = buildAdjudicationPrompt(
+            question, 
+            initialAssessment, 
+            verifyAssessment, 
+            initialScore, 
+            verifyScore,
+            initialStructured,
+            verifyStructured
+        );
         
         var message = await anthropic.messages.create({
             model: 'claude-sonnet-4-20250514',
@@ -116,73 +68,28 @@ module.exports = async function handler(req, res) {
         });
         
         var adjudication = '';
-        for (var i = 0; i < message.content.length; i++) {
-            if (message.content[i].type === 'text') {
-                adjudication += message.content[i].text;
-            }
+        if (message.content && message.content[0] && message.content[0].text) {
+            adjudication = message.content[0].text;
         }
         
         if (!adjudication) {
             return res.status(500).json({ error: 'No adjudication generated' });
         }
         
-        // Parse structured data
-        var structured = null;
-        var winner = null;
-        var confidence = 0.5;
-        var finalRealityScore = null;
-        var finalIntegrityScore = null;
-        
-        var jsonMatch = adjudication.match(/```json\s*([\s\S]*?)\s*```/);
-        if (jsonMatch && jsonMatch[1]) {
-            try {
-                structured = JSON.parse(jsonMatch[1]);
-                if (structured.adjudication) {
-                    winner = structured.adjudication.winner;
-                    confidence = structured.adjudication.confidence || 0.5;
-                    finalRealityScore = structured.adjudication.finalRealityScore;
-                    finalIntegrityScore = structured.adjudication.finalIntegrityScore;
-                }
-            } catch (e) {
-                console.error('Adjudicate JSON parse error:', e);
-            }
-        }
-        
-        // Fallback regex extraction
-        if (!winner) {
-            var winnerMatch = adjudication.match(/["\']?winner["\']?\s*:\s*["\']?(A|B)["\']?/i);
-            if (winnerMatch) winner = winnerMatch[1].toUpperCase();
-        }
-        
-        if (confidence === 0.5) {
-            var confidenceMatch = adjudication.match(/["\']?confidence["\']?\s*:\s*([0-9.]+)/i);
-            if (confidenceMatch) confidence = parseFloat(confidenceMatch[1]);
-        }
-        
-        if (finalRealityScore === null) {
-            var scoreMatch = adjudication.match(/["\']?finalRealityScore["\']?\s*:\s*([+-]?\d+)/i);
-            if (scoreMatch) finalRealityScore = parseInt(scoreMatch[1]);
-        }
-        
-        // Calculate weighted score if not provided
-        if (finalRealityScore === null && winner && initialRealityScore !== undefined && verifyRealityScore !== undefined) {
-            var winnerScore = (winner === 'A') ? initialRealityScore : verifyRealityScore;
-            var loserScore = (winner === 'A') ? verifyRealityScore : initialRealityScore;
-            finalRealityScore = Math.round((winnerScore * confidence) + (loserScore * (1 - confidence)));
-        }
+        // Parse the results
+        var parsed = parseAdjudicationResponse(adjudication, initialScore, verifyScore);
         
         return res.status(200).json({
             success: true,
             adjudication: adjudication,
-            structured: structured,
-            winner: winner,
-            confidence: confidence,
-            finalRealityScore: finalRealityScore,
-            finalIntegrityScore: finalIntegrityScore,
-            initialRealityScore: initialRealityScore,
-            verifyRealityScore: verifyRealityScore,
-            initialIntegrityScore: initialIntegrityScore,
-            verifyIntegrityScore: verifyIntegrityScore
+            winner: parsed.winner,
+            confidence: parsed.confidence,
+            recommendedScore: parsed.recommendedScore,
+            finalScore: parsed.finalScore,
+            initialScore: initialScore,
+            verifyScore: verifyScore,
+            researchImpact: parsed.researchImpact,
+            convergenceStrength: parsed.convergenceStrength
         });
         
     } catch (err) {
@@ -190,3 +97,272 @@ module.exports = async function handler(req, res) {
         return res.status(500).json({ error: 'Adjudication failed', message: err.message });
     }
 };
+
+// ============================================
+// ENHANCED PROMPT BUILDER
+// ============================================
+function buildAdjudicationPrompt(question, initialAssessment, verifyAssessment, initialScore, verifyScore, initialStructured, verifyStructured) {
+    var now = new Date();
+    var currentDate = now.toLocaleDateString('en-US', { 
+        weekday: 'long', 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+    });
+    
+    var prompt = `You are VERITAS ADJUDICATOR — an independent arbiter synthesizing two philosophical perspectives on truth.
+
+## YOUR ROLE
+
+Two independent VERITAS assessors evaluated the same claim:
+- **Assessment A (Initial)**: The first perspective, grounded in available knowledge
+- **Assessment B (Verification)**: The Second Philosopher, who conducted FRESH WEB RESEARCH
+
+Your job is NOT to re-assess the claim, but to:
+1. Determine which assessment demonstrates superior reasoning and evidence
+2. CRITICALLY: Evaluate whether Assessment B's research uncovered NEW INFORMATION that changes the picture
+3. Synthesize the strongest elements of both into a final judgment
+
+## CURRENT DATE: ${currentDate}
+
+## CRITICAL: THE RESEARCH FACTOR
+
+Assessment B (Verification) has ACCESS TO LIVE WEB SEARCH and may have discovered:
+- Recent developments the Initial Assessment couldn't know
+- Updated data, studies, or source status changes
+- Emerging perspectives or newly published expert commentary
+- Primary sources that weren't available to Assessment A
+
+**If Assessment B brings genuinely NEW information verified through research, this carries significant weight.** A verification grounded in today's reality may be more accurate than one based on older knowledge — even if Assessment A's reasoning was sound for its time.
+
+However, if Assessment B's research confirms Assessment A's findings, this CONVERGENCE is also meaningful — truth robust enough to survive fresh scrutiny.
+
+## THE CLAIM BEING ASSESSED
+${question}
+
+## ASSESSMENT A (Initial) — Reality Score: ${initialScore}
+---BEGIN ASSESSMENT A---
+${initialAssessment}
+---END ASSESSMENT A---
+
+## ASSESSMENT B (Verification) — Reality Score: ${verifyScore}
+---BEGIN ASSESSMENT B---
+${verifyAssessment}
+---END ASSESSMENT B---
+
+`;
+
+    // Add structured data insights if available
+    if (verifyStructured && verifyStructured.newInformationDiscovered) {
+        prompt += `## VERIFICATION RESEARCH SUMMARY
+`;
+        if (verifyStructured.newInformationDiscovered.hasNewInfo) {
+            prompt += `**New Information Was Discovered:**
+${JSON.stringify(verifyStructured.newInformationDiscovered.discoveries, null, 2)}
+
+**Impact on Assessment:** ${verifyStructured.newInformationDiscovered.impactOnAssessment}
+
+`;
+        } else {
+            prompt += `**Research confirmed Initial Assessment information is current.**
+
+`;
+        }
+        
+        if (verifyStructured.comparisonWithInitial) {
+            prompt += `**Verification's Self-Analysis of Divergence/Convergence:**
+- Where Divergent: ${verifyStructured.comparisonWithInitial.whereDivergent}
+- Where Convergent: ${verifyStructured.comparisonWithInitial.whereConvergent}
+- Reason for Differences: ${verifyStructured.comparisonWithInitial.divergenceReason}
+
+`;
+        }
+    }
+
+    prompt += `## YOUR EVALUATION CRITERIA
+
+### 1. SOURCE QUALITY (25%)
+- Which assessment cited more authoritative, relevant sources?
+- Did Assessment B discover sources Assessment A couldn't access?
+- Are sources current and still credible?
+
+### 2. REASONING RIGOR (25%)
+- Which assessment showed clearer logical progression?
+- Did either make unwarranted leaps or ignore contrary evidence?
+- Which better acknowledged complexity and uncertainty?
+
+### 3. EVIDENCE COMPLETENESS (25%)
+- Which assessment considered more relevant evidence?
+- Did Assessment B's research fill gaps in Assessment A's evidence base?
+- Are there important perspectives either missed?
+
+### 4. RESEARCH CURRENCY (25%) — NEW FACTOR
+- Did Assessment B's live research reveal NEW information?
+- How materially does this new information affect the conclusion?
+- Does the new information confirm, complicate, or contradict Assessment A?
+
+## REQUIRED OUTPUT FORMAT
+
+Provide your adjudication in this structured format:
+
+\`\`\`json
+{
+  "winner": "<A or B>",
+  "confidence": <0.5 to 1.0>,
+  "recommendedScore": <-10 to +10>,
+  "researchImpact": "<none|confirming|complicating|contradicting>",
+  "convergenceStrength": "<strong|moderate|weak|none>",
+  "reasoning": {
+    "sourceQuality": {
+      "assessmentA": "<brief evaluation>",
+      "assessmentB": "<brief evaluation>",
+      "winner": "<A or B or TIE>",
+      "notes": "<any key observations>"
+    },
+    "reasoningRigor": {
+      "assessmentA": "<brief evaluation>",
+      "assessmentB": "<brief evaluation>",
+      "winner": "<A or B or TIE>",
+      "notes": "<any key observations>"
+    },
+    "evidenceCompleteness": {
+      "assessmentA": "<brief evaluation>",
+      "assessmentB": "<brief evaluation>",
+      "winner": "<A or B or TIE>",
+      "notes": "<any key observations>"
+    },
+    "researchCurrency": {
+      "newInfoFound": <true|false>,
+      "newInfoSummary": "<what new information was discovered, if any>",
+      "impactLevel": "<high|medium|low|none>",
+      "winner": "<A or B or TIE>",
+      "notes": "<any key observations>"
+    }
+  },
+  "synthesis": {
+    "agreementPoints": ["<points where both assessments agree>"],
+    "disagreementPoints": ["<points where they diverge>"],
+    "resolutionRationale": "<how you resolved the disagreements>"
+  }
+}
+\`\`\`
+
+### NARRATIVE SUMMARY
+
+After the JSON, provide a human-readable summary:
+
+**ADJUDICATION SUMMARY**
+
+**Winner:** [A or B] with [confidence level] confidence
+
+**Key Factors:**
+- [Most important factor in the decision]
+- [Second most important factor]
+
+**Research Impact:** [How Assessment B's research affected the outcome]
+
+**Convergence Analysis:** [What the assessments agreed on — this strengthens confidence]
+
+**Final Recommendation:**
+- **Recommended Score:** [score]
+- **Justification:** [2-3 sentences explaining why this score best represents truth]
+
+## ADJUDICATION PRINCIPLES
+
+1. **New Information Matters**: If Assessment B discovered genuinely new, verified information through research, this can override superior reasoning in Assessment A — reality has changed.
+
+2. **Convergence Strengthens Confidence**: When both assessments agree despite different approaches and Assessment B's fresh research, that agreement carries extra epistemic weight.
+
+3. **Process AND Outcome**: A well-reasoned wrong answer is still wrong. Evaluate both the quality of reasoning AND the accuracy of conclusions.
+
+4. **Uncertainty is Honest**: If the assessments diverge and you can't clearly determine which is more accurate, say so. A confidence of 0.5-0.6 is appropriate when genuinely uncertain.
+
+5. **Research Currency Premium**: All else being equal, an assessment grounded in today's verified reality is more trustworthy than one that might be based on outdated information.
+
+Now provide your adjudication.
+`;
+
+    return prompt;
+}
+
+// ============================================
+// RESPONSE PARSER
+// ============================================
+function parseAdjudicationResponse(adjudication, initialScore, verifyScore) {
+    var result = {
+        winner: null,
+        confidence: 0.5,
+        recommendedScore: null,
+        finalScore: null,
+        researchImpact: 'unknown',
+        convergenceStrength: 'unknown'
+    };
+    
+    // Try to parse JSON block first
+    var jsonMatch = adjudication.match(/```json\s*([\s\S]*?)\s*```/);
+    if (jsonMatch && jsonMatch[1]) {
+        try {
+            var parsed = JSON.parse(jsonMatch[1]);
+            result.winner = parsed.winner ? parsed.winner.toUpperCase() : null;
+            result.confidence = parsed.confidence || 0.5;
+            result.recommendedScore = parsed.recommendedScore;
+            result.researchImpact = parsed.researchImpact || 'unknown';
+            result.convergenceStrength = parsed.convergenceStrength || 'unknown';
+        } catch (e) {
+            console.error('Adjudication JSON parse error:', e);
+        }
+    }
+    
+    // Fallback regex extraction
+    if (!result.winner) {
+        var winnerMatch = adjudication.match(/\*?\*?Winner:?\*?\*?\s*(A|B)/i) ||
+                          adjudication.match(/"winner":\s*"(A|B)"/i);
+        if (winnerMatch) {
+            result.winner = winnerMatch[1].toUpperCase();
+        }
+    }
+    
+    if (result.confidence === 0.5) {
+        var confidenceMatch = adjudication.match(/\*?\*?[Cc]onfidence:?\*?\*?\s*([0-9.]+)/i) ||
+                              adjudication.match(/"confidence":\s*([0-9.]+)/i);
+        if (confidenceMatch) {
+            result.confidence = parseFloat(confidenceMatch[1]);
+        }
+    }
+    
+    if (result.recommendedScore === null) {
+        var scoreMatch = adjudication.match(/\*?\*?[Rr]ecommended\s*[Ss]core:?\*?\*?\s*([+-]?\d+(?:\.\d+)?)/i) ||
+                         adjudication.match(/"recommendedScore":\s*([+-]?\d+(?:\.\d+)?)/i);
+        if (scoreMatch) {
+            result.recommendedScore = parseFloat(scoreMatch[1]);
+        }
+    }
+    
+    // Calculate final score
+    if (result.winner && initialScore !== undefined && verifyScore !== undefined) {
+        if (result.recommendedScore !== null) {
+            result.finalScore = result.recommendedScore;
+        } else {
+            // Weight toward winner based on confidence
+            var winnerScore = (result.winner === 'A') ? initialScore : verifyScore;
+            var loserScore = (result.winner === 'A') ? verifyScore : initialScore;
+            result.finalScore = (winnerScore * result.confidence) + (loserScore * (1 - result.confidence));
+            result.finalScore = Math.round(result.finalScore * 10) / 10;
+        }
+    }
+    
+    // Parse research impact if not from JSON
+    if (result.researchImpact === 'unknown') {
+        if (adjudication.match(/research\s+confirm/i) || adjudication.match(/confirms?\s+.*initial/i)) {
+            result.researchImpact = 'confirming';
+        } else if (adjudication.match(/research\s+contradict/i) || adjudication.match(/new\s+information\s+.*changes/i)) {
+            result.researchImpact = 'contradicting';
+        } else if (adjudication.match(/research\s+complicat/i) || adjudication.match(/adds?\s+nuance/i)) {
+            result.researchImpact = 'complicating';
+        } else if (adjudication.match(/no\s+new\s+information/i) || adjudication.match(/research\s+.*current/i)) {
+            result.researchImpact = 'none';
+        }
+    }
+    
+    return result;
+}
