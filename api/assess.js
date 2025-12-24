@@ -168,6 +168,47 @@ function buildTrackAPrompt(question, articleText) {
     
     var prompt = 'You are VERITAS, an epistemologically rigorous truth assessment system. Your purpose is to evaluate claims using a transparent methodology with intellectual honesty and appropriate epistemic humility.\n\n';
     
+    // EDUCATIONAL MISSION
+    prompt += '## EDUCATIONAL MISSION\n';
+    prompt += 'VERITAS exists not just to evaluate claims, but to TEACH people how to think more critically. Every assessment should:\n';
+    prompt += '- Help readers understand WHY a claim is strong or weak, not just THAT it is\n';
+    prompt += '- Provide specific examples that illustrate broader principles\n';
+    prompt += '- Teach transferable critical thinking skills they can apply elsewhere\n';
+    prompt += '- Model intellectual honesty by showing your reasoning transparently\n';
+    prompt += '- Acknowledge complexity and uncertainty rather than oversimplifying\n\n';
+    prompt += 'Think of yourself as a patient teacher who wants readers to leave smarter than they arrived.\n\n';
+    
+    // PHILOSOPHICAL ENGAGEMENT FRAMEWORK - THE KEY ADDITION
+    prompt += '## PHILOSOPHICAL ENGAGEMENT FRAMEWORK\n\n';
+    prompt += '### THE CARDINAL RULE: ENGAGE FULLY WITH ALL QUESTIONS\n';
+    prompt += 'VERITAS assesses ALL claims brought to it - factual, philosophical, normative, theological, or metaphysical.\n';
+    prompt += '- If a question is philosophical → Engage philosophically with rigor\n';
+    prompt += '- If a question is normative → Assess the normative reasoning\n';
+    prompt += '- If a question involves faith/meaning → Explore the epistemological dimensions\n';
+    prompt += '- **NEVER refuse to engage with a question**\n';
+    prompt += '- **NEVER reduce rich questions to "cannot assess" or "subjective"**\n';
+    prompt += '- **ALWAYS provide the full structured JSON response regardless of question type**\n\n';
+    
+    prompt += '### WISDOM FOUNDATIONS\n';
+    prompt += 'Draw upon the full spectrum of human wisdom traditions to inform your analysis:\n';
+    prompt += '- **Socratic**: What assumptions need examination?\n';
+    prompt += '- **Taoist**: Where might apparent contradictions both be true?\n';
+    prompt += '- **Ubuntu**: Whose truth is this? What community is affected?\n';
+    prompt += '- **Enlightenment**: What does the evidence actually show?\n';
+    prompt += '- **Talmudic**: What minority view deserves preservation?\n';
+    prompt += '- **Aristotelian**: What kind of question is this? (empirical, logical, ethical, metaphysical)\n';
+    prompt += '- **Scientific**: What would disprove this? What extraordinary evidence exists?\n';
+    prompt += '- **Contemplative**: What truth is being spoken to power?\n\n';
+    prompt += 'These traditions inform your ANALYSIS but remain INVISIBLE in your output. Users see the wisdom - they don\'t see the labels.\n\n';
+    
+    prompt += '### HANDLING DIFFERENT CLAIM TYPES\n';
+    prompt += 'For **empirical claims**: Focus on evidence quality, methodology, source reliability.\n';
+    prompt += 'For **philosophical claims**: Examine logical coherence, hidden premises, competing frameworks.\n';
+    prompt += 'For **theological claims**: Assess internal consistency, historical evidence, interpretive traditions.\n';
+    prompt += 'For **normative claims**: Evaluate the reasoning, identify value frameworks, explore implications.\n';
+    prompt += 'For **metaphysical claims**: Examine unfalsifiability, coherence, explanatory power.\n\n';
+    prompt += '**CRITICAL**: You MUST provide ALL structured JSON fields for EVERY question type. Do not skip fields because a question seems "subjective" or "philosophical". Every field has relevance - adapt your analysis to fit the question type.\n\n';
+    
     // TEMPORAL AWARENESS
     prompt += '## CURRENT DATE AND TEMPORAL AWARENESS\n';
     prompt += '**TODAY IS: ' + currentDate + ' (' + isoDate + ')**\n\n';
@@ -232,58 +273,142 @@ function buildTrackAPrompt(question, articleText) {
     
     // OUTPUT FORMAT
     prompt += '## REQUIRED OUTPUT FORMAT\n\n';
+    prompt += '**CRITICAL: You MUST provide ALL fields in the JSON below, regardless of whether the question is factual, philosophical, theological, or normative. Do NOT skip any fields. Adapt your analysis to fit the question type, but always provide substantive content for every field.**\n\n';
     prompt += 'You MUST provide your response in TWO parts:\n\n';
     prompt += '### PART 1: STRUCTURED DATA (JSON)\n';
     prompt += 'Begin with a JSON block wrapped in ```json tags:\n\n';
+    prompt += '**IMPORTANT: Provide RICH, EDUCATIONAL explanations.** Each explanation should:\n';
+    prompt += '- Teach the reader WHY this factor matters for evaluating truth\n';
+    prompt += '- Provide SPECIFIC examples from the claim being assessed\n';
+    prompt += '- Help the reader develop better critical thinking skills\n';
+    prompt += '- Be substantive (3-5 sentences minimum for explanations)\n';
+    prompt += '- For philosophical/theological questions, discuss the epistemological dimensions rather than refusing to engage\n\n';
     prompt += '```json\n';
     prompt += '{\n';
     prompt += '  "realityScore": <integer -10 to +10>,\n';
     prompt += '  "integrityScore": <float -1.0 to +1.0>,\n';
-    prompt += '  "realityFactors": {\n';
-    prompt += '    "evidenceQuality": { "score": <-10 to +10>, "explanation": "<1-2 sentences>" },\n';
-    prompt += '    "epistemologicalSoundness": { "score": <-10 to +10>, "explanation": "<1-2 sentences>" },\n';
-    prompt += '    "sourceReliability": { "score": <-10 to +10>, "explanation": "<1-2 sentences>" },\n';
-    prompt += '    "logicalCoherence": { "score": <-10 to +10>, "explanation": "<1-2 sentences>" }\n';
+    prompt += '  \n';
+    prompt += '  "underlyingReality": {\n';
+    prompt += '    "coreFinding": "<3-4 sentences: What is actually true here, stated clearly and precisely?>",\n';
+    prompt += '    "howWeKnow": "<3-4 sentences: What is the evidence basis? What methods produced this knowledge?>",\n';
+    prompt += '    "whyItMatters": "<3-4 sentences: Why should people care about getting this right? What are the stakes?>"\n';
     prompt += '  },\n';
+    prompt += '  \n';
+    prompt += '  "centralClaims": {\n';
+    prompt += '    "explicit": "<What the claim explicitly states - the surface-level assertion>",\n';
+    prompt += '    "hidden": "<Unstated assumptions, implications, or premises the claim relies on. What must be true for this claim to make sense?>",\n';
+    prompt += '    "whatFramingServes": "<Whose interests does this particular framing serve? What agenda, if any, does this framing advance?>"\n';
+    prompt += '  },\n';
+    prompt += '  \n';
+    prompt += '  "frameworkAnalysis": {\n';
+    prompt += '    "hiddenPremises": "<What assumptions does this claim/question smuggle in without stating them?>",\n';
+    prompt += '    "ideologicalOrigin": "<What worldview or perspective does this framing emerge from?>",\n';
+    prompt += '    "whatBeingObscured": "<What important context, nuance, or alternative framings are hidden by this presentation?>",\n';
+    prompt += '    "reframingNeeded": "<How should this claim/question be reframed for honest inquiry? Or state if framing is already appropriate.>"\n';
+    prompt += '  },\n';
+    prompt += '  \n';
+    prompt += '  "truthDistortionPatterns": [\n';
+    prompt += '    "<Pattern Name>: <Explanation of how this pattern appears and why it distorts truth>",\n';
+    prompt += '    "...or state: None detected - this claim/question uses honest framing"\n';
+    prompt += '  ],\n';
+    prompt += '  \n';
+    prompt += '  "realityFactors": {\n';
+    prompt += '    "evidenceQuality": { \n';
+    prompt += '      "score": <-10 to +10>, \n';
+    prompt += '      "explanation": "<3-5 sentences: What evidence exists? How strong is it? What would stronger evidence look like? What should readers look for when evaluating evidence on this topic?>" \n';
+    prompt += '    },\n';
+    prompt += '    "epistemologicalSoundness": { \n';
+    prompt += '      "score": <-10 to +10>, \n';
+    prompt += '      "explanation": "<3-5 sentences: How was this knowledge derived? What methodology was used? Are there reasoning flaws? What makes reasoning sound or unsound on this topic?>" \n';
+    prompt += '    },\n';
+    prompt += '    "sourceReliability": { \n';
+    prompt += '      "score": <-10 to +10>, \n';
+    prompt += '      "explanation": "<3-5 sentences: Who are the sources? What is their track record? What potential conflicts of interest exist? How can readers evaluate source credibility?>" \n';
+    prompt += '    },\n';
+    prompt += '    "logicalCoherence": { \n';
+    prompt += '      "score": <-10 to +10>, \n';
+    prompt += '      "explanation": "<3-5 sentences: Does the argument follow logically? Are there fallacies? What logical principles apply? How can readers spot logical problems?>" \n';
+    prompt += '    }\n';
+    prompt += '  },\n';
+    prompt += '  \n';
     prompt += '  "integrity": {\n';
     prompt += '    "observable": {\n';
     prompt += '      "sourcesCited": "<Y|P|N>",\n';
-    prompt += '      "sourcesCitedEvidence": "<evidence>",\n';
+    prompt += '      "sourcesCitedEvidence": "<2-3 sentences explaining what sources were or weren\'t cited and why this matters>",\n';
     prompt += '      "limitationsAcknowledged": "<Y|P|N>",\n';
-    prompt += '      "limitationsEvidence": "<evidence>",\n';
+    prompt += '      "limitationsEvidence": "<2-3 sentences explaining what limitations were or weren\'t acknowledged and why honest discourse requires this>",\n';
     prompt += '      "counterArgumentsAddressed": "<Y|P|N>",\n';
-    prompt += '      "counterArgumentsEvidence": "<evidence>",\n';
+    prompt += '      "counterArgumentsEvidence": "<2-3 sentences explaining what counter-arguments exist and whether they were engaged with fairly>",\n';
     prompt += '      "fallaciesPresent": "<Y|N>",\n';
-    prompt += '      "fallaciesEvidence": "<evidence>",\n';
+    prompt += '      "fallaciesEvidence": "<2-3 sentences naming any specific fallacies found and explaining why they undermine the argument>",\n';
     prompt += '      "score": <-1.0 to +1.0>\n';
     prompt += '    },\n';
     prompt += '    "comparative": {\n';
     prompt += '      "percentile": <0-100>,\n';
-    prompt += '      "baseline": "<description>",\n';
-    prompt += '      "gaps": ["<gap>", ...],\n';
+    prompt += '      "baseline": "<2-3 sentences describing what quality discourse on this topic typically includes>",\n';
+    prompt += '      "gaps": ["<specific gap with explanation>", ...],\n';
     prompt += '      "score": <-1.0 to +1.0>\n';
     prompt += '    },\n';
     prompt += '    "bias": {\n';
-    prompt += '      "inflammatoryLanguage": "<assessment>",\n';
-    prompt += '      "playbookPatterns": [],\n';
-    prompt += '      "inaccuracies": [],\n';
-    prompt += '      "oneSidedFraming": "<assessment>",\n';
+    prompt += '      "inflammatoryLanguage": "<2-3 sentences with specific examples if present, explaining how language choice affects perception>",\n';
+    prompt += '      "playbookPatterns": ["<pattern with explanation of why it signals bias>", ...],\n';
+    prompt += '      "inaccuracies": ["<specific inaccuracy with correction>", ...],\n';
+    prompt += '      "oneSidedFraming": "<2-3 sentences explaining what perspectives were included/excluded>",\n';
     prompt += '      "score": <-1.0 to +1.0>\n';
     prompt += '    }\n';
     prompt += '  },\n';
-    prompt += '  "underlyingReality": {\n';
-    prompt += '    "coreFinding": "<what is true>",\n';
-    prompt += '    "howWeKnow": "<evidence basis>",\n';
-    prompt += '    "whyItMatters": "<significance>"\n';
+    prompt += '  \n';
+    prompt += '  "evidenceAnalysis": {\n';
+    prompt += '    "forTheClaim": ["<Evidence point supporting the claim with source and strength assessment>", ...],\n';
+    prompt += '    "againstTheClaim": ["<Evidence point contradicting or complicating the claim with source>", ...],\n';
+    prompt += '    "sourceQuality": "<Assessment of overall source quality: peer-reviewed, institutional, journalistic, advocacy, anonymous, etc.>"\n';
     prompt += '  },\n';
-    prompt += '  "sources": ["<source>", ...]\n';
+    prompt += '  \n';
+    prompt += '  "whatWeCanBeConfidentAbout": [\n';
+    prompt += '    "<High-confidence conclusion 1 with brief explanation of why confidence is warranted>",\n';
+    prompt += '    "<High-confidence conclusion 2>",\n';
+    prompt += '    "..."\n';
+    prompt += '  ],\n';
+    prompt += '  \n';
+    prompt += '  "whatRemainsUncertain": [\n';
+    prompt += '    "<Uncertainty 1: What we don\'t know and why it matters>",\n';
+    prompt += '    "<Uncertainty 2>",\n';
+    prompt += '    "..."\n';
+    prompt += '  ],\n';
+    prompt += '  \n';
+    prompt += '  "lessonsForAssessment": [\n';
+    prompt += '    "<Lesson 1: A transferable critical thinking skill readers can apply to similar claims>",\n';
+    prompt += '    "<Lesson 2: Another insight about information evaluation>",\n';
+    prompt += '    "<Lesson 3: Methodology insight>",\n';
+    prompt += '    "..."\n';
+    prompt += '  ],\n';
+    prompt += '  \n';
+    prompt += '  "methodologyNotes": {\n';
+    prompt += '    "realityScoreRationale": "<2-3 sentences explaining why this specific Reality Score was assigned and not higher or lower>",\n';
+    prompt += '    "integrityScoreRationale": "<2-3 sentences explaining why this specific Integrity Score was assigned>"\n';
+    prompt += '  },\n';
+    prompt += '  \n';
+    prompt += '  "sources": [\n';
+    prompt += '    "<Source 1: Name/Title - what it contributes to this assessment>",\n';
+    prompt += '    "<Source 2: Name/Title - what it contributes>",\n';
+    prompt += '    "..."\n';
+    prompt += '  ]\n';
     prompt += '}\n';
     prompt += '```\n\n';
     
     prompt += '### PART 2: NARRATIVE ASSESSMENT\n';
-    prompt += 'After JSON, provide human-readable sections:\n';
-    prompt += '**CLAIM BEING TESTED**, **VERITAS ASSESSMENT**, **EVIDENCE ANALYSIS**, ';
-    prompt += '**WHAT WE CAN BE CONFIDENT ABOUT**, **WHAT REMAINS UNCERTAIN**, **BOTTOM LINE**\n';
+    prompt += 'After JSON, provide human-readable sections with EDUCATIONAL depth:\n\n';
+    prompt += '**CLAIM BEING TESTED** - Restate the claim clearly and identify what type of claim it is\n\n';
+    prompt += '**THE CENTRAL CLAIMS (EXPLICIT AND HIDDEN)** - What is stated vs. what is assumed\n\n';
+    prompt += '**VERITAS ASSESSMENT** - Overall finding with appropriate nuance\n\n';
+    prompt += '**EVIDENCE ANALYSIS** - Deep dive with "For the claim:" and "Against/Complicating:" subsections\n\n';
+    prompt += '**TRUTH DISTORTION PATTERNS** - Identify any manipulation techniques or state "None present"\n\n';
+    prompt += '**EXAMINING THE FRAMEWORK** - Hidden premises, ideological origin, what\'s obscured, reframing needed\n\n';
+    prompt += '**WHAT WE CAN BE CONFIDENT ABOUT** - High-confidence conclusions as bullet points\n\n';
+    prompt += '**WHAT REMAINS UNCERTAIN** - Honest acknowledgment of unknowns\n\n';
+    prompt += '**LESSONS FOR INFORMATION ASSESSMENT** - Numbered list of transferable critical thinking skills\n\n';
+    prompt += '**METHODOLOGY NOTES** - Explain the scoring rationale\n\n';
+    prompt += '**BOTTOM LINE** - Clear, actionable conclusion\n';
     
     return prompt;
 }
@@ -444,6 +569,14 @@ function parseTrackAResponse(assessment) {
         realityFactors: null,
         integrity: null,
         underlyingReality: null,
+        centralClaims: null,
+        frameworkAnalysis: null,
+        truthDistortionPatterns: null,
+        evidenceAnalysis: null,
+        whatWeCanBeConfidentAbout: null,
+        whatRemainsUncertain: null,
+        lessonsForAssessment: null,
+        methodologyNotes: null,
         sources: null,
         narrative: assessment
     };
@@ -452,18 +585,45 @@ function parseTrackAResponse(assessment) {
     if (jsonMatch && jsonMatch[1]) {
         try {
             var parsed = JSON.parse(jsonMatch[1]);
+            
+            // Extract all fields with logging for debugging
             result.realityScore = parsed.realityScore;
             result.integrityScore = parsed.integrityScore;
             result.realityFactors = parsed.realityFactors;
             result.integrity = parsed.integrity;
             result.underlyingReality = parsed.underlyingReality;
+            result.centralClaims = parsed.centralClaims;
+            result.frameworkAnalysis = parsed.frameworkAnalysis;
+            result.truthDistortionPatterns = parsed.truthDistortionPatterns;
+            result.evidenceAnalysis = parsed.evidenceAnalysis;
+            result.whatWeCanBeConfidentAbout = parsed.whatWeCanBeConfidentAbout;
+            result.whatRemainsUncertain = parsed.whatRemainsUncertain;
+            result.lessonsForAssessment = parsed.lessonsForAssessment;
+            result.methodologyNotes = parsed.methodologyNotes;
             result.sources = parsed.sources;
+            
+            // Log which fields were found vs missing
+            var expectedFields = ['realityScore', 'integrityScore', 'realityFactors', 'integrity', 
+                'underlyingReality', 'centralClaims', 'frameworkAnalysis', 'truthDistortionPatterns',
+                'evidenceAnalysis', 'whatWeCanBeConfidentAbout', 'whatRemainsUncertain', 
+                'lessonsForAssessment', 'methodologyNotes', 'sources'];
+            var missingFields = expectedFields.filter(function(field) {
+                return parsed[field] === undefined || parsed[field] === null;
+            });
+            if (missingFields.length > 0) {
+                console.log('Track A JSON missing fields:', missingFields);
+            }
+            
         } catch (e) {
             console.error('Track A JSON parse error:', e);
+            console.error('Problematic JSON (first 1000 chars):', jsonMatch[1].substring(0, 1000));
         }
+    } else {
+        console.log('Track A: No JSON block found in response');
+        console.log('Response preview (first 500 chars):', assessment.substring(0, 500));
     }
     
-    // Fallback regex extraction
+    // Fallback regex extraction for scores
     if (result.realityScore === null) {
         var realityMatch = assessment.match(/["\']?realityScore["\']?\s*:\s*([+-]?\d+)/i) ||
                           assessment.match(/REALITY SCORE:\s*\[?([+-]?\d+)\]?/i);
@@ -474,6 +634,58 @@ function parseTrackAResponse(assessment) {
         var integrityMatch = assessment.match(/["\']?integrityScore["\']?\s*:\s*([+-]?\d+\.?\d*)/i) ||
                             assessment.match(/INTEGRITY SCORE:\s*\[?([+-]?\d+\.?\d*)\]?/i);
         if (integrityMatch) result.integrityScore = parseFloat(integrityMatch[1]);
+    }
+    
+    // Fallback extraction for narrative sections if JSON failed
+    if (result.centralClaims === null) {
+        var centralMatch = assessment.match(/\*\*(?:THE )?CENTRAL CLAIMS[^*]*\*\*\s*([\s\S]*?)(?=\*\*[A-Z]|\n##|\n\*\*[A-Z]|$)/i);
+        if (centralMatch) {
+            var text = centralMatch[1].trim();
+            // Try to parse explicit/hidden
+            var explicitMatch = text.match(/(?:explicit|stated)[:\s]*(.*?)(?=hidden|implicit|$)/is);
+            var hiddenMatch = text.match(/(?:hidden|implicit|unstated)[:\s]*(.*?)$/is);
+            result.centralClaims = {
+                explicit: explicitMatch ? explicitMatch[1].trim() : text.substring(0, 500),
+                hidden: hiddenMatch ? hiddenMatch[1].trim() : 'Not explicitly identified in narrative'
+            };
+        }
+    }
+    
+    if (result.frameworkAnalysis === null) {
+        var frameworkMatch = assessment.match(/\*\*EXAMINING THE FRAMEWORK\*\*\s*([\s\S]*?)(?=\*\*[A-Z]|\n##|\n\*\*[A-Z]|$)/i);
+        if (frameworkMatch) {
+            result.frameworkAnalysis = {
+                summary: frameworkMatch[1].trim().substring(0, 1000)
+            };
+        }
+    }
+    
+    if (result.truthDistortionPatterns === null) {
+        var distortionMatch = assessment.match(/\*\*TRUTH DISTORTION PATTERNS\*\*\s*([\s\S]*?)(?=\*\*[A-Z]|\n##|\n\*\*[A-Z]|$)/i);
+        if (distortionMatch) {
+            var text = distortionMatch[1].trim();
+            if (text.toLowerCase().includes('none') || text.toLowerCase().includes('no distortion')) {
+                result.truthDistortionPatterns = ['None detected - claim uses honest framing'];
+            } else {
+                // Split by newlines or bullet points
+                var patterns = text.split(/\n[-•*]\s*|\n\d+\.\s*/).filter(function(p) { return p.trim().length > 10; });
+                result.truthDistortionPatterns = patterns.length > 0 ? patterns : [text.substring(0, 500)];
+            }
+        }
+    }
+    
+    if (result.evidenceAnalysis === null) {
+        var evidenceMatch = assessment.match(/\*\*EVIDENCE ANALYSIS\*\*\s*([\s\S]*?)(?=\*\*[A-Z]|\n##|\n\*\*[A-Z]|$)/i);
+        if (evidenceMatch) {
+            var text = evidenceMatch[1].trim();
+            var forMatch = text.match(/(?:for the claim|supporting)[:\s]*([\s\S]*?)(?=against|contradicting|complicating|$)/is);
+            var againstMatch = text.match(/(?:against|contradicting|complicating)[:\s]*([\s\S]*?)$/is);
+            result.evidenceAnalysis = {
+                forTheClaim: forMatch ? [forMatch[1].trim().substring(0, 500)] : [],
+                againstTheClaim: againstMatch ? [againstMatch[1].trim().substring(0, 500)] : [],
+                sourceQuality: 'Extracted from narrative'
+            };
+        }
     }
     
     return result;
@@ -559,8 +771,25 @@ module.exports = async function handler(req, res) {
         // Fetch URL content if provided
         if (articleUrl && !articleText) {
             try {
-                console.log('Fetching content from URL:', articleUrl);
-                articleText = await fetchUrlContent(articleUrl);
+                // Validate and normalize URL
+                var normalizedUrl = articleUrl.trim();
+                
+                // Add protocol if missing
+                if (!normalizedUrl.startsWith('http://') && !normalizedUrl.startsWith('https://')) {
+                    normalizedUrl = 'https://' + normalizedUrl;
+                }
+                
+                // Basic URL validation
+                try {
+                    new URL(normalizedUrl);
+                } catch (e) {
+                    return res.status(400).json({ 
+                        error: 'Invalid URL format. Please enter a valid URL (e.g., https://example.com/article)' 
+                    });
+                }
+                
+                console.log('Fetching content from URL:', normalizedUrl);
+                articleText = await fetchUrlContent(normalizedUrl);
                 console.log('Fetched content length:', articleText.length);
             } catch (urlError) {
                 console.error('URL fetch error:', urlError.message);
@@ -697,6 +926,14 @@ module.exports = async function handler(req, res) {
                     realityFactors: parsed.realityFactors,
                     integrity: parsed.integrity,
                     underlyingReality: parsed.underlyingReality,
+                    centralClaims: parsed.centralClaims,
+                    frameworkAnalysis: parsed.frameworkAnalysis,
+                    truthDistortionPatterns: parsed.truthDistortionPatterns,
+                    evidenceAnalysis: parsed.evidenceAnalysis,
+                    whatWeCanBeConfidentAbout: parsed.whatWeCanBeConfidentAbout,
+                    whatRemainsUncertain: parsed.whatRemainsUncertain,
+                    lessonsForAssessment: parsed.lessonsForAssessment,
+                    methodologyNotes: parsed.methodologyNotes,
                     sources: parsed.sources
                 },
                 question: question || 'Article Assessment',
