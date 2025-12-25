@@ -2517,10 +2517,31 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
         }
 
         // ================================
+        // HUMOROUS WAIT MESSAGES
+        // ================================
+        var waitMessages = [
+            { time: 10, message: "Still here! Giving this claim the thorough investigation it deserves..." },
+            { time: 20, message: "Taking the scenic route through the evidence — Billy from Family Circus style 🗺️" },
+            { time: 30, message: "Rome wasn't fact-checked in a day. Almost there..." },
+            { time: 40, message: "Building the Taj Mahal of truth assessments here... worth the wait!" },
+            { time: 50, message: "Moving faster than Congress, slower than TikTok. Hang tight." },
+            { time: 60, message: "If truth were easy to find, you wouldn't need me. Working on it!" },
+            { time: 75, message: "This is taking longer than explaining blockchain to my grandmother..." },
+            { time: 90, message: "Still crunching. Some claims are more tangled than your earbuds." },
+            { time: 105, message: "Glaciers called. They said they're impressed by our thoroughness." },
+            { time: 120, message: "Fun fact: The average person spends 6 months of their life waiting. You're contributing!" },
+            { time: 140, message: "Good things come to those who wait. Excellent things to those who wait for VERITAS." },
+            { time: 160, message: "Still at it! This claim has more layers than a wedding cake." },
+            { time: 180, message: "Three minutes in! Your patience is commendable. Assessment imminent..." }
+        ];
+        var lastMessageIndex = -1;
+
+        // ================================
         // PROCESSING TIMER
         // ================================
         function startProcessingTimer() {
             processingSeconds = 0;
+            lastMessageIndex = -1;
             updateProcessingDisplay();
             
             if (processingTimer) clearInterval(processingTimer);
@@ -2528,7 +2549,19 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
             processingTimer = setInterval(function() {
                 processingSeconds++;
                 updateProcessingDisplay();
+                updateWaitMessage();
             }, 1000);
+        }
+        
+        function updateWaitMessage() {
+            // Find the appropriate message for current time
+            for (var i = waitMessages.length - 1; i >= 0; i--) {
+                if (processingSeconds >= waitMessages[i].time && i > lastMessageIndex) {
+                    document.querySelector('.processing-status').textContent = waitMessages[i].message;
+                    lastMessageIndex = i;
+                    break;
+                }
+            }
         }
 
         function stopProcessingTimer() {
@@ -2552,6 +2585,8 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
         function showProcessing() {
             document.getElementById('processingIndicator').classList.add('visible');
             document.getElementById('assessBtn').disabled = true;
+            // Reset to initial message
+            document.querySelector('.processing-status').textContent = 'Searching sources and analyzing evidence...';
             startProcessingTimer();
         }
 
