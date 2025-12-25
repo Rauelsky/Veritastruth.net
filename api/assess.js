@@ -3,6 +3,59 @@ const https = require('https');
 const http = require('http');
 
 // ============================================
+// CONFIGURATION & COST CONTROLS
+// ============================================
+const CONFIG = {
+    DAILY_BUDGET_CENTS: 5000, // $50/day max - adjust as needed
+    EMERGENCY_SHUTOFF: process.env.EMERGENCY_SHUTOFF === 'true',
+    ENVIRONMENT: process.env.VERCEL_ENV || 'development'
+};
+
+// Daily spend tracking (in-memory, resets on function cold start)
+const dailySpendMap = new Map();
+
+function checkDailyBudget() {
+    const today = new Date().toISOString().split('T')[0];
+    const currentSpend = dailySpendMap.get(today) || 0;
+    return {
+        allowed: currentSpend < CONFIG.DAILY_BUDGET_CENTS,
+        currentSpendCents: currentSpend,
+        remainingCents: Math.max(0, CONFIG.DAILY_BUDGET_CENTS - currentSpend)
+    };
+}
+
+function trackSpend(costCents) {
+    const today = new Date().toISOString().split('T')[0];
+    const currentSpend = dailySpendMap.get(today) || 0;
+    dailySpendMap.set(today, currentSpend + costCents);
+}
+
+function calculateCost(usage) {
+    if (!usage) return { inputTokens: 0, outputTokens: 0, totalCostCents: 0 };
+    const inputCost = (usage.input_tokens / 1000000) * 3.00;
+    const outputCost = (usage.output_tokens / 1000000) * 15.00;
+    return {
+        inputTokens: usage.input_tokens,
+        outputTokens: usage.output_tokens,
+        totalCostCents: Math.round((inputCost + outputCost) * 100)
+    };
+}
+
+function logUsage(data) {
+    console.log(JSON.stringify({
+        event: 'veritas_assessment',
+        timestamp: new Date().toISOString(),
+        environment: CONFIG.ENVIRONMENT,
+        track: data.track || 'a',
+        hasUserKey: data.hasUserKey || false,
+        tokens: { input: data.inputTokens || 0, output: data.outputTokens || 0 },
+        costCents: data.costCents || 0,
+        success: data.success,
+        processingTimeMs: data.processingTimeMs || 0
+    }));
+}
+
+// ============================================
 // URL CONTENT FETCHER
 // ============================================
 async function fetchUrlContent(url) {
@@ -752,6 +805,25 @@ module.exports = async function handler(req, res) {
         return res.status(405).json({ error: 'Method not allowed' });
     }
     
+    // EMERGENCY SHUTOFF CHECK
+    if (CONFIG.EMERGENCY_SHUTOFF) {
+        return res.status(503).json({ 
+            error: 'VERITAS is temporarily offline for maintenance.',
+            maintenance: true
+        });
+    }
+    
+    // DAILY BUDGET CHECK
+    var budgetCheck = checkDailyBudget();
+    if (!budgetCheck.allowed) {
+        return res.status(503).json({ 
+            error: 'Daily budget limit reached. Service will reset tomorrow.',
+            budgetExceeded: true
+        });
+    }
+    
+    var startTime = Date.now();
+    
     try {
         var body = req.body;
         if (!body) {
@@ -875,7 +947,15 @@ module.exports = async function handler(req, res) {
             }
         }
         
+        // Track costs (only for our API key, not user-provided keys)
+        var hasUserKey = !!userApiKey;
+        var costData = calculateCost(message.usage);
+        if (!hasUserKey) {
+            trackSpend(costData.totalCostCents);
+        }
+        
         if (!assessment) {
+            logUsage({ track: track, hasUserKey: hasUserKey, success: false, processingTimeMs: Date.now() - startTime });
             return res.status(500).json({ error: 'No assessment generated' });
         }
         
@@ -912,8 +992,10 @@ module.exports = async function handler(req, res) {
                 assessmentDate: new Date().toISOString(),
                 assessor: 'INITIAL',
                 remaining: remaining,
-                _debug: debugInfo  // Include debug info in response
+                _debug: debugInfo,  // Include debug info in response
+                _usage: hasUserKey ? undefined : costData
             });
+            logUsage({ track: 'b', hasUserKey: hasUserKey, inputTokens: costData.inputTokens, outputTokens: costData.outputTokens, costCents: hasUserKey ? 0 : costData.totalCostCents, success: true, processingTimeMs: Date.now() - startTime });
         } else {
             var parsed = parseTrackAResponse(assessment);
             
@@ -941,8 +1023,10 @@ module.exports = async function handler(req, res) {
                 claimType: claimType,
                 assessmentDate: new Date().toISOString(),
                 assessor: 'INITIAL',
-                remaining: remaining
+                remaining: remaining,
+                _usage: hasUserKey ? undefined : costData
             });
+            logUsage({ track: 'a', hasUserKey: hasUserKey, inputTokens: costData.inputTokens, outputTokens: costData.outputTokens, costCents: hasUserKey ? 0 : costData.totalCostCents, success: true, processingTimeMs: Date.now() - startTime });
         }
         
     } catch (err) {
