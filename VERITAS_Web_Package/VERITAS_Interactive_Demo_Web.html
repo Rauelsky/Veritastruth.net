@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VERITAS Intro - Timing Test</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #1a1a2e;
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            color: #4a9eff;
+        }
+
+        .controls {
+            background: #2a2a4e;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .control-row {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            background: #4a9eff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        button:hover {
+            background: #3a8eef;
+        }
+
+        button.danger {
+            background: #e74c3c;
+        }
+
+        button.danger:hover {
+            background: #c0392b;
+        }
+
+        button.success {
+            background: #27ae60;
+        }
+
+        button.success:hover {
+            background: #1e8449;
+        }
+
+        .time-display {
+            font-family: monospace;
+            font-size: 24px;
+            background: #1a1a2e;
+            padding: 10px 20px;
+            border-radius: 5px;
+            min-width: 120px;
+            text-align: center;
+        }
+
+        .timing-list {
+            background: #1a1a2e;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+        .preview-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            aspect-ratio: 16/9;
+            background: #000;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .preview-container video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: opacity 1s ease;
+        }
+
+        .preview-container video.fading {
+            opacity: 0.3;
+        }
+
+        .text-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 40px;
+            pointer-events: none;
+        }
+
+        .intro-text {
+            font-size: 32px;
+            font-weight: 300;
+            text-shadow: 0 2px 20px rgba(0,0,0,0.8);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            line-height: 1.4;
+        }
+
+        .intro-text.slow-fade {
+            transition: opacity 2s ease;
+        }
+
+        .intro-text.first-fade {
+            transition: opacity 1.19s ease;
+        }
+
+        .intro-text.visible {
+            opacity: 1;
+        }
+
+        .intro-text .highlight {
+            color: #4a9eff;
+            font-weight: bold;
+        }
+
+        .intro-text.typewriter {
+            font-size: 42px;
+            font-weight: bold;
+        }
+
+        .intro-text.typewriter .veritas {
+            color: #4a9eff;
+        }
+
+        .intro-text.finale {
+            font-size: 42px;
+            font-weight: bold;
+        }
+
+        .intro-text.finale .veritas {
+            color: #4a9eff;
+        }
+
+        /* Demo Instructions - appears INSIDE the video frame */
+        .demo-instructions {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.85);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 1s ease, visibility 0s 1s;
+            pointer-events: none;
+        }
+
+        .demo-instructions-content {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .demo-instructions.visible {
+            opacity: 1;
+            visibility: visible;
+            transition: opacity 1s ease, visibility 0s;
+            pointer-events: auto;
+        }
+
+        .demo-instructions.slow-fade-in {
+            transition: opacity 4s ease, visibility 0s;
+        }
+
+        .demo-instructions.fade-out {
+            opacity: 0;
+            transition: opacity 1.5s ease;
+        }
+
+        .demo-instructions h2 {
+            color: #4a9eff;
+            font-size: 24px;
+            margin-bottom: 25px;
+        }
+
+        .demo-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            margin-bottom: 15px;
+            max-width: 500px;
+        }
+
+        .step-number {
+            background: #4a9eff;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .step-text {
+            font-size: 16px;
+            line-height: 1.5;
+            color: #e0e0e0;
+        }
+
+        .enter-prompt {
+            margin-top: 30px;
+            font-size: 14px;
+            color: #888;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        .beat-markers {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .beat-marker {
+            background: #4a9eff;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 3px;
+            font-size: 11px;
+            cursor: pointer;
+        }
+
+        .beat-marker:hover {
+            background: #3a8eef;
+        }
+
+        .tool-instructions {
+            background: #2a2a4e;
+            padding: 15px;
+            border-radius: 10px;
+            max-width: 800px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .text-sequence {
+            background: #2a2a4e;
+            padding: 15px;
+            border-radius: 10px;
+            max-width: 800px;
+            width: 100%;
+        }
+
+        .sequence-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px;
+            border-bottom: 1px solid #3a3a5e;
+        }
+
+        .sequence-item:last-child {
+            border-bottom: none;
+        }
+
+        .sequence-num {
+            background: #4a9eff;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+
+        .sequence-text {
+            flex: 1;
+        }
+
+        input[type="number"] {
+            width: 70px;
+            padding: 5px;
+            border: 1px solid #4a4a6e;
+            border-radius: 3px;
+            background: #1a1a2e;
+            color: white;
+            font-family: monospace;
+        }
+
+        .status-indicator {
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .status-idle { background: #555; }
+        .status-playing { background: #27ae60; }
+        .status-preview { background: #e67e22; }
+        .status-instructions { background: #9b59b6; }
+    </style>
+</head>
+<body>
+    <h1>VERITAS Intro Sequence - Timing Test</h1>
+
+    <div class="preview-container">
+        <video id="bgVideo" loop>
+            <source src="The_Vision_of_VERITAS-comp.mp4" type="video/mp4">
+        </video>
+        <div class="text-overlay">
+            <div class="intro-text" id="introText"></div>
+        </div>
+        
+        <!-- Demo Instructions - INSIDE the video frame -->
+        <div class="demo-instructions" id="demoInstructions">
+            <div class="demo-instructions-content">
+                <h2>How to Use This Demo</h2>
+                <div class="demo-step">
+                    <span class="step-number">1</span>
+                    <span class="step-text">Hover near the <strong>left edge</strong> of the screen to open the topic menu</span>
+                </div>
+                <div class="demo-step">
+                    <span class="step-number">2</span>
+                    <span class="step-text">Select a topic to view articles from different perspectives</span>
+                </div>
+                <div class="demo-step">
+                    <span class="step-number">3</span>
+                    <span class="step-text">Click any article to read it - a VERITAS badge will appear</span>
+                </div>
+                <div class="demo-step">
+                    <span class="step-number">4</span>
+                    <span class="step-text">Click the VERITAS badge to toggle between the original article and our assessment</span>
+                </div>
+                <div class="demo-step">
+                    <span class="step-number">5</span>
+                    <span class="step-text">Click "View Full Assessment" to see detailed analysis</span>
+                </div>
+                <div class="enter-prompt">Press Enter or click anywhere to begin the demo...</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="controls">
+        <div class="control-row">
+            <button id="playBtn">▶ Play</button>
+            <button id="pauseBtn">⏸ Pause</button>
+            <button id="markBtn">🎯 Mark Beat (SPACE)</button>
+            <div class="time-display" id="timeDisplay">62.26s</div>
+            <span class="status-indicator status-instructions" id="statusIndicator">INSTRUCTIONS</span>
+        </div>
+        <div class="control-row">
+            <button id="previewBtn" class="success">🎬 Preview Sequence</button>
+            <button id="showInstructionsBtn">📋 Show Instructions</button>
+            <button id="stopPreviewBtn">⏹ Stop Preview</button>
+            <button id="fullResetBtn" class="danger">🔄 Full Reset</button>
+        </div>
+        <div class="control-row">
+            <button id="clearMarksBtn">Clear Beat Marks</button>
+            <button id="applyMarksBtn" class="success">✓ Apply Beat Marks to Timing</button>
+        </div>
+        <div class="timing-list" id="beatLog">Beat 1: 0.19s
+Beat 2: 6.33s
+Beat 3: 11.74s
+Beat 4: 14.36s
+Beat 5: 16.64s
+Beat 6: 22.36s
+Beat 7: 25.08s
+Beat 8: 27.71s
+Beat 9: 30.28s
+Beat 10: 33.04s
+Beat 11: 38.37s</div>
+        <div class="beat-markers" id="beatMarkers"><span class="beat-marker">0.19s</span><span class="beat-marker">6.33s</span><span class="beat-marker">11.74s</span><span class="beat-marker">14.36s</span><span class="beat-marker">16.64s</span><span class="beat-marker">22.36s</span><span class="beat-marker">25.08s</span><span class="beat-marker">27.71s</span><span class="beat-marker">30.28s</span><span class="beat-marker">33.04s</span><span class="beat-marker">38.37s</span></div>
+    </div>
+
+    <div class="tool-instructions">
+        <strong>How to use this tool:</strong><br>
+        1. <strong>Play</strong> - Start video to find beat timings (spacebar marks beats)<br>
+        2. <strong>Preview Sequence</strong> - Test your timing values (video loops, no auto-stop)<br>
+        3. <strong>Show Instructions</strong> - Manually trigger the instructions overlay<br>
+        4. <strong>Full Reset</strong> - Clear everything and start fresh<br>
+        5. Press <strong>Enter</strong> (or click) when instructions are showing to test the fade-out transition
+    </div>
+
+    <div class="text-sequence">
+        <h3 style="margin-bottom: 15px;">Text Sequence Timing (seconds)</h3>
+        <div class="sequence-item">
+            <span class="sequence-num">1</span>
+            <span class="sequence-text">Imagine a world</span>
+            <input type="number" step="0.1" value="0" id="time1"> s
+        </div>
+        <div class="sequence-item">
+            <span class="sequence-num">2</span>
+            <span class="sequence-text">Where all the information you consume</span>
+            <input type="number" step="0.1" value="6.33" id="time2"> s
+        </div>
+        <div class="sequence-item">
+            <span class="sequence-num">3</span>
+            <span class="sequence-text">From any source on the web or social media</span>
+            <input type="number" step="0.1" value="11.74" id="time3"> s
+        </div>
+        <div class="sequence-item">
+            <span class="sequence-num">4</span>
+            <span class="sequence-text">Could be <span class="highlight">ONLY</span> fact checked</span>
+            <input type="number" step="0.1" value="14.36" id="time4"> s
+        </div>
+        <div class="sequence-item">
+            <span class="sequence-num">5</span>
+            <span class="sequence-text">But evaluated by a broad range of actual experts and an AI</span>
+            <input type="number" step="0.1" value="16.64" id="time5"> s
+        </div>
+        <div class="sequence-item">
+            <span class="sequence-num">6</span>
+            <span class="sequence-text">that can examine the entire body of human knowledge</span>
+            <input type="number" step="0.1" value="22.36" id="time6"> s
+        </div>
+        <div class="sequence-item">
+            <span class="sequence-num">7</span>
+            <span class="sequence-text">to help you understand truth in context?</span>
+            <input type="number" step="0.1" value="25.08" id="time7"> s
+        </div>
+        <div class="sequence-item" style="background: rgba(74,158,255,0.1); border-radius: 5px; margin-top: 10px;">
+            <span class="sequence-num">8</span>
+            <span class="sequence-text"><strong>"This is"</strong> (fade in/out)</span>
+            <input type="number" step="0.1" value="27.71" id="time8"> s
+        </div>
+        <div class="sequence-item" style="background: rgba(74,158,255,0.1);">
+            <span class="sequence-num">9</span>
+            <span class="sequence-text"><strong>"the world that"</strong> (fade in/out)</span>
+            <input type="number" step="0.1" value="30.28" id="time9"> s
+        </div>
+        <div class="sequence-item" style="background: rgba(74,158,255,0.1);">
+            <span class="sequence-num">10</span>
+            <span class="sequence-text"><strong>"VERITAS Imagines"</strong> (fade in, holds)</span>
+            <input type="number" step="0.1" value="33.04" id="time10"> s
+        </div>
+        <div class="sequence-item" style="background: rgba(74,158,255,0.1); border-radius: 5px;">
+            <span class="sequence-num">→</span>
+            <span class="sequence-text">Final beat: fade out, show instructions</span>
+            <input type="number" step="0.1" value="38.37" id="timeEnd"> s
+        </div>
+    </div>
+
+    <script>
+        const video = document.getElementById('bgVideo');
+        const timeDisplay = document.getElementById('timeDisplay');
+        const beatLog = document.getElementById('beatLog');
+        const beatMarkers = document.getElementById('beatMarkers');
+        const introText = document.getElementById('introText');
+        const demoInstructions = document.getElementById('demoInstructions');
+        const statusIndicator = document.getElementById('statusIndicator');
+
+        let isPlaying = false;
+        let beatTimestamps = [];
+        let animationFrame;
+        let previewInterval = null;
+        let currentTextIndex = -1;
+        let mode = 'idle'; // idle, playing, preview, instructions
+
+        const textSequence = [
+            { id: 'time1', text: 'Imagine a world', type: 'normal' },
+            { id: 'time2', text: 'Where all the information you consume', type: 'normal' },
+            { id: 'time3', text: 'From any source on the web or social media', type: 'normal' },
+            { id: 'time4', text: 'Could be not <span class="highlight">ONLY</span> fact checked', type: 'normal' },
+            { id: 'time5', text: 'But evaluated by a broad range of actual experts<br>and an AI', type: 'normal' },
+            { id: 'time6', text: 'that can examine the entire body of<br>human knowledge', type: 'normal' },
+            { id: 'time7', text: 'to help you understand truth in context?', type: 'normal' },
+            { id: 'time8', text: 'This is', type: 'finale' },
+            { id: 'time9', text: 'the world that', type: 'finale' },
+            { id: 'time10', text: '<span class="veritas">VERITAS</span> Imagines', type: 'finale-hold' }
+        ];
+
+        function setStatus(newMode) {
+            mode = newMode;
+            statusIndicator.className = 'status-indicator';
+            switch(newMode) {
+                case 'idle':
+                    statusIndicator.classList.add('status-idle');
+                    statusIndicator.textContent = 'IDLE';
+                    break;
+                case 'playing':
+                    statusIndicator.classList.add('status-playing');
+                    statusIndicator.textContent = 'PLAYING';
+                    break;
+                case 'preview':
+                    statusIndicator.classList.add('status-preview');
+                    statusIndicator.textContent = 'PREVIEW';
+                    break;
+                case 'instructions':
+                    statusIndicator.classList.add('status-instructions');
+                    statusIndicator.textContent = 'INSTRUCTIONS';
+                    break;
+            }
+        }
+
+        function updateTime() {
+            timeDisplay.textContent = video.currentTime.toFixed(2) + 's';
+            if (isPlaying) {
+                animationFrame = requestAnimationFrame(updateTime);
+            }
+        }
+
+        // PLAY - just plays video (with embedded audio) for beat finding
+        document.getElementById('playBtn').addEventListener('click', () => {
+            stopPreview();
+            video.play();
+            isPlaying = true;
+            setStatus('playing');
+            updateTime();
+        });
+
+        // PAUSE
+        document.getElementById('pauseBtn').addEventListener('click', () => {
+            video.pause();
+            isPlaying = false;
+            if (mode === 'playing') setStatus('idle');
+        });
+
+        // FULL RESET - clears EVERYTHING
+        document.getElementById('fullResetBtn').addEventListener('click', () => {
+            fullReset();
+        });
+
+        function fullReset() {
+            // Stop everything
+            stopPreview();
+            video.pause();
+            video.currentTime = 0;
+            video.volume = 1;
+            isPlaying = false;
+            
+            // Clear text
+            introText.classList.remove('visible', 'typewriter', 'finale', 'slow-fade');
+            introText.innerHTML = '';
+            
+            // Hide instructions
+            demoInstructions.classList.remove('visible', 'fade-out', 'slow-fade-in');
+            video.classList.remove('fading');
+            
+            // Reset state
+            currentTextIndex = -1;
+            
+            // Update display
+            timeDisplay.textContent = '0.00s';
+            setStatus('idle');
+        }
+
+        // Mark beats
+        function markBeat() {
+            if (!isPlaying && mode !== 'preview') return;
+            const time = video.currentTime.toFixed(2);
+            beatTimestamps.push(time);
+            beatLog.textContent = beatTimestamps.map((t, i) => `Beat ${i + 1}: ${t}s`).join('\n');
+            
+            const marker = document.createElement('span');
+            marker.className = 'beat-marker';
+            marker.textContent = time + 's';
+            marker.onclick = () => {
+                video.currentTime = parseFloat(time);
+            };
+            beatMarkers.appendChild(marker);
+        }
+
+        document.getElementById('markBtn').addEventListener('click', markBeat);
+        
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space' && e.target.tagName !== 'INPUT') {
+                e.preventDefault();
+                markBeat();
+            }
+            // Enter to dismiss instructions
+            if (e.code === 'Enter' && mode === 'instructions') {
+                e.preventDefault();
+                dismissInstructions();
+            }
+        });
+
+        document.getElementById('clearMarksBtn').addEventListener('click', () => {
+            beatTimestamps = [];
+            beatLog.textContent = 'Beat timestamps will appear here when you press SPACE during playback...';
+            beatMarkers.innerHTML = '';
+        });
+
+        // Apply beat marks to timing inputs
+        document.getElementById('applyMarksBtn').addEventListener('click', () => {
+            if (beatTimestamps.length === 0) {
+                alert('No beat marks to apply! Press SPACE while playing to mark beats first.');
+                return;
+            }
+            
+            const inputIds = ['time1', 'time2', 'time3', 'time4', 'time5', 'time6', 'time7', 'time8', 'time9', 'time10', 'timeEnd'];
+            
+            for (let i = 0; i < Math.min(beatTimestamps.length, inputIds.length); i++) {
+                document.getElementById(inputIds[i]).value = beatTimestamps[i];
+            }
+            
+            const applied = Math.min(beatTimestamps.length, inputIds.length);
+            const remaining = inputIds.length - applied;
+            
+            if (remaining > 0) {
+                alert(`Applied ${applied} beat marks. You still need ${remaining} more marks for the remaining fields.`);
+            } else {
+                alert(`Applied all ${applied} beat marks to timing fields!`);
+            }
+        });
+
+        // Get timing values from inputs
+        function getTimings() {
+            return {
+                times: [
+                    parseFloat(document.getElementById('time1').value),
+                    parseFloat(document.getElementById('time2').value),
+                    parseFloat(document.getElementById('time3').value),
+                    parseFloat(document.getElementById('time4').value),
+                    parseFloat(document.getElementById('time5').value),
+                    parseFloat(document.getElementById('time6').value),
+                    parseFloat(document.getElementById('time7').value),
+                    parseFloat(document.getElementById('time8').value),
+                    parseFloat(document.getElementById('time9').value),
+                    parseFloat(document.getElementById('time10').value)
+                ],
+                endTime: parseFloat(document.getElementById('timeEnd').value)
+            };
+        }
+        
+        function updatePreview() {
+            const currentTime = video.currentTime;
+            const timings = getTimings();
+            
+            // Find which text should be showing
+            let newIndex = -1;
+            for (let i = timings.times.length - 1; i >= 0; i--) {
+                if (currentTime >= timings.times[i]) {
+                    newIndex = i;
+                    break;
+                }
+            }
+            
+            // Check if we've hit the end time - show instructions
+            if (currentTime >= timings.endTime && mode === 'preview') {
+                showInstructions();
+                return;
+            }
+            
+            // Update text if changed
+            if (newIndex !== currentTextIndex) {
+                currentTextIndex = newIndex;
+                
+                if (newIndex === -1) {
+                    introText.classList.remove('visible', 'typewriter', 'finale', 'slow-fade', 'first-fade');
+                    introText.innerHTML = '';
+                } else {
+                    const item = textSequence[newIndex];
+                    introText.classList.remove('typewriter', 'slow-fade', 'first-fade');
+                    
+                    if (item.type === 'finale' || item.type === 'finale-hold') {
+                        introText.classList.add('finale');
+                    } else {
+                        introText.classList.remove('finale');
+                    }
+                    
+                    // Add slow fade class for VERITAS Imagines
+                    if (item.type === 'finale-hold') {
+                        introText.classList.add('slow-fade');
+                    }
+                    
+                    // Add first-fade class for "Imagine a world" (index 0)
+                    if (newIndex === 0) {
+                        introText.classList.add('first-fade');
+                    }
+                    
+                    introText.innerHTML = item.text;
+                    introText.classList.add('visible');
+                }
+            }
+            
+            // Fade out logic for normal items - fade 0.3s before next text
+            if (currentTextIndex >= 0 && currentTextIndex < 7) {
+                const nextTime = timings.times[currentTextIndex + 1];
+                if (currentTime >= nextTime - 0.3) {
+                    introText.classList.remove('visible');
+                }
+            }
+            
+            // Fade out logic for finale items (8 and 9) - fade before next beat
+            if (currentTextIndex === 7 || currentTextIndex === 8) {
+                const nextTime = timings.times[currentTextIndex + 1];
+                if (currentTime >= nextTime - 0.4) {
+                    introText.classList.remove('visible');
+                }
+            }
+            
+            // Fade out for finale-hold (index 9) - slow fade before end (starts 2s before)
+            if (currentTextIndex === 9) {
+                if (currentTime >= timings.endTime - 2.0) {
+                    introText.classList.remove('visible');
+                }
+            }
+        }
+        
+        function stopPreview() {
+            if (previewInterval) {
+                clearInterval(previewInterval);
+                previewInterval = null;
+            }
+            currentTextIndex = -1;
+        }
+
+        // PREVIEW SEQUENCE - loops video, runs text sequence
+        document.getElementById('previewBtn').addEventListener('click', () => {
+            stopPreview();
+            demoInstructions.classList.remove('visible', 'fade-out', 'slow-fade-in');
+            video.classList.remove('fading');
+            video.volume = 1;
+            
+            video.currentTime = 0;
+            introText.classList.remove('visible', 'typewriter', 'finale', 'slow-fade');
+            introText.innerHTML = '';
+            currentTextIndex = -1;
+            
+            video.play();
+            isPlaying = true;
+            setStatus('preview');
+            updateTime();
+            
+            previewInterval = setInterval(updatePreview, 50);
+        });
+
+        // STOP PREVIEW
+        document.getElementById('stopPreviewBtn').addEventListener('click', () => {
+            stopPreview();
+            introText.classList.remove('visible', 'typewriter');
+            introText.innerHTML = '';
+            if (mode === 'preview') {
+                setStatus('playing');
+            }
+        });
+
+        // SHOW INSTRUCTIONS - can be triggered manually or by sequence end
+        function showInstructions() {
+            stopPreview();
+            introText.classList.remove('visible', 'typewriter', 'finale', 'slow-fade');
+            introText.innerHTML = '';
+            video.classList.add('fading');
+            demoInstructions.classList.add('visible', 'slow-fade-in');
+            setStatus('instructions');
+            // Video (with audio) keeps playing!
+        }
+
+        document.getElementById('showInstructionsBtn').addEventListener('click', showInstructions);
+
+        // DISMISS INSTRUCTIONS - graceful fade
+        function dismissInstructions() {
+            demoInstructions.classList.add('fade-out');
+            
+            // Fade out video (with audio)
+            let volume = video.volume;
+            const fadeInterval = setInterval(() => {
+                volume -= 0.05;
+                if (volume <= 0) {
+                    clearInterval(fadeInterval);
+                    video.pause();
+                    video.volume = 1; // Reset for next time
+                    video.currentTime = 0;
+                    video.classList.remove('fading');
+                    
+                    setTimeout(() => {
+                        demoInstructions.classList.remove('visible', 'fade-out', 'slow-fade-in');
+                        setStatus('idle');
+                        alert('Demo would start now! (In the real version, this transitions to the actual demo)');
+                    }, 500);
+                } else {
+                    video.volume = volume;
+                }
+            }, 75);
+        }
+
+        // Also allow clicking the instructions overlay to dismiss
+        demoInstructions.addEventListener('click', () => {
+            if (mode === 'instructions') {
+                dismissInstructions();
+            }
+        });
+    </script>
+
+
+</body></html>
