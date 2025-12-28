@@ -2019,11 +2019,11 @@
 
         /* ================================
            THE PLAIN TRUTH - Comedy Corner Integration
-           Warm, compassionate explanation section
+           Muted purple/teal compassionate explanation section
            ================================ */
         .plain-truth-section {
-            background: linear-gradient(135deg, rgba(139, 115, 85, 0.15) 0%, rgba(196, 167, 125, 0.08) 100%);
-            border: 1px solid rgba(139, 115, 85, 0.3);
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.12) 0%, rgba(20, 184, 166, 0.08) 100%);
+            border: 1px solid rgba(139, 92, 246, 0.25);
             border-radius: 12px;
             margin: 16px;
             overflow: hidden;
@@ -2037,21 +2037,21 @@
             cursor: pointer;
             transition: background 0.2s ease;
             user-select: none;
-            background: rgba(139, 115, 85, 0.2);
+            background: rgba(139, 92, 246, 0.15);
             gap: 12px;
         }
 
         .plain-truth-header:hover {
-            background: rgba(139, 115, 85, 0.3);
+            background: rgba(139, 92, 246, 0.25);
         }
 
         .plain-truth-toggle {
             width: 28px;
             height: 28px;
-            background: linear-gradient(180deg, #8B7355 0%, #6B5544 100%);
+            background: linear-gradient(180deg, #8B5CF6 0%, #7C3AED 100%);
             border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 6px;
-            color: #FDF5E6;
+            color: #F3E8FF;
             font-size: 1.1rem;
             font-weight: 600;
             display: flex;
@@ -2068,12 +2068,12 @@
         .plain-truth-title {
             font-size: 1rem;
             font-weight: 600;
-            color: #C4A77D;
+            color: #C4B5FD;
             display: flex;
             align-items: center;
             gap: 10px;
             padding: 8px 16px;
-            background: linear-gradient(180deg, rgba(139, 115, 85, 0.6) 0%, rgba(107, 85, 68, 0.6) 100%);
+            background: linear-gradient(180deg, rgba(139, 92, 246, 0.5) 0%, rgba(124, 58, 237, 0.5) 100%);
             border-radius: 6px;
             box-shadow: 
                 0 2px 0 rgba(0, 0, 0, 0.3),
@@ -2084,8 +2084,8 @@
         .plain-truth-content {
             display: block;
             padding: 24px;
-            background: rgba(253, 245, 230, 0.03);
-            border-top: 1px solid rgba(139, 115, 85, 0.2);
+            background: rgba(139, 92, 246, 0.03);
+            border-top: 1px solid rgba(139, 92, 246, 0.15);
         }
 
         .plain-truth-content.collapsed {
@@ -2094,23 +2094,23 @@
 
         .plain-truth-intro {
             font-size: 0.95rem;
-            color: #C4A77D;
+            color: #A5B4FC;
             font-style: italic;
             margin-bottom: 20px;
             padding-bottom: 16px;
-            border-bottom: 1px solid rgba(139, 115, 85, 0.2);
+            border-bottom: 1px solid rgba(139, 92, 246, 0.15);
         }
 
         .plain-truth-box {
-            background: rgba(139, 115, 85, 0.1);
-            border-left: 4px solid #8B7355;
+            background: rgba(20, 184, 166, 0.08);
+            border-left: 4px solid #14B8A6;
             border-radius: 0 8px 8px 0;
             padding: 16px 20px;
             margin-bottom: 20px;
         }
 
         .plain-truth-box h4 {
-            color: #C4A77D;
+            color: #5EEAD4;
             font-size: 0.9rem;
             font-weight: 600;
             margin-bottom: 10px;
@@ -2140,8 +2140,8 @@
         }
 
         .plain-truth-confession {
-            background: rgba(255, 107, 107, 0.1);
-            border-left: 4px solid #FF6B6B;
+            background: rgba(167, 139, 250, 0.1);
+            border-left: 4px solid #A78BFA;
             border-radius: 0 8px 8px 0;
             padding: 14px 18px;
             margin: 16px 0;
@@ -2150,15 +2150,15 @@
         }
 
         .plain-truth-empowerment {
-            background: rgba(16, 185, 129, 0.1);
-            border-left: 4px solid var(--accent-green);
+            background: rgba(45, 212, 191, 0.1);
+            border-left: 4px solid #2DD4BF;
             border-radius: 0 8px 8px 0;
             padding: 16px 20px;
             margin-top: 20px;
         }
 
         .plain-truth-empowerment h4 {
-            color: var(--accent-green);
+            color: #2DD4BF;
             font-size: 0.9rem;
             font-weight: 600;
             margin-bottom: 10px;
@@ -2177,7 +2177,7 @@
         }
 
         .score-context-item {
-            background: rgba(139, 115, 85, 0.15);
+            background: rgba(139, 92, 246, 0.1);
             border-radius: 8px;
             padding: 12px 16px;
             flex: 1;
@@ -2196,7 +2196,7 @@
             font-family: 'IBM Plex Mono', monospace;
             font-size: 1.1rem;
             font-weight: 600;
-            color: #C4A77D;
+            color: #C4B5FD;
         }
 
         .score-context-meaning {
@@ -2970,6 +2970,104 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
             }
         }
 
+        // Funny quips for the processing wait time - pool of 50+
+        var processingQuips = [
+            "Searching sources and analyzing evidence...",
+            "I know, this is like watching grass grow... 🌱",
+            "Still here! Checking under every digital rock...",
+            "Fun fact: I'm reading faster than you ever could. Still slow though.",
+            "Good news: I haven't given up. Bad news: Neither has complexity.",
+            "Currently arguing with myself about methodology. I'll win eventually.",
+            "If truth were easy to find, you wouldn't need me. ☕",
+            "Consulting the ancient scrolls... just kidding, it's the internet.",
+            "This claim has layers. Like an onion. A very suspicious onion.",
+            "Still working! Rome wasn't fact-checked in a day.",
+            "Cross-referencing sources. Some of them disagree. Shocking.",
+            "Measuring epistemic confidence. It's... complicated.",
+            "Almost there! (I say this every 10 seconds, but still.)",
+            "Teaching myself patience. Not going great, honestly.",
+            "Sifting through the noise. There's a lot of noise.",
+            "Remember: you're not waiting, you're investing in truth. ✨",
+            "If I had a nickel for every misleading headline... 💰",
+            "Checking primary sources. They exist! Sometimes.",
+            "Quality takes time. So does loading this assessment. 🐢",
+            "Still crunching. My neurons are very busy.",
+            "Fun fact: Most 'facts' aren't that fun. Or factual.",
+            "Evaluating evidence quality. Some sources try harder than others.",
+            "Running integrity checks. The claim is nervous.",
+            "Don't worry, I haven't forgotten about you. Or this claim.",
+            "Weighing competing narratives. It's a workout. 🏋️",
+            "Separating signal from noise. So. Much. Noise.",
+            "Asking the hard questions. The claim is sweating.",
+            "Triangulating truth. It's geometry, but for facts.",
+            "Reading between the lines. There's a lot between them.",
+            "Fact-checking the fact-checkers. It's turtles all the way down. 🐢",
+            "Calibrating my skepticism meter. It goes to 11.",
+            "Hunting for context. It's always hiding somewhere.",
+            "Examining assumptions. Everyone has them. Even me.",
+            "Looking for what's NOT being said. Often more interesting.",
+            "Consulting my internal committee. They rarely agree.",
+            "Stress-testing this claim. It's handling it... okay.",
+            "Chasing citations. They lead interesting places.",
+            "Evaluating the evaluators. Very meta.",
+            "Searching for the 'yeah, but...' Nobody ever mentions the 'yeah, but.'",
+            "Doing the reading so you don't have to. You're welcome.",
+            "Applying healthy skepticism. Emphasis on healthy.",
+            "Checking if this passes the smell test. 👃",
+            "Investigating the investigators. Trust but verify.",
+            "Looking for cherry-picked data. It's cherry season somewhere.",
+            "Examining the framing. Frames do a lot of work.",
+            "Hunting for missing context. Found some! Looking for more...",
+            "Assessing source motivations. Everyone's got 'em.",
+            "Checking the receipts. 🧾",
+            "Verifying the verifiable. Noting the unverifiable.",
+            "Running this through the reality filter. It's a fine mesh.",
+            "Comparing claims to evidence. Sometimes they match!",
+            "Tracking down original sources. They're camera shy.",
+            "Calculating confidence intervals. Math is happening.",
+            "Evaluating logical coherence. A leads to B leads to... wait.",
+            "Checking for spin. Found some! Checking for more spin...",
+            "Doing epistemology. It's exactly as fun as it sounds.",
+            "Measuring truthiness vs. actual truth. There's a difference.",
+            "Scanning for red flags. 🚩 Collection growing...",
+            "Applying the 'cui bono' test. Who benefits? Good question.",
+            "Wrestling with nuance. Nuance is winning.",
+            "Untangling the narrative. It's... tangled."
+        ];
+        
+        var lastQuipIndex = -1;
+        var usedQuipIndices = [];
+
+        function getRandomQuip() {
+            // If we've used all quips, reset the pool
+            if (usedQuipIndices.length >= processingQuips.length) {
+                usedQuipIndices = [];
+            }
+            
+            // Build array of available indices (not yet used)
+            var availableIndices = [];
+            for (var i = 0; i < processingQuips.length; i++) {
+                if (usedQuipIndices.indexOf(i) === -1) {
+                    availableIndices.push(i);
+                }
+            }
+            
+            // Pick randomly from available
+            var randomPos = Math.floor(Math.random() * availableIndices.length);
+            var newIndex = availableIndices[randomPos];
+            
+            // Track this one as used
+            usedQuipIndices.push(newIndex);
+            lastQuipIndex = newIndex;
+            
+            return processingQuips[newIndex];
+        }
+
+        function resetQuipPool() {
+            usedQuipIndices = [];
+            lastQuipIndex = -1;
+        }
+
         function updateProcessingDisplay() {
             var mins = Math.floor(processingSeconds / 60);
             var secs = processingSeconds % 60;
@@ -2979,11 +3077,20 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
             // Progress bar - assume ~90 seconds typical
             var progress = Math.min((processingSeconds / 90) * 100, 95);
             document.getElementById('progressFill').style.width = progress + '%';
+            
+            // Update quip every 10 seconds
+            if (processingSeconds % 10 === 0) {
+                document.querySelector('.processing-status').textContent = getRandomQuip();
+            }
         }
 
         function showProcessing() {
             document.getElementById('processingIndicator').classList.add('visible');
             document.getElementById('assessBtn').disabled = true;
+            // Reset quip pool for fresh assessment
+            resetQuipPool();
+            // Reset to first message
+            document.querySelector('.processing-status').textContent = processingQuips[0];
             startProcessingTimer();
         }
 
