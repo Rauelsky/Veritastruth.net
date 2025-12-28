@@ -589,9 +589,25 @@ function parseTrackAResponse(assessment) {
     var jsonMatch = assessment.match(/```json\s*([\s\S]*?)\s*```/);
     if (jsonMatch && jsonMatch[1]) {
         try {
-            var parsed = JSON.parse(jsonMatch[1]);
+            // SANITIZE JSON before parsing - fix common Claude formatting issues
+            var jsonStr = jsonMatch[1];
             
-            // Extract all fields with logging for debugging
+            // Fix +0.3 style numbers (JSON doesn't allow leading +)
+            jsonStr = jsonStr.replace(/:\s*\+(\d)/g, ': $1');
+            
+            // Fix trailing commas before } or ]
+            jsonStr = jsonStr.replace(/,\s*}/g, '}');
+            jsonStr = jsonStr.replace(/,\s*]/g, ']');
+            
+            // Fix unquoted keys if any (rare but possible)
+            jsonStr = jsonStr.replace(/([{,]\s*)([a-zA-Z_][a-zA-Z0-9_]*)\s*:/g, '$1"$2":');
+            
+            // Log sanitized JSON for debugging
+            console.log('Sanitized JSON (first 500 chars):', jsonStr.substring(0, 500));
+            
+            var parsed = JSON.parse(jsonStr);
+            
+            // Extract all fields
             result.realityScore = parsed.realityScore;
             result.integrityScore = parsed.integrityScore;
             result.realityFactors = parsed.realityFactors;
@@ -622,13 +638,18 @@ function parseTrackAResponse(assessment) {
         } catch (e) {
             console.error('Track A JSON parse error:', e);
             console.error('Problematic JSON (first 1000 chars):', jsonMatch[1].substring(0, 1000));
+            // Don't give up - fall through to regex extraction
         }
     } else {
         console.log('Track A: No JSON block found in response');
         console.log('Response preview (first 500 chars):', assessment.substring(0, 500));
     }
     
-    // Fallback regex extraction for scores
+    // ============================================
+    // FALLBACK EXTRACTION - Always run to fill gaps
+    // ============================================
+    
+    // Scores fallback
     if (result.realityScore === null) {
         var realityMatch = assessment.match(/["\']?realityScore["\']?\s*:\s*([+-]?\d+)/i) ||
                           assessment.match(/REALITY SCORE:\s*\[?([+-]?\d+)\]?/i);
@@ -641,21 +662,75 @@ function parseTrackAResponse(assessment) {
         if (integrityMatch) result.integrityScore = parseFloat(integrityMatch[1]);
     }
     
-    // Fallback extraction for narrative sections if JSON failed
-    if (result.centralClaims === null) {
-        var centralMatch = assessment.match(/\*\*(?:THE )?CENTRAL CLAIMS[^*]*\*\*\s*([\s\S]*?)(?=\*\*[A-Z]|\n##|\n\*\*[A-Z]|$)/i);
-        if (centralMatch) {
-            var text = centralMatch[1].trim();
-            // Try to parse explicit/hidden
-            var explicitMatch = text.match(/(?:explicit|stated)[:\s]*(.*?)(?=hidden|implicit|$)/is);
-            var hiddenMatch = text.match(/(?:hidden|implicit|unstated)[:\s]*(.*?)$/is);
-            result.centralClaims = {
-                explicit: explicitMatch ? explicitMatch[1].trim() : text.substring(0, 500),
-                hidden: hiddenMatch ? hiddenMatch[1].trim() : 'Not explicitly identified in narrative'
+    // underlyingReality fallback - handle both nested and flat
+    if (result.underlyingReality === null) {
+        // Try to extract coreFinding from nested structure in raw text
+        var coreMatch = assessment.match(/["\']?coreFinding["\']?\s*:\s*["\']([^"\']+)["\']/i);
+        var howMatch = assessment.match(/["\']?howWeKnow["\']?\s*:\s*["\']([^"\']+)["\']/i);
+        var whyMatch = assessment.match(/["\']?whyItMatters["\']?\s*:\s*["\']([^"\']+)["\']/i);
+        
+        if (coreMatch) {
+            result.underlyingReality = {
+                coreFinding: coreMatch[1],
+                howWeKnow: howMatch ? howMatch[1] : null,
+                whyItMatters: whyMatch ? whyMatch[1] : null
+            };
+        } else {
+            // Try narrative section
+            var realityNarrative = assessment.match(/\*\*(?:THE )?UNDERLYING (?:REALITY|TRUTH)\*\*\s*([\s\S]*?)(?=\*\*[A-Z]|\n##|\n\*\*[A-Z]|$)/i);
+            if (realityNarrative) {
+                result.underlyingReality = realityNarrative[1].trim().substring(0, 1000);
+            }
+        }
+    }
+    
+    // realityFactors fallback
+    if (result.realityFactors === null) {
+        var eqMatch = assessment.match(/["\']?evidenceQuality["\']?\s*:\s*\{[^}]*["\']?score["\']?\s*:\s*([+-]?\d+)/i);
+        var esMatch = assessment.match(/["\']?epistemologicalSoundness["\']?\s*:\s*\{[^}]*["\']?score["\']?\s*:\s*([+-]?\d+)/i);
+        var srMatch = assessment.match(/["\']?sourceReliability["\']?\s*:\s*\{[^}]*["\']?score["\']?\s*:\s*([+-]?\d+)/i);
+        var lcMatch = assessment.match(/["\']?logicalCoherence["\']?\s*:\s*\{[^}]*["\']?score["\']?\s*:\s*([+-]?\d+)/i);
+        
+        if (eqMatch || esMatch || srMatch || lcMatch) {
+            result.realityFactors = {
+                evidenceQuality: eqMatch ? { score: parseInt(eqMatch[1]), explanation: 'Extracted from response' } : null,
+                epistemologicalSoundness: esMatch ? { score: parseInt(esMatch[1]), explanation: 'Extracted from response' } : null,
+                sourceReliability: srMatch ? { score: parseInt(srMatch[1]), explanation: 'Extracted from response' } : null,
+                logicalCoherence: lcMatch ? { score: parseInt(lcMatch[1]), explanation: 'Extracted from response' } : null
             };
         }
     }
     
+    // integrity fallback
+    if (result.integrity === null) {
+        var obsMatch = assessment.match(/["\']?observable["\']?\s*:\s*\{[^}]*["\']?score["\']?\s*:\s*([+-]?\d+\.?\d*)/i);
+        var compMatch = assessment.match(/["\']?comparative["\']?\s*:\s*\{[^}]*["\']?score["\']?\s*:\s*([+-]?\d+\.?\d*)/i);
+        var biasMatch = assessment.match(/["\']?bias["\']?\s*:\s*\{[^}]*["\']?score["\']?\s*:\s*([+-]?\d+\.?\d*)/i);
+        
+        if (obsMatch || compMatch || biasMatch) {
+            result.integrity = {
+                observable: obsMatch ? { score: parseFloat(obsMatch[1]) } : null,
+                comparative: compMatch ? { score: parseFloat(compMatch[1]) } : null,
+                bias: biasMatch ? { score: parseFloat(biasMatch[1]) } : null
+            };
+        }
+    }
+    
+    // centralClaims fallback
+    if (result.centralClaims === null) {
+        var centralMatch = assessment.match(/\*\*(?:THE )?CENTRAL CLAIMS[^*]*\*\*\s*([\s\S]*?)(?=\*\*[A-Z]|\n##|\n\*\*[A-Z]|$)/i);
+        if (centralMatch) {
+            var text = centralMatch[1].trim();
+            var explicitMatch = text.match(/(?:explicit|stated)[:\s]*(.*?)(?=hidden|implicit|$)/is);
+            var hiddenMatch = text.match(/(?:hidden|implicit|unstated)[:\s]*(.*?)$/is);
+            result.centralClaims = {
+                explicit: explicitMatch ? [explicitMatch[1].trim()] : [text.substring(0, 500)],
+                hidden: hiddenMatch ? [hiddenMatch[1].trim()] : []
+            };
+        }
+    }
+    
+    // frameworkAnalysis fallback
     if (result.frameworkAnalysis === null) {
         var frameworkMatch = assessment.match(/\*\*EXAMINING THE FRAMEWORK\*\*\s*([\s\S]*?)(?=\*\*[A-Z]|\n##|\n\*\*[A-Z]|$)/i);
         if (frameworkMatch) {
@@ -665,6 +740,7 @@ function parseTrackAResponse(assessment) {
         }
     }
     
+    // truthDistortionPatterns fallback
     if (result.truthDistortionPatterns === null) {
         var distortionMatch = assessment.match(/\*\*TRUTH DISTORTION PATTERNS\*\*\s*([\s\S]*?)(?=\*\*[A-Z]|\n##|\n\*\*[A-Z]|$)/i);
         if (distortionMatch) {
@@ -672,13 +748,13 @@ function parseTrackAResponse(assessment) {
             if (text.toLowerCase().includes('none') || text.toLowerCase().includes('no distortion')) {
                 result.truthDistortionPatterns = ['None detected - claim uses honest framing'];
             } else {
-                // Split by newlines or bullet points
                 var patterns = text.split(/\n[-•*]\s*|\n\d+\.\s*/).filter(function(p) { return p.trim().length > 10; });
                 result.truthDistortionPatterns = patterns.length > 0 ? patterns : [text.substring(0, 500)];
             }
         }
     }
     
+    // evidenceAnalysis fallback
     if (result.evidenceAnalysis === null) {
         var evidenceMatch = assessment.match(/\*\*EVIDENCE ANALYSIS\*\*\s*([\s\S]*?)(?=\*\*[A-Z]|\n##|\n\*\*[A-Z]|$)/i);
         if (evidenceMatch) {
@@ -692,6 +768,60 @@ function parseTrackAResponse(assessment) {
             };
         }
     }
+    
+    // whatWeCanBeConfidentAbout fallback
+    if (result.whatWeCanBeConfidentAbout === null) {
+        var confidentMatch = assessment.match(/\*\*WHAT WE CAN BE CONFIDENT ABOUT\*\*\s*([\s\S]*?)(?=\*\*[A-Z]|\n##|\n\*\*[A-Z]|$)/i);
+        if (confidentMatch) {
+            var items = confidentMatch[1].trim().split(/\n[-•*]\s*|\n\d+\.\s*/).filter(function(p) { return p.trim().length > 5; });
+            result.whatWeCanBeConfidentAbout = items.length > 0 ? items : [confidentMatch[1].trim().substring(0, 500)];
+        }
+    }
+    
+    // whatRemainsUncertain fallback
+    if (result.whatRemainsUncertain === null) {
+        var uncertainMatch = assessment.match(/\*\*WHAT REMAINS UNCERTAIN\*\*\s*([\s\S]*?)(?=\*\*[A-Z]|\n##|\n\*\*[A-Z]|$)/i);
+        if (uncertainMatch) {
+            var items = uncertainMatch[1].trim().split(/\n[-•*]\s*|\n\d+\.\s*/).filter(function(p) { return p.trim().length > 5; });
+            result.whatRemainsUncertain = items.length > 0 ? items : [uncertainMatch[1].trim().substring(0, 500)];
+        }
+    }
+    
+    // lessonsForAssessment fallback
+    if (result.lessonsForAssessment === null) {
+        var lessonsMatch = assessment.match(/\*\*LESSONS FOR (?:INFORMATION )?ASSESSMENT\*\*\s*([\s\S]*?)(?=\*\*[A-Z]|\n##|\n\*\*[A-Z]|$)/i);
+        if (lessonsMatch) {
+            var items = lessonsMatch[1].trim().split(/\n[-•*]\s*|\n\d+\.\s*/).filter(function(p) { return p.trim().length > 5; });
+            result.lessonsForAssessment = items.length > 0 ? items : [lessonsMatch[1].trim().substring(0, 500)];
+        }
+    }
+    
+    // methodologyNotes fallback
+    if (result.methodologyNotes === null) {
+        var methodMatch = assessment.match(/\*\*METHODOLOGY NOTES?\*\*\s*([\s\S]*?)(?=\*\*[A-Z]|\n##|\n\*\*[A-Z]|$)/i);
+        if (methodMatch) {
+            result.methodologyNotes = {
+                realityScoreRationale: methodMatch[1].trim().substring(0, 500),
+                integrityScoreRationale: ''
+            };
+        }
+    }
+    
+    // sources fallback
+    if (result.sources === null) {
+        var sourcesMatch = assessment.match(/\*\*(?:KEY )?SOURCES?(?: REFERENCED)?\*\*\s*([\s\S]*?)(?=\*\*[A-Z]|\n##|\n\*\*[A-Z]|$)/i);
+        if (sourcesMatch) {
+            var items = sourcesMatch[1].trim().split(/\n[-•*]\s*|\n\d+\.\s*/).filter(function(p) { return p.trim().length > 5; });
+            result.sources = items.length > 0 ? items : [sourcesMatch[1].trim().substring(0, 300)];
+        }
+    }
+    
+    // Final safety net - ensure no nulls for display fields
+    if (result.truthDistortionPatterns === null) result.truthDistortionPatterns = [];
+    if (result.whatWeCanBeConfidentAbout === null) result.whatWeCanBeConfidentAbout = [];
+    if (result.whatRemainsUncertain === null) result.whatRemainsUncertain = [];
+    if (result.lessonsForAssessment === null) result.lessonsForAssessment = [];
+    if (result.sources === null) result.sources = [];
     
     return result;
 }
