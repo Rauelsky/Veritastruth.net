@@ -2204,6 +2204,113 @@
             color: var(--text-secondary);
             margin-top: 4px;
         }
+
+        /* Dynamic Factor Styles */
+        .exact-claim-box {
+            margin-bottom: 16px;
+            padding: 16px;
+            background: rgba(13, 148, 136, 0.1);
+            border: 1px solid var(--accent-teal);
+            border-radius: 8px;
+        }
+
+        .exact-claim-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--accent-teal);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .exact-claim-text {
+            font-size: 1rem;
+            color: var(--text-primary);
+            line-height: 1.5;
+        }
+
+        .question-type-box {
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .question-type-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            background: var(--accent-purple);
+            color: white;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .question-type-rationale {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+
+        .factors-header {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .dynamic-factor {
+            margin-bottom: 16px;
+            padding: 12px;
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            border-left: 3px solid var(--accent-teal);
+        }
+
+        .factor-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .factor-name {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+        }
+
+        .factor-score {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .factor-score.positive { color: var(--score-positive); }
+        .factor-score.negative { color: var(--score-negative); }
+
+        .factor-why {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            padding-left: 8px;
+            border-left: 2px solid var(--border-light);
+        }
+
+        .factor-why em {
+            color: var(--accent-purple);
+        }
+
+        .factor-explanation {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
     </style>
 </head>
 <body>
@@ -3445,10 +3552,63 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
                 document.getElementById('evidenceContent').innerHTML = '<p>Structured data not available for this section.</p>';
             }
             
-            // Render Reality Score Breakdown
-            if (structured && structured.realityFactors) {
+            // Render Reality Score Breakdown - supports BOTH old (realityFactors) and new (selectedFactors) formats
+            var realityHtml = '';
+            
+            // NEW FORMAT: Dynamic selectedFactors
+            if (data.selectedFactors && Array.isArray(data.selectedFactors) && data.selectedFactors.length > 0) {
+                // Show exact claim being scored
+                if (data.exactClaimBeingScored) {
+                    realityHtml += '<div class="exact-claim-box">';
+                    realityHtml += '<div class="exact-claim-label">📍 Exact Claim Being Scored:</div>';
+                    realityHtml += '<div class="exact-claim-text">' + data.exactClaimBeingScored + '</div>';
+                    realityHtml += '</div>';
+                }
+                
+                // Show question type
+                if (data.questionType) {
+                    realityHtml += '<div class="question-type-box">';
+                    realityHtml += '<span class="question-type-badge">' + data.questionType + '</span>';
+                    if (data.questionTypeRationale) {
+                        realityHtml += '<span class="question-type-rationale">' + data.questionTypeRationale + '</span>';
+                    }
+                    realityHtml += '</div>';
+                }
+                
+                realityHtml += '<div class="factors-header">📊 Evaluation Factors Selected:</div>';
+                
+                // Render each dynamic factor
+                data.selectedFactors.forEach(function(f) {
+                    var weightPct = Math.round(f.weight * 100);
+                    realityHtml += '<div class="dynamic-factor">';
+                    realityHtml += '<div class="factor-header">';
+                    realityHtml += '<span class="factor-name">' + f.factor + ' (' + weightPct + '%)</span>';
+                    realityHtml += '<span class="factor-score ' + (f.score >= 0 ? 'positive' : 'negative') + '">' + (f.score >= 0 ? '+' : '') + f.score + '</span>';
+                    realityHtml += '</div>';
+                    if (f.whySelected) {
+                        realityHtml += '<div class="factor-why"><em>Why this factor:</em> ' + f.whySelected + '</div>';
+                    }
+                    realityHtml += '<div class="factor-explanation">' + f.explanation + '</div>';
+                    realityHtml += '</div>';
+                });
+                
+                // Show score calculation
+                if (data.scoreCalculation) {
+                    realityHtml += '<div class="calculation-box"><strong>Score Calculation:</strong> ' + data.scoreCalculation + '</div>';
+                } else {
+                    // Calculate if not provided
+                    var calcParts = [];
+                    var total = 0;
+                    data.selectedFactors.forEach(function(f) {
+                        calcParts.push('(' + f.score + ' × ' + f.weight.toFixed(2) + ')');
+                        total += f.score * f.weight;
+                    });
+                    realityHtml += '<div class="calculation-box"><strong>Weighted Calculation:</strong> ' + calcParts.join(' + ') + ' = ' + total.toFixed(1) + ' → <strong>' + (data.realityScore >= 0 ? '+' : '') + data.realityScore + '</strong></div>';
+                }
+            }
+            // OLD FORMAT: Fixed realityFactors (backward compatibility)
+            else if (structured && structured.realityFactors) {
                 var rf = structured.realityFactors;
-                var realityHtml = '';
                 
                 if (rf.evidenceQuality) {
                     realityHtml += '<p><strong>Evidence Quality (40%):</strong> ' + 
@@ -3471,7 +3631,7 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
                         ' — ' + rf.logicalCoherence.explanation + '</p>';
                 }
                 
-                // Add weighted calculation
+                // Add weighted calculation for old format
                 if (rf.evidenceQuality && rf.epistemologicalSoundness && rf.sourceReliability && rf.logicalCoherence) {
                     var eq = rf.evidenceQuality.score;
                     var es = rf.epistemologicalSoundness.score;
@@ -3480,11 +3640,9 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
                     var weighted = (eq * 0.40) + (es * 0.30) + (sr * 0.20) + (lc * 0.10);
                     realityHtml += '<div class="calculation-box"><strong>Weighted Calculation:</strong> (' + eq + ' × 0.40) + (' + es + ' × 0.30) + (' + sr + ' × 0.20) + (' + lc + ' × 0.10) = ' + weighted.toFixed(1) + ' → <strong>' + (data.realityScore >= 0 ? '+' : '') + data.realityScore + '</strong></div>';
                 }
-                
-                document.getElementById('realityContent').innerHTML = realityHtml || '<p>Not available.</p>';
-            } else {
-                document.getElementById('realityContent').innerHTML = '<p>Structured data not available for this section.</p>';
             }
+            
+            document.getElementById('realityContent').innerHTML = realityHtml || '<p>Structured data not available for this section.</p>';
             
             // Render Integrity Score Breakdown
             if (structured && structured.integrity) {
