@@ -269,21 +269,25 @@ function buildTrackAPrompt(question, articleText) {
         prompt += 'Question about the article: ' + question + '\n\n';
     } else {
         prompt += 'Evaluate this claim/question: ' + question + '\n\n';
-        prompt += '**CRITICAL CLAIM EXTRACTION**: If the input is phrased as "my friend says X", "I heard that X", "someone told me X", "is it true that X", or similar framing, you must extract and evaluate the UNDERLYING CLAIM (X), not whether the statement was made. For example:\n';
-        prompt += '- "My friend says the earth is flat" → Evaluate: "The earth is flat" (FALSE, -10)\n';
-        prompt += '- "I heard vaccines cause autism" → Evaluate: "Vaccines cause autism" (FALSE, exposed as fraudulent research)\n';
-        prompt += '- "Someone told me the 2020 election was stolen" → Evaluate: "The 2020 election was stolen" (FALSE, no evidence)\n';
-        prompt += 'Always evaluate the TRUTH of the claim itself, never just whether someone said it.\n\n';
         
-        prompt += '**CRITICAL META-QUESTION HANDLING**: If the input asks about WHY people believe something, WHAT tactics/information believers use, HOW misinformation spreads, or WHO promotes a claim, this is a META-QUESTION. Do NOT evaluate whether the meta-question is "true" (e.g., "yes, Flat Earthers do use these tactics" → +8). Instead:\n';
-        prompt += '1. Identify the UNDERLYING CLAIM being referenced (e.g., "The earth is flat")\n';
-        prompt += '2. Evaluate THAT claim for your Reality Score\n';
-        prompt += '3. Use your response to EDUCATE about the tactics/psychology while making clear the underlying claim is false\n';
-        prompt += 'Examples:\n';
-        prompt += '- "What information do Flat Earthers use to legitimize their claim?" → Evaluate "The earth is flat" (-10), then explain the tactics\n';
-        prompt += '- "Why do people believe vaccines cause autism?" → Evaluate "Vaccines cause autism" (-10), then explain the psychology\n';
-        prompt += '- "What evidence do election deniers cite?" → Evaluate "The election was stolen" (-10), then explain the claims\n';
-        prompt += 'The user is asking you to DEBUNK and EDUCATE, not to validate that believers exist.\n\n';
+        prompt += '## CRITICAL: QUESTION INTENT DETECTION\n';
+        prompt += 'Before evaluating, identify what the user ACTUALLY wants to know. Extract and evaluate the UNDERLYING CLAIM, not the literal question framing.\n\n';
+        
+        prompt += '**PATTERN RECOGNITION - Always evaluate the embedded claim (X), not the framing:**\n';
+        prompt += '| Pattern | Example | Evaluate |\n';
+        prompt += '|---------|---------|----------|\n';
+        prompt += '| Reported speech | "My friend says X", "I heard X", "They claim X" | X itself |\n';
+        prompt += '| Meta-questions | "Why do people believe X?", "What evidence supports X?" | X itself |\n';
+        prompt += '| Devil\'s advocate | "Best argument for X?", "Steelman X" | X itself |\n';
+        prompt += '| Existence questions | "Do people believe X?", "Is X a real theory?" | X itself (not whether believers exist) |\n';
+        prompt += '| Hypotheticals | "If X were true...", "Assuming X..." | X itself |\n';
+        prompt += '| Negation | "Is X false?", "Debunk X", "Prove X wrong" | X itself |\n';
+        prompt += '| Authority claims | "A doctor said X", "Studies show X" | X itself (then evaluate the authority) |\n';
+        prompt += '| Loaded questions | "Why is X covered up?", "When will they admit X?" | X itself (note the false presupposition) |\n';
+        prompt += '| Scope tricks | "Is there ANY evidence for X?", "Could X POSSIBLY be true?" | X itself (don\'t fall for weak-claim pivots) |\n';
+        prompt += '| Partial truth | "Since [true], doesn\'t that mean X?" | X itself (true premises can yield false conclusions) |\n\n';
+        
+        prompt += '**THE CORE RULE**: If a question CONTAINS or REFERENCES a factual claim, your Reality Score must reflect that claim\'s truth value, not whether the question itself is "valid" or whether believers/evidence/theories exist. A question about Flat Earth tactics should score -10 (for the Flat Earth claim), not +8 (for "yes, they use tactics").\n\n';
     }
     
     // OUTPUT FORMAT
