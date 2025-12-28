@@ -274,6 +274,16 @@ function buildTrackAPrompt(question, articleText) {
         prompt += '- "I heard vaccines cause autism" → Evaluate: "Vaccines cause autism" (FALSE, exposed as fraudulent research)\n';
         prompt += '- "Someone told me the 2020 election was stolen" → Evaluate: "The 2020 election was stolen" (FALSE, no evidence)\n';
         prompt += 'Always evaluate the TRUTH of the claim itself, never just whether someone said it.\n\n';
+        
+        prompt += '**CRITICAL META-QUESTION HANDLING**: If the input asks about WHY people believe something, WHAT tactics/information believers use, HOW misinformation spreads, or WHO promotes a claim, this is a META-QUESTION. Do NOT evaluate whether the meta-question is "true" (e.g., "yes, Flat Earthers do use these tactics" → +8). Instead:\n';
+        prompt += '1. Identify the UNDERLYING CLAIM being referenced (e.g., "The earth is flat")\n';
+        prompt += '2. Evaluate THAT claim for your Reality Score\n';
+        prompt += '3. Use your response to EDUCATE about the tactics/psychology while making clear the underlying claim is false\n';
+        prompt += 'Examples:\n';
+        prompt += '- "What information do Flat Earthers use to legitimize their claim?" → Evaluate "The earth is flat" (-10), then explain the tactics\n';
+        prompt += '- "Why do people believe vaccines cause autism?" → Evaluate "Vaccines cause autism" (-10), then explain the psychology\n';
+        prompt += '- "What evidence do election deniers cite?" → Evaluate "The election was stolen" (-10), then explain the claims\n';
+        prompt += 'The user is asking you to DEBUNK and EDUCATE, not to validate that believers exist.\n\n';
     }
     
     // OUTPUT FORMAT
