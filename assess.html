@@ -2695,11 +2695,23 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
             // Clear last assessment data
             lastAssessment = null;
             
-            // Reset all collapsible sections
+            // Reset score displays to default state
+            document.getElementById('realityScoreValue').textContent = '—';
+            document.getElementById('integrityScoreValue').textContent = '—';
+            document.getElementById('realityDescriptor').textContent = '—';
+            document.getElementById('integrityDescriptor').textContent = '—';
+            document.getElementById('realityMarker').style.left = '50%';
+            document.getElementById('integrityMarker').style.left = '50%';
+            document.getElementById('claimText').textContent = '—';
+            
+            // Reset all collapsible sections - collapse AND clear content
             ['truth', 'claims', 'framework', 'distortion', 'evidence', 'reality', 'integrity', 'confident', 'uncertain', 'lessons', 'methodology', 'sources'].forEach(function(id) {
                 var content = document.getElementById(id + 'Content');
                 var toggle = document.getElementById(id + 'Toggle');
-                if (content) content.classList.remove('expanded');
+                if (content) {
+                    content.classList.remove('expanded');
+                    content.innerHTML = '<p>Loading...</p>';
+                }
                 if (toggle) toggle.textContent = '+';
             });
             
@@ -2715,6 +2727,7 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
             ['observable', 'comparative', 'bias'].forEach(function(id) {
                 document.getElementById(id + 'Value').textContent = '—';
                 document.getElementById(id + 'Fill').style.width = '0%';
+                document.getElementById(id + 'Fill').className = 'sub-bar-fill positive';
             });
             
             // Reset amplify modal sections
@@ -2732,9 +2745,19 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
             // Reset verification data
             lastVerification = null;
             
-            // Reset Plain Truth section
+            // Reset Plain Truth section - expand it AND clear content
             document.getElementById('plainTruthContent').classList.remove('collapsed');
             document.getElementById('plainTruthToggle').textContent = '−';
+            document.getElementById('plainTruthScoreContext').innerHTML = '';
+            document.getElementById('plainTruthSummaryText').innerHTML = 'Loading...';
+            document.getElementById('plainTruthWhyText').innerHTML = 'Loading...';
+            document.getElementById('plainTruthConfessionText').textContent = '';
+            document.getElementById('plainTruthPatterns').style.display = 'none';
+            document.getElementById('plainTruthPatternsText').innerHTML = '';
+            document.getElementById('plainTruthEmpowermentText').innerHTML = '';
+            
+            // Reset quip pool for fresh assessment
+            resetQuipPool();
         }
 
         // ================================
@@ -2815,23 +2838,68 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
         function generateWarmSummary(realityScore, integrityScore, structured) {
             var summary = '';
             
-            if (structured && structured.underlyingTruth) {
-                summary += structured.underlyingTruth + '<br><br>';
+            // First, try to include the actual underlying truth/reality from the assessment
+            // Handle both flat string and nested object formats
+            if (structured && structured.underlyingReality) {
+                if (typeof structured.underlyingReality === 'string') {
+                    summary += '<strong>What the evidence shows:</strong> ' + structured.underlyingReality + '<br><br>';
+                } else if (structured.underlyingReality.coreFinding) {
+                    summary += '<strong>What the evidence shows:</strong> ' + structured.underlyingReality.coreFinding + '<br><br>';
+                    if (structured.underlyingReality.howWeKnow) {
+                        summary += '<strong>How we know:</strong> ' + structured.underlyingReality.howWeKnow + '<br><br>';
+                    }
+                }
+            } else if (structured && structured.underlyingTruth) {
+                summary += '<strong>What the evidence shows:</strong> ' + structured.underlyingTruth + '<br><br>';
             }
             
-            // Add comedy framing based on scores
+            // If we have central claims, mention them
+            if (structured && structured.centralClaims) {
+                if (structured.centralClaims.explicit && structured.centralClaims.explicit.length > 0) {
+                    var claim = Array.isArray(structured.centralClaims.explicit) ? 
+                        structured.centralClaims.explicit[0] : structured.centralClaims.explicit;
+                    summary += '<strong>The claim being made:</strong> ' + claim + '<br><br>';
+                }
+            }
+            
+            // If we have "what we can be confident about", include the first item
+            if (structured && structured.whatWeCanBeConfidentAbout && structured.whatWeCanBeConfidentAbout.length > 0) {
+                summary += '<strong>What we know for sure:</strong> ' + structured.whatWeCanBeConfidentAbout[0] + '<br><br>';
+            }
+            
+            // If we have "what remains uncertain", include it
+            if (structured && structured.whatRemainsUncertain && structured.whatRemainsUncertain.length > 0) {
+                summary += '<strong>What\'s still unclear:</strong> ' + structured.whatRemainsUncertain[0] + '<br><br>';
+            }
+            
+            // If summary is still empty, try to extract from evidence analysis
+            if (summary.length < 50 && structured && structured.evidenceAnalysis) {
+                if (structured.evidenceAnalysis.forTheClaim && structured.evidenceAnalysis.forTheClaim.length > 0) {
+                    summary += '<strong>Evidence supporting:</strong> ' + structured.evidenceAnalysis.forTheClaim[0] + '<br><br>';
+                }
+                if (structured.evidenceAnalysis.againstTheClaim && structured.evidenceAnalysis.againstTheClaim.length > 0) {
+                    summary += '<strong>Evidence against:</strong> ' + structured.evidenceAnalysis.againstTheClaim[0] + '<br><br>';
+                }
+            }
+            
+            // Now add the comedy framing based on scores
             if (realityScore >= 5 && integrityScore >= 0.3) {
-                summary += "Plot twist: this one's actually legit AND honestly presented. I know, I'm as surprised as you are. It's like finding a unicorn, except the unicorn has citations.";
+                summary += "📊 <strong>Bottom line:</strong> Plot twist—this one's actually legit AND honestly presented. I know, I'm as surprised as you are. It's like finding a unicorn, except the unicorn has citations.";
             } else if (realityScore >= 5 && integrityScore < 0.3) {
-                summary += "So here's the thing—the core claim is actually true! But whoever wrote this wrapped it in so much spin it's basically a washing machine. The facts are good; the presentation needs a shower.";
+                summary += "📊 <strong>Bottom line:</strong> The core claim is actually true! But whoever wrote this wrapped it in so much spin it's basically a washing machine. The facts are good; the presentation needs a shower.";
             } else if (realityScore < -3 && integrityScore < 0) {
-                summary += "Bad news comes in pairs today: the claim is shaky AND it's being sold hard. It's like someone put a tuxedo on a falsehood and hoped we wouldn't notice. We noticed.";
+                summary += "📊 <strong>Bottom line:</strong> Bad news comes in pairs today—the claim is shaky AND it's being sold hard. It's like someone put a tuxedo on a falsehood and hoped we wouldn't notice. We noticed.";
             } else if (realityScore >= -2 && realityScore <= 2) {
-                summary += "I'm going to level with you: this is genuinely a coin flip. Not because I'm lazy—the evidence actually points both ways. Sometimes 'it's complicated' isn't a cop-out; it's just... true.";
+                summary += "📊 <strong>Bottom line:</strong> I'm going to level with you—this is genuinely complicated. Not because I'm lazy, but because the evidence actually points in different directions. Sometimes 'it's messy' isn't a cop-out; it's just reality.";
             } else if (realityScore < -3) {
-                summary += "Look, I don't love being the bearer of bad news, but this claim and reality are not on speaking terms. The good news? Now you know. The better news? You can stop wondering.";
+                summary += "📊 <strong>Bottom line:</strong> Look, I don't love being the bearer of bad news, but this claim and reality are not on speaking terms. The good news? Now you know. The better news? You can stop wondering.";
             } else {
-                summary += "The results are in, and they're... results! Check out the details below for the full picture.";
+                summary += "📊 <strong>Bottom line:</strong> The results are in! Check out the details below for the full picture.";
+            }
+            
+            // If summary is still too thin, add a note
+            if (summary.length < 100) {
+                summary += "<br><br><em>The detailed analysis sections below have more specifics—expand them to dig deeper.</em>";
             }
             
             return summary;
