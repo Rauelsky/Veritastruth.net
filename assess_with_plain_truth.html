@@ -1,0 +1,4592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VERITAS — Truth Assessment Engine</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Scientific Dark Theme */
+            --bg-primary: #0a0f1a;
+            --bg-secondary: #111827;
+            --bg-card: #1a2332;
+            --bg-tertiary: #1e293b;
+            --bg-input: #0d1117;
+            
+            /* Accent Colors */
+            --accent-teal: #0d9488;
+            --accent-teal-dim: #0f766e;
+            --accent-cyan: #22d3ee;
+            --accent-blue: #3b82f6;
+            --accent-green: #10b981;
+            --accent-amber: #f59e0b;
+            --accent-red: #ef4444;
+            --accent-purple: #8b5cf6;
+            
+            /* Text Colors */
+            --text-primary: #e2e8f0;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --text-dim: #475569;
+            
+            /* Borders */
+            --border-subtle: #1e293b;
+            --border-medium: #334155;
+            --border-accent: var(--accent-teal);
+            
+            /* Score Colors */
+            --score-positive: #10b981;
+            --score-negative: #f87171;
+            --score-neutral: #fbbf24;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .site-header {
+            background: linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
+            border-bottom: 1px solid var(--accent-teal);
+            padding: 16px 24px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo-section {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .logo-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-img {
+            height: 36px;
+            width: auto;
+        }
+
+        .logo-fallback {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-mark {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--accent-teal) 0%, var(--accent-cyan) 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--bg-primary);
+        }
+
+        .logo-text {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: 2px;
+        }
+
+        .tagline {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-left: 56px; /* Shifted right 3px more */
+            margin-top: -16px;
+            letter-spacing: 0.5px;
+        }
+
+        .version-badge {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            background: var(--bg-tertiary);
+            padding: 6px 12px;
+            border-radius: 20px;
+            border: 1px solid var(--border-medium);
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            margin-bottom: 24px;
+            overflow: hidden;
+        }
+
+        .card-header {
+            background: var(--bg-tertiary);
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border-subtle);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .card-header-icon { font-size: 1.5rem; }
+        .card-title { font-size: 1.1rem; font-weight: 600; }
+        .card-subtitle { font-size: 0.85rem; color: var(--text-secondary); }
+
+        .card-body { padding: 24px; }
+
+        /* Form Elements */
+        .form-group { margin-bottom: 20px; }
+
+        .form-label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .form-input, textarea {
+            width: 100%;
+            background: var(--bg-input);
+            border: 1px solid var(--border-medium);
+            border-radius: 8px;
+            padding: 14px 16px;
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 0.95rem;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .form-input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--accent-teal);
+            box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.15);
+        }
+
+        textarea { min-height: 120px; resize: vertical; }
+
+        .char-counter {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-align: right;
+            margin-top: 6px;
+        }
+
+        .char-counter.warning { color: var(--accent-amber); }
+        .char-counter.danger { color: var(--accent-red); }
+
+        .field-hint {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .field-hint a {
+            color: var(--accent-teal);
+            text-decoration: none;
+        }
+
+        .field-hint a:hover { text-decoration: underline; }
+
+        /* Usage Counter */
+        .usage-counter {
+            background: rgba(13, 148, 136, 0.1);
+            border: 1px solid rgba(13, 148, 136, 0.3);
+            border-radius: 8px;
+            padding: 10px 16px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .usage-icon { font-size: 1.1rem; }
+
+        .usage-text {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .usage-text strong {
+            color: var(--accent-teal);
+            font-family: 'IBM Plex Mono', monospace;
+        }
+
+        .usage-hint {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .usage-counter.exhausted {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: rgba(239, 68, 68, 0.3);
+        }
+
+        .usage-counter.exhausted .usage-text strong {
+            color: var(--accent-red);
+        }
+
+        /* API Key Section */
+        .api-key-section {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .api-key-toggle {
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .api-key-toggle:hover { background: var(--bg-card); }
+
+        .toggle-icon {
+            font-size: 1rem;
+            color: var(--text-muted);
+        }
+
+        .api-key-content {
+            display: none;
+            padding: 0 16px 16px;
+        }
+
+        .api-key-content.expanded { display: block; }
+
+        /* Buttons */
+        .btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-teal) 0%, var(--accent-teal-dim) 100%);
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(13, 148, 136, 0.3);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-medium);
+        }
+
+        .btn-secondary:hover { border-color: var(--accent-teal); color: var(--accent-teal); }
+
+        .button-row {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        /* Error Display */
+        .error {
+            display: none;
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 20px;
+            color: #fca5a5;
+        }
+
+        .error.visible { display: block; }
+
+        /* ================================
+           PROCESSING INDICATOR (Compact)
+           ================================ */
+        .processing-indicator {
+            display: none;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--accent-teal);
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin-top: 20px;
+        }
+
+        .processing-indicator.visible { display: block; }
+
+        .processing-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .processing-icon {
+            width: 32px;
+            height: 32px;
+            border: 2px solid var(--border-medium);
+            border-top-color: var(--accent-teal);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            flex-shrink: 0;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .processing-text {
+            flex: 1;
+        }
+
+        .processing-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .processing-status {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+        }
+
+        .processing-timer {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .timer-block {
+            background: var(--bg-input);
+            border: 1px solid var(--border-medium);
+            border-radius: 4px;
+            padding: 6px 10px;
+            text-align: center;
+            min-width: 45px;
+        }
+
+        .timer-value {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--accent-teal);
+        }
+
+        .timer-label {
+            font-size: 0.6rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .progress-bar {
+            height: 3px;
+            background: var(--border-medium);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-top: 12px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-teal), var(--accent-cyan));
+            transition: width 0.3s ease;
+        }
+
+        /* ================================
+           RESULTS SECTION
+           ================================ */
+        .results-section {
+            display: none;
+        }
+
+        .results-section.visible { display: block; }
+
+        /* Score Panel */
+        .score-panel {
+            background: var(--bg-card);
+            border: 1px solid var(--accent-teal);
+            border-radius: 12px;
+            padding: 32px;
+            margin-bottom: 24px;
+        }
+
+        .score-header { margin-bottom: 24px; }
+
+        .claim-display {
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .claim-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .claim-text {
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        /* Score Grid */
+        .score-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        @media (max-width: 768px) {
+            .score-grid { grid-template-columns: 1fr; gap: 8px; }
+        }
+
+        .score-card {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            padding: 12px 16px;
+            text-align: center;
+        }
+
+        .score-card.reality { border-top: 3px solid var(--accent-green); }
+        .score-card.integrity { border-top: 3px solid var(--accent-purple); }
+
+        .score-label {
+            font-size: 0.65rem;
+            color: var(--text-primary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+        }
+
+        .score-value {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 2px;
+            line-height: 1;
+        }
+
+        .score-value.positive { color: var(--score-positive); }
+        .score-value.negative { color: var(--score-negative); }
+        .score-value.neutral { color: var(--score-neutral); }
+
+        .score-descriptor {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+        }
+
+        .score-brief {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid var(--border-subtle);
+            line-height: 1.4;
+            font-style: italic;
+        }
+
+        /* Score Bar */
+        .score-bar-container {
+            padding-top: 4px;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .score-bar {
+            height: 3px;
+            border-radius: 2px;
+            position: relative;
+            overflow: visible;
+        }
+
+        .score-bar.reality {
+            background: linear-gradient(90deg, #7f1d1d 0%, #b91c1c 20%, #f59e0b 50%, #22c55e 80%, #15803d 100%);
+        }
+
+        .score-bar.integrity {
+            background: linear-gradient(90deg, #134e4a 0%, #0d9488 35%, #5eead4 65%, #ccfbf1 100%);
+        }
+
+        .score-marker {
+            position: absolute;
+            top: -3px;
+            width: 9px;
+            height: 9px;
+            background: white;
+            border: 2px solid var(--bg-primary);
+            border-radius: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        }
+
+        .score-bar-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.55rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        /* Integrity Sub-bars */
+        .integrity-sub-bars {
+            margin-top: 6px;
+            padding-top: 4px;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .integrity-sub-bar {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-bottom: 1px;
+        }
+
+        .integrity-sub-bar:last-child { margin-bottom: 0; }
+
+        .sub-bar-label {
+            font-size: 0.5rem;
+            color: var(--text-muted);
+            width: 62px;
+            flex-shrink: 0;
+            text-align: right;
+        }
+
+        .sub-bar-track {
+            flex: 1;
+            height: 2px;
+            background: var(--border-medium);
+            border-radius: 1px;
+            position: relative;
+        }
+
+        .sub-bar-fill {
+            height: 100%;
+            border-radius: 1px;
+            position: absolute;
+            left: 50%;
+            transition: width 0.3s ease;
+        }
+
+        .sub-bar-fill.positive {
+            background: var(--accent-green);
+        }
+
+        .sub-bar-fill.negative {
+            background: var(--accent-red);
+            transform: scaleX(-1);
+            transform-origin: left center;
+        }
+
+        .sub-bar-value {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.5rem;
+            color: var(--text-secondary);
+            width: 28px;
+            text-align: left;
+            flex-shrink: 0;
+        }
+
+        /* ================================
+           ASSESSMENT DETAILS (Two-Column Layout)
+           ================================ */
+        .assessment-content {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+
+        .assessment-header {
+            background: var(--bg-tertiary);
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border-subtle);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .assessment-header h3 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        /* Two-column grid */
+        .two-column-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+        }
+
+        /* Mobile: Enable horizontal scrolling for two-column layout */
+        @media (max-width: 768px) {
+            .two-column-grid {
+                display: flex;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                scroll-snap-type: x mandatory;
+            }
+            
+            .two-column-grid > .column-left,
+            .two-column-grid > .column-right {
+                flex: 0 0 100%;
+                min-width: 100%;
+                scroll-snap-align: start;
+            }
+            
+            .two-column-grid > .column-left {
+                border-right: none;
+                border-bottom: 2px solid var(--accent-blue);
+            }
+            
+            /* Scroll indicator hint */
+            .two-column-grid::after {
+                content: '';
+                flex: 0 0 1px;
+            }
+        }
+        
+        /* Add a swipe hint for mobile users */
+        .scroll-hint {
+            display: none;
+            text-align: center;
+            padding: 8px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            background: rgba(20, 28, 40, 0.6);
+            border-bottom: 1px solid var(--border-subtle);
+        }
+        
+        @media (max-width: 768px) {
+            .scroll-hint {
+                display: block;
+            }
+        }
+
+        .column-left {
+            border-right: 1px solid var(--border-subtle);
+        }
+
+        /* Collapsible Sections */
+        .collapsible-section {
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .collapsible-section:last-child { border-bottom: none; }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 16px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+            user-select: none;
+            background: rgba(20, 28, 40, 0.4);
+        }
+
+        .section-header:hover { background: rgba(30, 41, 59, 0.5); }
+
+        .section-header .button-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* Toggle button with 3D effect - on left */
+        .section-toggle {
+            width: 26px;
+            height: 26px;
+            background: linear-gradient(180deg, #3a4555 0%, #2a3342 100%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            color: var(--text-secondary);
+            font-size: 1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            flex-shrink: 0;
+            box-shadow: 
+                0 2px 0 rgba(0, 0, 0, 0.3),
+                0 3px 5px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            border-bottom: 2px solid rgba(0, 0, 0, 0.4);
+        }
+
+        .section-toggle:hover {
+            background: linear-gradient(180deg, #4a5565 0%, #3a4555 100%);
+        }
+
+        .section-toggle:active {
+            box-shadow: 
+                0 1px 0 rgba(0, 0, 0, 0.3),
+                inset 0 1px 3px rgba(0, 0, 0, 0.3);
+            transform: translateY(1px);
+        }
+
+        /* Base button style - fixed width, uniform height */
+        .section-header h4 {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: 5px;
+            margin: 0;
+            width: 230px;
+            height: 52px;
+            text-align: center;
+            line-height: 1.25;
+            box-shadow: 
+                0 2px 0 rgba(0, 0, 0, 0.3),
+                0 4px 6px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.15),
+                inset 0 -2px 4px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-bottom: 2px solid rgba(0, 0, 0, 0.3);
+        }
+
+        /* SUPER MUTED COLOR PALETTE with 3D gradients */
+        .section-header.reality h4 { 
+            background: linear-gradient(180deg, rgba(85, 115, 175, 0.55) 0%, rgba(55, 80, 140, 0.55) 100%);
+        }
+        .section-header.integrity h4 { 
+            background: linear-gradient(180deg, rgba(115, 95, 165, 0.55) 0%, rgba(80, 60, 130, 0.55) 100%);
+        }
+        .section-header.truth h4 { 
+            background: linear-gradient(180deg, rgba(20, 140, 115, 0.55) 0%, rgba(12, 95, 80, 0.55) 100%);
+        }
+        .section-header.claims h4 { 
+            background: linear-gradient(180deg, rgba(200, 145, 70, 0.5) 0%, rgba(150, 105, 45, 0.5) 100%);
+        }
+        .section-header.framework h4 { 
+            background: linear-gradient(180deg, rgba(170, 95, 135, 0.5) 0%, rgba(125, 65, 100, 0.5) 100%);
+        }
+        .section-header.distortion h4 { 
+            background: linear-gradient(180deg, rgba(180, 85, 85, 0.55) 0%, rgba(135, 55, 55, 0.55) 100%);
+        }
+        .section-header.evidence h4 { 
+            background: linear-gradient(180deg, rgba(75, 145, 165, 0.5) 0%, rgba(50, 110, 130, 0.5) 100%);
+        }
+        .section-header.confident h4 { 
+            background: linear-gradient(180deg, rgba(20, 140, 115, 0.55) 0%, rgba(12, 95, 80, 0.55) 100%);
+        }
+        .section-header.uncertain h4 { 
+            background: linear-gradient(180deg, rgba(200, 155, 60, 0.5) 0%, rgba(150, 115, 35, 0.5) 100%);
+        }
+        .section-header.lessons h4 { 
+            background: linear-gradient(180deg, rgba(95, 105, 175, 0.55) 0%, rgba(65, 72, 140, 0.55) 100%);
+        }
+        .section-header.methodology h4 { 
+            background: linear-gradient(180deg, rgba(115, 125, 135, 0.6) 0%, rgba(80, 90, 100, 0.6) 100%);
+        }
+        .section-header.sources h4 { 
+            background: linear-gradient(180deg, rgba(115, 95, 165, 0.55) 0%, rgba(80, 60, 130, 0.55) 100%);
+        }
+
+        .section-content {
+            display: none;
+            padding: 16px 20px;
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border-subtle);
+            max-width: 100%;
+            overflow-x: auto;
+        }
+
+        .section-content.expanded { display: block; }
+
+        .section-content p {
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+            line-height: 1.7;
+        }
+
+        .section-content p:last-child { margin-bottom: 0; }
+
+        .section-content strong { color: var(--text-primary); }
+
+        .section-content ul, .section-content ol {
+            margin-left: 20px;
+            color: var(--text-secondary);
+        }
+
+        .section-content li { margin-bottom: 8px; }
+
+        /* Calculation Box */
+        .calculation-box {
+            margin-top: 16px;
+            padding: 12px 16px;
+            background: var(--bg-input);
+            border: 1px solid var(--accent-teal);
+            border-radius: 6px;
+            text-align: center;
+            font-family: 'IBM Plex Mono', monospace;
+        }
+
+        /* Integrity Dimensions - child buttons with same 3D styling */
+        .integrity-children {
+            padding: 12px 16px 16px 16px;
+            background: rgba(15, 20, 30, 0.5);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .integrity-dimension {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+        }
+
+        .integrity-dimension .child-toggle {
+            width: 22px;
+            height: 22px;
+            background: linear-gradient(180deg, #3a4555 0%, #2a3342 100%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            flex-shrink: 0;
+            box-shadow: 
+                0 2px 0 rgba(0, 0, 0, 0.3),
+                0 2px 4px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            border-bottom: 2px solid rgba(0, 0, 0, 0.4);
+        }
+
+        .integrity-dimension .child-toggle:hover {
+            background: linear-gradient(180deg, #4a5565 0%, #3a4555 100%);
+        }
+
+        .dimension-title {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 6px 10px;
+            border-radius: 4px;
+            margin: 0;
+            width: 200px;
+            height: 42px;
+            text-align: center;
+            box-shadow: 
+                0 2px 0 rgba(0, 0, 0, 0.3),
+                0 3px 5px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.15),
+                inset 0 -2px 4px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-bottom: 2px solid rgba(0, 0, 0, 0.3);
+            background: linear-gradient(180deg, rgba(100, 85, 145, 0.5) 0%, rgba(70, 55, 115, 0.5) 100%);
+        }
+
+        .dim-score {
+            font-family: 'IBM Plex Mono', monospace;
+            color: var(--score-positive);
+            font-weight: 700;
+        }
+
+        .dimension-content {
+            display: none;
+            padding: 12px 16px;
+            background: rgba(0,0,0,0.15);
+            margin-top: 8px;
+            border-radius: 6px;
+        }
+
+        .dimension-content.expanded {
+            display: block;
+        }
+
+        .dimension-desc {
+            font-style: italic;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+            font-size: 0.85rem;
+        }
+
+        /* Integrity Table */
+        .integrity-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 12px 0;
+            font-size: 0.9rem;
+        }
+
+        .integrity-table th, .integrity-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .integrity-table th {
+            color: var(--text-muted);
+            font-weight: 500;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+        }
+
+        .integrity-table td { color: var(--text-secondary); }
+
+        .check-yes { color: var(--score-positive); font-weight: 600; }
+        .check-no { color: var(--text-muted); font-weight: 600; }
+        .check-partial { color: var(--accent-amber); font-weight: 600; }
+
+        .integrity-calculation {
+            margin-top: 20px;
+            padding: 16px;
+            background: var(--bg-input);
+            border-radius: 6px;
+            border: 1px solid var(--accent-purple);
+            text-align: center;
+            font-family: 'IBM Plex Mono', monospace;
+        }
+
+        /* ================================
+           FURTHER ANALYSIS (Amplify/Verify)
+           ================================ */
+        .options-panel {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .options-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .options-header h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        @media (max-width: 768px) {
+            .options-grid { grid-template-columns: 1fr; }
+        }
+
+        .option-card {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-subtle);
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .option-card h4 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .option-card p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+
+        .btn-amplify {
+            width: 100%;
+            background: linear-gradient(135deg, var(--accent-purple) 0%, #6d28d9 100%);
+            color: white;
+        }
+
+        .btn-verify {
+            width: 100%;
+            background: linear-gradient(135deg, var(--accent-green) 0%, #059669 100%);
+            color: white;
+        }
+
+        .btn-amplify:disabled, .btn-verify:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* Cooldown Timer - Muted Gold */
+        .cooldown-notice {
+            display: none;
+            background: linear-gradient(135deg, rgba(180, 140, 60, 0.08) 0%, rgba(140, 100, 40, 0.12) 100%);
+            border: 1px solid rgba(180, 140, 60, 0.4);
+            border-radius: 8px;
+            padding: 12px 20px;
+            margin-top: 16px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 220, 150, 0.05);
+        }
+
+        .cooldown-notice.visible { display: flex; align-items: center; justify-content: center; gap: 12px; }
+
+        .cooldown-notice p {
+            color: rgba(220, 180, 100, 0.8);
+            font-size: 0.85rem;
+            margin: 0;
+        }
+
+        .cooldown-timer {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: rgba(220, 180, 100, 0.95);
+            text-shadow: 0 0 10px rgba(220, 180, 100, 0.3);
+            letter-spacing: 2px;
+        }
+
+        .cooldown-label {
+            font-size: 0.7rem;
+            color: rgba(180, 140, 60, 0.7);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Amplify Modal */
+        .amplify-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 1000;
+            overflow-y: auto;
+            padding: 40px 20px;
+        }
+
+        .amplify-modal-overlay.visible { display: block; }
+
+        .amplify-modal {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--bg-card);
+            border: 1px solid var(--accent-purple);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(139, 92, 246, 0.3);
+        }
+
+        .amplify-modal-header {
+            background: linear-gradient(135deg, var(--accent-purple) 0%, #6d28d9 100%);
+            padding: 20px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .amplify-modal-header h2 {
+            color: white;
+            font-size: 1.25rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .amplify-modal-close {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            font-size: 1.25rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+
+        .amplify-modal-close:hover { background: rgba(255, 255, 255, 0.3); }
+
+        .amplify-modal-body {
+            padding: 24px;
+        }
+
+        .amplify-summary {
+            background: var(--bg-tertiary);
+            border-left: 4px solid var(--accent-purple);
+            padding: 16px 20px;
+            margin-bottom: 24px;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .amplify-summary h3 {
+            color: var(--accent-purple);
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .amplify-summary p {
+            color: var(--text-primary);
+            line-height: 1.7;
+        }
+
+        .amplify-confidence {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .confidence-card {
+            flex: 1;
+            min-width: 200px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-medium);
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .confidence-card.up { border-color: var(--accent-green); }
+        .confidence-card.down { border-color: var(--accent-red); }
+        .confidence-card.unchanged { border-color: var(--accent-amber); }
+
+        .confidence-direction {
+            font-size: 2rem;
+            margin-bottom: 4px;
+        }
+
+        .confidence-card.up .confidence-direction { color: var(--accent-green); }
+        .confidence-card.down .confidence-direction { color: var(--accent-red); }
+        .confidence-card.unchanged .confidence-direction { color: var(--accent-amber); }
+
+        .confidence-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .confidence-value {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-top: 4px;
+        }
+
+        .confidence-reason {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 8px;
+            font-style: italic;
+        }
+
+        /* Amplify Sections */
+        .amplify-sections {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .amplify-section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            padding: 4px 0;
+        }
+
+        .amplify-section-toggle {
+            width: 26px;
+            height: 26px;
+            background: linear-gradient(180deg, rgba(139, 92, 246, 0.4) 0%, rgba(109, 40, 217, 0.4) 100%);
+            border: 1px solid rgba(139, 92, 246, 0.5);
+            border-radius: 5px;
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            box-shadow: 
+                0 2px 0 rgba(0, 0, 0, 0.3),
+                0 3px 5px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            border-bottom: 2px solid rgba(0, 0, 0, 0.4);
+        }
+
+        .amplify-section-toggle:hover {
+            background: linear-gradient(180deg, rgba(139, 92, 246, 0.6) 0%, rgba(109, 40, 217, 0.6) 100%);
+        }
+
+        .amplify-section-title {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: 5px;
+            width: 250px;
+            height: 52px;
+            text-align: center;
+            line-height: 1.25;
+            box-shadow: 
+                0 2px 0 rgba(0, 0, 0, 0.3),
+                0 4px 6px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.15),
+                inset 0 -2px 4px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-bottom: 2px solid rgba(0, 0, 0, 0.3);
+        }
+
+        /* Amplify section color variations */
+        .amplify-section-title.challenges { 
+            background: linear-gradient(180deg, rgba(220, 100, 100, 0.5) 0%, rgba(170, 60, 60, 0.5) 100%);
+        }
+        .amplify-section-title.alternatives { 
+            background: linear-gradient(180deg, rgba(100, 160, 200, 0.5) 0%, rgba(60, 120, 160, 0.5) 100%);
+        }
+        .amplify-section-title.blindspots { 
+            background: linear-gradient(180deg, rgba(200, 160, 80, 0.5) 0%, rgba(160, 120, 50, 0.5) 100%);
+        }
+        .amplify-section-title.stresstests { 
+            background: linear-gradient(180deg, rgba(180, 100, 180, 0.5) 0%, rgba(140, 60, 140, 0.5) 100%);
+        }
+        .amplify-section-title.changes { 
+            background: linear-gradient(180deg, rgba(100, 180, 140, 0.5) 0%, rgba(60, 140, 100, 0.5) 100%);
+        }
+        .amplify-section-title.bottomline { 
+            background: linear-gradient(180deg, rgba(139, 92, 246, 0.55) 0%, rgba(109, 40, 217, 0.55) 100%);
+        }
+
+        .amplify-section-content {
+            display: none;
+            padding: 16px 20px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-subtle);
+            border-radius: 0 0 8px 8px;
+            margin-top: -4px;
+            margin-left: 38px;
+        }
+
+        .amplify-section-content.expanded { display: block; }
+
+        .amplify-section-content ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .amplify-section-content li {
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .amplify-section-content li:last-child { border-bottom: none; }
+
+        .amplify-section-content li::before {
+            content: '→';
+            color: var(--accent-purple);
+            margin-right: 10px;
+        }
+
+        .amplify-bottomline-text {
+            font-size: 1rem;
+            color: var(--text-primary);
+            line-height: 1.8;
+        }
+
+        /* Amplify Processing */
+        .amplify-processing {
+            display: none;
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .amplify-processing.visible { display: block; }
+
+        .amplify-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid var(--border-medium);
+            border-top-color: var(--accent-purple);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .amplify-processing p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .amplify-processing .gathering-label {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--accent-purple);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .amplify-processing .timer {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 1.5rem;
+            color: var(--accent-purple);
+            margin-top: 12px;
+        }
+
+        /* ================================
+           VERIFY MODAL STYLES
+           ================================ */
+        .verify-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 1000;
+            overflow-y: auto;
+            padding: 40px 20px;
+        }
+
+        .verify-modal-overlay.visible { display: block; }
+
+        .verify-modal {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: var(--bg-card);
+            border: 1px solid var(--accent-green);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(16, 185, 129, 0.3);
+        }
+
+        .verify-modal-header {
+            background: linear-gradient(135deg, var(--accent-green) 0%, #059669 100%);
+            padding: 20px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .verify-modal-header h2 {
+            color: white;
+            font-size: 1.25rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .verify-modal-close {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            font-size: 1.25rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+
+        .verify-modal-close:hover { background: rgba(255, 255, 255, 0.3); }
+
+        .verify-modal-body {
+            padding: 24px;
+        }
+
+        /* Verify Processing */
+        .verify-processing {
+            display: none;
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .verify-processing.visible { display: block; }
+
+        .verify-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid var(--border-medium);
+            border-top-color: var(--accent-green);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        .verify-processing p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .verify-processing .gathering-label {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--accent-green);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .verify-processing .timer {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 1.5rem;
+            color: var(--accent-green);
+            margin-top: 12px;
+        }
+
+        /* Side-by-Side Comparison */
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+
+        @media (max-width: 768px) {
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .comparison-card {
+            background: var(--bg-secondary);
+            border: 2px solid var(--border-medium);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .comparison-card.initial {
+            border-color: var(--accent-teal);
+        }
+
+        .comparison-card.verification {
+            border-color: var(--accent-green);
+        }
+
+        .comparison-card-header {
+            padding: 12px 16px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .comparison-card.initial .comparison-card-header {
+            background: linear-gradient(135deg, rgba(13, 148, 136, 0.3) 0%, rgba(13, 148, 136, 0.1) 100%);
+            color: var(--accent-teal);
+        }
+
+        .comparison-card.verification .comparison-card-header {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.3) 0%, rgba(16, 185, 129, 0.1) 100%);
+            color: var(--accent-green);
+        }
+
+        .comparison-card-body {
+            padding: 16px;
+        }
+
+        .comparison-score-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .comparison-score-row:last-child {
+            border-bottom: none;
+        }
+
+        .comparison-score-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .comparison-score-value {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        .comparison-score-value.positive { color: var(--score-positive); }
+        .comparison-score-value.negative { color: var(--score-negative); }
+        .comparison-score-value.neutral { color: var(--score-neutral); }
+
+        /* Alignment Status */
+        .alignment-status {
+            text-align: center;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+        }
+
+        .alignment-status.aligned {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(16, 185, 129, 0.05) 100%);
+            border: 1px solid var(--accent-green);
+        }
+
+        .alignment-status.divergent {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(245, 158, 11, 0.05) 100%);
+            border: 1px solid var(--accent-amber);
+        }
+
+        .alignment-status h3 {
+            font-size: 1.1rem;
+            margin-bottom: 4px;
+        }
+
+        .alignment-status.aligned h3 { color: var(--accent-green); }
+        .alignment-status.divergent h3 { color: var(--accent-amber); }
+
+        .alignment-status p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        /* Consensus Section */
+        .consensus-section {
+            display: none;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--accent-amber);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .consensus-section.visible { display: block; }
+
+        .consensus-section h3 {
+            color: var(--accent-amber);
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .consensus-section p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 16px;
+            line-height: 1.6;
+        }
+
+        .btn-consensus {
+            background: linear-gradient(135deg, var(--accent-amber) 0%, #d97706 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-consensus:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+        }
+
+        .btn-consensus:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Adjudication Results */
+        .adjudication-results {
+            display: none;
+            margin-top: 24px;
+        }
+
+        .adjudication-results.visible { display: block; }
+
+        .adjudication-header {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(139, 92, 246, 0.05) 100%);
+            border: 1px solid var(--accent-purple);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .adjudication-header h3 {
+            color: var(--accent-purple);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+
+        .final-scores {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-bottom: 16px;
+        }
+
+        .final-score-item {
+            text-align: center;
+        }
+
+        .final-score-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .final-score-value {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .adjudication-justification {
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 16px;
+        }
+
+        .adjudication-justification h4 {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .adjudication-justification p {
+            color: var(--text-primary);
+            line-height: 1.7;
+        }
+
+        .winner-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 8px;
+        }
+
+        .winner-badge.initial {
+            background: var(--accent-teal);
+            color: white;
+        }
+
+        .winner-badge.verification {
+            background: var(--accent-green);
+            color: white;
+        }
+
+        /* Side-by-Side Full Comparison Modal */
+        .compare-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 1100;
+            overflow: hidden;
+        }
+
+        .compare-modal-overlay.visible { display: flex; }
+
+        .compare-modal {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .compare-modal-header {
+            background: linear-gradient(135deg, var(--accent-purple) 0%, #6d28d9 100%);
+            padding: 12px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .compare-modal-header h2 {
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .compare-modal-close {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            font-size: 1.25rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+
+        .compare-modal-close:hover { background: rgba(255, 255, 255, 0.3); }
+
+        .compare-modal-body {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+
+        .compare-column {
+            flex: 1 1 50%;
+            max-width: 50%;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border-right: 2px solid var(--border-medium);
+            align-items: stretch;
+        }
+
+        .compare-column:last-child {
+            border-right: none;
+        }
+
+        .compare-column-header {
+            padding: 12px 16px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            flex-shrink: 0;
+        }
+
+        .compare-column.initial .compare-column-header {
+            background: linear-gradient(135deg, rgba(20, 184, 166, 0.3) 0%, rgba(20, 184, 166, 0.1) 100%);
+            color: var(--accent-teal);
+            border-bottom: 2px solid var(--accent-teal);
+        }
+
+        .compare-column.verification .compare-column-header {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.3) 0%, rgba(16, 185, 129, 0.1) 100%);
+            color: var(--accent-green);
+            border-bottom: 2px solid var(--accent-green);
+        }
+
+        .compare-column-scores {
+            display: flex;
+            justify-content: flex-start;
+            gap: 24px;
+            padding: 12px 16px;
+            background: var(--bg-tertiary);
+            border-bottom: 1px solid var(--border-subtle);
+            flex-shrink: 0;
+        }
+
+        .compare-score-item {
+            text-align: left;
+        }
+
+        .compare-score-label {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .compare-score-value {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .compare-column-content {
+            flex: 1;
+            overflow-y: auto;
+            background: var(--bg-card);
+        }
+
+        /* Comparison sections within each column */
+        .compare-section {
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .compare-section:last-child {
+            border-bottom: none;
+        }
+
+        .compare-section-header {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 10px 16px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+            user-select: none;
+            background: rgba(20, 28, 40, 0.4);
+            gap: 10px;
+        }
+
+        .compare-section-header:hover { background: rgba(30, 41, 59, 0.5); }
+
+        .compare-section-header h4 {
+            font-size: 0.8rem;
+            color: var(--text-primary);
+            margin: 0;
+        }
+
+        .compare-section-toggle {
+            width: 22px;
+            height: 22px;
+            background: linear-gradient(180deg, #3a4555 0%, #2a3342 100%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .compare-section-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            background: var(--bg-secondary);
+        }
+
+        .compare-section-content.expanded {
+            max-height: 2000px;
+        }
+
+        .compare-section-content-inner {
+            padding: 16px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            text-align: left;
+        }
+
+        /* Button to open comparison */
+        .btn-compare {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, var(--accent-purple) 0%, #6d28d9 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 16px;
+        }
+
+        .btn-compare:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+        }
+
+        /* Mobile: Stack columns vertically */
+        @media (max-width: 900px) {
+            .compare-modal-body {
+                flex-direction: column;
+            }
+            
+            .compare-column {
+                flex: 1 1 100%;
+                max-width: 100%;
+                border-right: none;
+                border-bottom: 2px solid var(--border-medium);
+                max-height: 50%;
+            }
+            
+            .compare-column:last-child {
+                border-bottom: none;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container { padding: 16px; }
+            .score-panel { padding: 20px; }
+            .countdown-container { flex-wrap: wrap; }
+        }
+
+        /* ================================
+           THE PLAIN TRUTH - Comedy Corner Integration
+           Warm, compassionate explanation section
+           ================================ */
+        .plain-truth-section {
+            background: linear-gradient(135deg, rgba(139, 115, 85, 0.15) 0%, rgba(196, 167, 125, 0.08) 100%);
+            border: 1px solid rgba(139, 115, 85, 0.3);
+            border-radius: 12px;
+            margin: 16px;
+            overflow: hidden;
+        }
+
+        .plain-truth-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 20px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+            user-select: none;
+            background: rgba(139, 115, 85, 0.2);
+            gap: 12px;
+        }
+
+        .plain-truth-header:hover {
+            background: rgba(139, 115, 85, 0.3);
+        }
+
+        .plain-truth-toggle {
+            width: 28px;
+            height: 28px;
+            background: linear-gradient(180deg, #8B7355 0%, #6B5544 100%);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            color: #FDF5E6;
+            font-size: 1.1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            flex-shrink: 0;
+            box-shadow: 
+                0 2px 0 rgba(0, 0, 0, 0.3),
+                0 3px 5px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+
+        .plain-truth-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #C4A77D;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 16px;
+            background: linear-gradient(180deg, rgba(139, 115, 85, 0.6) 0%, rgba(107, 85, 68, 0.6) 100%);
+            border-radius: 6px;
+            box-shadow: 
+                0 2px 0 rgba(0, 0, 0, 0.3),
+                0 4px 6px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        .plain-truth-content {
+            display: block;
+            padding: 24px;
+            background: rgba(253, 245, 230, 0.03);
+            border-top: 1px solid rgba(139, 115, 85, 0.2);
+        }
+
+        .plain-truth-content.collapsed {
+            display: none;
+        }
+
+        .plain-truth-intro {
+            font-size: 0.95rem;
+            color: #C4A77D;
+            font-style: italic;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid rgba(139, 115, 85, 0.2);
+        }
+
+        .plain-truth-box {
+            background: rgba(139, 115, 85, 0.1);
+            border-left: 4px solid #8B7355;
+            border-radius: 0 8px 8px 0;
+            padding: 16px 20px;
+            margin-bottom: 20px;
+        }
+
+        .plain-truth-box h4 {
+            color: #C4A77D;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .plain-truth-box p {
+            color: var(--text-secondary);
+            line-height: 1.7;
+            margin-bottom: 12px;
+        }
+
+        .plain-truth-box p:last-child {
+            margin-bottom: 0;
+        }
+
+        .plain-truth-box ul {
+            margin-left: 20px;
+            color: var(--text-secondary);
+        }
+
+        .plain-truth-box li {
+            margin-bottom: 8px;
+            line-height: 1.6;
+        }
+
+        .plain-truth-confession {
+            background: rgba(255, 107, 107, 0.1);
+            border-left: 4px solid #FF6B6B;
+            border-radius: 0 8px 8px 0;
+            padding: 14px 18px;
+            margin: 16px 0;
+            font-style: italic;
+            color: var(--text-secondary);
+        }
+
+        .plain-truth-empowerment {
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 4px solid var(--accent-green);
+            border-radius: 0 8px 8px 0;
+            padding: 16px 20px;
+            margin-top: 20px;
+        }
+
+        .plain-truth-empowerment h4 {
+            color: var(--accent-green);
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .plain-truth-empowerment p {
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        .score-context {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .score-context-item {
+            background: rgba(139, 115, 85, 0.15);
+            border-radius: 8px;
+            padding: 12px 16px;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .score-context-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+        }
+
+        .score-context-value {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #C4A77D;
+        }
+
+        .score-context-meaning {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="site-header">
+        <div class="header-content">
+            <div class="logo-section">
+                <div class="logo-row">
+                    <img src="/veritas-logo-horizontal.png" alt="VERITAS LLC" class="logo-img" onerror="this.style.display='none'; document.getElementById('fallbackLogo').style.display='flex';">
+                    <div id="fallbackLogo" class="logo-fallback" style="display: none;">
+                        <div class="logo-mark">V</div>
+                        <div class="logo-text">VERITAS</div>
+                    </div>
+                </div>
+                <div class="tagline">Truth Through Transparency</div>
+            </div>
+            <div class="version-badge">v4.2 — Track A</div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Input Card -->
+        <div class="card" id="inputCard">
+            <div class="card-header">
+                <div class="card-header-icon">📝</div>
+                <div>
+                    <div class="card-title">Claim Assessment</div>
+                    <div class="card-subtitle">Enter a claim or question to evaluate</div>
+                </div>
+            </div>
+
+            <div class="card-body">
+                <div class="error" id="errorBox"></div>
+
+                <div class="form-group">
+                    <label class="form-label">Claim or Question</label>
+                    <textarea id="question" class="form-input" maxlength="600" placeholder="Enter the claim you want to assess...
+
+Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateCharCounter()"></textarea>
+                    <div class="char-counter" id="charCounter">0 / 280 characters</div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="articleUrl">URL to Analyze (Optional)</label>
+                    <input type="url" id="articleUrl" name="articleUrl" class="form-input" placeholder="https://example.com/article-to-assess" autocomplete="off">
+                    <div class="field-hint">VERITAS will fetch and analyze the content at this URL</div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="articleText">Article Text (Optional)</label>
+                    <textarea id="articleText" name="articleText" class="form-input" placeholder="Or paste article text directly here..."></textarea>
+                </div>
+
+                <!-- API Key Section (Collapsible) -->
+                <div class="api-key-section">
+                    <div class="api-key-toggle" onclick="toggleApiKey()">
+                        <span>🔑 Use Your Own API Key</span>
+                        <span class="toggle-icon" id="apiKeyToggleIcon">+</span>
+                    </div>
+                    <div class="api-key-content" id="apiKeyContent">
+                        <label class="form-label" for="apiKey">API Key</label>
+                        <input type="password" id="apiKey" name="apiKey" class="form-input" placeholder="sk-ant-api..." autocomplete="off">
+                        <div class="field-hint">Your key is never stored. Get one at <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a></div>
+                    </div>
+                </div>
+
+                <!-- Usage Counter -->
+                <div class="usage-counter" id="usageCounter">
+                    <span class="usage-icon">🎟️</span>
+                    <span class="usage-text">Free assessments remaining today: <strong id="remainingCount">5</strong>/5</span>
+                </div>
+
+                <div class="button-row">
+                    <button class="btn btn-primary" id="assessBtn" onclick="runAssessment()">
+                        <span>⚡</span> Run Assessment
+                    </button>
+                    <button class="btn btn-secondary" onclick="clearForm()">Clear</button>
+                </div>
+
+                <!-- Processing Indicator (compact, inside card) -->
+                <div class="processing-indicator" id="processingIndicator">
+                    <div class="processing-row">
+                        <div class="processing-icon"></div>
+                        <div class="processing-text">
+                            <div class="processing-title">Assessment in Progress</div>
+                            <div class="processing-status">Searching sources and analyzing evidence...</div>
+                        </div>
+                        <div class="processing-timer">
+                            <div class="timer-block">
+                                <div class="timer-value" id="timerMin">00</div>
+                                <div class="timer-label">Min</div>
+                            </div>
+                            <div class="timer-block">
+                                <div class="timer-value" id="timerSec">00</div>
+                                <div class="timer-label">Sec</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill" style="width: 0%;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div class="results-section" id="resultsSection">
+            <!-- Score Panel -->
+            <div class="score-panel">
+                <div class="score-header">
+                    <div class="claim-display">
+                        <div class="claim-label">Claim Assessed</div>
+                        <div class="claim-text" id="claimText">—</div>
+                    </div>
+                </div>
+
+                <div class="score-grid">
+                    <div class="score-card reality">
+                        <div class="score-label">Reality Score</div>
+                        <div class="score-value" id="realityScoreValue">—</div>
+                        <div class="score-descriptor" id="realityDescriptor">—</div>
+                        <div class="score-bar-container">
+                            <div class="score-bar reality">
+                                <div class="score-marker" id="realityMarker" style="left: 50%;"></div>
+                            </div>
+                            <div class="score-bar-labels">
+                                <span>-10</span>
+                                <span>0</span>
+                                <span>+10</span>
+                            </div>
+                        </div>
+                        <div class="score-brief">How well does this claim align with verifiable reality? (-10 = demonstrably false, +10 = demonstrably true)</div>
+                    </div>
+                    
+                    <div class="score-card integrity">
+                        <div class="score-label">Integrity Score</div>
+                        <div class="score-value" id="integrityScoreValue">—</div>
+                        <div class="score-descriptor" id="integrityDescriptor">—</div>
+                        <div class="score-bar-container">
+                            <div class="score-bar integrity">
+                                <div class="score-marker" id="integrityMarker" style="left: 50%;"></div>
+                            </div>
+                            <div class="score-bar-labels">
+                                <span>-1.0</span>
+                                <span>0</span>
+                                <span>+1.0</span>
+                            </div>
+                        </div>
+                        <!-- Integrity Sub-bars -->
+                        <div class="integrity-sub-bars" id="integritySubBars">
+                            <div class="integrity-sub-bar">
+                                <span class="sub-bar-label">Observable</span>
+                                <div class="sub-bar-track">
+                                    <div class="sub-bar-fill positive" id="observableFill" style="width: 0%;"></div>
+                                </div>
+                                <span class="sub-bar-value" id="observableValue">—</span>
+                            </div>
+                            <div class="integrity-sub-bar">
+                                <span class="sub-bar-label">Comparative</span>
+                                <div class="sub-bar-track">
+                                    <div class="sub-bar-fill positive" id="comparativeFill" style="width: 0%;"></div>
+                                </div>
+                                <span class="sub-bar-value" id="comparativeValue">—</span>
+                            </div>
+                            <div class="integrity-sub-bar">
+                                <span class="sub-bar-label">Bias</span>
+                                <div class="sub-bar-track">
+                                    <div class="sub-bar-fill positive" id="biasFill" style="width: 0%;"></div>
+                                </div>
+                                <span class="sub-bar-value" id="biasValue">—</span>
+                            </div>
+                        </div>
+                        <div class="score-brief">How honestly is this claim presented? (-1.0 = highly misleading, +1.0 = fully transparent)</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Assessment Content - Two Column Layout -->
+            <div class="assessment-content">
+                <div class="assessment-header">
+                    <span>📋</span>
+                    <h3>Assessment Details</h3>
+                </div>
+
+                <div class="scroll-hint">
+                    👈 Swipe left/right to see all analysis sections 👉
+                </div>
+
+                <!-- THE PLAIN TRUTH - Warm, Human-Centered Explanation -->
+                <div class="plain-truth-section">
+                    <div class="plain-truth-header" onclick="togglePlainTruth()">
+                        <button class="plain-truth-toggle" id="plainTruthToggle">−</button>
+                        <div class="plain-truth-title">
+                            <span>🎭</span> The Plain Truth
+                        </div>
+                    </div>
+                    <div class="plain-truth-content" id="plainTruthContent">
+                        <p class="plain-truth-intro">Here's what this assessment means in plain language—no jargon, no judgment. We're all trying to figure out what's true together.</p>
+                        
+                        <div class="score-context" id="plainTruthScoreContext">
+                            <!-- Populated by JavaScript -->
+                        </div>
+                        
+                        <div class="plain-truth-box" id="plainTruthSummary">
+                            <h4>📖 What We Found</h4>
+                            <p id="plainTruthSummaryText">Loading...</p>
+                        </div>
+                        
+                        <div class="plain-truth-box" id="plainTruthWhyBelievable">
+                            <h4>🧠 Why This Might Feel True (Or False)</h4>
+                            <p id="plainTruthWhyText">Loading...</p>
+                        </div>
+                        
+                        <div class="plain-truth-confession" id="plainTruthConfession">
+                            💭 <span id="plainTruthConfessionText">I've fallen for similar patterns myself. Understanding why doesn't make us immune—it just helps us notice.</span>
+                        </div>
+                        
+                        <div class="plain-truth-box" id="plainTruthPatterns" style="display: none;">
+                            <h4>📚 Historical Pattern</h4>
+                            <p id="plainTruthPatternsText"></p>
+                        </div>
+                        
+                        <div class="plain-truth-empowerment">
+                            <h4>✨ What You Can Do</h4>
+                            <p id="plainTruthEmpowermentText">Now that you've seen the analysis, you're better equipped to evaluate similar claims. The goal isn't to never be fooled—it's to get better at noticing when we might be.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="two-column-grid">
+                    <!-- LEFT COLUMN -->
+                    <div class="column-left">
+                        <!-- Reality Score Breakdown FIRST -->
+                        <div class="collapsible-section">
+                            <div class="section-header reality" onclick="toggleSection('reality')">
+                                <div class="button-group">
+                                    <button class="section-toggle" id="realityToggle">+</button>
+                                    <h4>📊 Reality Score Breakdown</h4>
+                                </div>
+                            </div>
+                            <div class="section-content" id="realityContent">
+                                <p>Loading...</p>
+                            </div>
+                        </div>
+
+                        <div class="collapsible-section">
+                            <div class="section-header truth" onclick="toggleSection('truth')">
+                                <div class="button-group">
+                                    <button class="section-toggle" id="truthToggle">+</button>
+                                    <h4>🔍 The Underlying Reality</h4>
+                                </div>
+                            </div>
+                            <div class="section-content" id="truthContent">
+                                <p>Loading...</p>
+                            </div>
+                        </div>
+
+                        <div class="collapsible-section">
+                            <div class="section-header claims" onclick="toggleSection('claims')">
+                                <div class="button-group">
+                                    <button class="section-toggle" id="claimsToggle">+</button>
+                                    <h4>🎯 Central Claims<br>(Explicit & Hidden)</h4>
+                                </div>
+                            </div>
+                            <div class="section-content" id="claimsContent">
+                                <p>Loading...</p>
+                            </div>
+                        </div>
+
+                        <div class="collapsible-section">
+                            <div class="section-header framework" onclick="toggleSection('framework')">
+                                <div class="button-group">
+                                    <button class="section-toggle" id="frameworkToggle">+</button>
+                                    <h4>🧩 Examining the Framework</h4>
+                                </div>
+                            </div>
+                            <div class="section-content" id="frameworkContent">
+                                <p>Loading...</p>
+                            </div>
+                        </div>
+
+                        <div class="collapsible-section">
+                            <div class="section-header distortion" onclick="toggleSection('distortion')">
+                                <div class="button-group">
+                                    <button class="section-toggle" id="distortionToggle">+</button>
+                                    <h4>⚠️ Truth Distortion Patterns</h4>
+                                </div>
+                            </div>
+                            <div class="section-content" id="distortionContent">
+                                <p>Loading...</p>
+                            </div>
+                        </div>
+
+                        <div class="collapsible-section">
+                            <div class="section-header evidence" onclick="toggleSection('evidence')">
+                                <div class="button-group">
+                                    <button class="section-toggle" id="evidenceToggle">+</button>
+                                    <h4>⚖️ Evidence Analysis</h4>
+                                </div>
+                            </div>
+                            <div class="section-content" id="evidenceContent">
+                                <p>Loading...</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- RIGHT COLUMN -->
+                    <div class="column-right">
+                        <!-- Integrity Score Breakdown FIRST -->
+                        <div class="collapsible-section">
+                            <div class="section-header integrity" onclick="toggleSection('integrity')">
+                                <div class="button-group">
+                                    <button class="section-toggle" id="integrityToggle">+</button>
+                                    <h4>🔬 Integrity Score Breakdown</h4>
+                                </div>
+                            </div>
+                            <div class="section-content" id="integrityContent">
+                                <p>Loading...</p>
+                            </div>
+                        </div>
+
+                        <div class="collapsible-section">
+                            <div class="section-header confident" onclick="toggleSection('confident')">
+                                <div class="button-group">
+                                    <button class="section-toggle" id="confidentToggle">+</button>
+                                    <h4>✓ What We Can Be<br>Confident About</h4>
+                                </div>
+                            </div>
+                            <div class="section-content" id="confidentContent">
+                                <p>Loading...</p>
+                            </div>
+                        </div>
+
+                        <div class="collapsible-section">
+                            <div class="section-header uncertain" onclick="toggleSection('uncertain')">
+                                <div class="button-group">
+                                    <button class="section-toggle" id="uncertainToggle">+</button>
+                                    <h4>❓ What Remains Uncertain</h4>
+                                </div>
+                            </div>
+                            <div class="section-content" id="uncertainContent">
+                                <p>Loading...</p>
+                            </div>
+                        </div>
+
+                        <div class="collapsible-section">
+                            <div class="section-header lessons" onclick="toggleSection('lessons')">
+                                <div class="button-group">
+                                    <button class="section-toggle" id="lessonsToggle">+</button>
+                                    <h4>💡 Lessons for<br>Information Assessment</h4>
+                                </div>
+                            </div>
+                            <div class="section-content" id="lessonsContent">
+                                <p>Loading...</p>
+                            </div>
+                        </div>
+
+                        <div class="collapsible-section">
+                            <div class="section-header methodology" onclick="toggleSection('methodology')">
+                                <div class="button-group">
+                                    <button class="section-toggle" id="methodologyToggle">+</button>
+                                    <h4>📝 Methodology Notes</h4>
+                                </div>
+                            </div>
+                            <div class="section-content" id="methodologyContent">
+                                <p>Loading...</p>
+                            </div>
+                        </div>
+
+                        <div class="collapsible-section">
+                            <div class="section-header sources" onclick="toggleSection('sources')">
+                                <div class="button-group">
+                                    <button class="section-toggle" id="sourcesToggle">+</button>
+                                    <h4>📖 Key Sources Referenced</h4>
+                                </div>
+                            </div>
+                            <div class="section-content" id="sourcesContent">
+                                <p>Loading...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Post-Assessment Options -->
+            <div class="options-panel" id="optionsPanel">
+                <div class="options-header">
+                    <span>🔬</span>
+                    <h3>Further Analysis</h3>
+                </div>
+
+                <div class="options-grid">
+                    <div class="option-card">
+                        <h4><span>🔍</span> Amplify</h4>
+                        <p>Stress-test the assessment — challenge assumptions, explore alternative interpretations, find blind spots.</p>
+                        <button class="btn btn-amplify" id="amplifyBtn" onclick="runAmplify()" disabled>Amplify Analysis</button>
+                    </div>
+                    <div class="option-card">
+                        <h4><span>✓</span> Verify</h4>
+                        <p>Get an independent second evaluation — fresh eyes, identical methodology, compare scores.</p>
+                        <button class="btn btn-verify" id="verifyBtn" onclick="runVerify()" disabled>Run Verification</button>
+                    </div>
+                </div>
+
+                <div class="cooldown-notice" id="cooldownNotice">
+                    <div>
+                        <span class="cooldown-label">Epistemic Reset</span>
+                        <div class="cooldown-timer" id="cooldownTimer">1:00</div>
+                    </div>
+                    <p>Deep analysis available in</p>
+                </div>
+            </div>
+
+            <!-- New Assessment Button -->
+            <div style="text-align: center; margin-top: 24px;">
+                <button class="btn btn-secondary" onclick="clearForm()">↻ New Assessment</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ================================
+        // STATE VARIABLES
+        // ================================
+        var lastAssessment = null;
+        var processingTimer = null;
+        var processingSeconds = 0;
+        var cooldownTimer = null;
+        var cooldownSeconds = 0;
+
+        // ================================
+        // UTILITY FUNCTIONS
+        // ================================
+        function escapeHtml(text) {
+            if (!text) return '';
+            var div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        function updateCharCounter() {
+            var textarea = document.getElementById('question');
+            var counter = document.getElementById('charCounter');
+            var len = textarea.value.length;
+            counter.textContent = len + ' / 280 characters';
+            
+            counter.className = 'char-counter';
+            if (len > 280) {
+                counter.classList.add('danger');
+            } else if (len > 200) {
+                counter.classList.add('warning');
+            }
+        }
+
+        function toggleSection(sectionId) {
+            var content = document.getElementById(sectionId + 'Content');
+            var toggle = document.getElementById(sectionId + 'Toggle');
+            if (content && toggle) {
+                content.classList.toggle('expanded');
+                toggle.textContent = content.classList.contains('expanded') ? '−' : '+';
+            }
+        }
+
+        function toggleApiKey() {
+            var content = document.getElementById('apiKeyContent');
+            var icon = document.getElementById('apiKeyToggleIcon');
+            content.classList.toggle('expanded');
+            icon.textContent = content.classList.contains('expanded') ? '−' : '+';
+        }
+
+        function toggleDimension(dimId) {
+            var content = document.getElementById(dimId + 'Content');
+            var toggle = document.getElementById(dimId + 'Toggle');
+            if (content && toggle) {
+                content.classList.toggle('expanded');
+                toggle.textContent = content.classList.contains('expanded') ? '−' : '+';
+            }
+        }
+
+        function clearForm() {
+            document.getElementById('question').value = '';
+            document.getElementById('articleText').value = '';
+            document.getElementById('articleUrl').value = '';
+            document.getElementById('errorBox').classList.remove('visible');
+            document.getElementById('inputCard').style.display = 'block';
+            document.getElementById('resultsSection').classList.remove('visible');
+            updateCharCounter();
+            
+            // Clear last assessment data
+            lastAssessment = null;
+            
+            // Reset all collapsible sections
+            ['truth', 'claims', 'framework', 'distortion', 'evidence', 'reality', 'integrity', 'confident', 'uncertain', 'lessons', 'methodology', 'sources'].forEach(function(id) {
+                var content = document.getElementById(id + 'Content');
+                var toggle = document.getElementById(id + 'Toggle');
+                if (content) content.classList.remove('expanded');
+                if (toggle) toggle.textContent = '+';
+            });
+            
+            // Reset integrity dimension sections
+            ['observable', 'comparative', 'bias'].forEach(function(id) {
+                var content = document.getElementById(id + 'Content');
+                var toggle = document.getElementById(id + 'Toggle');
+                if (content) content.classList.remove('expanded');
+                if (toggle) toggle.textContent = '+';
+            });
+            
+            // Reset integrity sub-bars
+            ['observable', 'comparative', 'bias'].forEach(function(id) {
+                document.getElementById(id + 'Value').textContent = '—';
+                document.getElementById(id + 'Fill').style.width = '0%';
+            });
+            
+            // Reset amplify modal sections
+            ['challenges', 'alternatives', 'blindspots', 'stresstests', 'changes', 'bottomline'].forEach(function(id) {
+                var content = document.getElementById(id + 'Content');
+                var toggle = document.getElementById(id + 'Toggle');
+                if (content) content.classList.remove('expanded');
+                if (toggle) toggle.textContent = '+';
+            });
+            
+            // Close modals if open
+            closeAmplifyModal();
+            closeVerifyModal();
+            
+            // Reset verification data
+            lastVerification = null;
+            
+            // Reset Plain Truth section
+            document.getElementById('plainTruthContent').classList.remove('collapsed');
+            document.getElementById('plainTruthToggle').textContent = '−';
+        }
+
+        // ================================
+        // THE PLAIN TRUTH - Comedy Corner Integration
+        // ================================
+        function togglePlainTruth() {
+            var content = document.getElementById('plainTruthContent');
+            var toggle = document.getElementById('plainTruthToggle');
+            content.classList.toggle('collapsed');
+            toggle.textContent = content.classList.contains('collapsed') ? '+' : '−';
+        }
+
+        function renderPlainTruth(data) {
+            var realityScore = data.realityScore;
+            var integrityScore = data.integrityScore;
+            var structured = data.structured;
+            
+            // Score Context - warm interpretation
+            var scoreContextHtml = '';
+            scoreContextHtml += '<div class="score-context-item">';
+            scoreContextHtml += '<div class="score-context-label">Reality Score</div>';
+            scoreContextHtml += '<div class="score-context-value">' + (realityScore >= 0 ? '+' : '') + realityScore + '</div>';
+            scoreContextHtml += '<div class="score-context-meaning">' + getWarmRealityMeaning(realityScore) + '</div>';
+            scoreContextHtml += '</div>';
+            
+            scoreContextHtml += '<div class="score-context-item">';
+            scoreContextHtml += '<div class="score-context-label">Integrity Score</div>';
+            scoreContextHtml += '<div class="score-context-value">' + (integrityScore >= 0 ? '+' : '') + integrityScore.toFixed(1) + '</div>';
+            scoreContextHtml += '<div class="score-context-meaning">' + getWarmIntegrityMeaning(integrityScore) + '</div>';
+            scoreContextHtml += '</div>';
+            
+            document.getElementById('plainTruthScoreContext').innerHTML = scoreContextHtml;
+            
+            // Summary - What We Found
+            var summaryText = generateWarmSummary(realityScore, integrityScore, structured);
+            document.getElementById('plainTruthSummaryText').innerHTML = summaryText;
+            
+            // Why This Might Feel True/False
+            var whyText = generateWhyBelievable(realityScore, structured);
+            document.getElementById('plainTruthWhyText').innerHTML = whyText;
+            
+            // Confession - varies based on content
+            var confessionText = generateConfession(structured);
+            document.getElementById('plainTruthConfessionText').textContent = confessionText;
+            
+            // Historical Patterns (if distortion patterns detected)
+            if (structured && structured.truthDistortionPatterns && structured.truthDistortionPatterns.length > 0) {
+                document.getElementById('plainTruthPatterns').style.display = 'block';
+                var patternText = generateHistoricalPattern(structured.truthDistortionPatterns);
+                document.getElementById('plainTruthPatternsText').innerHTML = patternText;
+            } else {
+                document.getElementById('plainTruthPatterns').style.display = 'none';
+            }
+            
+            // Empowerment message
+            var empowermentText = generateEmpowerment(realityScore, structured);
+            document.getElementById('plainTruthEmpowermentText').innerHTML = empowermentText;
+        }
+
+        function getWarmRealityMeaning(score) {
+            if (score >= 8) return "This holds up really well under scrutiny. The evidence is solid.";
+            if (score >= 5) return "Looking pretty reliable. Some minor gaps, but the core is sound.";
+            if (score >= 2) return "Leans true, but there's enough uncertainty to stay curious.";
+            if (score >= -1) return "Hard to say either way. The evidence is genuinely mixed.";
+            if (score >= -4) return "Some red flags here. Worth digging deeper before accepting.";
+            if (score >= -7) return "Significant problems with this claim. Approach with caution.";
+            return "This one doesn't hold up. The evidence points strongly the other way.";
+        }
+
+        function getWarmIntegrityMeaning(score) {
+            if (score >= 0.7) return "Presented honestly—acknowledges limitations and complexity.";
+            if (score >= 0.4) return "Reasonably balanced, though could be more transparent.";
+            if (score >= 0) return "Some one-sidedness, but not overtly misleading.";
+            if (score >= -0.4) return "Noticeable spin here. The framing deserves scrutiny.";
+            return "Heavy advocacy framing. The presentation is doing a lot of work.";
+        }
+
+        function generateWarmSummary(realityScore, integrityScore, structured) {
+            var summary = '';
+            
+            if (structured && structured.underlyingTruth) {
+                summary += structured.underlyingTruth + '<br><br>';
+            }
+            
+            // Add warm framing based on scores
+            if (realityScore >= 5 && integrityScore >= 0.3) {
+                summary += "Good news: this appears to be both accurate and honestly presented. That's rarer than it should be.";
+            } else if (realityScore >= 5 && integrityScore < 0.3) {
+                summary += "The core claim checks out, but the way it's being presented has some spin to it. The facts are solid; the framing less so.";
+            } else if (realityScore < -3 && integrityScore < 0) {
+                summary += "This one's a double-whammy: the claim itself has problems, AND it's being presented in a misleading way. Not unusual—these often go together.";
+            } else if (realityScore >= -2 && realityScore <= 2) {
+                summary += "Honestly? This is genuinely complicated. The evidence doesn't clearly point either way, which is frustrating but important to acknowledge.";
+            } else if (realityScore < -3) {
+                summary += "The evidence doesn't support this claim. That doesn't mean everyone who believes it is foolish—these things spread because they tap into real concerns.";
+            }
+            
+            return summary;
+        }
+
+        function generateWhyBelievable(realityScore, structured) {
+            var reasons = [];
+            
+            // Check for specific patterns that make things believable
+            if (structured && structured.truthDistortionPatterns) {
+                var patterns = structured.truthDistortionPatterns;
+                
+                if (patterns.some(function(p) { return p.toLowerCase().indexOf('emotional') >= 0 || p.toLowerCase().indexOf('fear') >= 0; })) {
+                    reasons.push("It triggers an emotional response. Our brains are wired to pay attention to things that make us feel strongly—that's not a flaw, it's a feature that sometimes gets exploited.");
+                }
+                if (patterns.some(function(p) { return p.toLowerCase().indexOf('confirm') >= 0; })) {
+                    reasons.push("It confirms something we already suspected. We all do this—we're more critical of information that challenges our views than information that supports them.");
+                }
+                if (patterns.some(function(p) { return p.toLowerCase().indexOf('authority') >= 0 || p.toLowerCase().indexOf('expert') >= 0; })) {
+                    reasons.push("It comes wrapped in authority. We're taught to trust experts, which is usually good advice—but it can be exploited.");
+                }
+                if (patterns.some(function(p) { return p.toLowerCase().indexOf('simplif') >= 0; })) {
+                    reasons.push("It offers a simple explanation for something complicated. Our brains love clarity, even when reality is messy.");
+                }
+            }
+            
+            if (reasons.length === 0) {
+                if (realityScore >= 5) {
+                    reasons.push("Sometimes things feel true because they are. The evidence here actually supports the claim.");
+                } else if (realityScore <= -5) {
+                    reasons.push("Even claims that don't hold up can feel true because they tap into real fears, hopes, or frustrations. The feeling is real even when the facts aren't.");
+                } else {
+                    reasons.push("This one's genuinely ambiguous, which is uncomfortable. We prefer certainty, but sometimes 'I don't know' is the most honest answer.");
+                }
+            }
+            
+            return reasons.join('<br><br>');
+        }
+
+        function generateConfession(structured) {
+            var confessions = [
+                "I've shared things without checking them first. We all have. The goal isn't perfection—it's getting a little better over time.",
+                "I still fall for emotional appeals sometimes. Understanding the mechanics doesn't make us immune; it just helps us notice faster.",
+                "I've been confidently wrong about things I was sure I knew. Epistemic humility is hard-won and easily lost.",
+                "I've dismissed information because I didn't like the source, without actually evaluating the evidence. It's a very human thing to do.",
+                "I've believed things because smart people I respect believed them. Sometimes that's reasonable; sometimes it's just social proof."
+            ];
+            
+            // Pick based on what patterns were detected
+            if (structured && structured.truthDistortionPatterns && structured.truthDistortionPatterns.length > 0) {
+                var patterns = structured.truthDistortionPatterns.join(' ').toLowerCase();
+                if (patterns.indexOf('emotional') >= 0) return confessions[1];
+                if (patterns.indexOf('confirm') >= 0) return confessions[2];
+                if (patterns.indexOf('authority') >= 0) return confessions[4];
+            }
+            
+            // Random selection as fallback
+            return confessions[Math.floor(Math.random() * confessions.length)];
+        }
+
+        function generateHistoricalPattern(patterns) {
+            var html = "The patterns we detected here aren't new. ";
+            
+            var patternExamples = {
+                'emotional appeal': "Emotional framing has been used to bypass critical thinking since ancient rhetoric. It works because emotions evolved before logic—they're faster and feel more certain.",
+                'fear': "Fear-based messaging is as old as human communication. From medieval plague pamphlets to modern viral posts, the pattern is remarkably consistent.",
+                'confirmation bias': "Seeking confirming evidence is so universal that ancient philosophers warned about it. We're not broken; we're human.",
+                'authority': "Appeals to authority have been documented since Aristotle. They work because trusting experts is usually efficient—but that efficiency can be exploited.",
+                'simplification': "Oversimplification has always been popular because our brains crave patterns. The real world is messy; clean narratives are more memorable.",
+                'us vs them': "In-group/out-group framing has been found in the earliest written records. It taps into tribal instincts that served our ancestors well but can mislead us today."
+            };
+            
+            var matched = false;
+            patterns.forEach(function(pattern) {
+                var lowerPattern = pattern.toLowerCase();
+                for (var key in patternExamples) {
+                    if (lowerPattern.indexOf(key) >= 0 && !matched) {
+                        html += patternExamples[key];
+                        matched = true;
+                    }
+                }
+            });
+            
+            if (!matched) {
+                html += "Similar persuasion techniques have been documented throughout history. Understanding the pattern helps us recognize it—though it doesn't make us immune.";
+            }
+            
+            return html;
+        }
+
+        function generateEmpowerment(realityScore, structured) {
+            var html = '';
+            
+            if (realityScore >= 5) {
+                html = "This claim appears solid, but stay curious. Even well-supported claims can have nuances or exceptions. The habit of verification serves you well regardless of what you find.";
+            } else if (realityScore <= -5) {
+                html = "Recognizing that this claim doesn't hold up is valuable—but try to understand why it spread. There's usually a real concern or fear underneath that deserves attention, even when the specific claim is wrong.";
+            } else {
+                html = "Uncertainty is uncomfortable, but it's also honest. When evidence is genuinely mixed, sitting with 'I don't know' takes more intellectual courage than picking a side.";
+            }
+            
+            html += "<br><br><strong>Going forward:</strong> Notice how this claim made you feel before you saw the evidence. That feeling—whatever it was—is data about yourself, not about the claim.";
+            
+            return html;
+        }
+
+        function updateUsageCounter(remaining) {
+            var counter = document.getElementById('usageCounter');
+            var countEl = document.getElementById('remainingCount');
+            countEl.textContent = remaining;
+            
+            if (remaining <= 0) {
+                counter.classList.add('exhausted');
+            } else {
+                counter.classList.remove('exhausted');
+            }
+        }
+
+        // ================================
+        // PROCESSING TIMER
+        // ================================
+        function startProcessingTimer() {
+            processingSeconds = 0;
+            updateProcessingDisplay();
+            
+            if (processingTimer) clearInterval(processingTimer);
+            
+            processingTimer = setInterval(function() {
+                processingSeconds++;
+                updateProcessingDisplay();
+            }, 1000);
+        }
+
+        function stopProcessingTimer() {
+            if (processingTimer) {
+                clearInterval(processingTimer);
+                processingTimer = null;
+            }
+        }
+
+        function updateProcessingDisplay() {
+            var mins = Math.floor(processingSeconds / 60);
+            var secs = processingSeconds % 60;
+            document.getElementById('timerMin').textContent = mins.toString().padStart(2, '0');
+            document.getElementById('timerSec').textContent = secs.toString().padStart(2, '0');
+            
+            // Progress bar - assume ~90 seconds typical
+            var progress = Math.min((processingSeconds / 90) * 100, 95);
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+
+        function showProcessing() {
+            document.getElementById('processingIndicator').classList.add('visible');
+            document.getElementById('assessBtn').disabled = true;
+            startProcessingTimer();
+        }
+
+        function hideProcessing() {
+            stopProcessingTimer();
+            document.getElementById('processingIndicator').classList.remove('visible');
+            document.getElementById('progressFill').style.width = '100%';
+            document.getElementById('assessBtn').disabled = false;
+        }
+
+        // ================================
+        // COOLDOWN TIMER
+        // ================================
+        function startCooldown() {
+            cooldownSeconds = 60;
+            document.getElementById('cooldownNotice').classList.add('visible');
+            document.getElementById('amplifyBtn').disabled = true;
+            document.getElementById('verifyBtn').disabled = true;
+            updateCooldownDisplay();
+            
+            if (cooldownTimer) clearInterval(cooldownTimer);
+            
+            cooldownTimer = setInterval(function() {
+                cooldownSeconds--;
+                updateCooldownDisplay();
+                
+                if (cooldownSeconds <= 0) {
+                    clearInterval(cooldownTimer);
+                    document.getElementById('cooldownNotice').classList.remove('visible');
+                    document.getElementById('amplifyBtn').disabled = false;
+                    document.getElementById('verifyBtn').disabled = false;
+                }
+            }, 1000);
+        }
+
+        function updateCooldownDisplay() {
+            var mins = Math.floor(cooldownSeconds / 60);
+            var secs = cooldownSeconds % 60;
+            document.getElementById('cooldownTimer').textContent = mins + ':' + secs.toString().padStart(2, '0');
+        }
+
+        // ================================
+        // SCORE DISPLAY
+        // ================================
+        function getRealityDescriptor(score) {
+            if (score >= 9) return 'Near-Certain';
+            if (score >= 7) return 'Highly Likely';
+            if (score >= 5) return 'Probable';
+            if (score >= 3) return 'Leaning True';
+            if (score >= 1) return 'Slightly True';
+            if (score >= -1) return 'Uncertain';
+            if (score >= -3) return 'Slightly False';
+            if (score >= -5) return 'Leaning False';
+            if (score >= -7) return 'Probably False';
+            if (score >= -9) return 'Highly Unlikely';
+            return 'Near-Certainly False';
+        }
+
+        function getIntegrityDescriptor(score) {
+            if (score >= 0.8) return 'High Honesty';
+            if (score >= 0.5) return 'Good Faith';
+            if (score >= 0.2) return 'Mixed Signals';
+            if (score >= -0.2) return 'Neutral';
+            if (score >= -0.5) return 'Some Concerns';
+            if (score >= -0.8) return 'Low Integrity';
+            return 'Deceptive';
+        }
+
+        function getScoreClass(score, isIntegrity) {
+            if (isIntegrity) {
+                if (score >= 0.3) return 'positive';
+                if (score <= -0.3) return 'negative';
+                return 'neutral';
+            } else {
+                if (score >= 3) return 'positive';
+                if (score <= -3) return 'negative';
+                return 'neutral';
+            }
+        }
+
+        function updateScoreDisplay(realityScore, integrityScore) {
+            var realityEl = document.getElementById('realityScoreValue');
+            var integrityEl = document.getElementById('integrityScoreValue');
+            
+            // Reality Score
+            if (realityScore !== null && realityScore !== undefined) {
+                var rScore = parseInt(realityScore);
+                realityEl.textContent = (rScore >= 0 ? '+' : '') + rScore;
+                realityEl.className = 'score-value ' + getScoreClass(rScore, false);
+                document.getElementById('realityDescriptor').textContent = getRealityDescriptor(rScore);
+                
+                // Position marker (score -10 to +10 maps to 0% to 100%)
+                var realityPos = ((rScore + 10) / 20) * 100;
+                document.getElementById('realityMarker').style.left = realityPos + '%';
+            } else {
+                realityEl.textContent = '—';
+                realityEl.className = 'score-value';
+                document.getElementById('realityDescriptor').textContent = '—';
+            }
+            
+            // Integrity Score
+            if (integrityScore !== null && integrityScore !== undefined) {
+                var iScore = parseFloat(integrityScore);
+                integrityEl.textContent = (iScore >= 0 ? '+' : '') + iScore.toFixed(1);
+                integrityEl.className = 'score-value ' + getScoreClass(iScore, true);
+                document.getElementById('integrityDescriptor').textContent = getIntegrityDescriptor(iScore);
+                
+                // Position marker (score -1 to +1 maps to 0% to 100%)
+                var integrityPos = ((iScore + 1) / 2) * 100;
+                document.getElementById('integrityMarker').style.left = integrityPos + '%';
+            } else {
+                integrityEl.textContent = '—';
+                integrityEl.className = 'score-value';
+                document.getElementById('integrityDescriptor').textContent = '—';
+            }
+        }
+
+        function updateIntegritySubBars(integrity) {
+            if (!integrity) return;
+            
+            var dimensions = [
+                { id: 'observable', data: integrity.observable },
+                { id: 'comparative', data: integrity.comparative },
+                { id: 'bias', data: integrity.bias }
+            ];
+            
+            dimensions.forEach(function(dim) {
+                var valueEl = document.getElementById(dim.id + 'Value');
+                var fillEl = document.getElementById(dim.id + 'Fill');
+                
+                if (dim.data && dim.data.score !== undefined) {
+                    var score = parseFloat(dim.data.score);
+                    valueEl.textContent = (score >= 0 ? '+' : '') + score.toFixed(1);
+                    
+                    // Width is based on absolute value (0 to 50% of track from center)
+                    var width = Math.abs(score) * 50; // 50% at +/-1.0
+                    fillEl.style.width = width + '%';
+                    
+                    // Set direction class
+                    fillEl.className = 'sub-bar-fill ' + (score >= 0 ? 'positive' : 'negative');
+                } else {
+                    valueEl.textContent = '—';
+                    fillEl.style.width = '0%';
+                }
+            });
+        }
+
+        // ================================
+        // CONTENT RENDERING (from structured JSON)
+        // ================================
+        function renderAssessmentContent(data) {
+            console.log('renderAssessmentContent called with:', data);
+            
+            var structured = data.structured;
+            console.log('Structured data:', structured);
+            
+            // Render Underlying Reality
+            if (structured && structured.underlyingReality) {
+                var ur = structured.underlyingReality;
+                var truthHtml = '';
+                if (ur.coreFinding) {
+                    truthHtml += '<p><strong>The Core Finding:</strong> ' + ur.coreFinding + '</p>';
+                }
+                if (ur.howWeKnow) {
+                    truthHtml += '<p><strong>How We Know:</strong> ' + ur.howWeKnow + '</p>';
+                }
+                if (ur.whyItMatters) {
+                    truthHtml += '<p><strong>Why This Matters:</strong> ' + ur.whyItMatters + '</p>';
+                }
+                document.getElementById('truthContent').innerHTML = truthHtml || '<p>Not available.</p>';
+            } else {
+                document.getElementById('truthContent').innerHTML = '<p>Structured data not available for this section.</p>';
+            }
+            
+            // Render Central Claims
+            if (structured && structured.centralClaims) {
+                var cc = structured.centralClaims;
+                var claimsHtml = '';
+                if (cc.explicit) {
+                    claimsHtml += '<p><strong>Explicit Claim:</strong> ' + cc.explicit + '</p>';
+                }
+                if (cc.hidden) {
+                    claimsHtml += '<p><strong>Hidden Assumptions:</strong> ' + cc.hidden + '</p>';
+                }
+                if (cc.whatFramingServes) {
+                    claimsHtml += '<p><strong>What This Framing Serves:</strong> ' + cc.whatFramingServes + '</p>';
+                }
+                document.getElementById('claimsContent').innerHTML = claimsHtml || '<p>Not available.</p>';
+            } else {
+                document.getElementById('claimsContent').innerHTML = '<p>Structured data not available for this section.</p>';
+            }
+            
+            // Render Framework Analysis
+            if (structured && structured.frameworkAnalysis) {
+                var fa = structured.frameworkAnalysis;
+                var frameworkHtml = '';
+                if (fa.hiddenPremises) {
+                    frameworkHtml += '<p><strong>Hidden Premises:</strong> ' + fa.hiddenPremises + '</p>';
+                }
+                if (fa.ideologicalOrigin) {
+                    frameworkHtml += '<p><strong>Ideological Origin:</strong> ' + fa.ideologicalOrigin + '</p>';
+                }
+                if (fa.whatBeingObscured) {
+                    frameworkHtml += '<p><strong>What\'s Being Obscured:</strong> ' + fa.whatBeingObscured + '</p>';
+                }
+                if (fa.reframingNeeded) {
+                    frameworkHtml += '<p><strong>Reframing Needed:</strong> ' + fa.reframingNeeded + '</p>';
+                }
+                document.getElementById('frameworkContent').innerHTML = frameworkHtml || '<p>Not available.</p>';
+            } else {
+                document.getElementById('frameworkContent').innerHTML = '<p>Structured data not available for this section.</p>';
+            }
+            
+            // Render Truth Distortion Patterns
+            if (structured && structured.truthDistortionPatterns) {
+                var patterns = structured.truthDistortionPatterns;
+                var distortionHtml = '';
+                if (Array.isArray(patterns) && patterns.length > 0) {
+                    distortionHtml += '<ul>';
+                    patterns.forEach(function(pattern) {
+                        distortionHtml += '<li>' + pattern + '</li>';
+                    });
+                    distortionHtml += '</ul>';
+                } else if (typeof patterns === 'string') {
+                    distortionHtml = '<p>' + patterns + '</p>';
+                }
+                document.getElementById('distortionContent').innerHTML = distortionHtml || '<p>None detected - this claim/question uses honest framing.</p>';
+            } else {
+                document.getElementById('distortionContent').innerHTML = '<p>No distortion patterns analyzed.</p>';
+            }
+            
+            // Render Evidence Analysis
+            if (structured && structured.evidenceAnalysis) {
+                var ea = structured.evidenceAnalysis;
+                var evidenceHtml = '';
+                if (ea.forTheClaim && ea.forTheClaim.length > 0) {
+                    evidenceHtml += '<p><strong>For the Claim:</strong></p><ul>';
+                    ea.forTheClaim.forEach(function(item) {
+                        evidenceHtml += '<li>' + item + '</li>';
+                    });
+                    evidenceHtml += '</ul>';
+                }
+                if (ea.againstTheClaim && ea.againstTheClaim.length > 0) {
+                    evidenceHtml += '<p><strong>Against/Complicating the Claim:</strong></p><ul>';
+                    ea.againstTheClaim.forEach(function(item) {
+                        evidenceHtml += '<li>' + item + '</li>';
+                    });
+                    evidenceHtml += '</ul>';
+                }
+                if (ea.sourceQuality) {
+                    evidenceHtml += '<p><strong>Source Quality:</strong> ' + ea.sourceQuality + '</p>';
+                }
+                document.getElementById('evidenceContent').innerHTML = evidenceHtml || '<p>Not available.</p>';
+            } else {
+                document.getElementById('evidenceContent').innerHTML = '<p>Structured data not available for this section.</p>';
+            }
+            
+            // Render Reality Score Breakdown
+            if (structured && structured.realityFactors) {
+                var rf = structured.realityFactors;
+                var realityHtml = '';
+                
+                if (rf.evidenceQuality) {
+                    realityHtml += '<p><strong>Evidence Quality (40%):</strong> ' + 
+                        (rf.evidenceQuality.score >= 0 ? '+' : '') + rf.evidenceQuality.score + 
+                        ' — ' + rf.evidenceQuality.explanation + '</p>';
+                }
+                if (rf.epistemologicalSoundness) {
+                    realityHtml += '<p><strong>Epistemological Soundness (30%):</strong> ' + 
+                        (rf.epistemologicalSoundness.score >= 0 ? '+' : '') + rf.epistemologicalSoundness.score + 
+                        ' — ' + rf.epistemologicalSoundness.explanation + '</p>';
+                }
+                if (rf.sourceReliability) {
+                    realityHtml += '<p><strong>Source Reliability (20%):</strong> ' + 
+                        (rf.sourceReliability.score >= 0 ? '+' : '') + rf.sourceReliability.score + 
+                        ' — ' + rf.sourceReliability.explanation + '</p>';
+                }
+                if (rf.logicalCoherence) {
+                    realityHtml += '<p><strong>Logical Coherence (10%):</strong> ' + 
+                        (rf.logicalCoherence.score >= 0 ? '+' : '') + rf.logicalCoherence.score + 
+                        ' — ' + rf.logicalCoherence.explanation + '</p>';
+                }
+                
+                // Add weighted calculation
+                if (rf.evidenceQuality && rf.epistemologicalSoundness && rf.sourceReliability && rf.logicalCoherence) {
+                    var eq = rf.evidenceQuality.score;
+                    var es = rf.epistemologicalSoundness.score;
+                    var sr = rf.sourceReliability.score;
+                    var lc = rf.logicalCoherence.score;
+                    var weighted = (eq * 0.40) + (es * 0.30) + (sr * 0.20) + (lc * 0.10);
+                    realityHtml += '<div class="calculation-box"><strong>Weighted Calculation:</strong> (' + eq + ' × 0.40) + (' + es + ' × 0.30) + (' + sr + ' × 0.20) + (' + lc + ' × 0.10) = ' + weighted.toFixed(1) + ' → <strong>' + (data.realityScore >= 0 ? '+' : '') + data.realityScore + '</strong></div>';
+                }
+                
+                document.getElementById('realityContent').innerHTML = realityHtml || '<p>Not available.</p>';
+            } else {
+                document.getElementById('realityContent').innerHTML = '<p>Structured data not available for this section.</p>';
+            }
+            
+            // Render Integrity Score Breakdown
+            if (structured && structured.integrity) {
+                var int = structured.integrity;
+                var intHtml = '<p class="dimension-desc"><em>Integrity 2.0 measures three dimensions of epistemological honesty. Click each to expand.</em></p>';
+                
+                intHtml += '<div class="integrity-children">';
+                
+                // Observable Integrity
+                if (int.observable) {
+                    var obs = int.observable;
+                    intHtml += '<div class="integrity-dimension" onclick="toggleDimension(\'observable\')">';
+                    intHtml += '<button class="child-toggle" id="observableToggle">+</button>';
+                    intHtml += '<h5 class="dimension-title">📋 Observable: <span class="dim-score">' + (obs.score >= 0 ? '+' : '') + obs.score.toFixed(1) + '</span></h5>';
+                    intHtml += '</div>';
+                    intHtml += '<div class="dimension-content" id="observableContent">';
+                    intHtml += '<p class="dimension-desc">Binary checks with explicit evidence:</p>';
+                    intHtml += '<table class="integrity-table">';
+                    intHtml += '<tr><th>Check</th><th>Y/N/P</th><th>Evidence</th></tr>';
+                    intHtml += '<tr><td>Sources Cited</td><td class="check-' + (obs.sourcesCited === 'Y' ? 'yes' : obs.sourcesCited === 'P' ? 'partial' : 'no') + '">' + obs.sourcesCited + '</td><td>' + (obs.sourcesCitedEvidence || '-') + '</td></tr>';
+                    intHtml += '<tr><td>Limitations Acknowledged</td><td class="check-' + (obs.limitationsAcknowledged === 'Y' ? 'yes' : obs.limitationsAcknowledged === 'P' ? 'partial' : 'no') + '">' + obs.limitationsAcknowledged + '</td><td>' + (obs.limitationsEvidence || '-') + '</td></tr>';
+                    intHtml += '<tr><td>Counter-Arguments Addressed</td><td class="check-' + (obs.counterArgumentsAddressed === 'Y' ? 'yes' : obs.counterArgumentsAddressed === 'P' ? 'partial' : 'no') + '">' + obs.counterArgumentsAddressed + '</td><td>' + (obs.counterArgumentsEvidence || '-') + '</td></tr>';
+                    intHtml += '<tr><td>Fallacies Present</td><td class="check-' + (obs.fallaciesPresent === 'N' ? 'yes' : 'no') + '">' + obs.fallaciesPresent + '</td><td>' + (obs.fallaciesEvidence || '-') + '</td></tr>';
+                    intHtml += '</table>';
+                    intHtml += '</div>';
+                }
+                
+                // Comparative Integrity
+                if (int.comparative) {
+                    var comp = int.comparative;
+                    intHtml += '<div class="integrity-dimension" onclick="toggleDimension(\'comparative\')">';
+                    intHtml += '<button class="child-toggle" id="comparativeToggle">+</button>';
+                    intHtml += '<h5 class="dimension-title">📈 Comparative: <span class="dim-score">' + (comp.score >= 0 ? '+' : '') + comp.score.toFixed(1) + '</span></h5>';
+                    intHtml += '</div>';
+                    intHtml += '<div class="dimension-content" id="comparativeContent">';
+                    intHtml += '<p class="dimension-desc">Benchmarked against quality discourse:</p>';
+                    intHtml += '<p><strong>Percentile:</strong> Top ' + (100 - comp.percentile) + '%</p>';
+                    if (comp.baseline) intHtml += '<p><strong>Baseline:</strong> ' + comp.baseline + '</p>';
+                    if (comp.gaps && comp.gaps.length > 0) intHtml += '<p><strong>Gaps:</strong> ' + comp.gaps.join('; ') + '</p>';
+                    intHtml += '</div>';
+                }
+                
+                // Bias Integrity
+                if (int.bias) {
+                    var bias = int.bias;
+                    intHtml += '<div class="integrity-dimension" onclick="toggleDimension(\'bias\')">';
+                    intHtml += '<button class="child-toggle" id="biasToggle">+</button>';
+                    intHtml += '<h5 class="dimension-title">🎯 Bias: <span class="dim-score">' + (bias.score >= 0 ? '+' : '') + bias.score.toFixed(1) + '</span></h5>';
+                    intHtml += '</div>';
+                    intHtml += '<div class="dimension-content" id="biasContent">';
+                    intHtml += '<p class="dimension-desc">Patterns signaling advocacy over accuracy:</p>';
+                    if (bias.inflammatoryLanguage) intHtml += '<p><strong>Inflammatory Language:</strong> ' + bias.inflammatoryLanguage + '</p>';
+                    if (bias.oneSidedFraming) intHtml += '<p><strong>One-Sided Framing:</strong> ' + bias.oneSidedFraming + '</p>';
+                    if (bias.playbookPatterns && bias.playbookPatterns.length > 0) intHtml += '<p><strong>Playbook Patterns:</strong> ' + bias.playbookPatterns.join('; ') + '</p>';
+                    if (bias.inaccuracies && bias.inaccuracies.length > 0) intHtml += '<p><strong>Inaccuracies:</strong> ' + bias.inaccuracies.join('; ') + '</p>';
+                    intHtml += '</div>';
+                }
+                
+                intHtml += '</div>'; // close integrity-children
+                
+                // Weighted calculation
+                if (int.observable && int.comparative && int.bias) {
+                    var intCalc = (int.observable.score * 0.33) + (int.comparative.score * 0.33) + (int.bias.score * 0.33);
+                    intHtml += '<div class="calculation-box"><strong>Weighted:</strong> (' + int.observable.score.toFixed(1) + ' × 0.33) + (' + int.comparative.score.toFixed(1) + ' × 0.33) + (' + int.bias.score.toFixed(1) + ' × 0.33) = <strong>' + (intCalc >= 0 ? '+' : '') + intCalc.toFixed(2) + '</strong></div>';
+                }
+                
+                document.getElementById('integrityContent').innerHTML = intHtml;
+                
+                // Update the sub-bars in the score card
+                updateIntegritySubBars(int);
+            } else {
+                document.getElementById('integrityContent').innerHTML = '<p>Structured data not available for this section.</p>';
+            }
+            
+            // Render What We Can Be Confident About
+            if (structured && structured.whatWeCanBeConfidentAbout && structured.whatWeCanBeConfidentAbout.length > 0) {
+                var confidentHtml = '<ul>';
+                structured.whatWeCanBeConfidentAbout.forEach(function(item) {
+                    confidentHtml += '<li>' + item + '</li>';
+                });
+                confidentHtml += '</ul>';
+                document.getElementById('confidentContent').innerHTML = confidentHtml;
+            } else {
+                document.getElementById('confidentContent').innerHTML = '<p>Not available.</p>';
+            }
+            
+            // Render What Remains Uncertain
+            if (structured && structured.whatRemainsUncertain && structured.whatRemainsUncertain.length > 0) {
+                var uncertainHtml = '<ul>';
+                structured.whatRemainsUncertain.forEach(function(item) {
+                    uncertainHtml += '<li>' + item + '</li>';
+                });
+                uncertainHtml += '</ul>';
+                document.getElementById('uncertainContent').innerHTML = uncertainHtml;
+            } else {
+                document.getElementById('uncertainContent').innerHTML = '<p>Not available.</p>';
+            }
+            
+            // Render Lessons for Information Assessment
+            if (structured && structured.lessonsForAssessment && structured.lessonsForAssessment.length > 0) {
+                var lessonsHtml = '<ol>';
+                structured.lessonsForAssessment.forEach(function(lesson) {
+                    lessonsHtml += '<li>' + lesson + '</li>';
+                });
+                lessonsHtml += '</ol>';
+                document.getElementById('lessonsContent').innerHTML = lessonsHtml;
+            } else {
+                document.getElementById('lessonsContent').innerHTML = '<p>Not available.</p>';
+            }
+            
+            // Render Methodology Notes
+            if (structured && structured.methodologyNotes) {
+                var mn = structured.methodologyNotes;
+                var methodHtml = '';
+                if (mn.realityScoreRationale) {
+                    methodHtml += '<p><strong>Reality Score (' + (data.realityScore >= 0 ? '+' : '') + data.realityScore + '):</strong> ' + mn.realityScoreRationale + '</p>';
+                }
+                if (mn.integrityScoreRationale) {
+                    methodHtml += '<p><strong>Integrity Score (' + (data.integrityScore >= 0 ? '+' : '') + data.integrityScore.toFixed(1) + '):</strong> ' + mn.integrityScoreRationale + '</p>';
+                }
+                document.getElementById('methodologyContent').innerHTML = methodHtml || '<p>Not available.</p>';
+            } else {
+                document.getElementById('methodologyContent').innerHTML = '<p>Structured data not available for this section.</p>';
+            }
+            
+            // Render Sources
+            if (structured && structured.sources && structured.sources.length > 0) {
+                var sourcesHtml = '<ul>';
+                structured.sources.forEach(function(src) {
+                    // Check if it's a URL
+                    if (src.match(/^https?:\/\//)) {
+                        sourcesHtml += '<li><a href="' + src + '" target="_blank" rel="noopener">' + src + '</a></li>';
+                    } else {
+                        sourcesHtml += '<li>' + src + '</li>';
+                    }
+                });
+                sourcesHtml += '</ul>';
+                document.getElementById('sourcesContent').innerHTML = sourcesHtml;
+            } else {
+                document.getElementById('sourcesContent').innerHTML = '<p>No sources listed.</p>';
+            }
+        }
+
+        // ================================
+        // RUN ASSESSMENT
+        // ================================
+        function runAssessment() {
+            var question = document.getElementById('question').value.trim();
+            var articleText = document.getElementById('articleText').value.trim();
+            var articleUrl = document.getElementById('articleUrl').value.trim();
+            var userApiKey = document.getElementById('apiKey').value.trim();
+            var errorBox = document.getElementById('errorBox');
+            var btn = document.getElementById('assessBtn');
+            
+            if (!question && !articleText && !articleUrl) {
+                errorBox.textContent = 'Please enter a claim, URL, or article text to assess.';
+                errorBox.classList.add('visible');
+                return;
+            }
+            
+            errorBox.classList.remove('visible');
+            btn.disabled = true;
+            btn.textContent = 'Assessing...';
+            
+            showProcessing();
+            
+            fetch('/api/assess', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    question: question,
+                    articleText: articleText,
+                    articleUrl: articleUrl,
+                    userApiKey: userApiKey,
+                    track: 'a'
+                })
+            })
+            .then(function(res) {
+                if (!res.ok) {
+                    return res.json().then(function(err) {
+                        // Update usage counter if returned
+                        if (err.remaining !== undefined) {
+                            updateUsageCounter(err.remaining);
+                        }
+                        throw new Error(err.error || 'Assessment failed');
+                    });
+                }
+                return res.json();
+            })
+            .then(function(data) {
+                console.log('Assessment response:', data);
+                console.log('Structured data:', data.structured);
+                
+                // Update usage counter if returned
+                if (data.remaining !== undefined) {
+                    updateUsageCounter(data.remaining);
+                }
+                
+                // Update claim display
+                document.getElementById('claimText').textContent = '"' + question + '"';
+                
+                // Update scores
+                updateScoreDisplay(data.realityScore, data.integrityScore);
+                
+                // Render assessment content from structured data
+                renderAssessmentContent(data);
+                
+                // Render The Plain Truth section (Comedy Corner integration)
+                renderPlainTruth(data);
+                
+                // Store for Amplify/Verify
+                lastAssessment = {
+                    question: question,
+                    articleText: articleText,
+                    articleUrl: articleUrl,
+                    assessment: data.assessment,
+                    realityScore: data.realityScore,
+                    integrityScore: data.integrityScore,
+                    structured: data.structured
+                };
+                
+                // Hide processing, hide input, show results
+                hideProcessing();
+                document.getElementById('inputCard').style.display = 'none';
+                document.getElementById('resultsSection').classList.add('visible');
+                
+                // Start cooldown
+                startCooldown();
+                
+                // Scroll to results
+                document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth' });
+            })
+            .catch(function(err) {
+                console.error('Assessment error:', err);
+                hideProcessing();
+                errorBox.textContent = 'Error: ' + err.message;
+                errorBox.classList.add('visible');
+            })
+            .finally(function() {
+                btn.disabled = false;
+                btn.textContent = '⚡ Run Assessment';
+            });
+        }
+
+        // ================================
+        // AMPLIFY / VERIFY
+        // ================================
+        var amplifyTimer = null;
+        var amplifySeconds = 0;
+
+        function runAmplify() {
+            if (!lastAssessment) {
+                alert('No assessment available to amplify. Please run an initial assessment first.');
+                return;
+            }
+            
+            // Open modal and show processing
+            document.getElementById('amplifyModal').classList.add('visible');
+            document.getElementById('amplifyProcessing').classList.add('visible');
+            document.getElementById('amplifyResults').style.display = 'none';
+            
+            // Start timer
+            amplifySeconds = 0;
+            updateAmplifyTimer();
+            amplifyTimer = setInterval(function() {
+                amplifySeconds++;
+                updateAmplifyTimer();
+            }, 1000);
+            
+            // Get API key if provided
+            var userApiKey = document.getElementById('apiKey').value.trim();
+            
+            // Call the Amplify API
+            fetch('/api/amplify', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    question: lastAssessment.question,
+                    initialAssessment: lastAssessment.assessment,
+                    realityScore: lastAssessment.realityScore,
+                    integrityScore: lastAssessment.integrityScore,
+                    userApiKey: userApiKey
+                })
+            })
+            .then(function(res) {
+                if (!res.ok) {
+                    return res.json().then(function(err) {
+                        throw new Error(err.error || 'Amplification failed');
+                    });
+                }
+                return res.json();
+            })
+            .then(function(data) {
+                console.log('Amplify response:', data);
+                stopAmplifyTimer();
+                renderAmplifyResults(data);
+            })
+            .catch(function(err) {
+                console.error('Amplify error:', err);
+                stopAmplifyTimer();
+                alert('Amplification failed: ' + err.message);
+                closeAmplifyModal();
+            });
+        }
+
+        function updateAmplifyTimer() {
+            var mins = Math.floor(amplifySeconds / 60);
+            var secs = amplifySeconds % 60;
+            document.getElementById('amplifyTimer').textContent = 
+                mins.toString().padStart(2, '0') + ':' + secs.toString().padStart(2, '0');
+        }
+
+        function stopAmplifyTimer() {
+            if (amplifyTimer) {
+                clearInterval(amplifyTimer);
+                amplifyTimer = null;
+            }
+        }
+
+        function closeAmplifyModal() {
+            document.getElementById('amplifyModal').classList.remove('visible');
+            stopAmplifyTimer();
+        }
+
+        function toggleAmplifySection(sectionId) {
+            var content = document.getElementById(sectionId + 'Content');
+            var toggle = document.getElementById(sectionId + 'Toggle');
+            
+            if (content.classList.contains('expanded')) {
+                content.classList.remove('expanded');
+                toggle.textContent = '+';
+            } else {
+                content.classList.add('expanded');
+                toggle.textContent = '−';
+            }
+        }
+
+        function renderAmplifyResults(data) {
+            // Hide processing, show results
+            document.getElementById('amplifyProcessing').classList.remove('visible');
+            document.getElementById('amplifyResults').style.display = 'block';
+            
+            var structured = data.structured || {};
+            
+            // Summary
+            document.getElementById('amplifySummaryText').textContent = 
+                structured.amplificationSummary || 'Analysis complete. See details below.';
+            
+            // Confidence Adjustment
+            var confAdj = structured.confidenceAdjustment || {};
+            var direction = (confAdj.direction || 'unchanged').toLowerCase();
+            var magnitude = confAdj.magnitude || '';
+            var reason = confAdj.reason || 'No adjustment rationale provided.';
+            
+            var confCard = document.getElementById('confidenceCard');
+            var confArrow = document.getElementById('confidenceArrow');
+            var confValue = document.getElementById('confidenceValue');
+            var confReason = document.getElementById('confidenceReason');
+            
+            confCard.className = 'confidence-card ' + direction;
+            
+            if (direction === 'up') {
+                confArrow.textContent = '↑';
+                confValue.textContent = 'Increased' + (magnitude ? ' (' + magnitude + ')' : '');
+            } else if (direction === 'down') {
+                confArrow.textContent = '↓';
+                confValue.textContent = 'Decreased' + (magnitude ? ' (' + magnitude + ')' : '');
+            } else {
+                confArrow.textContent = '→';
+                confValue.textContent = 'Unchanged';
+            }
+            confReason.textContent = reason;
+            
+            // Populate lists
+            populateAmplifyList('challengesList', structured.challengedAssumptions || []);
+            populateAmplifyList('alternativesList', structured.alternativeInterpretations || []);
+            populateAmplifyList('blindspotsList', structured.blindSpots || []);
+            populateAmplifyList('stresstestsList', structured.epistemicVulnerabilities || []);
+            populateAmplifyList('changesList', structured.wouldChangeAssessment || []);
+            
+            // Bottom Line
+            document.getElementById('bottomlineText').textContent = 
+                structured.bottomLine || 'No bottom line analysis provided.';
+            
+            // Auto-expand first section with content
+            var sections = ['challenges', 'alternatives', 'blindspots', 'stresstests', 'changes', 'bottomline'];
+            for (var i = 0; i < sections.length; i++) {
+                var listEl = document.getElementById(sections[i] + 'List');
+                var textEl = document.getElementById(sections[i] + 'Text');
+                var hasContent = (listEl && listEl.children.length > 0) || (textEl && textEl.textContent);
+                if (hasContent) {
+                    toggleAmplifySection(sections[i]);
+                    break;
+                }
+            }
+        }
+
+        function populateAmplifyList(listId, items) {
+            var list = document.getElementById(listId);
+            if (!list) return;
+            
+            list.innerHTML = '';
+            
+            if (!items || items.length === 0) {
+                var li = document.createElement('li');
+                li.textContent = 'None identified.';
+                li.style.fontStyle = 'italic';
+                li.style.color = 'var(--text-muted)';
+                list.appendChild(li);
+                return;
+            }
+            
+            items.forEach(function(item) {
+                var li = document.createElement('li');
+                li.textContent = item;
+                list.appendChild(li);
+            });
+        }
+
+        // Close modal on overlay click
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('amplify-modal-overlay')) {
+                closeAmplifyModal();
+            }
+        });
+
+        // Close modal on Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeAmplifyModal();
+                closeVerifyModal();
+            }
+        });
+
+        // ================================
+        // VERIFY / ADJUDICATE
+        // ================================
+        var verifyTimer = null;
+        var verifySeconds = 0;
+        var lastVerification = null;
+        
+        // Divergence thresholds
+        var REALITY_THRESHOLD = 2;      // ≥2 points difference
+        var INTEGRITY_THRESHOLD = 0.2;  // ≥0.2 difference
+
+        function runVerify() {
+            if (!lastAssessment) {
+                alert('No assessment available to verify. Please run an initial assessment first.');
+                return;
+            }
+            
+            // Open modal and show processing
+            document.getElementById('verifyModal').classList.add('visible');
+            document.getElementById('verifyProcessing').classList.add('visible');
+            document.getElementById('verifyResults').style.display = 'none';
+            
+            // Reset previous results
+            document.getElementById('consensusSection').classList.remove('visible');
+            document.getElementById('adjudicationResults').classList.remove('visible');
+            lastVerification = null;
+            
+            // Start timer
+            verifySeconds = 0;
+            updateVerifyTimer();
+            verifyTimer = setInterval(function() {
+                verifySeconds++;
+                updateVerifyTimer();
+            }, 1000);
+            
+            // Get API key if provided
+            var userApiKey = document.getElementById('apiKey').value.trim();
+            
+            // Call the Verify API
+            fetch('/api/verify', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    question: lastAssessment.question,
+                    articleText: lastAssessment.articleText || '',
+                    track: 'a',
+                    userApiKey: userApiKey,
+                    initialAssessment: {
+                        realityScore: lastAssessment.realityScore,
+                        integrityScore: lastAssessment.integrityScore,
+                        structured: lastAssessment.structured
+                    }
+                })
+            })
+            .then(function(res) {
+                if (!res.ok) {
+                    return res.json().then(function(err) {
+                        throw new Error(err.error || 'Verification failed');
+                    });
+                }
+                return res.json();
+            })
+            .then(function(data) {
+                console.log('Verify response:', data);
+                stopVerifyTimer();
+                lastVerification = data;
+                renderVerifyResults(data);
+            })
+            .catch(function(err) {
+                console.error('Verify error:', err);
+                stopVerifyTimer();
+                alert('Verification failed: ' + err.message);
+                closeVerifyModal();
+            });
+        }
+
+        function updateVerifyTimer() {
+            var mins = Math.floor(verifySeconds / 60);
+            var secs = verifySeconds % 60;
+            document.getElementById('verifyTimer').textContent = 
+                mins.toString().padStart(2, '0') + ':' + secs.toString().padStart(2, '0');
+        }
+
+        function stopVerifyTimer() {
+            if (verifyTimer) {
+                clearInterval(verifyTimer);
+                verifyTimer = null;
+            }
+        }
+
+        function closeVerifyModal() {
+            document.getElementById('verifyModal').classList.remove('visible');
+            stopVerifyTimer();
+        }
+
+        function renderVerifyResults(data) {
+            // Hide processing, show results
+            document.getElementById('verifyProcessing').classList.remove('visible');
+            document.getElementById('verifyResults').style.display = 'block';
+            
+            var initialReality = lastAssessment.realityScore;
+            var initialIntegrity = lastAssessment.integrityScore;
+            var verifyReality = data.realityScore;
+            var verifyIntegrity = data.integrityScore;
+            
+            // Display Initial scores
+            var initRealityEl = document.getElementById('initialRealityDisplay');
+            initRealityEl.textContent = (initialReality >= 0 ? '+' : '') + initialReality;
+            initRealityEl.className = 'comparison-score-value ' + getScoreClass(initialReality, false);
+            
+            var initIntegrityEl = document.getElementById('initialIntegrityDisplay');
+            initIntegrityEl.textContent = (initialIntegrity >= 0 ? '+' : '') + parseFloat(initialIntegrity).toFixed(1);
+            initIntegrityEl.className = 'comparison-score-value ' + getScoreClass(initialIntegrity, true);
+            
+            // Display Verify scores
+            var verifyRealityEl = document.getElementById('verifyRealityDisplay');
+            verifyRealityEl.textContent = (verifyReality >= 0 ? '+' : '') + verifyReality;
+            verifyRealityEl.className = 'comparison-score-value ' + getScoreClass(verifyReality, false);
+            
+            var verifyIntegrityEl = document.getElementById('verifyIntegrityDisplay');
+            verifyIntegrityEl.textContent = (verifyIntegrity >= 0 ? '+' : '') + parseFloat(verifyIntegrity).toFixed(1);
+            verifyIntegrityEl.className = 'comparison-score-value ' + getScoreClass(verifyIntegrity, true);
+            
+            // Check divergence
+            var realityDiff = Math.abs(initialReality - verifyReality);
+            var integrityDiff = Math.abs(initialIntegrity - verifyIntegrity);
+            var isDivergent = realityDiff >= REALITY_THRESHOLD || integrityDiff >= INTEGRITY_THRESHOLD;
+            
+            var alignmentStatus = document.getElementById('alignmentStatus');
+            var alignmentTitle = document.getElementById('alignmentTitle');
+            var alignmentMessage = document.getElementById('alignmentMessage');
+            
+            if (isDivergent) {
+                alignmentStatus.className = 'alignment-status divergent';
+                alignmentTitle.textContent = '⚠️ Assessments Diverge';
+                alignmentMessage.textContent = 'Reality differs by ' + realityDiff + ' points, Integrity by ' + integrityDiff.toFixed(1) + '. Consider seeking consensus.';
+                document.getElementById('consensusSection').classList.add('visible');
+            } else {
+                alignmentStatus.className = 'alignment-status aligned';
+                alignmentTitle.textContent = '✓ Assessments Align';
+                alignmentMessage.textContent = 'Both assessments reached similar conclusions (Reality ±' + realityDiff + ', Integrity ±' + integrityDiff.toFixed(1) + '). High confidence in results.';
+                document.getElementById('consensusSection').classList.remove('visible');
+            }
+        }
+
+        function runAdjudicate() {
+            if (!lastAssessment || !lastVerification) {
+                alert('Both initial and verification assessments required for adjudication.');
+                return;
+            }
+            
+            var btn = document.getElementById('consensusBtn');
+            btn.disabled = true;
+            btn.textContent = 'Adjudicating...';
+            
+            var userApiKey = document.getElementById('apiKey').value.trim();
+            
+            fetch('/api/adjudicate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    question: lastAssessment.question,
+                    initialAssessment: lastAssessment.assessment,
+                    verifyAssessment: lastVerification.assessment,
+                    initialScore: lastAssessment.realityScore,
+                    verifyScore: lastVerification.realityScore,
+                    initialStructured: lastAssessment.structured,
+                    verifyStructured: lastVerification.structured,
+                    userApiKey: userApiKey
+                })
+            })
+            .then(function(res) {
+                if (!res.ok) {
+                    return res.json().then(function(err) {
+                        throw new Error(err.error || 'Adjudication failed');
+                    });
+                }
+                return res.json();
+            })
+            .then(function(data) {
+                console.log('Adjudicate response:', data);
+                renderAdjudicationResults(data);
+            })
+            .catch(function(err) {
+                console.error('Adjudicate error:', err);
+                alert('Adjudication failed: ' + err.message);
+            })
+            .finally(function() {
+                btn.disabled = false;
+                btn.textContent = 'Run Adjudication';
+            });
+        }
+
+        function renderAdjudicationResults(data) {
+            document.getElementById('adjudicationResults').classList.add('visible');
+            
+            // Final scores
+            var finalReality = data.finalRealityScore;
+            var finalIntegrity = data.finalIntegrityScore;
+            
+            var finalRealityEl = document.getElementById('finalRealityDisplay');
+            finalRealityEl.textContent = (finalReality >= 0 ? '+' : '') + finalReality;
+            finalRealityEl.className = 'final-score-value ' + getScoreClass(finalReality, false);
+            
+            var finalIntegrityEl = document.getElementById('finalIntegrityDisplay');
+            if (finalIntegrity !== null && finalIntegrity !== undefined) {
+                finalIntegrityEl.textContent = (finalIntegrity >= 0 ? '+' : '') + parseFloat(finalIntegrity).toFixed(1);
+                finalIntegrityEl.className = 'final-score-value ' + getScoreClass(finalIntegrity, true);
+            } else {
+                finalIntegrityEl.textContent = '—';
+            }
+            
+            // Winner badge
+            var winnerBadge = document.getElementById('winnerBadge');
+            if (data.winner === 'A') {
+                winnerBadge.textContent = 'Initial Assessment Prevailed';
+                winnerBadge.className = 'winner-badge initial';
+            } else if (data.winner === 'B') {
+                winnerBadge.textContent = 'Verification Assessment Prevailed';
+                winnerBadge.className = 'winner-badge verification';
+            } else {
+                winnerBadge.textContent = 'Consensus Reached';
+                winnerBadge.className = 'winner-badge';
+            }
+            
+            // Justification
+            var justification = 'No detailed justification provided.';
+            if (data.structured && data.structured.adjudication && data.structured.adjudication.justification) {
+                justification = data.structured.adjudication.justification;
+            }
+            document.getElementById('adjudicationJustification').textContent = justification;
+            
+            // Scroll to results
+            document.getElementById('adjudicationResults').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Close verify modal on overlay click
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('verify-modal-overlay')) {
+                closeVerifyModal();
+            }
+            if (e.target.classList.contains('compare-modal-overlay')) {
+                closeCompareModal();
+            }
+        });
+
+        // ================================
+        // SIDE-BY-SIDE COMPARISON MODAL
+        // ================================
+        function openCompareModal() {
+            if (!lastAssessment || !lastVerification) {
+                alert('Both assessments required for comparison.');
+                return;
+            }
+            
+            // Populate scores
+            var initReality = lastAssessment.realityScore;
+            var initIntegrity = lastAssessment.integrityScore;
+            var verifyReality = lastVerification.realityScore;
+            var verifyIntegrity = lastVerification.integrityScore;
+            
+            var initRealityEl = document.getElementById('compareInitialReality');
+            initRealityEl.textContent = (initReality >= 0 ? '+' : '') + initReality;
+            initRealityEl.className = 'compare-score-value ' + getScoreClass(initReality, false);
+            
+            var initIntegrityEl = document.getElementById('compareInitialIntegrity');
+            initIntegrityEl.textContent = (initIntegrity >= 0 ? '+' : '') + parseFloat(initIntegrity).toFixed(1);
+            initIntegrityEl.className = 'compare-score-value ' + getScoreClass(initIntegrity, true);
+            
+            var verifyRealityEl = document.getElementById('compareVerifyReality');
+            verifyRealityEl.textContent = (verifyReality >= 0 ? '+' : '') + verifyReality;
+            verifyRealityEl.className = 'compare-score-value ' + getScoreClass(verifyReality, false);
+            
+            var verifyIntegrityEl = document.getElementById('compareVerifyIntegrity');
+            verifyIntegrityEl.textContent = (verifyIntegrity >= 0 ? '+' : '') + parseFloat(verifyIntegrity).toFixed(1);
+            verifyIntegrityEl.className = 'compare-score-value ' + getScoreClass(verifyIntegrity, true);
+            
+            // Populate content columns
+            // Handle potential structure differences between initial and verification responses
+            var initialStructured = lastAssessment.structured || lastAssessment;
+            var verifyStructured = lastVerification.structured || lastVerification;
+            
+            console.log('Initial structured data:', initialStructured);
+            console.log('Verify structured data:', verifyStructured);
+            
+            populateCompareColumn('initialCompareContent', initialStructured, 'initial');
+            
+            // Check if verification returned null data (usually means it refused to assess)
+            var verifyHasData = verifyStructured && (
+                verifyStructured.realityFactors || 
+                verifyStructured.underlyingReality || 
+                verifyStructured.centralClaims
+            );
+            
+            if (verifyHasData) {
+                populateCompareColumn('verifyCompareContent', verifyStructured, 'verify');
+            } else {
+                // Show the verification's explanation instead
+                var verifyContainer = document.getElementById('verifyCompareContent');
+                var explanationText = lastVerification.assessment || 'Verification did not return structured data.';
+                verifyContainer.innerHTML = 
+                    '<div style="padding: 20px;">' +
+                    '<div style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 8px; padding: 16px; margin-bottom: 16px;">' +
+                    '<h4 style="color: #ef4444; margin-bottom: 8px;">⚠️ Verification Could Not Complete Assessment</h4>' +
+                    '<p style="color: var(--text-secondary); font-size: 0.85rem;">The verification process did not return structured analysis data. This may occur when the verifier determines the claim requires a different assessment approach.</p>' +
+                    '</div>' +
+                    '<div style="background: var(--bg-secondary); border-radius: 8px; padding: 16px;">' +
+                    '<h4 style="color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">Verifier\'s Response:</h4>' +
+                    '<p style="color: var(--text-primary); font-size: 0.85rem; line-height: 1.6; white-space: pre-wrap;">' + escapeHtml(explanationText.substring(0, 2000)) + (explanationText.length > 2000 ? '...' : '') + '</p>' +
+                    '</div>' +
+                    '</div>';
+            }
+            
+            // Show modal
+            document.getElementById('compareModal').classList.add('visible');
+        }
+        
+        function closeCompareModal() {
+            document.getElementById('compareModal').classList.remove('visible');
+        }
+        
+        function populateCompareColumn(containerId, structured, prefix) {
+            var container = document.getElementById(containerId);
+            container.innerHTML = '';
+            
+            // Debug: log what we're working with
+            console.log('Populating ' + prefix + ' column with:', structured);
+            
+            var sections = [
+                { key: 'realityFactors', title: '📊 Reality Score Breakdown', icon: 'reality' },
+                { key: 'integrity', title: '🔬 Integrity Score Breakdown', icon: 'integrity' },
+                { key: 'underlyingReality', title: '🔍 The Underlying Reality', icon: 'truth' },
+                { key: 'centralClaims', title: '🎯 Central Claims', icon: 'claims' },
+                { key: 'frameworkAnalysis', altKey: 'perspectiveAnalysis', title: '🧩 Framework Analysis', icon: 'framework' },
+                { key: 'truthDistortionPatterns', title: '⚠️ Truth Distortion Patterns', icon: 'distortion' },
+                { key: 'evidenceAnalysis', title: '⚖️ Evidence Analysis', icon: 'evidence' }
+            ];
+            
+            sections.forEach(function(section, index) {
+                var content = null;
+                
+                // Try to get content from structured data
+                if (structured) {
+                    // Try primary key first
+                    if (structured[section.key]) {
+                        content = structured[section.key];
+                    }
+                    // Try alternate key if primary not found (e.g., perspectiveAnalysis for frameworkAnalysis)
+                    else if (section.altKey && structured[section.altKey]) {
+                        content = structured[section.altKey];
+                    }
+                }
+                
+                var sectionId = prefix + '_' + section.key;
+                var formattedContent = formatCompareContent(content, section.key);
+                
+                var sectionHtml = '<div class="compare-section">' +
+                    '<div class="compare-section-header" onclick="toggleCompareSection(\'' + sectionId + '\')">' +
+                    '<button class="compare-section-toggle" id="' + sectionId + 'Toggle">+</button>' +
+                    '<h4>' + section.title + '</h4>' +
+                    '</div>' +
+                    '<div class="compare-section-content" id="' + sectionId + 'Content">' +
+                    '<div class="compare-section-content-inner">' + formattedContent + '</div>' +
+                    '</div>' +
+                    '</div>';
+                    
+                container.innerHTML += sectionHtml;
+            });
+        }
+        
+        function formatCompareContent(content, sectionKey) {
+            if (!content) return '<p style="color: var(--text-muted); font-style: italic;">Not available</p>';
+            
+            // Special handling for realityFactors - handle BOTH object format (Initial) and array format
+            if (sectionKey === 'realityFactors') {
+                // Check if it's the object format (from Initial Assessment)
+                if (typeof content === 'object' && !Array.isArray(content)) {
+                    var html = '<div style="margin: 0; padding: 0;">';
+                    
+                    // Expected properties from Initial Assessment
+                    var factors = [
+                        { key: 'evidenceQuality', label: 'Evidence Quality', weight: '40%' },
+                        { key: 'epistemologicalSoundness', label: 'Epistemological Soundness', weight: '30%' },
+                        { key: 'sourceReliability', label: 'Source Reliability', weight: '20%' },
+                        { key: 'logicalCoherence', label: 'Logical Coherence', weight: '10%' }
+                    ];
+                    
+                    factors.forEach(function(factor) {
+                        if (content[factor.key]) {
+                            var f = content[factor.key];
+                            var score = f.score !== undefined ? ' <strong style="color: var(--accent-blue);">(' + (f.score >= 0 ? '+' : '') + f.score + ')</strong>' : '';
+                            html += '<div style="margin-bottom: 12px; padding: 8px; background: rgba(0,0,0,0.2); border-radius: 6px;">' +
+                                '<strong>' + factor.label + ' (' + factor.weight + ')</strong>' + score +
+                                (f.explanation ? '<br><span style="color: var(--text-secondary);">' + f.explanation + '</span>' : '') +
+                                '</div>';
+                        }
+                    });
+                    
+                    html += '</div>';
+                    return html || '<p style="color: var(--text-muted); font-style: italic;">Not available</p>';
+                }
+                
+                // Array format (legacy or alternative)
+                if (Array.isArray(content)) {
+                    return '<ul style="margin: 0; padding-left: 0; list-style: none;">' + 
+                        content.map(function(factor) {
+                            var score = factor.score !== undefined ? ' <strong style="color: var(--accent-blue);">(' + (factor.score >= 0 ? '+' : '') + factor.score + ')</strong>' : '';
+                            return '<li style="margin-bottom: 12px; padding: 8px; background: rgba(0,0,0,0.2); border-radius: 6px;">' +
+                                '<strong>' + (factor.factor || factor.name || 'Factor') + '</strong>' + score +
+                                (factor.assessment ? '<br><span style="color: var(--text-secondary);">' + factor.assessment + '</span>' : '') +
+                                '</li>';
+                        }).join('') + '</ul>';
+                }
+            }
+            
+            // Special handling for integrity (object with nested dimension objects)
+            if (sectionKey === 'integrity' && typeof content === 'object' && !Array.isArray(content)) {
+                var html = '';
+                
+                // Handle observable - it's an OBJECT with score and evidence properties
+                if (content.observable && typeof content.observable === 'object') {
+                    var obs = content.observable;
+                    var obsScore = obs.score !== undefined ? ' <strong style="color: var(--accent-teal);">(' + (obs.score >= 0 ? '+' : '') + obs.score.toFixed(1) + ')</strong>' : '';
+                    html += '<div style="margin-bottom: 12px; padding: 10px; background: rgba(13, 148, 136, 0.1); border-radius: 6px; border-left: 3px solid var(--accent-teal);">';
+                    html += '<strong>📋 Observable</strong>' + obsScore;
+                    if (obs.sourcesCited) html += '<br><span style="color: var(--text-secondary); font-size: 0.85rem;">Sources Cited: ' + obs.sourcesCited + '</span>';
+                    if (obs.limitationsAcknowledged) html += '<br><span style="color: var(--text-secondary); font-size: 0.85rem;">Limitations Acknowledged: ' + obs.limitationsAcknowledged + '</span>';
+                    if (obs.counterArgumentsAddressed) html += '<br><span style="color: var(--text-secondary); font-size: 0.85rem;">Counter-Arguments: ' + obs.counterArgumentsAddressed + '</span>';
+                    if (obs.fallaciesPresent) html += '<br><span style="color: var(--text-secondary); font-size: 0.85rem;">Fallacies: ' + obs.fallaciesPresent + '</span>';
+                    html += '</div>';
+                } else if (content.observable !== undefined) {
+                    // Simple value fallback
+                    html += '<p style="margin-bottom: 8px;"><strong>Observable:</strong> ' + content.observable + '</p>';
+                }
+                
+                // Handle comparative - it's an OBJECT with score, percentile, baseline, gaps
+                if (content.comparative && typeof content.comparative === 'object') {
+                    var comp = content.comparative;
+                    var compScore = comp.score !== undefined ? ' <strong style="color: var(--accent-blue);">(' + (comp.score >= 0 ? '+' : '') + comp.score.toFixed(1) + ')</strong>' : '';
+                    html += '<div style="margin-bottom: 12px; padding: 10px; background: rgba(59, 130, 246, 0.1); border-radius: 6px; border-left: 3px solid var(--accent-blue);">';
+                    html += '<strong>📈 Comparative</strong>' + compScore;
+                    if (comp.percentile !== undefined) html += '<br><span style="color: var(--text-secondary); font-size: 0.85rem;">Percentile: Top ' + (100 - comp.percentile) + '%</span>';
+                    if (comp.baseline) html += '<br><span style="color: var(--text-secondary); font-size: 0.85rem;">Baseline: ' + comp.baseline + '</span>';
+                    if (comp.gaps && comp.gaps.length > 0) html += '<br><span style="color: var(--text-secondary); font-size: 0.85rem;">Gaps: ' + comp.gaps.join('; ') + '</span>';
+                    html += '</div>';
+                } else if (content.comparative !== undefined) {
+                    html += '<p style="margin-bottom: 8px;"><strong>Comparative:</strong> ' + content.comparative + '</p>';
+                }
+                
+                // Handle bias - it's an OBJECT with score, inflammatoryLanguage, playbookPatterns, etc.
+                if (content.bias && typeof content.bias === 'object') {
+                    var bias = content.bias;
+                    var biasScore = bias.score !== undefined ? ' <strong style="color: var(--accent-purple);">(' + (bias.score >= 0 ? '+' : '') + bias.score.toFixed(1) + ')</strong>' : '';
+                    html += '<div style="margin-bottom: 12px; padding: 10px; background: rgba(139, 92, 246, 0.1); border-radius: 6px; border-left: 3px solid var(--accent-purple);">';
+                    html += '<strong>🎯 Bias</strong>' + biasScore;
+                    if (bias.inflammatoryLanguage) html += '<br><span style="color: var(--text-secondary); font-size: 0.85rem;">Inflammatory Language: ' + bias.inflammatoryLanguage + '</span>';
+                    if (bias.oneSidedFraming) html += '<br><span style="color: var(--text-secondary); font-size: 0.85rem;">One-Sided Framing: ' + bias.oneSidedFraming + '</span>';
+                    if (bias.playbookPatterns && bias.playbookPatterns.length > 0) html += '<br><span style="color: var(--text-secondary); font-size: 0.85rem;">Playbook Patterns: ' + bias.playbookPatterns.join('; ') + '</span>';
+                    if (bias.inaccuracies && bias.inaccuracies.length > 0) html += '<br><span style="color: var(--text-secondary); font-size: 0.85rem;">Inaccuracies: ' + bias.inaccuracies.join('; ') + '</span>';
+                    html += '</div>';
+                } else if (content.bias !== undefined) {
+                    html += '<p style="margin-bottom: 8px;"><strong>Bias:</strong> ' + content.bias + '</p>';
+                }
+                
+                if (content.overall !== undefined) {
+                    html += '<p style="margin-bottom: 8px;"><strong>Overall:</strong> ' + content.overall + '</p>';
+                }
+                
+                return html || '<p style="color: var(--text-muted); font-style: italic;">Not available</p>';
+            }
+            
+            // Special handling for underlyingReality (object with coreFinding, howWeKnow, whyItMatters)
+            if (sectionKey === 'underlyingReality' && typeof content === 'object' && !Array.isArray(content)) {
+                var html = '';
+                if (content.coreFinding) {
+                    html += '<p style="margin-bottom: 12px;"><strong style="color: var(--accent-teal);">Core Finding:</strong> ' + content.coreFinding + '</p>';
+                }
+                if (content.howWeKnow) {
+                    html += '<p style="margin-bottom: 12px;"><strong style="color: var(--accent-blue);">How We Know:</strong> ' + content.howWeKnow + '</p>';
+                }
+                if (content.whyItMatters) {
+                    html += '<p style="margin-bottom: 12px;"><strong style="color: var(--accent-purple);">Why It Matters:</strong> ' + content.whyItMatters + '</p>';
+                }
+                return html || formatGenericContent(content);
+            }
+            
+            // Special handling for centralClaims (object with explicit/hidden)
+            if (sectionKey === 'centralClaims' && typeof content === 'object' && !Array.isArray(content)) {
+                var html = '';
+                if (content.explicit) {
+                    html += '<p style="margin-bottom: 8px;"><strong>Explicit:</strong> ' + content.explicit + '</p>';
+                }
+                if (content.hidden) {
+                    html += '<p style="margin-bottom: 8px;"><strong>Hidden:</strong> ' + content.hidden + '</p>';
+                }
+                return html || formatGenericContent(content);
+            }
+            
+            // Special handling for evidenceAnalysis (object with whatSupportsTheClaim, etc.)
+            if (sectionKey === 'evidenceAnalysis' && typeof content === 'object' && !Array.isArray(content)) {
+                var html = '';
+                if (content.whatSupportsTheClaim) {
+                    html += '<p style="margin-bottom: 12px;"><strong style="color: var(--score-positive);">What Supports the Claim:</strong> ' + content.whatSupportsTheClaim + '</p>';
+                }
+                if (content.whatComplicatesIt) {
+                    html += '<p style="margin-bottom: 12px;"><strong style="color: var(--accent-amber);">What Complicates It:</strong> ' + content.whatComplicatesIt + '</p>';
+                }
+                if (content.whatRemainsGenuinelyUncertain) {
+                    html += '<p style="margin-bottom: 12px;"><strong style="color: var(--text-muted);">What Remains Uncertain:</strong> ' + content.whatRemainsGenuinelyUncertain + '</p>';
+                }
+                // Handle other common evidence analysis fields
+                if (content.supporting && Array.isArray(content.supporting)) {
+                    html += '<p style="margin-bottom: 8px;"><strong>Supporting Evidence:</strong></p><ul style="margin-left: 16px;">';
+                    content.supporting.forEach(function(item) { html += '<li>' + item + '</li>'; });
+                    html += '</ul>';
+                }
+                if (content.contradicting && Array.isArray(content.contradicting)) {
+                    html += '<p style="margin-bottom: 8px;"><strong>Contradicting Evidence:</strong></p><ul style="margin-left: 16px;">';
+                    content.contradicting.forEach(function(item) { html += '<li>' + item + '</li>'; });
+                    html += '</ul>';
+                }
+                return html || formatGenericContent(content);
+            }
+            
+            // Special handling for truthDistortionPatterns (usually an array of strings)
+            if (sectionKey === 'truthDistortionPatterns') {
+                if (Array.isArray(content)) {
+                    if (content.length === 0) {
+                        return '<p style="color: var(--score-positive);">No significant distortion patterns detected.</p>';
+                    }
+                    return '<ul style="margin: 0; padding-left: 20px;">' + 
+                        content.map(function(pattern) {
+                            return '<li style="margin-bottom: 8px; color: var(--accent-amber);">' + pattern + '</li>';
+                        }).join('') + '</ul>';
+                }
+                // If it's a string
+                if (typeof content === 'string') {
+                    return '<p>' + content + '</p>';
+                }
+            }
+            
+            // Special handling for frameworkAnalysis / perspectiveAnalysis
+            if ((sectionKey === 'frameworkAnalysis' || sectionKey === 'perspectiveAnalysis') && typeof content === 'object' && !Array.isArray(content)) {
+                var html = '';
+                if (content.complementaryInsight) {
+                    html += '<p style="margin-bottom: 12px;"><strong style="color: var(--accent-cyan);">Complementary Insight:</strong> ' + content.complementaryInsight + '</p>';
+                }
+                if (content.bridgingWisdom) {
+                    html += '<p style="margin-bottom: 12px;"><strong style="color: var(--accent-purple);">Bridging Wisdom:</strong> ' + content.bridgingWisdom + '</p>';
+                }
+                // Handle other common framework fields
+                for (var key in content) {
+                    if (content.hasOwnProperty(key) && !['complementaryInsight', 'bridgingWisdom'].includes(key)) {
+                        var label = key.replace(/([A-Z])/g, ' $1').replace(/^./, function(s) { return s.toUpperCase(); });
+                        var value = typeof content[key] === 'object' ? JSON.stringify(content[key]) : content[key];
+                        html += '<p style="margin-bottom: 8px;"><strong>' + label + ':</strong> ' + value + '</p>';
+                    }
+                }
+                return html || formatGenericContent(content);
+            }
+            
+            // Generic handling
+            return formatGenericContent(content);
+        }
+        
+        function formatGenericContent(content) {
+            if (!content) return '<p style="color: var(--text-muted); font-style: italic;">Not available</p>';
+            
+            if (typeof content === 'string') {
+                // Convert newlines to paragraphs
+                return content.split('\n').filter(function(p) { return p.trim(); }).map(function(p) {
+                    return '<p style="margin-bottom: 8px;">' + p + '</p>';
+                }).join('');
+            }
+            
+            if (Array.isArray(content)) {
+                return '<ul style="margin: 0; padding-left: 20px;">' + 
+                    content.map(function(item) {
+                        if (typeof item === 'object' && item.claim) {
+                            return '<li style="margin-bottom: 8px;"><strong>' + item.claim + '</strong>' + 
+                                (item.assessment ? '<br><span style="color: var(--text-muted);">' + item.assessment + '</span>' : '') + '</li>';
+                        }
+                        if (typeof item === 'object') {
+                            return '<li style="margin-bottom: 8px;">' + JSON.stringify(item) + '</li>';
+                        }
+                        return '<li style="margin-bottom: 4px;">' + item + '</li>';
+                    }).join('') + '</ul>';
+            }
+            
+            if (typeof content === 'object') {
+                var html = '';
+                for (var key in content) {
+                    if (content.hasOwnProperty(key)) {
+                        var label = key.replace(/([A-Z])/g, ' $1').replace(/^./, function(s) { return s.toUpperCase(); });
+                        html += '<p style="margin-bottom: 8px;"><strong>' + label + ':</strong> ' + 
+                            (typeof content[key] === 'object' ? JSON.stringify(content[key]) : content[key]) + '</p>';
+                    }
+                }
+                return html || '<p style="color: var(--text-muted); font-style: italic;">Not available</p>';
+            }
+            
+            return '<p>' + String(content) + '</p>';
+        }
+        
+        function toggleCompareSection(sectionId) {
+            var content = document.getElementById(sectionId + 'Content');
+            var toggle = document.getElementById(sectionId + 'Toggle');
+            if (content && toggle) {
+                content.classList.toggle('expanded');
+                toggle.textContent = content.classList.contains('expanded') ? '−' : '+';
+            }
+        }
+    </script>
+    <!-- Verify Modal -->
+    <div class="verify-modal-overlay" id="verifyModal">
+        <div class="verify-modal">
+            <div class="verify-modal-header">
+                <h2><span>✓</span> Verification Results</h2>
+                <button class="verify-modal-close" onclick="closeVerifyModal()">&times;</button>
+            </div>
+            <div class="verify-modal-body">
+                <!-- Processing State -->
+                <div class="verify-processing" id="verifyProcessing">
+                    <div class="verify-spinner"></div>
+                    <p class="gathering-label">Verification Analysis in Progress</p>
+                    <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 8px;">Researching current sources • Cross-referencing evidence • Fresh philosophical perspective</p>
+                    <div class="timer" id="verifyTimer">00:00</div>
+                </div>
+                
+                <!-- Results -->
+                <div id="verifyResults" style="display: none;">
+                    <!-- Side-by-Side Comparison -->
+                    <div class="comparison-grid">
+                        <div class="comparison-card initial">
+                            <div class="comparison-card-header">Initial Assessment</div>
+                            <div class="comparison-card-body">
+                                <div class="comparison-score-row">
+                                    <span class="comparison-score-label">Reality Score</span>
+                                    <span class="comparison-score-value" id="initialRealityDisplay">—</span>
+                                </div>
+                                <div class="comparison-score-row">
+                                    <span class="comparison-score-label">Integrity Score</span>
+                                    <span class="comparison-score-value" id="initialIntegrityDisplay">—</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="comparison-card verification">
+                            <div class="comparison-card-header">Verification Assessment</div>
+                            <div class="comparison-card-body">
+                                <div class="comparison-score-row">
+                                    <span class="comparison-score-label">Reality Score</span>
+                                    <span class="comparison-score-value" id="verifyRealityDisplay">—</span>
+                                </div>
+                                <div class="comparison-score-row">
+                                    <span class="comparison-score-label">Integrity Score</span>
+                                    <span class="comparison-score-value" id="verifyIntegrityDisplay">—</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Alignment Status -->
+                    <div class="alignment-status" id="alignmentStatus">
+                        <h3 id="alignmentTitle">Checking alignment...</h3>
+                        <p id="alignmentMessage"></p>
+                    </div>
+                    
+                    <!-- Compare Full Details Button -->
+                    <div style="text-align: center;">
+                        <button class="btn-compare" onclick="openCompareModal()">
+                            <span>📊</span> Compare Full Details Side-by-Side
+                        </button>
+                    </div>
+                    
+                    <!-- Consensus Section (only shows when divergent) -->
+                    <div class="consensus-section" id="consensusSection">
+                        <h3><span>🤝</span> Seek Consensus</h3>
+                        <p>The assessments show significant divergence. An independent adjudicator can evaluate both analyses and determine a final authoritative score based on reasoning quality and evidence strength.</p>
+                        <button class="btn-consensus" id="consensusBtn" onclick="runAdjudicate()">Run Adjudication</button>
+                    </div>
+                    
+                    <!-- Adjudication Results (shows after consensus) -->
+                    <div class="adjudication-results" id="adjudicationResults">
+                        <div class="adjudication-header">
+                            <h3>Final Consensus Score</h3>
+                            <div class="final-scores">
+                                <div class="final-score-item">
+                                    <div class="final-score-label">Reality</div>
+                                    <div class="final-score-value" id="finalRealityDisplay">—</div>
+                                </div>
+                                <div class="final-score-item">
+                                    <div class="final-score-label">Integrity</div>
+                                    <div class="final-score-value" id="finalIntegrityDisplay">—</div>
+                                </div>
+                            </div>
+                            <div class="winner-badge" id="winnerBadge">—</div>
+                        </div>
+                        <div class="adjudication-justification">
+                            <h4>Adjudicator's Reasoning</h4>
+                            <p id="adjudicationJustification">Loading...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Amplify Modal -->
+    <div class="amplify-modal-overlay" id="amplifyModal">
+        <div class="amplify-modal">
+            <div class="amplify-modal-header">
+                <h2><span>🔍</span> Amplified Analysis</h2>
+                <button class="amplify-modal-close" onclick="closeAmplifyModal()">&times;</button>
+            </div>
+            <div class="amplify-modal-body">
+                <!-- Processing State -->
+                <div class="amplify-processing" id="amplifyProcessing">
+                    <div class="amplify-spinner"></div>
+                    <p class="gathering-label">Gathering Perspective</p>
+                    <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 8px;">Challenging assumptions • Exploring alternatives • Finding blind spots</p>
+                    <div class="timer" id="amplifyTimer">00:00</div>
+                </div>
+                
+                <!-- Results -->
+                <div id="amplifyResults" style="display: none;">
+                    <!-- Summary -->
+                    <div class="amplify-summary">
+                        <h3>Amplification Summary</h3>
+                        <p id="amplifySummaryText">Loading...</p>
+                    </div>
+                    
+                    <!-- Confidence Adjustment -->
+                    <div class="amplify-confidence">
+                        <div class="confidence-card" id="confidenceCard">
+                            <div class="confidence-direction" id="confidenceArrow">→</div>
+                            <div class="confidence-label">Confidence Adjustment</div>
+                            <div class="confidence-value" id="confidenceValue">Unchanged</div>
+                            <div class="confidence-reason" id="confidenceReason">Analyzing...</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Collapsible Sections -->
+                    <div class="amplify-sections">
+                        <!-- 1. Challenges to Assumptions -->
+                        <div class="amplify-section">
+                            <div class="amplify-section-header" onclick="toggleAmplifySection('challenges')">
+                                <button class="amplify-section-toggle" id="challengesToggle">+</button>
+                                <div class="amplify-section-title challenges">
+                                    <span>⚠️</span> Challenges to Assumptions
+                                </div>
+                            </div>
+                            <div class="amplify-section-content" id="challengesContent">
+                                <ul id="challengesList"></ul>
+                            </div>
+                        </div>
+                        
+                        <!-- 2. Alternative Interpretations -->
+                        <div class="amplify-section">
+                            <div class="amplify-section-header" onclick="toggleAmplifySection('alternatives')">
+                                <button class="amplify-section-toggle" id="alternativesToggle">+</button>
+                                <div class="amplify-section-title alternatives">
+                                    <span>🔄</span> Alternative Interpretations
+                                </div>
+                            </div>
+                            <div class="amplify-section-content" id="alternativesContent">
+                                <ul id="alternativesList"></ul>
+                            </div>
+                        </div>
+                        
+                        <!-- 3. Blind Spots -->
+                        <div class="amplify-section">
+                            <div class="amplify-section-header" onclick="toggleAmplifySection('blindspots')">
+                                <button class="amplify-section-toggle" id="blindspotsToggle">+</button>
+                                <div class="amplify-section-title blindspots">
+                                    <span>👁️</span> Blind Spots
+                                </div>
+                            </div>
+                            <div class="amplify-section-content" id="blindspotsContent">
+                                <ul id="blindspotsList"></ul>
+                            </div>
+                        </div>
+                        
+                        <!-- 4. Stress Tests -->
+                        <div class="amplify-section">
+                            <div class="amplify-section-header" onclick="toggleAmplifySection('stresstests')">
+                                <button class="amplify-section-toggle" id="stresstestsToggle">+</button>
+                                <div class="amplify-section-title stresstests">
+                                    <span>🔬</span> Stress Tests
+                                </div>
+                            </div>
+                            <div class="amplify-section-content" id="stresstestsContent">
+                                <ul id="stresstestsList"></ul>
+                            </div>
+                        </div>
+                        
+                        <!-- 5. Significant Changes -->
+                        <div class="amplify-section">
+                            <div class="amplify-section-header" onclick="toggleAmplifySection('changes')">
+                                <button class="amplify-section-toggle" id="changesToggle">+</button>
+                                <div class="amplify-section-title changes">
+                                    <span>📊</span> Significant Changes
+                                </div>
+                            </div>
+                            <div class="amplify-section-content" id="changesContent">
+                                <ul id="changesList"></ul>
+                            </div>
+                        </div>
+                        
+                        <!-- 6. Bottom Line Analysis -->
+                        <div class="amplify-section">
+                            <div class="amplify-section-header" onclick="toggleAmplifySection('bottomline')">
+                                <button class="amplify-section-toggle" id="bottomlineToggle">+</button>
+                                <div class="amplify-section-title bottomline">
+                                    <span>📋</span> Bottom Line Analysis
+                                </div>
+                            </div>
+                            <div class="amplify-section-content" id="bottomlineContent">
+                                <p class="amplify-bottomline-text" id="bottomlineText"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Side-by-Side Comparison Modal -->
+    <div class="compare-modal-overlay" id="compareModal">
+        <div class="compare-modal">
+            <div class="compare-modal-header">
+                <h2><span>📊</span> Side-by-Side Assessment Comparison</h2>
+                <button class="compare-modal-close" onclick="closeCompareModal()">&times;</button>
+            </div>
+            <div class="compare-modal-body">
+                <!-- Initial Assessment Column -->
+                <div class="compare-column initial">
+                    <div class="compare-column-header">Initial Assessment</div>
+                    <div class="compare-column-scores">
+                        <div class="compare-score-item">
+                            <div class="compare-score-label">Reality</div>
+                            <div class="compare-score-value" id="compareInitialReality">—</div>
+                        </div>
+                        <div class="compare-score-item">
+                            <div class="compare-score-label">Integrity</div>
+                            <div class="compare-score-value" id="compareInitialIntegrity">—</div>
+                        </div>
+                    </div>
+                    <div class="compare-column-content" id="initialCompareContent">
+                        <!-- Sections populated by JS -->
+                    </div>
+                </div>
+                
+                <!-- Verification Assessment Column -->
+                <div class="compare-column verification">
+                    <div class="compare-column-header">Verification Assessment</div>
+                    <div class="compare-column-scores">
+                        <div class="compare-score-item">
+                            <div class="compare-score-label">Reality</div>
+                            <div class="compare-score-value" id="compareVerifyReality">—</div>
+                        </div>
+                        <div class="compare-score-item">
+                            <div class="compare-score-label">Integrity</div>
+                            <div class="compare-score-value" id="compareVerifyIntegrity">—</div>
+                        </div>
+                    </div>
+                    <div class="compare-column-content" id="verifyCompareContent">
+                        <!-- Sections populated by JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
