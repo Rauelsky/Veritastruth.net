@@ -2818,21 +2818,21 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
         }
 
         function getWarmRealityMeaning(score) {
-            if (score >= 8) return "Well, look at that—something on the internet that's actually true. 🎉 Mark your calendars.";
-            if (score >= 5) return "Pretty solid! Not 'bet your house on it' solid, but 'confidently bring it up at dinner' solid.";
-            if (score >= 2) return "Leaning true, but with enough wobble to keep us humble. Think of it as 'probably, but...'";
-            if (score >= -1) return "Welcome to the gray zone, population: this claim. Honestly could go either way.";
-            if (score >= -4) return "Getting some side-eye from the evidence. Not dead wrong, but definitely suspicious.";
-            if (score >= -7) return "Oof. This one's struggling. Like 'my dog ate my homework' levels of credibility.";
-            return "Yeah... this isn't it. The evidence said 'no thank you' and left the building.";
+            if (score >= 8) return "This is the epistemological equivalent of a firm handshake. Well done finding something solid out there.";
+            if (score >= 5) return "Pretty sturdy! Like a bridge that'll hold, even if you wouldn't do jumping jacks on it.";
+            if (score >= 2) return "Leaning toward true, but with a wobble. Like most things worth knowing, it's complicated.";
+            if (score >= -1) return "Welcome to the gray zone—where honest people live most of the time.";
+            if (score >= -4) return "This one's giving side-eye. Not wrong enough to dismiss, not right enough to trust.";
+            if (score >= -7) return "The evidence is not impressed. Like a cat that's seen your excuse before.";
+            return "This claim has the structural integrity of a chocolate teapot.";
         }
 
         function getWarmIntegrityMeaning(score) {
-            if (score >= 0.7) return "Refreshingly honest presentation. They actually acknowledged the complicated parts!";
-            if (score >= 0.4) return "Reasonably fair. Some spin, but not 'used car salesman' levels.";
-            if (score >= 0) return "A bit one-sided, like your uncle at Thanksgiving. Means well, maybe.";
-            if (score >= -0.4) return "The spin is strong with this one. 🌀 Someone really wants you to believe something.";
-            return "This is less 'information' and more 'persuasion wearing an information costume.'";
+            if (score >= 0.7) return "Presented with intellectual honesty! Someone actually showed their work. Refreshing.";
+            if (score >= 0.4) return "Mostly fair. A few fingerprints on the scale, but who among us...";
+            if (score >= 0) return "Some spin in the delivery. Like a realtor saying 'cozy' when they mean 'small.'";
+            if (score >= -0.4) return "The framing is doing heavy lifting here. Very heavy. Suspiciously heavy.";
+            return "This is less 'information' and more 'persuasion in a trench coat.'";
         }
 
         function generateWarmSummary(realityScore, integrityScore, structured) {
@@ -2882,19 +2882,25 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
                 }
             }
             
-            // Now add the comedy framing based on scores
-            if (realityScore >= 5 && integrityScore >= 0.3) {
-                summary += "📊 <strong>Bottom line:</strong> Plot twist—this one's actually legit AND honestly presented. I know, I'm as surprised as you are. It's like finding a unicorn, except the unicorn has citations.";
+            // Now add the humor based on scores - with historical analogies and gentle wit
+            if (realityScore >= 8 && integrityScore >= 0.5) {
+                summary += "📊 <strong>Bottom line:</strong> I haven't seen reasoning this solid since Eratosthenes calculated the Earth's circumference with two sticks and a shadow. Someone did their homework, and it shows.";
+            } else if (realityScore >= 5 && integrityScore >= 0.3) {
+                summary += "📊 <strong>Bottom line:</strong> This is like finding a well-sourced Wikipedia article—not perfect, but someone actually cared about getting it right. That's rarer than it should be.";
             } else if (realityScore >= 5 && integrityScore < 0.3) {
-                summary += "📊 <strong>Bottom line:</strong> The core claim is actually true! But whoever wrote this wrapped it in so much spin it's basically a washing machine. The facts are good; the presentation needs a shower.";
-            } else if (realityScore < -3 && integrityScore < 0) {
-                summary += "📊 <strong>Bottom line:</strong> Bad news comes in pairs today—the claim is shaky AND it's being sold hard. It's like someone put a tuxedo on a falsehood and hoped we wouldn't notice. We noticed.";
+                summary += "📊 <strong>Bottom line:</strong> Here's an interesting case: the core claim holds up, but the presentation is working overtime. It's like a good product with a bad infomercial—the thing is real, even if the pitch is exhausting.";
+            } else if (realityScore >= 2 && realityScore <= 4 && integrityScore >= 0) {
+                summary += "📊 <strong>Bottom line:</strong> This lives in 'probably true but let's not get cocky' territory. Like weather forecasts—right often enough to be useful, wrong often enough to carry an umbrella.";
             } else if (realityScore >= -2 && realityScore <= 2) {
-                summary += "📊 <strong>Bottom line:</strong> I'm going to level with you—this is genuinely complicated. Not because I'm lazy, but because the evidence actually points in different directions. Sometimes 'it's messy' isn't a cop-out; it's just reality.";
+                summary += "📊 <strong>Bottom line:</strong> We've landed squarely in 'it's complicated' territory—which, frustratingly, is where most interesting questions live. Aristotle spent his whole life here. You're in good company.";
+            } else if (realityScore < -3 && integrityScore < -0.3) {
+                summary += "📊 <strong>Bottom line:</strong> This has all the hallmarks of a 19th-century patent medicine ad: confident tone, vague evidence, and a strong preference that you not ask follow-up questions. The claim is shaky AND the presentation knows it.";
+            } else if (realityScore < -5 && integrityScore >= 0) {
+                summary += "📊 <strong>Bottom line:</strong> Credit where due: at least this was presented honestly. The claim doesn't hold up, but whoever made it wasn't trying to trick you—they were just wrong. That's... actually kind of refreshing?";
             } else if (realityScore < -3) {
-                summary += "📊 <strong>Bottom line:</strong> Look, I don't love being the bearer of bad news, but this claim and reality are not on speaking terms. The good news? Now you know. The better news? You can stop wondering.";
+                summary += "📊 <strong>Bottom line:</strong> The evidence and this claim are not on speaking terms. This is the epistemological equivalent of those 'GET RICH QUICK' flyers that blew onto your windshield—the confidence is inversely proportional to the substance.";
             } else {
-                summary += "📊 <strong>Bottom line:</strong> The results are in! Check out the details below for the full picture.";
+                summary += "📊 <strong>Bottom line:</strong> The results are in, and they're worth understanding. Expand the sections below for the full picture.";
             }
             
             // If summary is still too thin, add a note
@@ -2913,29 +2919,29 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
                 var patterns = structured.truthDistortionPatterns;
                 
                 if (patterns.some(function(p) { return p.toLowerCase().indexOf('emotional') >= 0 || p.toLowerCase().indexOf('fear') >= 0; })) {
-                    reasons.push("🎭 <strong>It pushes emotional buttons.</strong> Our brains evolved to react first and think second—great for escaping predators, less great for evaluating memes. When something makes us angry or scared, our inner fact-checker takes a coffee break.");
+                    reasons.push("🎭 <strong>It hits an emotional nerve.</strong> This is the oldest trick in rhetoric—Cicero was writing about it 2,000 years ago, and it still works because our amygdala hasn't gotten the firmware update. When something makes us feel strongly, our critical thinking takes a coffee break. Not a character flaw; just mammalian brain architecture.");
                 }
                 if (patterns.some(function(p) { return p.toLowerCase().indexOf('confirm') >= 0; })) {
-                    reasons.push("🪞 <strong>It confirms what we already believe.</strong> Ah, confirmation bias—my old friend. We're all walking around with mental bouncers who let in ideas we like and card the ones we don't. It's not a character flaw; it's a brain feature. An annoying one.");
+                    reasons.push("🪞 <strong>It tells us what we already suspect.</strong> Francis Bacon called this the 'Idol of the Cave' back in 1620—we each see the world from our own little cavern and mistake its shadows for universal truth. Four centuries later, we have the same bias but faster wifi.");
                 }
                 if (patterns.some(function(p) { return p.toLowerCase().indexOf('authority') >= 0 || p.toLowerCase().indexOf('expert') >= 0; })) {
-                    reasons.push("👔 <strong>Someone important-sounding said it.</strong> We're trained from birth to trust authority figures, which is usually efficient. But sometimes the lab coat is just a costume. Even real experts can be wrong, and fake experts are very good at looking real.");
+                    reasons.push("👔 <strong>It comes dressed in authority.</strong> Medieval peasants trusted anyone in fancy robes. We trust anyone with 'Dr.' in front of their name or a blue checkmark. The costume changed; the psychology didn't. To be fair, trusting expertise is usually smart—which is exactly why it's exploitable.");
                 }
                 if (patterns.some(function(p) { return p.toLowerCase().indexOf('simplif') >= 0; })) {
-                    reasons.push("✂️ <strong>It makes complicated things simple.</strong> Our brains LOVE a clean story. 'X causes Y' is so much more satisfying than 'X might contribute to Y under certain conditions that researchers are still studying.' Simple sells. Nuance? Not so much.");
+                    reasons.push("✂️ <strong>It makes a messy thing simple.</strong> Our brains are pattern-completion machines—we'd rather have a wrong answer than no answer. 'It's complicated' is true but unsatisfying, like plain oatmeal. A clean narrative is dessert, even when it's empty calories.");
                 }
-                if (patterns.some(function(p) { return p.toLowerCase().indexOf('us vs') >= 0 || p.toLowerCase().indexOf('them') >= 0; })) {
-                    reasons.push("⚔️ <strong>It's got a villain.</strong> Nothing makes a story stickier than a bad guy. Us vs. Them is humanity's oldest narrative framework. Our tribal ancestors needed it; our social media feeds exploit it.");
+                if (patterns.some(function(p) { return p.toLowerCase().indexOf('us vs') >= 0 || p.toLowerCase().indexOf('them') >= 0 || p.toLowerCase().indexOf('tribal') >= 0; })) {
+                    reasons.push("⚔️ <strong>It has a villain.</strong> Every propaganda poster from every war in history uses this. Give people an enemy and facts become optional. The Athenians blamed the Spartans, the Spartans blamed the Athenians, and here we are still doing it with different jerseys.");
                 }
             }
             
             if (reasons.length === 0) {
                 if (realityScore >= 5) {
-                    reasons.push("🎯 <strong>Plot twist: it feels true because it IS true.</strong> Sometimes the simplest explanation is the right one. Enjoy this moment—it doesn't happen as often as we'd like.");
+                    reasons.push("🎯 <strong>Sometimes things feel true because they are.</strong> Shocking, I know. In this case, the evidence actually supports the claim. Your instincts and the facts are in agreement—enjoy it, because it doesn't always happen.");
                 } else if (realityScore <= -5) {
-                    reasons.push("💭 <strong>It taps into real feelings about real problems.</strong> The best misinformation doesn't invent concerns—it hijacks legitimate ones. The anxiety or frustration you feel? That's real. The explanation being offered? Not so much.");
+                    reasons.push("💭 <strong>It speaks to real concerns, even if the specifics are wrong.</strong> The best misinformation doesn't invent fears—it hijacks existing ones. Whatever made this claim feel plausible? That underlying worry might be worth examining, even though this particular answer isn't it.");
                 } else {
-                    reasons.push("🤷 <strong>Honestly? It's genuinely ambiguous.</strong> I know that's unsatisfying. Our brains hate uncertainty like cats hate water. But sometimes 'I'm not sure' is the most honest answer available.");
+                    reasons.push("🤷 <strong>It's genuinely ambiguous.</strong> I know your brain hates this—mine does too. We're wired for certainty the way cats are wired for boxes. But sometimes the honest answer is 'the jury's still out,' and pretending otherwise would be its own kind of distortion.");
                 }
             }
             
@@ -2944,25 +2950,26 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
 
         function generateConfession(structured) {
             var confessions = [
-                "Last week I shared an article based entirely on the headline. The headline was wrong. I am not immune to propaganda; I am just aware of it. Slightly.",
-                "I once believed a 'study shows' claim without checking if the study existed. Spoiler: it did not. We are all works in progress.",
-                "I have mass-forwarded emails with 'warnings' that turned out to be hoaxes from 2003. In my defense, the fonts were very convincing.",
-                "I've dismissed accurate information because I didn't like the person sharing it. My brain said 'consider the source' when it should have said 'consider the evidence.'",
-                "I believed something for years because a smart friend believed it. Turns out smart people can be confidently wrong too. Who knew? (Everyone knew.)",
-                "I've rage-shared things that later turned out to be satire. In my defense, reality has gotten weird enough that satire is basically journalism now.",
-                "I once fell for a fake quote attributed to a historical figure because it sounded like something they'd say. It wasn't. They didn't.",
-                "I've been the person at the party confidently stating 'facts' that I later discovered were... not. The confidence was real. The facts were not.",
-                "I spent actual money on a product because of 'clinical studies' that turned out to be conducted by the company selling the product. Live and learn.",
-                "I've believed predictions from 'experts' who had been wrong about everything else. Hope springs eternal. So does gullibility, apparently."
+                "I once cited a 'study' in an argument that turned out to be a blog post citing another blog post citing a press release about a study. The confidence I had was extraordinary. The evidence chain was not.",
+                "I shared an article last month based purely on the headline. The headline, it turns out, was written by someone who also hadn't read the article. We were both very confident.",
+                "I spent three years believing a 'fact' I learned at a dinner party from someone who seemed very smart. They were smart. They were also wrong. These things are not mutually exclusive.",
+                "I've dismissed good information because it came from someone I found annoying. My loss, really. Truth doesn't care about the messenger's personality.",
+                "I once won an argument using statistics I later discovered I had completely misunderstood. Victory felt hollow when I realized I'd been confidently wrong out loud.",
+                "I believed a quote attributed to Einstein for years because it sounded like something Einstein would say. Einstein never said it. Neither did Mark Twain, who also gets credit for things he never said.",
+                "I've forwarded 'URGENT' warnings that turned out to be hoaxes from the early 2000s. In my defense, the exclamation points were very convincing.",
+                "I trusted a product review that I later realized was written by the product's manufacturer. The five stars should have been a clue. Nothing deserves five stars.",
+                "I've been the person at the party explaining something with great confidence that I had fundamentally misunderstood. The nodding heads were very encouraging until someone who actually knew things arrived.",
+                "I once based an opinion on a documentary that was later revealed to be mostly fabricated. It had good music and compelling graphics. These things are not indicators of truth."
             ];
             
             // Pick based on what patterns were detected
             if (structured && structured.truthDistortionPatterns && structured.truthDistortionPatterns.length > 0) {
                 var patterns = structured.truthDistortionPatterns.join(' ').toLowerCase();
-                if (patterns.indexOf('emotional') >= 0) return confessions[5];
-                if (patterns.indexOf('confirm') >= 0) return confessions[4];
-                if (patterns.indexOf('authority') >= 0) return confessions[8];
-                if (patterns.indexOf('viral') >= 0 || patterns.indexOf('share') >= 0) return confessions[0];
+                if (patterns.indexOf('emotional') >= 0) return confessions[2];
+                if (patterns.indexOf('confirm') >= 0) return confessions[3];
+                if (patterns.indexOf('authority') >= 0) return confessions[5];
+                if (patterns.indexOf('viral') >= 0 || patterns.indexOf('share') >= 0) return confessions[6];
+                if (patterns.indexOf('statistic') >= 0 || patterns.indexOf('data') >= 0) return confessions[4];
             }
             
             // Random selection as fallback
@@ -2970,15 +2977,15 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
         }
 
         function generateHistoricalPattern(patterns) {
-            var html = "🏛️ <strong>Humans have been falling for this exact thing for millennia:</strong><br><br>";
+            var html = "🏛️ <strong>You're not the first—this pattern is ancient:</strong><br><br>";
             
             var patternExamples = {
-                'emotional appeal': "Ancient Roman politicians used emotional appeals so effectively that Cicero literally wrote a manual about it. Two thousand years later, we're still clicking on outrage bait. Progress!",
-                'fear': "Fear-based messaging was old when the Black Death was new. Medieval pamphlets, Cold War propaganda, and your aunt's Facebook feed all use the same playbook. The font changed; the psychology didn't.",
-                'confirmation bias': "Aristotle warned about this. So did Francis Bacon in 1620. So did every psychology textbook since. And yet here we all are, still Googling until we find someone who agrees with us.",
-                'authority': "Fake experts have been a thing since people figured out that wearing a fancy hat makes you look credible. Lab coats are just the modern version of papal robes. (No offense to actual scientists or popes.)",
-                'simplification': "'Complex problem? Simple villain!' has been the formula since humans invented storytelling. It's satisfying, memorable, and often completely wrong. Our brains love a clean narrative like cats love boxes.",
-                'us vs them': "Tribal thinking kept our ancestors alive long enough to have descendants. Unfortunately, it also gave us holy wars, sports riots, and Twitter. Evolution: two steps forward, one step into the comments section."
+                'emotional appeal': "In 1898, William Randolph Hearst's newspapers whipped up war fever with Spain using dramatic (and often invented) stories. When artist Frederic Remington cabled that there was no war to illustrate, Hearst allegedly replied: 'You furnish the pictures, I'll furnish the war.' Emotional manipulation isn't new—it just has better distribution now.",
+                'fear': "During the Great Fear of 1789, French peasants burned down manor houses based on rumors of roving bandits that didn't exist. The fear was real; the bandits weren't. Three centuries later, the mechanism is identical—just swap 'bandits' for whatever today's panic is about.",
+                'confirmation bias': "Galileo's colleagues refused to look through his telescope because they already 'knew' the heavens were perfect and unchanging. Confirmation bias isn't stupidity—some of those men were brilliant. They just couldn't see past what they already believed. Sound familiar?",
+                'authority': "In 1903, a horse named Clever Hans appeared to do math by tapping his hoof. Scientists were fooled for years—not because they were dumb, but because a 'Professor' had vouched for it. The horse was just reading body language. Credentials are useful, but they're not magic.",
+                'simplification': "In the 1920s, 'focal infection theory' blamed everything from arthritis to insanity on infected teeth. Millions of healthy teeth were pulled. The theory was clean, simple, and wrong. Simple explanations are seductive precisely because reality is usually complicated.",
+                'us vs them': "The Dancing Plague of 1518 saw hundreds of people dance uncontrollably in Strasbourg. Authorities blamed it on 'hot blood' and prescribed more dancing. When you only have one framework, every problem looks like its kind of problem. We still do this, just with different categories."
             };
             
             var matched = false;
@@ -2993,7 +3000,7 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
             });
             
             if (!matched) {
-                html += "This particular flavor of persuasion has been around since people figured out that other people could be persuaded. Which is to say: always. We're not dumber than our ancestors; we just have Wi-Fi.";
+                html += "Every generation thinks it invented gullibility, but persuasion techniques are as old as language itself. The Sophists were teaching rhetorical manipulation in ancient Greece. Medieval monks complained about people believing rumors. Your great-grandparents fell for patent medicine ads. The technology changes; the psychology doesn't.";
             }
             
             return html;
@@ -3002,15 +3009,21 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
         function generateEmpowerment(realityScore, structured) {
             var html = '';
             
-            if (realityScore >= 5) {
-                html = "🎉 <strong>Congrats!</strong> You just verified something that turned out to be true. This is what winning feels like. Savor it—the internet will test you again soon.<br><br>Pro tip: The fact that you checked at all puts you ahead of most people. Keep that energy.";
+            if (realityScore >= 8) {
+                html = "🎉 <strong>You found something solid.</strong> I haven't seen evidence this well-supported since my friend told me 'You're the smartest person I know'—and unlike that, this actually checks out. Your instinct to verify was good; your instinct about the claim was also good. Trust both of those instincts.";
+            } else if (realityScore >= 5) {
+                html = "👍 <strong>Good catch.</strong> This one's legit enough to reference at dinner parties without embarrassing yourself later. Not 'bet the mortgage' confident, but 'mention it in the group chat' confident. There's value in knowing the difference.";
+            } else if (realityScore >= 2 && realityScore <= 4) {
+                html = "🤔 <strong>You've found nuance.</strong> This claim is like a weather forecast—right often enough to be useful, but bring an umbrella. The fact that you checked instead of just believing or dismissing it puts you ahead of most people.";
+            } else if (realityScore >= -2 && realityScore <= 1) {
+                html = "⚖️ <strong>You've discovered genuine uncertainty.</strong> I know this is unsatisfying—believe me, I wanted a clear answer too. But knowing that something is genuinely unclear is itself valuable information. Most people pick a team and stop thinking. You didn't.";
             } else if (realityScore <= -5) {
-                html = "🛡️ <strong>You just dodged a bullet.</strong> Before this assessment, you might have shared this. Or argued about it. Or worried about it. Now you know. That's not nothing—that's actually huge.<br><br>Bonus: Now you can gently help others who haven't checked yet. Be kind about it. We've all been there.";
+                html = "🛡️ <strong>You just saved yourself.</strong> Before this, you might have shared this, argued about it, or worried about it. Now you know. That's not nothing—that's actually a small victory in a world designed to exploit certainty. Feel good about checking.";
             } else {
-                html = "🤔 <strong>You've discovered genuine uncertainty.</strong> I know, I know—your brain hates this. 'Just tell me if it's true!' But sitting with 'I don't know yet' is actually a superpower. Most people pick a side and stop thinking. You're still thinking.";
+                html = "📋 <strong>Now you know more than you did.</strong> Whether the claim held up or not, you're now better equipped to evaluate similar claims. That's the real win—not being right about this one thing, but getting better at thinking about all the things.";
             }
             
-            html += "<br><br>💡 <strong>The real skill:</strong> Notice how you felt about this claim BEFORE you saw the evidence. Excited? Skeptical? Defensive? That feeling isn't about the claim—it's about you. And that's useful data for next time.";
+            html += "<br><br>💡 <strong>One more thing:</strong> Notice how you felt about this claim before you saw the evidence. Hopeful? Suspicious? Vindicated? That feeling is real data—about yourself, not about the claim. The more you notice that gap between feeling and evidence, the better you get at this.";
             
             return html;
         }
