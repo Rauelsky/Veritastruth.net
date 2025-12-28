@@ -499,7 +499,12 @@ function buildTrackAPrompt(question, articleText) {
     prompt += '    "<Source 1: Name/Title - what it contributes to this assessment>",\n';
     prompt += '    "<Source 2: Name/Title - what it contributes>",\n';
     prompt += '    "..."\n';
-    prompt += '  ]\n';
+    prompt += '  ],\n';
+    prompt += '  \n';
+    prompt += '  "plainTruth": {\n';
+    prompt += '    "historicalPattern": "<Connect THIS SPECIFIC claim to a relevant historical parallel. Reference the SPECIFIC truth distortion patterns detected in THIS assessment. Do NOT use generic examples like Sophists or patent medicine unless directly relevant to this claim type. 2-3 sentences.>",\n';
+    prompt += '    "whatYouCanDo": "<A SPECIFIC action or insight based on THIS claim and its detected issues. Connect to the epistemological lessons from THIS assessment, not generic advice. What should the reader do or think differently because of what they learned from THIS specific evaluation? 2-3 sentences.>"\n';
+    prompt += '  }\n';
     prompt += '}\n';
     prompt += '```\n\n';
     
@@ -690,6 +695,7 @@ function parseTrackAResponse(assessment) {
         lessonsForAssessment: null,
         methodologyNotes: null,
         sources: null,
+        plainTruth: null,
         narrative: assessment
     };
     
@@ -736,6 +742,7 @@ function parseTrackAResponse(assessment) {
             result.lessonsForAssessment = parsed.lessonsForAssessment;
             result.methodologyNotes = parsed.methodologyNotes;
             result.sources = parsed.sources;
+            result.plainTruth = parsed.plainTruth;
             
             // Log which fields were found vs missing
             var expectedFields = ['realityScore', 'integrityScore', 'realityFactors', 'integrity', 
@@ -1188,7 +1195,8 @@ module.exports = async function handler(req, res) {
                     whatRemainsUncertain: parsed.whatRemainsUncertain,
                     lessonsForAssessment: parsed.lessonsForAssessment,
                     methodologyNotes: parsed.methodologyNotes,
-                    sources: parsed.sources
+                    sources: parsed.sources,
+                    plainTruth: parsed.plainTruth
                 },
                 question: question || 'Article Assessment',
                 track: 'a',
