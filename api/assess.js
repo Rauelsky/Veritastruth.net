@@ -5,8 +5,16 @@ const http = require('http');
 // ============================================
 // URL CONTENT FETCHER
 // ============================================
-async function fetchUrlContent(url) {
+const MAX_REDIRECTS = 5;
+
+async function fetchUrlContent(url, redirectCount = 0) {
     return new Promise((resolve, reject) => {
+        // Prevent infinite redirect loops
+        if (redirectCount >= MAX_REDIRECTS) {
+            reject(new Error('Too many redirects (max ' + MAX_REDIRECTS + ')'));
+            return;
+        }
+        
         const protocol = url.startsWith('https') ? https : http;
         const options = {
             timeout: 15000,
@@ -17,9 +25,9 @@ async function fetchUrlContent(url) {
         };
         
         const req = protocol.get(url, options, (res) => {
-            // Handle redirects
+            // Handle redirects (with counter)
             if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
-                fetchUrlContent(res.headers.location).then(resolve).catch(reject);
+                fetchUrlContent(res.headers.location, redirectCount + 1).then(resolve).catch(reject);
                 return;
             }
             
@@ -288,6 +296,31 @@ function buildTrackAPrompt(question, articleText) {
         prompt += '| Partial truth | "Since [true], doesn\'t that mean X?" | X itself (true premises can yield false conclusions) |\n\n';
         
         prompt += '**THE CORE RULE**: If a question CONTAINS or REFERENCES a factual claim, your Reality Score must reflect that claim\'s truth value, not whether the question itself is "valid" or whether believers/evidence/theories exist. A question about Flat Earth tactics should score -10 (for the Flat Earth claim), not +8 (for "yes, they use tactics").\n\n';
+        
+        prompt += '## PREMISE VALIDITY DETECTION\n';
+        prompt += 'When a question asks about a RATIONALE or ARGUMENT (e.g., "based on the argument that...", "because of...", "on the grounds that..."), you must evaluate BOTH dimensions:\n\n';
+        prompt += '**1. FACTUAL DIMENSION**: Is the rationale actually being used?\n';
+        prompt += '   - Do the cited parties actually make this argument? (verifiable)\n\n';
+        prompt += '**2. LOGICAL DIMENSION**: Is the rationale epistemologically sound?\n';
+        prompt += '   - Does the argument follow logically?\n';
+        prompt += '   - Are the premises valid?\n';
+        prompt += '   - Is it applied consistently or selectively?\n';
+        prompt += '   - Does it prove too much or too little?\n\n';
+        prompt += '**SCORING RATIONALE-BASED QUESTIONS:**\n';
+        prompt += 'The Reality Score must reflect BOTH dimensions weighted together:\n';
+        prompt += '- If fact is TRUE but logic is WEAK: Score should be pulled toward neutral (-2 to +2)\n';
+        prompt += '- If fact is TRUE and logic is STRONG: Score should be positive (+5 to +8)\n';
+        prompt += '- If fact is FALSE: Score should be negative regardless of logic\n\n';
+        prompt += '**EXAMPLE:**\n';
+        prompt += '"Politicians oppose teaching X based on the argument that it makes people uncomfortable"\n';
+        prompt += '- Factual: Do politicians cite this rationale? YES (+6)\n';
+        prompt += '- Logical: Is "discomfort = valid reason not to teach" sound? NO (-6)\n';
+        prompt += '  * All learning involves discomfort (grammar, math, difficult history)\n';
+        prompt += '  * Discomfort ≠ harm\n';
+        prompt += '  * Selective application (we teach Holocaust despite discomfort)\n';
+        prompt += '  * Argument proves too much (would eliminate all difficult education)\n';
+        prompt += '- FINAL SCORE: ~0 (true fact, weak reasoning)\n\n';
+        prompt += 'Always explain both dimensions in your assessment when a rationale is being evaluated.\n\n';
     }
     
     // OUTPUT FORMAT
