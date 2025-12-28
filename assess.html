@@ -2915,8 +2915,12 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
             var confessionText = generateConfession(structured);
             document.getElementById('plainTruthConfessionText').textContent = confessionText;
             
-            // Historical Patterns (if distortion patterns detected)
-            if (structured && structured.truthDistortionPatterns && structured.truthDistortionPatterns.length > 0) {
+            // Historical Patterns (if distortion patterns detected OR API provided content)
+            if (structured && structured.plainTruth && structured.plainTruth.historicalPattern) {
+                // Use API-provided claim-specific historical pattern
+                document.getElementById('plainTruthPatterns').style.display = 'block';
+                document.getElementById('plainTruthPatternsText').innerHTML = '🏛️ <strong>Historical parallel:</strong> ' + structured.plainTruth.historicalPattern;
+            } else if (structured && structured.truthDistortionPatterns && structured.truthDistortionPatterns.length > 0) {
                 document.getElementById('plainTruthPatterns').style.display = 'block';
                 var patternText = generateHistoricalPattern(structured.truthDistortionPatterns);
                 document.getElementById('plainTruthPatternsText').innerHTML = patternText;
@@ -2924,8 +2928,13 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
                 document.getElementById('plainTruthPatterns').style.display = 'none';
             }
             
-            // Empowerment message
-            var empowermentText = generateEmpowerment(realityScore, structured);
+            // Empowerment message - use API content if available
+            var empowermentText;
+            if (structured && structured.plainTruth && structured.plainTruth.whatYouCanDo) {
+                empowermentText = '💡 <strong>What this means for you:</strong> ' + structured.plainTruth.whatYouCanDo;
+            } else {
+                empowermentText = generateEmpowerment(realityScore, structured);
+            }
             document.getElementById('plainTruthEmpowermentText').innerHTML = empowermentText;
         }
 
