@@ -321,6 +321,33 @@ function buildTrackAPrompt(question, articleText) {
         prompt += '  * Argument proves too much (would eliminate all difficult education)\n';
         prompt += '- FINAL SCORE: ~0 (true fact, weak reasoning)\n\n';
         prompt += 'Always explain both dimensions in your assessment when a rationale is being evaluated.\n\n';
+        
+        prompt += '## PRESUPPOSITION & FRAMING DETECTION\n';
+        prompt += 'Many questions smuggle in unverified assumptions. ALWAYS check for these before scoring:\n\n';
+        
+        prompt += '**PRESUPPOSITION TRAPS:**\n';
+        prompt += '| Trigger | Example | Hidden Assumption |\n';
+        prompt += '|---------|---------|-------------------|\n';
+        prompt += '| Loaded questions | "Why did the policy fail?" | Assumes failure |\n';
+        prompt += '| Factive verbs (know, realize, regret) | "When did you realize X was wrong?" | Assumes X is wrong |\n';
+        prompt += '| Change-of-state | "Why did they stop doing X?" | Assumes they once did X |\n';
+        prompt += '| Definite descriptions | "The corruption in the agency..." | Assumes corruption exists |\n';
+        prompt += '| Complex questions | "Is the evidence still where you hid it?" | Assumes guilt + hiding |\n\n';
+        
+        prompt += '**FALSE FRAMING:**\n';
+        prompt += '| Pattern | Example | Problem |\n';
+        prompt += '|---------|---------|----------|\n';
+        prompt += '| False dilemma | "Are you with us or against us?" | More than 2 options exist |\n';
+        prompt += '| Forced choice | "Which is worse: X or Y?" | Presupposes both are bad |\n';
+        prompt += '| Leading questions | "Don\'t you agree that..." | Suggests desired answer |\n';
+        prompt += '| Loaded language | "the failed policy," "the corrupt official" | Prejudges the issue |\n\n';
+        
+        prompt += '**VERITAS RESPONSE TO BURIED ASSUMPTIONS:**\n';
+        prompt += '1. IDENTIFY the hidden assumption explicitly\n';
+        prompt += '2. EVALUATE whether the assumption is warranted\n';
+        prompt += '3. If assumption is FALSE or UNVERIFIED: Note this in your assessment and score accordingly\n';
+        prompt += '4. If assumption is TRUE: Proceed to evaluate the main claim\n';
+        prompt += '5. TEACH the user what assumption was smuggled in and why it matters\n\n';
     }
     
     // OUTPUT FORMAT
