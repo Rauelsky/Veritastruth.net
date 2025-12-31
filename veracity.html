@@ -48,16 +48,18 @@
             background: var(--bg-primary);
             color: var(--text-primary);
             min-height: 100vh;
-            overflow: hidden;
+            overflow-x: hidden;
+            overflow-y: auto;
         }
 
         .lcars-container {
             display: grid;
             grid-template-columns: 280px 1fr;
             grid-template-rows: 60px 1fr 45px;
-            height: 100vh;
+            min-height: 100vh;
             gap: 3px;
             padding: 3px;
+            padding-bottom: 10px;
         }
 
         /* ==================== TOP BAR ==================== */
@@ -150,6 +152,7 @@
             background: linear-gradient(180deg, rgba(47, 109, 215, 0.47) 0%, rgba(30, 58, 95, 0.5) 100%);
             border-left: 1px solid rgba(59, 130, 246, 0.3);
             border-right: 1px solid rgba(59, 130, 246, 0.3);
+            border-bottom: none; /* No bottom border - elbow handles transition */
         }
         
         /* The curved elbow piece - outer corner where spine meets bottom */
@@ -164,6 +167,7 @@
             border-left: 1px solid rgba(59, 130, 246, 0.3);
             border-right: 1px solid rgba(59, 130, 246, 0.3);
             border-bottom: 1px solid rgba(59, 130, 246, 0.3);
+            border-top: none; /* Seamless transition from spine */
         }
 
         .sidebar-buttons {
@@ -291,6 +295,8 @@
             border-top: none;
             border-right: none; /* The elbow handles the right side */
             margin-right: 35px; /* Make room for the elbow */
+            position: relative;
+            z-index: 2; /* Sit above the spine */
         }
 
         /* ==================== MAIN CONTENT AREA ==================== */
