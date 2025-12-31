@@ -50,22 +50,26 @@ const VeracityClassifier = (function() {
         'A': { 
             name: 'ASSESS', 
             desc: 'Factual evaluation mode',
-            color: '#c89146'
+            color: '#c89146',
+            empathyMessage: "This sounds like a factual claim that can be verified. Let me analyze the evidence and reasoning behind it."
         },
         'B': { 
             name: 'INTERVIEW',  // Changed from DEBATE per Rauel's direction
             desc: 'Socratic exploration mode',
-            color: '#735fa5'
+            color: '#735fa5',
+            empathyMessage: "I sense this reflects something you believe or feel strongly about. I'd like to understand your perspective better — what's leading you to this view?"
         },
         'C': { 
             name: 'NAVIGATE', 
             desc: 'Practical guidance mode',
-            color: '#4b91a5'
+            color: '#4b91a5',
+            empathyMessage: "This sounds like a challenging situation. Let's explore it together so I can help you find some clarity and useful next steps."
         },
         'AMBIGUOUS': { 
             name: 'CLARIFY', 
             desc: 'Additional context needed',
-            color: '#64748b'
+            color: '#64748b',
+            empathyMessage: "I want to make sure I help you the right way. Are you looking to verify facts, explore your thinking, or work through a difficult situation?"
         }
     };
 
@@ -543,6 +547,7 @@ const VeracityClassifier = (function() {
             track, 
             confidence: Math.round(confidence * 100), 
             reasoning,
+            empathyMessage: TRACK_INFO[track].empathyMessage,
             isCompound,
             temporalVerification: temporalCheck,
             salience,
