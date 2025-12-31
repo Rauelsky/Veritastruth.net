@@ -150,9 +150,10 @@
             bottom: 45px; /* Stop at top of bottom curve */
             width: 35px;
             background: linear-gradient(180deg, rgba(47, 109, 215, 0.47) 0%, rgba(30, 58, 95, 0.5) 100%);
-            border-left: 1px solid rgba(59, 130, 246, 0.3);
+            border-left: none; /* Remove - inner edge has no border */
             border-right: 1px solid rgba(59, 130, 246, 0.3);
-            border-bottom: none; /* No bottom border - elbow handles transition */
+            border-bottom: none;
+            border-top: none;
         }
         
         /* The curved elbow piece - outer corner where spine meets bottom */
@@ -164,10 +165,10 @@
             height: 45px; /* Same height as bottom curve */
             background: linear-gradient(180deg, rgba(30, 58, 95, 0.5) 0%, rgba(20, 40, 70, 0.55) 100%);
             border-radius: 0 0 30px 0;
-            border-left: 1px solid rgba(59, 130, 246, 0.3);
+            border-left: none; /* No inner border */
             border-right: 1px solid rgba(59, 130, 246, 0.3);
             border-bottom: 1px solid rgba(59, 130, 246, 0.3);
-            border-top: none; /* Seamless transition from spine */
+            border-top: none;
         }
 
         .sidebar-buttons {
@@ -241,7 +242,7 @@
             justify-content: center;
             padding: 0;
             font-family: 'IBM Plex Mono', monospace;
-            font-size: 18px;
+            font-size: 15px;
             font-weight: 600;
             color: var(--accent-amber);
             border: 1px solid var(--border-medium);
