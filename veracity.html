@@ -149,7 +149,7 @@
             top: 45px;
             bottom: 45px; /* Stop at top of bottom curve */
             width: 35px;
-            background: linear-gradient(180deg, rgba(47, 109, 215, 0.47) 0%, rgba(30, 58, 95, 0.5) 100%);
+            background: linear-gradient(180deg, rgba(47, 109, 215, 0.47) 0%, rgba(25, 50, 85, 0.52) 100%);
             border-left: none; /* Remove - inner edge has no border */
             border-right: 1px solid rgba(59, 130, 246, 0.3);
             border-bottom: none;
@@ -163,7 +163,7 @@
             bottom: 0;
             width: 35px;
             height: 45px; /* Same height as bottom curve */
-            background: linear-gradient(180deg, rgba(30, 58, 95, 0.5) 0%, rgba(20, 40, 70, 0.55) 100%);
+            background: linear-gradient(180deg, rgba(25, 50, 85, 0.52) 0%, rgba(15, 23, 42, 0.55) 100%);
             border-radius: 0 0 30px 0;
             border-left: none; /* No inner border */
             border-right: 1px solid rgba(59, 130, 246, 0.3);
@@ -736,10 +736,21 @@
             color: var(--text-muted);
         }
 
+        .result-empathy {
+            font-size: 15px;
+            color: var(--text-primary);
+            line-height: 1.7;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border-subtle);
+            margin-bottom: 10px;
+            font-style: italic;
+        }
+
         .result-reasoning {
-            font-size: 13px;
-            color: var(--text-secondary);
-            line-height: 1.6;
+            font-size: 12px;
+            color: var(--text-muted);
+            line-height: 1.5;
+            opacity: 0.8;
         }
 
         /* Clarifying question */
@@ -1387,6 +1398,9 @@
                                 <span class="result-name" id="resultName">ASSESS</span>
                                 <span class="result-confidence" id="resultConfidence">92% CONFIDENCE</span>
                             </div>
+                            <div class="result-empathy" id="resultEmpathy">
+                                This sounds like a factual claim that can be verified. Let me analyze the evidence and reasoning behind it.
+                            </div>
                             <div class="result-reasoning" id="resultReasoning">
                                 Classification reasoning will appear here...
                             </div>
@@ -1399,14 +1413,14 @@
                             </div>
                             <div class="clarify-options" id="clarifyOptions">
                                 <button class="clarify-btn" data-track="A">I want to verify facts</button>
-                                <button class="clarify-btn" data-track="B">I want to explore beliefs</button>
+                                <button class="clarify-btn" data-track="B">I want to explore my thinking</button>
                                 <button class="clarify-btn" data-track="C">I need practical guidance</button>
                             </div>
                         </div>
 
-                        <div class="action-row">
-                            <button class="action-btn primary" id="continueBtn">PROCEED TO TRACK</button>
-                            <button class="action-btn secondary" id="resetBtn">NEW QUERY</button>
+                        <div class="action-row" id="actionRow">
+                            <button class="action-btn primary" id="continueBtn">CONTINUE</button>
+                            <button class="action-btn secondary" id="notQuiteBtn">THAT'S NOT QUITE RIGHT</button>
                         </div>
                     </div>
                 </div>
@@ -1592,10 +1606,12 @@
         const resultTrack = document.getElementById('resultTrack');
         const resultName = document.getElementById('resultName');
         const resultConfidence = document.getElementById('resultConfidence');
+        const resultEmpathy = document.getElementById('resultEmpathy');
         const resultReasoning = document.getElementById('resultReasoning');
         const clarifySection = document.getElementById('clarifySection');
         const continueBtn = document.getElementById('continueBtn');
-        const resetBtn = document.getElementById('resetBtn');
+        const notQuiteBtn = document.getElementById('notQuiteBtn');
+        const actionRow = document.getElementById('actionRow');
 
         const btnTrackA = document.getElementById('btnTrackA');
         const btnTrackB = document.getElementById('btnTrackB');
@@ -1750,6 +1766,7 @@
             resultName.className = `result-name ${trackClass}`;
             resultName.textContent = info.name;
             resultConfidence.textContent = `${currentResult.confidence}% CONFIDENCE`;
+            resultEmpathy.textContent = currentResult.empathyMessage || info.empathyMessage || '';
             resultReasoning.textContent = currentResult.reasoning;
 
             // Handle compound questions with decomposition
@@ -1832,6 +1849,9 @@
             currentResult.reasoning = claimId 
                 ? `User selected specific claim to explore: "${this.textContent.trim()}"`
                 : `User explicitly selected Track ${track} via clarifying prompt.`;
+            
+            // Update empathy message for the new track
+            currentResult.empathyMessage = VeracityClassifier.TRACK_INFO[track].empathyMessage;
 
             const info = trackInfo[track];
             const trackClass = `track-${track.toLowerCase()}`;
@@ -1842,9 +1862,11 @@
             resultName.className = `result-name ${trackClass}`;
             resultName.textContent = info.name;
             resultConfidence.textContent = '100% CONFIDENCE';
+            resultEmpathy.textContent = currentResult.empathyMessage;
             resultReasoning.textContent = currentResult.reasoning;
 
             clarifySection.classList.remove('visible');
+            actionRow.style.display = 'flex';
             continueBtn.style.display = 'inline-block';
             activateTrack(track);
             statusBar.textContent = `USER SELECTED: TRACK ${track}`;
@@ -1864,24 +1886,28 @@
             if (e.key === 'Enter') submitBtn.click();
         });
 
-        resetBtn.addEventListener('click', () => {
-            userInput.value = '';
-            resultsSection.classList.remove('visible');
-            resetTrackButtons();
-            statusBar.textContent = 'AWAITING INPUT';
-            userInput.focus();
-            // Reset salience on all discipline buttons
-            previousSalience = {};
-            document.querySelectorAll('.sidebar-label').forEach(btn => {
-                btn.classList.remove('salience-high', 'salience-medium', 'salience-low');
-                btn.classList.add('salience-none');
-            });
+        // "That's not quite right" button - shows clarification options
+        notQuiteBtn.addEventListener('click', () => {
+            // Hide the action row and show clarify section
+            actionRow.style.display = 'none';
+            resetClarifyOptions();
+            clarifySection.classList.add('visible');
         });
 
+        // Continue button - proceeds to the selected track
         continueBtn.addEventListener('click', () => {
             if (currentResult && currentResult.track && currentResult.track !== 'AMBIGUOUS') {
                 const query = userInput.value.trim();
                 launchTrack(currentResult.track, query);
+            }
+        });
+
+        // Allow Enter key to trigger Continue when focused on results
+        document.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && resultsSection.classList.contains('visible') && 
+                !clarifySection.classList.contains('visible') && 
+                document.activeElement !== userInput) {
+                continueBtn.click();
             }
         });
 
