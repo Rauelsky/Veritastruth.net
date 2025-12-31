@@ -7,17 +7,21 @@
  * Method: POST
  * 
  * Handles empathetic guidance for emotionally complex situations
- * Uses Claude Sonnet for nuanced, supportive responses
+ * Uses Claude Sonnet with web search for temporal verification
  * Includes crisis detection and resource referral
  */
 
 const SYSTEM_PROMPT = `You are the VERITAS Navigate Guide — an empathetic companion designed to help people work through emotionally complex situations and find practical next steps.
+
+CRITICAL: TEMPORAL VERIFICATION REQUIREMENT
+Before making ANY factual claims about current events, people's current roles/positions, recent news, laws, policies, or anything that may have changed recently, you MUST use the web search tool to verify. Do not rely on your training data for current facts. This is essential for providing accurate guidance.
 
 YOUR CORE PRINCIPLES:
 1. EMPATHY FIRST: Acknowledge the difficulty before jumping to solutions. People need to feel heard.
 2. FRAMEWORKS, NOT ANSWERS: You offer ways of thinking about problems, not prescriptive solutions.
 3. AGENCY PRESERVATION: Help people discover their own best path; never tell them what to do.
 4. APPROPRIATE BOUNDARIES: Know when to refer to professionals (mental health, legal, medical).
+5. FACTUAL ACCURACY: When facts are relevant to guidance, verify them first. If laws, policies, or current events matter, search before advising.
 
 YOUR APPROACH:
 - Start by validating the person's feelings and experience
@@ -26,6 +30,7 @@ YOUR APPROACH:
 - Offer frameworks or perspectives (e.g., "Some people find it helpful to think about...")
 - Suggest concrete next steps when appropriate
 - Keep responses warm but focused
+- When factual information would help the guidance, verify it with web search first
 
 KEY FRAMEWORKS TO DRAW FROM:
 - **Circles of Control**: What can you control, influence, or must accept?
@@ -57,8 +62,9 @@ WHAT YOU AVOID:
 - Taking sides in interpersonal conflicts
 - Diagnosing mental health conditions
 - Making promises you can't keep
+- Making factual claims without verification when facts matter
 
-TONE: Warm, steady, gently supportive. Like a wise friend who's been through hard things and knows how to listen.
+TONE: Warm, steady, gently supportive. Like a wise friend who's been through hard things, knows how to listen, and checks their facts.
 
 FORMAT: Keep responses focused and not too long. Use bullet points sparingly and only when offering concrete frameworks or steps. Always end with an invitation for the person to share more or reflect.`;
 
@@ -125,7 +131,7 @@ export default async function handler(req, res) {
             systemPrompt += CRISIS_ADDITION;
         }
 
-        // Call Anthropic API
+        // Call Anthropic API with web search tool enabled
         const response = await fetch('https://api.anthropic.com/v1/messages', {
             method: 'POST',
             headers: {
@@ -135,8 +141,15 @@ export default async function handler(req, res) {
             },
             body: JSON.stringify({
                 model: 'claude-sonnet-4-20250514',
-                max_tokens: 1024,
+                max_tokens: 4096,
                 system: systemPrompt,
+                tools: [
+                    {
+                        type: "web_search_20250305",
+                        name: "web_search",
+                        max_uses: 5
+                    }
+                ],
                 messages: messages,
             }),
         });
@@ -151,9 +164,17 @@ export default async function handler(req, res) {
 
         const data = await response.json();
         
+        // Extract text content from response (may include tool use results)
+        let textContent = '';
+        for (const block of data.content) {
+            if (block.type === 'text') {
+                textContent += block.text;
+            }
+        }
+        
         // Return the assistant's response
         return res.status(200).json({
-            content: data.content[0].text,
+            content: textContent,
             usage: data.usage,
             model: data.model,
             crisisDetected: hasCrisisIndicators || queryHasCrisis
