@@ -83,7 +83,7 @@ const VeracityMicroDiscovery = (function() {
             { displayValue: '92', tooltip: 'Uranium — nuclear energy and weapons', category: 'atomic' },
             { displayValue: '118', tooltip: 'Oganesson — current end of periodic table', category: 'atomic' },
             { displayValue: '299,792', tooltip: 'Speed of light in km/s — universal speed limit', category: 'constant' },
-            { displayValue: '6.022×10²³', tooltip: 'Avogadro\'s number — atoms in a mole', category: 'constant' },
+            { displayValue: '6e23', tooltip: 'Avogadro\'s number (6.022×10²³) — atoms in a mole', category: 'constant' },
             { displayValue: '3.14159', tooltip: 'Pi — ratio of circumference to diameter', category: 'constant' },
             { displayValue: '2.718', tooltip: 'Euler\'s number — natural logarithm base', category: 'constant' },
             { displayValue: '9.8', tooltip: 'Gravitational acceleration m/s² on Earth', category: 'constant' },
