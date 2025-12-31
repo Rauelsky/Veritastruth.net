@@ -2048,8 +2048,27 @@
                 );
                 const geoData = await geoResponse.json();
                 
-                const city = geoData.city || geoData.locality || 'Unknown';
+                let city = geoData.locality || geoData.city || null;
                 const state = geoData.principalSubdivisionCode?.replace('US-', '') || '';
+                const postalCode = geoData.postcode || null;
+                
+                // If no city found but we have postal code, look it up
+                if (!city && postalCode) {
+                    try {
+                        const zipResponse = await fetch(
+                            `https://api.zippopotam.us/us/${postalCode}`
+                        );
+                        if (zipResponse.ok) {
+                            const zipData = await zipResponse.json();
+                            city = zipData.places?.[0]?.['place name'] || null;
+                        }
+                    } catch (e) {
+                        console.warn('Postal lookup failed:', e);
+                    }
+                }
+                
+                // Final fallback
+                city = city || geoData.principalSubdivision || 'Unknown';
                 const location = state ? `${city}, ${state}` : city;
                 
                 const currentTemp = Math.round(data.current.temperature_2m);
