@@ -236,16 +236,18 @@
 
         .sidebar-number {
             background: var(--bg-input);
-            width: 48px;
+            width: 54px;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 0;
+            padding: 0 3px;
             font-family: 'IBM Plex Mono', monospace;
             font-size: 15px;
             font-weight: 600;
             color: var(--accent-amber);
             border: 1px solid var(--border-medium);
+            overflow: hidden;
+            white-space: nowrap;
         }
 
         .sidebar-action {
@@ -1554,6 +1556,19 @@
             if (entry) {
                 el.textContent = entry.displayValue;
                 el.dataset.tooltip = entry.tooltip;
+                // Auto-scale font for long values (optimized for 54px wide box)
+                const len = entry.displayValue.length;
+                if (len <= 3) {
+                    el.style.fontSize = '16px';
+                } else if (len <= 4) {
+                    el.style.fontSize = '15px';
+                } else if (len <= 5) {
+                    el.style.fontSize = '12px';
+                } else if (len <= 6) {
+                    el.style.fontSize = '10px';
+                } else {
+                    el.style.fontSize = '9px';
+                }
             }
         }
 
