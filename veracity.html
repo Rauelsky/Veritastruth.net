@@ -186,18 +186,16 @@
             display: flex;
             gap: 2px;
             height: 52px;
-            min-width: 230px;
         }
 
         .sidebar-label {
-            min-width: 80px;
-            width: 95px;
-            flex-shrink: 0;
+            flex: 1 0 80px;
+            max-width: 120px;
             display: flex;
             align-items: center;
             justify-content: flex-end;
-            padding: 0 8px 0 5px;
-            font-size: 11px;
+            padding: 0 10px 0 8px;
+            font-size: 12px;
             font-weight: 600;
             color: var(--text-primary);
             letter-spacing: 0.5px;
@@ -243,9 +241,8 @@
 
         .sidebar-number {
             background: var(--bg-input);
-            min-width: 48px;
             width: 54px;
-            flex-shrink: 0;
+            flex: 0 0 54px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -971,28 +968,24 @@
         /* Large tablets and small desktops */
         @media (max-width: 1200px) {
             .lcars-container {
-                grid-template-columns: 250px 1fr;
-            }
-            
-            .sidebar-row {
-                min-width: 210px;
+                grid-template-columns: 240px 1fr;
             }
             
             .sidebar-label {
-                min-width: 70px;
-                width: 80px;
+                flex: 1 0 65px;
+                max-width: 90px;
                 font-size: 10px;
                 padding: 0 6px 0 4px;
             }
             
             .sidebar-number {
-                min-width: 42px;
                 width: 46px;
+                flex: 0 0 46px;
                 font-size: 13px;
             }
             
             .sidebar-action {
-                width: 75px;
+                width: 70px;
                 font-size: 8px;
                 padding: 0 6px 0 0;
             }
