@@ -1991,20 +1991,16 @@
             color: white;
             text-shadow: 0 2px 4px rgba(0,0,0,0.9), 0 4px 20px rgba(0,0,0,0.8), 0 0 40px rgba(0,0,0,0.6);
             opacity: 0;
-            transition: opacity 0.8s ease-in-out;
+            transition: opacity 0.5s ease;
             line-height: 1.4;
         }
 
         .vision-intro-text.slow-fade {
-            transition: opacity 2s ease-in-out;
+            transition: opacity 2s ease;
         }
 
         .vision-intro-text.first-fade {
-            transition: opacity 1.19s ease-in-out;
-        }
-
-        .vision-intro-text.finale {
-            transition: opacity 0.8s ease-in-out;
+            transition: opacity 1.19s ease;
         }
 
         .vision-intro-text.visible {
@@ -6173,8 +6169,8 @@
             { text: '<span class="veritas">VERITAS</span> Imagines', type: 'finale-hold' }
         ];
 
-        const visionTimings = [0, 6.33, 11.74, 15.36, 18.64, 24.36, 29.08, 33.71, 36.28, 39.04];
-        const visionEndTime = 44.37;
+        const visionTimings = [0, 6.33, 11.74, 14.36, 16.64, 22.36, 25.08, 27.71, 30.28, 33.04];
+        const visionEndTime = 38.37;
 
         let visionPreviewInterval = null;
         let visionCurrentTextIndex = -1;
@@ -6271,10 +6267,10 @@
                 }
             }
             
-            // Fade out logic for normal items - fade 0.8s before next text for smooth transition
+            // Fade out logic for normal items - fade 0.3s before next text
             if (visionCurrentTextIndex >= 0 && visionCurrentTextIndex < 7) {
                 const nextTime = visionTimings[visionCurrentTextIndex + 1];
-                if (currentTime >= nextTime - 0.8) {
+                if (currentTime >= nextTime - 0.3) {
                     visionText.classList.remove('visible');
                 }
             }
@@ -6282,7 +6278,7 @@
             // Fade out logic for finale items (7 and 8) - fade before next beat
             if (visionCurrentTextIndex === 7 || visionCurrentTextIndex === 8) {
                 const nextTime = visionTimings[visionCurrentTextIndex + 1];
-                if (currentTime >= nextTime - 0.8) {
+                if (currentTime >= nextTime - 0.4) {
                     visionText.classList.remove('visible');
                 }
             }
