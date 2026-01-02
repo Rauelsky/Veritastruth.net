@@ -1281,7 +1281,7 @@
         <button onclick="openStoryModal()">📖 Our Story</button>
         <a href="#how-it-works">⚙️ How It Works</a>
         <a href="/veracity.html" class="demo-link">🔍 Try Live Assessment</a>
-        <button disabled title="Coming Soon">🎬 Watch Video</button>
+        <button onclick="openOurStoryVideoModal()">🎬 Watch Video</button>
       </nav>
     </div>
   </header>
@@ -1309,7 +1309,7 @@
         <button class="cta-btn cta-secondary" onclick="openStoryModal()">📖 Our Story</button>
         <a href="#how-it-works" class="cta-btn cta-secondary">⚙️ How VERITAS Works</a>
         <a href="/veracity.html" class="cta-btn cta-primary">🔍 Try Live Assessment</a>
-        <button class="cta-btn cta-secondary" disabled title="Coming Soon">🎬 Watch Video</button>
+        <button class="cta-btn cta-secondary" onclick="openOurStoryVideoModal()">🎬 Watch Video</button>
       </div>
       
       <h2 class="section-title">The Stars We're Reaching For</h2>
@@ -1685,6 +1685,28 @@
   </div>
 
   <!-- ============================================ -->
+  <!-- OUR STORY VIDEO MODAL -->
+  <!-- ============================================ -->
+  <div class="modal-overlay" id="ourStoryVideoModal">
+    <div class="modal-container video-modal">
+      <div class="modal-header">
+        <h2 class="modal-title">🎬 Our Story</h2>
+        <button class="modal-close" onclick="closeOurStoryVideoModal()" aria-label="Close">×</button>
+      </div>
+      <div class="modal-body" style="background: #000;">
+        <video id="ourStoryVideo" controls preload="metadata">
+          <source src="Our_Story-2026.mp4" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+      </div>
+      <div class="modal-footer">
+        <p class="footer-text">How America Can Win the New Civil War</p>
+        <a href="Our_Story-2026.mp4" download class="download-btn">⬇️ Download Video</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================ -->
   <!-- JAVASCRIPT FOR MODALS -->
   <!-- ============================================ -->
   <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
@@ -1786,6 +1808,30 @@
       }, 300);
     }
 
+    // ===== OUR STORY VIDEO MODAL =====
+    function openOurStoryVideoModal() {
+      const modal = document.getElementById('ourStoryVideoModal');
+      
+      modal.classList.add('active');
+      setTimeout(() => modal.classList.add('visible'), 10);
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeOurStoryVideoModal() {
+      const modal = document.getElementById('ourStoryVideoModal');
+      const video = document.getElementById('ourStoryVideo');
+      
+      // Pause video when closing
+      video.pause();
+      
+      modal.classList.remove('visible');
+      
+      setTimeout(() => {
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+      }, 300);
+    }
+
     // ===== EVENT LISTENERS =====
     
     // Close on overlay click
@@ -1797,11 +1843,16 @@
       if (e.target === this) closeVideoModal();
     });
 
+    document.getElementById('ourStoryVideoModal').addEventListener('click', function(e) {
+      if (e.target === this) closeOurStoryVideoModal();
+    });
+
     // Close on Escape key
     document.addEventListener('keydown', function(e) {
       if (e.key === 'Escape') {
         closeStoryModal();
         closeVideoModal();
+        closeOurStoryVideoModal();
       }
     });
   </script>
