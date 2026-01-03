@@ -468,6 +468,8 @@ function buildTrackAPrompt(question, articleText) {
     prompt += '  "evidenceAnalysis": {\n';
     prompt += '    "forTheClaim": ["<Evidence point supporting the claim with source and strength assessment>", ...],\n';
     prompt += '    "againstTheClaim": ["<Evidence point contradicting or complicating the claim with source>", ...],\n';
+    prompt += '    "whatComplicatesIt": "<What makes this assessment harder than it first appears - confounding factors, measurement challenges, context dependencies>",\n';
+    prompt += '    "whatRemainsGenuinelyUncertain": "<Honest acknowledgment of what we still don\'t know or can\'t be certain about>",\n';
     prompt += '    "sourceQuality": "<Assessment of overall source quality: peer-reviewed, institutional, journalistic, advocacy, anonymous, etc.>"\n';
     prompt += '  },\n';
     prompt += '  \n';
@@ -1184,6 +1186,7 @@ module.exports = async function handler(req, res) {
                 selectedFactors: parsed.selectedFactors,
                 scoreCalculation: parsed.scoreCalculation,
                 structured: {
+                    selectedFactors: parsed.selectedFactors,
                     realityFactors: parsed.realityFactors,
                     integrity: parsed.integrity,
                     underlyingReality: parsed.underlyingReality,
