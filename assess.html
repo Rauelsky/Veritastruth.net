@@ -3492,16 +3492,22 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
                 var fa = structured.frameworkAnalysis;
                 var frameworkHtml = '';
                 if (fa.hiddenPremises) {
-                    frameworkHtml += '<p><strong>Hidden Premises:</strong> ' + fa.hiddenPremises + '</p>';
+                    frameworkHtml += '<p><strong style="color: var(--accent-amber);">Hidden Premises:</strong> ' + fa.hiddenPremises + '</p>';
                 }
                 if (fa.ideologicalOrigin) {
-                    frameworkHtml += '<p><strong>Ideological Origin:</strong> ' + fa.ideologicalOrigin + '</p>';
+                    frameworkHtml += '<p><strong style="color: var(--accent-red);">Ideological Origin:</strong> ' + fa.ideologicalOrigin + '</p>';
                 }
                 if (fa.whatBeingObscured) {
-                    frameworkHtml += '<p><strong>What\'s Being Obscured:</strong> ' + fa.whatBeingObscured + '</p>';
+                    frameworkHtml += '<p><strong style="color: var(--accent-purple);">What\'s Being Obscured:</strong> ' + fa.whatBeingObscured + '</p>';
                 }
                 if (fa.reframingNeeded) {
-                    frameworkHtml += '<p><strong>Reframing Needed:</strong> ' + fa.reframingNeeded + '</p>';
+                    frameworkHtml += '<p><strong style="color: var(--accent-green);">Reframing Needed:</strong> ' + fa.reframingNeeded + '</p>';
+                }
+                if (fa.complementaryInsight) {
+                    frameworkHtml += '<p><strong style="color: var(--accent-cyan);">Complementary Insight:</strong> ' + fa.complementaryInsight + '</p>';
+                }
+                if (fa.bridgingWisdom) {
+                    frameworkHtml += '<p><strong style="color: var(--accent-blue);">Bridging Wisdom:</strong> ' + fa.bridgingWisdom + '</p>';
                 }
                 document.getElementById('frameworkContent').innerHTML = frameworkHtml || '<p>Not available.</p>';
             } else {
@@ -3531,21 +3537,21 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
                 var ea = structured.evidenceAnalysis;
                 var evidenceHtml = '';
                 if (ea.forTheClaim && ea.forTheClaim.length > 0) {
-                    evidenceHtml += '<p><strong>For the Claim:</strong></p><ul>';
+                    evidenceHtml += '<p><strong style="color: var(--accent-green);">For the Claim:</strong></p><ul>';
                     ea.forTheClaim.forEach(function(item) {
                         evidenceHtml += '<li>' + item + '</li>';
                     });
                     evidenceHtml += '</ul>';
                 }
                 if (ea.againstTheClaim && ea.againstTheClaim.length > 0) {
-                    evidenceHtml += '<p><strong>Against/Complicating the Claim:</strong></p><ul>';
+                    evidenceHtml += '<p><strong style="color: var(--accent-red);">Against the Claim:</strong></p><ul>';
                     ea.againstTheClaim.forEach(function(item) {
                         evidenceHtml += '<li>' + item + '</li>';
                     });
                     evidenceHtml += '</ul>';
                 }
                 if (ea.sourceQuality) {
-                    evidenceHtml += '<p><strong>Source Quality:</strong> ' + ea.sourceQuality + '</p>';
+                    evidenceHtml += '<p><strong style="color: var(--accent-cyan);">Source Quality:</strong> ' + ea.sourceQuality + '</p>';
                 }
                 document.getElementById('evidenceContent').innerHTML = evidenceHtml || '<p>Not available.</p>';
             } else {
@@ -4406,7 +4412,7 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
             console.log('Populating ' + prefix + ' column with:', structured);
             
             var sections = [
-                { key: 'realityFactors', title: '📊 Reality Score Breakdown', icon: 'reality' },
+                { key: 'realityFactors', altKey: 'selectedFactors', title: '📊 Reality Score Breakdown', icon: 'reality' },
                 { key: 'integrity', title: '🔬 Integrity Score Breakdown', icon: 'integrity' },
                 { key: 'underlyingReality', title: '🔍 The Underlying Reality', icon: 'truth' },
                 { key: 'centralClaims', title: '🎯 Central Claims', icon: 'claims' },
@@ -4450,13 +4456,28 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
         function formatCompareContent(content, sectionKey) {
             if (!content) return '<p style="color: var(--text-muted); font-style: italic;">Not available</p>';
             
-            // Special handling for realityFactors - handle BOTH object format (Initial) and array format
-            if (sectionKey === 'realityFactors') {
-                // Check if it's the object format (from Initial Assessment)
+            // Special handling for realityFactors - handle BOTH old object format and new selectedFactors array
+            if (sectionKey === 'realityFactors' || sectionKey === 'selectedFactors') {
+                // NEW FORMAT: selectedFactors array (from Initial Assessment using dynamic factors)
+                if (Array.isArray(content) && content.length > 0 && content[0].factor) {
+                    var html = '<div style="margin: 0; padding: 0;">';
+                    content.forEach(function(f) {
+                        var weightPct = Math.round(f.weight * 100);
+                        var score = f.score !== undefined ? ' <strong style="color: var(--accent-blue);">(' + (f.score >= 0 ? '+' : '') + f.score + ')</strong>' : '';
+                        html += '<div style="margin-bottom: 12px; padding: 8px; background: rgba(0,0,0,0.2); border-radius: 6px;">' +
+                            '<strong>' + f.factor + ' (' + weightPct + '%)</strong>' + score +
+                            (f.explanation ? '<br><span style="color: var(--text-secondary);">' + f.explanation + '</span>' : '') +
+                            '</div>';
+                    });
+                    html += '</div>';
+                    return html;
+                }
+                
+                // OLD FORMAT: realityFactors object (from Verification Assessment)
                 if (typeof content === 'object' && !Array.isArray(content)) {
                     var html = '<div style="margin: 0; padding: 0;">';
                     
-                    // Expected properties from Initial Assessment
+                    // Expected properties from Verification Assessment
                     var factors = [
                         { key: 'evidenceQuality', label: 'Evidence Quality', weight: '40%' },
                         { key: 'epistemologicalSoundness', label: 'Epistemological Soundness', weight: '30%' },
@@ -4477,18 +4498,6 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
                     
                     html += '</div>';
                     return html || '<p style="color: var(--text-muted); font-style: italic;">Not available</p>';
-                }
-                
-                // Array format (legacy or alternative)
-                if (Array.isArray(content)) {
-                    return '<ul style="margin: 0; padding-left: 0; list-style: none;">' + 
-                        content.map(function(factor) {
-                            var score = factor.score !== undefined ? ' <strong style="color: var(--accent-blue);">(' + (factor.score >= 0 ? '+' : '') + factor.score + ')</strong>' : '';
-                            return '<li style="margin-bottom: 12px; padding: 8px; background: rgba(0,0,0,0.2); border-radius: 6px;">' +
-                                '<strong>' + (factor.factor || factor.name || 'Factor') + '</strong>' + score +
-                                (factor.assessment ? '<br><span style="color: var(--text-secondary);">' + factor.assessment + '</span>' : '') +
-                                '</li>';
-                        }).join('') + '</ul>';
                 }
             }
             
@@ -4578,26 +4587,45 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
             // Special handling for evidenceAnalysis (object with whatSupportsTheClaim, etc.)
             if (sectionKey === 'evidenceAnalysis' && typeof content === 'object' && !Array.isArray(content)) {
                 var html = '';
-                if (content.whatSupportsTheClaim) {
-                    html += '<p style="margin-bottom: 12px;"><strong style="color: var(--score-positive);">What Supports the Claim:</strong> ' + content.whatSupportsTheClaim + '</p>';
+                
+                // Color-coded evidence fields - handle both new (forTheClaim/againstTheClaim) and old field names
+                var forClaim = content.forTheClaim || content.whatSupportsTheClaim || content.supporting;
+                var againstClaim = content.againstTheClaim || content.contradicting;
+                
+                if (forClaim) {
+                    html += '<p style="margin-bottom: 8px;"><strong style="color: var(--accent-green);">For the Claim:</strong></p>';
+                    if (Array.isArray(forClaim)) {
+                        html += '<ul style="margin-left: 16px; margin-bottom: 12px;">';
+                        forClaim.forEach(function(item) { html += '<li>' + item + '</li>'; });
+                        html += '</ul>';
+                    } else {
+                        html += '<p style="margin-bottom: 12px;">' + forClaim + '</p>';
+                    }
                 }
+                
+                if (againstClaim) {
+                    html += '<p style="margin-bottom: 8px;"><strong style="color: var(--accent-red);">Against the Claim:</strong></p>';
+                    if (Array.isArray(againstClaim)) {
+                        html += '<ul style="margin-left: 16px; margin-bottom: 12px;">';
+                        againstClaim.forEach(function(item) { html += '<li>' + item + '</li>'; });
+                        html += '</ul>';
+                    } else {
+                        html += '<p style="margin-bottom: 12px;">' + againstClaim + '</p>';
+                    }
+                }
+                
                 if (content.whatComplicatesIt) {
                     html += '<p style="margin-bottom: 12px;"><strong style="color: var(--accent-amber);">What Complicates It:</strong> ' + content.whatComplicatesIt + '</p>';
                 }
+                
                 if (content.whatRemainsGenuinelyUncertain) {
-                    html += '<p style="margin-bottom: 12px;"><strong style="color: var(--text-muted);">What Remains Uncertain:</strong> ' + content.whatRemainsGenuinelyUncertain + '</p>';
+                    html += '<p style="margin-bottom: 12px;"><strong style="color: var(--accent-purple);">What Remains Uncertain:</strong> ' + content.whatRemainsGenuinelyUncertain + '</p>';
                 }
-                // Handle other common evidence analysis fields
-                if (content.supporting && Array.isArray(content.supporting)) {
-                    html += '<p style="margin-bottom: 8px;"><strong>Supporting Evidence:</strong></p><ul style="margin-left: 16px;">';
-                    content.supporting.forEach(function(item) { html += '<li>' + item + '</li>'; });
-                    html += '</ul>';
+                
+                if (content.sourceQuality) {
+                    html += '<p style="margin-bottom: 12px;"><strong style="color: var(--accent-cyan);">Source Quality:</strong> ' + content.sourceQuality + '</p>';
                 }
-                if (content.contradicting && Array.isArray(content.contradicting)) {
-                    html += '<p style="margin-bottom: 8px;"><strong>Contradicting Evidence:</strong></p><ul style="margin-left: 16px;">';
-                    content.contradicting.forEach(function(item) { html += '<li>' + item + '</li>'; });
-                    html += '</ul>';
-                }
+                
                 return html || formatGenericContent(content);
             }
             
@@ -4621,15 +4649,26 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
             // Special handling for frameworkAnalysis / perspectiveAnalysis
             if ((sectionKey === 'frameworkAnalysis' || sectionKey === 'perspectiveAnalysis') && typeof content === 'object' && !Array.isArray(content)) {
                 var html = '';
-                if (content.complementaryInsight) {
-                    html += '<p style="margin-bottom: 12px;"><strong style="color: var(--accent-cyan);">Complementary Insight:</strong> ' + content.complementaryInsight + '</p>';
-                }
-                if (content.bridgingWisdom) {
-                    html += '<p style="margin-bottom: 12px;"><strong style="color: var(--accent-purple);">Bridging Wisdom:</strong> ' + content.bridgingWisdom + '</p>';
-                }
-                // Handle other common framework fields
+                
+                // Color-coded fields in consistent order
+                var fields = [
+                    { key: 'hiddenPremises', label: 'Hidden Premises', color: 'var(--accent-amber)' },
+                    { key: 'ideologicalOrigin', label: 'Ideological Origin', color: 'var(--accent-red)' },
+                    { key: 'whatBeingObscured', label: 'What\'s Being Obscured', color: 'var(--accent-purple)' },
+                    { key: 'reframingNeeded', label: 'Reframing Needed', color: 'var(--accent-green)' },
+                    { key: 'complementaryInsight', label: 'Complementary Insight', color: 'var(--accent-cyan)' },
+                    { key: 'bridgingWisdom', label: 'Bridging Wisdom', color: 'var(--accent-blue)' }
+                ];
+                
+                fields.forEach(function(field) {
+                    if (content[field.key]) {
+                        html += '<p style="margin-bottom: 12px;"><strong style="color: ' + field.color + ';">' + field.label + ':</strong> ' + content[field.key] + '</p>';
+                    }
+                });
+                
+                // Handle any other fields not in the standard list
                 for (var key in content) {
-                    if (content.hasOwnProperty(key) && !['complementaryInsight', 'bridgingWisdom'].includes(key)) {
+                    if (content.hasOwnProperty(key) && !fields.some(function(f) { return f.key === key; })) {
                         var label = key.replace(/([A-Z])/g, ' $1').replace(/^./, function(s) { return s.toUpperCase(); });
                         var value = typeof content[key] === 'object' ? JSON.stringify(content[key]) : content[key];
                         html += '<p style="margin-bottom: 8px;"><strong>' + label + ':</strong> ' + value + '</p>';
@@ -4694,8 +4733,6 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
         (function() {
             const urlParams = new URLSearchParams(window.location.search);
             const query = urlParams.get('q');
-            const autoRun = urlParams.get('auto') === 'true';
-            
             if (query) {
                 const questionField = document.getElementById('question');
                 if (questionField) {
@@ -4705,19 +4742,8 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
                     if (counter) {
                         counter.textContent = questionField.value.length + '/600';
                     }
-                    
-                    // If auto=true, automatically trigger assessment after a brief delay
-                    if (autoRun) {
-                        setTimeout(function() {
-                            const assessBtn = document.getElementById('assessBtn');
-                            if (assessBtn && !assessBtn.disabled) {
-                                assessBtn.click();
-                            }
-                        }, 500); // Brief delay to let page fully render
-                    } else {
-                        // Focus the field so user can review/edit
-                        questionField.focus();
-                    }
+                    // Focus the field so user can review/edit
+                    questionField.focus();
                 }
             }
         })();
