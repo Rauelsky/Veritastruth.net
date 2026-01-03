@@ -282,6 +282,10 @@ Begin with a JSON block wrapped in \`\`\`json tags. You MUST provide substantive
   },
   
   "perspectiveAnalysis": {
+    "hiddenPremises": "<hidden assumptions within this claim's framework>",
+    "ideologicalOrigin": "<historical/cultural origins of this belief system>",
+    "whatBeingObscured": "<what truth is being concealed by this framing>",
+    "reframingNeeded": "<how to see this more clearly>",
     "complementaryInsight": "<what perspective reveals that might be missed by conventional analysis>",
     "bridgingWisdom": "<how different viewpoints might be reconciled or held together>"
   },
@@ -291,9 +295,11 @@ Begin with a JSON block wrapped in \`\`\`json tags. You MUST provide substantive
   ],
   
   "evidenceAnalysis": {
-    "whatSupportsTheClaim": "<evidence supporting — including new research findings>",
+    "forTheClaim": ["<evidence supporting — including new research findings>"],
+    "againstTheClaim": ["<evidence contradicting>"],
     "whatComplicatesIt": "<what makes this harder than it first appears>",
-    "whatRemainsGenuinelyUncertain": "<honest acknowledgment of knowledge limits>"
+    "whatRemainsGenuinelyUncertain": "<honest acknowledgment of knowledge limits>",
+    "sourceQuality": "<assessment of source quality and reliability>"
   },
   
   "comparisonWithInitial": {
