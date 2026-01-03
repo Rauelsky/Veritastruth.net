@@ -430,7 +430,9 @@ function buildTrackAPrompt(question, articleText) {
     prompt += '    "hiddenPremises": "<What assumptions does this claim/question smuggle in without stating them?>",\n';
     prompt += '    "ideologicalOrigin": "<What worldview or perspective does this framing emerge from?>",\n';
     prompt += '    "whatBeingObscured": "<What important context, nuance, or alternative framings are hidden by this presentation?>",\n';
-    prompt += '    "reframingNeeded": "<How should this claim/question be reframed for honest inquiry? Or state if framing is already appropriate.>"\n';
+    prompt += '    "reframingNeeded": "<How should this claim/question be reframed for honest inquiry? Or state if framing is already appropriate.>",\n';
+    prompt += '    "complementaryInsight": "<What perspective or insight might be valuable that conventional analysis could miss?>",\n';
+    prompt += '    "bridgingWisdom": "<How might different viewpoints on this be reconciled or held together productively?>"\n';
     prompt += '  },\n';
     prompt += '  \n';
     prompt += '  "truthDistortionPatterns": [\n';
