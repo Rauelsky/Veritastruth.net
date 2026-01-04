@@ -851,42 +851,76 @@
         .clarify-section {
             display: none;
             flex-direction: column;
-            gap: 12px;
-            padding: 16px;
-            background: var(--bg-tertiary);
-            border: 1px solid var(--accent-blue);
-            border-radius: 8px;
+            gap: 20px;
+            padding: 24px;
+            background: var(--bg-secondary);
+            border: 2px solid var(--accent-blue);
+            border-radius: 12px;
         }
 
         .clarify-section.visible { display: flex; }
 
         .clarify-question {
-            font-size: 13px;
-            color: var(--text-secondary);
-            line-height: 1.5;
+            font-size: 16px;
+            color: var(--text-primary);
+            line-height: 1.6;
+            text-align: center;
+            font-weight: 500;
         }
 
         .clarify-options {
             display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
+            flex-direction: column;
+            gap: 16px;
         }
 
         .clarify-btn {
             background: var(--bg-input);
-            border: 1px solid var(--border-medium);
-            border-radius: 6px;
-            padding: 8px 16px;
+            border: 2px solid var(--border-medium);
+            border-radius: 8px;
+            padding: 20px 24px;
             font-family: 'IBM Plex Sans', sans-serif;
-            font-size: 11px;
-            color: var(--text-secondary);
+            font-size: 15px;
+            line-height: 1.5;
+            color: var(--text-primary);
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.3s;
+            text-align: left;
+            position: relative;
         }
 
-        .clarify-btn:hover {
-            border-color: var(--accent-teal);
-            color: var(--text-primary);
+        /* Track-specific button colors */
+        .clarify-btn[data-track="A"] {
+            border-color: var(--accent-amber);
+            background: rgba(212, 168, 83, 0.1);
+        }
+
+        .clarify-btn[data-track="A"]:hover {
+            border-color: var(--accent-amber);
+            background: rgba(212, 168, 83, 0.2);
+            transform: translateX(4px);
+        }
+
+        .clarify-btn[data-track="B"] {
+            border-color: var(--accent-purple);
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .clarify-btn[data-track="B"]:hover {
+            border-color: var(--accent-purple);
+            background: rgba(102, 126, 234, 0.2);
+            transform: translateX(4px);
+        }
+
+        .clarify-btn[data-track="C"] {
+            border-color: var(--accent-cyan);
+            background: rgba(96, 165, 250, 0.1);
+        }
+
+        .clarify-btn[data-track="C"]:hover {
+            border-color: var(--accent-cyan);
+            background: rgba(96, 165, 250, 0.2);
+            transform: translateX(4px);
         }
 
         /* Action buttons */
@@ -1808,45 +1842,43 @@
              * Build the prompt for Claude API
              */
             buildPrompt: function(userInput) {
-                return `A user entered this query into Veracity™, a truth-seeking platform: "${userInput}"
+                return `A user asked: "${userInput}"
 
-Your task: Generate three empathetic, conversational button options to help clarify their intent.
+Generate three button options that meet them where they are. Use their language, match their tone, acknowledge their feelings.
 
-CONTEXT:
-- Track A (Assess): For verifying factual claims, checking evidence, fact-checking
-- Track B (Interview): For exploring beliefs, perspectives, engaging in Socratic dialogue  
-- Track C (Navigate): For practical guidance on relationships, decisions, life situations
+Track A (Assess): Fact-checking, evidence, verification  
+Track B (Interview): Exploring beliefs, understanding perspectives, Socratic dialogue  
+Track C (Navigate): Practical help with relationships, difficult conversations, life situations
 
-RULES FOR BUTTON TEXT:
-1. Be conversational and natural, not clinical or robotic
-2. Soften charged language thoughtfully (e.g., "bitch" → "being difficult", "moron" → "wrong about this")
-3. Acknowledge the emotion behind the question
-4. Each button should be 60-120 characters
-5. Start with natural phrasing like "Do you want to...", "Want to...", "Need help with..."
-6. For personal relationships, show empathy for frustration while being constructive
-7. For political/charged topics, stay neutral but acknowledge the strong feelings
+CRITICAL RULES:
+1. MATCH THEIR LANGUAGE - If they say "fucking moron", you can reference that directly
+2. BE DIRECT - Don't sanitize or soften their words unless it helps clarity
+3. MEET THEM WHERE THEY ARE - Frustrated? Acknowledge it. Curious? Reflect that.
+4. KEEP IT REAL - Sound like a human friend, not a therapist or robot
+5. Each button: 80-150 characters
 
-EXAMPLES OF GOOD BUTTON TEXT:
-For "Why is my wife such a bitch?":
-- Track A: "Want to figure out if she's actually being unreasonable, or if something else is going on?"
-- Track B: "Want to explore why you're feeling so frustrated with her right now?"
-- Track C: "Need help dealing with the relationship when she's being difficult?"
+EXAMPLES:
 
-For "Why are MAGATS such fucking morons?":
-- Track A: "Want to fact-check the specific claims Trump supporters are making?"
-- Track B: "Want to explore what's really driving the disagreement here?"
-- Track C: "Need strategies for talking with Trump supporters in your life?"
+"Why is Trump such a fucking moron?":
+- Track A: "Looking for specific instances where he said or did moronic things?"
+- Track B: "Want to understand what drives him to act like that?"
+- Track C: "Need help dealing with Trump supporters in your life?"
 
-For "I believe vaccines cause autism":
-- Track A: "Want to see what the scientific evidence actually shows about vaccines and autism?"
-- Track B: "Want to explore what's led you to this conclusion?"
-- Track C: "Need help navigating conversations about vaccines with others?"
+"My wife is being such a bitch":
+- Track A: "Want to figure out if she's actually being unreasonable?"
+- Track B: "Want to explore why you're so frustrated with her right now?"
+- Track C: "Need strategies for dealing with her when she's like this?"
 
-Respond ONLY with valid JSON in this exact format (no markdown, no explanation):
+"I think vaccines cause autism":
+- Track A: "Want to see what the science actually says about vaccines and autism?"
+- Track B: "Want to explore why you believe this?"
+- Track C: "Need help talking about vaccines with doctors or family?"
+
+Respond ONLY with valid JSON (no markdown, no code blocks):
 {
-  "trackA": "button text here",
-  "trackB": "button text here",
-  "trackC": "button text here"
+  "trackA": "button text",
+  "trackB": "button text",
+  "trackC": "button text"
 }`;
             },
 
@@ -2089,14 +2121,20 @@ Respond ONLY with valid JSON in this exact format (no markdown, no explanation):
             const info = trackInfo[currentResult.track];
             const trackClass = currentResult.track === 'AMBIGUOUS' ? '' : `track-${currentResult.track.toLowerCase()}`;
             
-            resultCard.className = `result-card ${trackClass}`;
-            resultTrack.className = `result-track ${trackClass}`;
-            resultTrack.textContent = currentResult.track === 'AMBIGUOUS' ? '?' : currentResult.track;
-            resultName.className = `result-name ${trackClass}`;
-            resultName.textContent = info.name;
-            resultConfidence.textContent = `${currentResult.confidence}% CONFIDENCE`;
-            resultEmpathy.textContent = currentResult.empathyMessage || info.empathyMessage || '';
-            resultReasoning.textContent = currentResult.reasoning;
+            // Hide result card for AMBIGUOUS queries - just show clarify buttons
+            if (currentResult.track === 'AMBIGUOUS') {
+                resultCard.style.display = 'none';
+            } else {
+                resultCard.style.display = 'block';
+                resultCard.className = `result-card ${trackClass}`;
+                resultTrack.className = `result-track ${trackClass}`;
+                resultTrack.textContent = currentResult.track;
+                resultName.className = `result-name ${trackClass}`;
+                resultName.textContent = info.name;
+                resultConfidence.textContent = `${currentResult.confidence}% CONFIDENCE`;
+                resultEmpathy.textContent = currentResult.empathyMessage || info.empathyMessage || '';
+                resultReasoning.textContent = currentResult.reasoning;
+            }
 
             // Handle compound questions with decomposition
             if (currentResult.isCompound) {
