@@ -2221,37 +2221,16 @@ Respond ONLY with valid JSON (no markdown, no code blocks):
             const track = this.dataset.track;
             const claimId = this.dataset.claimId || null;
             
-            // Log user override if they changed the track (v1.1.0)
+            // Log user override if they changed the track
             if (currentResult && currentResult.track !== track) {
                 VeracityExport.logUserOverride(sessionState, track);
             }
             
-            currentResult.track = track;
-            currentResult.confidence = 100;
-            currentResult.reasoning = claimId 
-                ? `User selected specific claim to explore: "${this.textContent.trim()}"`
-                : `User explicitly selected Track ${track} via clarifying prompt.`;
+            // Get the user's original query
+            const query = userInput.value.trim();
             
-            // Update empathy message for the new track
-            currentResult.empathyMessage = VeracityClassifier.TRACK_INFO[track].empathyMessage;
-
-            const info = trackInfo[track];
-            const trackClass = `track-${track.toLowerCase()}`;
-            
-            resultCard.className = `result-card ${trackClass}`;
-            resultTrack.className = `result-track ${trackClass}`;
-            resultTrack.textContent = track;
-            resultName.className = `result-name ${trackClass}`;
-            resultName.textContent = info.name;
-            resultConfidence.textContent = '100% CONFIDENCE';
-            resultEmpathy.textContent = currentResult.empathyMessage;
-            resultReasoning.textContent = currentResult.reasoning;
-
-            clarifySection.classList.remove('visible');
-            actionRow.style.display = 'flex';
-            continueBtn.style.display = 'inline-block';
-            activateTrack(track);
-            statusBar.textContent = `USER SELECTED: TRACK ${track}`;
+            // Immediately launch the selected track
+            launchTrack(track, query);
         }
         
         // Track previous salience scores for animation comparison
