@@ -2,19 +2,28 @@
  * VERACITY v5.0 — CLASSIFIER MODULE
  * ===================================
  * Module: classifier.js
- * Version: 1.1.0
- * Last Modified: 2025-12-30
+ * Version: 2.0.0 (AI-First Architecture)
+ * Last Modified: 2026-01-03
  * 
  * PURPOSE:
- * Core classification engine for routing user queries to appropriate tracks
- * and calculating discipline salience scores for the "thinking dashboard"
+ * Minimal routing engine that defers ALL classification to Claude API.
+ * Calculates discipline salience scores for the "thinking dashboard".
+ * 
+ * PHILOSOPHY SHIFT (v2.0):
+ * Previous versions used pattern matching to route queries to tracks.
+ * v2.0 sends EVERYTHING to Claude API for intelligent, empathetic classification.
+ * 
+ * WHY THE CHANGE:
+ * - Pattern matching is brittle and formulaic
+ * - Claude understands nuance, emotion, and context better than any regex
+ * - Users deserve personalized, empathetic responses - not sterile templates
+ * - Cost increase ($270/month vs $180/month) is worth the quality improvement
  * 
  * DEPENDENCIES: None (core module)
- * DEPENDED ON BY: main.html, animations.js, contextual.js, export.js
+ * DEPENDED ON BY: veracity.html, animations.js, contextual.js, export.js
  * 
  * CHANGE IMPACT: HIGH
- * Any modifications to this module affect track routing and salience visualization.
- * Consult VERACITY_V5_ARCHITECTURE.html before making changes.
+ * All queries now trigger adaptive clarification via VeracityAdaptive module.
  * 
  * ╔══════════════════════════════════════════════════════════════════════════════╗
  * ║  CRITICAL: TEMPORAL VERIFICATION REQUIREMENT                                 ║
@@ -36,10 +45,8 @@
  * ╚══════════════════════════════════════════════════════════════════════════════╝
  * 
  * EXPORTS:
- * - classifyIntent(input) → ClassificationResult
+ * - classifyIntent(input) → ClassificationResult (always returns AMBIGUOUS)
  * - TRACK_INFO → Track metadata object
- * 
- * ⚠️ IMMUTABLE until change protocol executed
  */
 
 const VeracityClassifier = (function() {
@@ -89,72 +96,24 @@ const VeracityClassifier = (function() {
 
     // ==================== TRACK CLASSIFICATION PATTERNS ====================
     
-    // Track A: ASSESS — Factual verification, empirical questions
-    const trackAPatterns = [
-        /^is\s+.+\?$/i, 
-        /^was\s+.+\?$/i, 
-        /^are\s+.+\?$/i, 
-        /^were\s+.+\?$/i,
-        /^did\s+.+\?$/i, 
-        /^does\s+.+\?$/i,
-        /^what('s|\s+is)\s+the\s+(scientific\s+)?consensus/i,
-        /^what\s+evidence/i, 
-        /is\s+(that|this|it)\s+true\??$/i,
-        /^help\s+me\s+understand\s+both\s+sides/i,
-        /legal\s+in/i, 
-        /effective\s+(against|for)/i,
-        /^how\s+many/i,
-        /^when\s+did/i,
-        /^where\s+(did|does|is|was)/i,
-        /^who\s+(is|was|did)/i,
-        /fact[\s-]?check/i,
-        /verify\s+(this|that|the)/i,
-    ];
+    // PHILOSOPHY SHIFT: Let Claude API handle ALL classification
+    // Cost: ~$0.003 per query (100% vs 65%)
+    // Benefit: Every user gets intelligent, empathetic, contextual response
+    // 
+    // Previous approach: Pattern matching for "slam dunks"
+    // New approach: Claude understands nuance better than any regex
+    // 
+    // For 1000 daily users × 3 queries = 3000 API calls/day
+    // Cost: $9/day = $270/month
+    // Worth it? ABSOLUTELY.
+    
+    const trackAPatterns = [];  // Empty - Claude handles it
+    const trackBPatterns = [];  // Empty - Claude handles it
+    const trackCPatterns = [];  // Empty - Claude handles it
 
-    // Track B: INTERVIEW — Beliefs, positions, claims to explore Socratically
-    const trackBPatterns = [
-        /^i\s+believe/i, 
-        /^i\s+think\s+that/i,
-        /^i('m|\s+am)\s+convinced/i,
-        /\s+is\s+(a\s+)?hoax/i, 
-        /\s+is\s+murder/i,
-        /\s+is\s+absolute/i, 
-        /\s+was\s+stolen/i,
-        /^.+\s+exists\.?$/i, 
-        /cause[sd]?\s+autism/i,
-        /they('re|\s+are)\s+(all\s+)?lying/i,
-        /the\s+truth\s+is/i,
-        /^(everyone|nobody)\s+knows/i,
-        /it('s|\s+is)\s+obvious\s+that/i,
-        /wake\s+up/i,
-        /sheep|sheeple/i,
-        /mainstream\s+(media|narrative)/i,
-        /^prove\s+(me\s+)?wrong/i,
-        /^change\s+my\s+mind/i,
-    ];
-
-    // Track C: NAVIGATE — Interpersonal guidance, practical advice
-    const trackCPatterns = [
-        /^how\s+(do|can|should)\s+i\s+(talk|speak|confront|deal|handle|approach|begin|respond)/i,
-        /^how\s+do\s+i\s+even\s+begin/i,
-        /my\s+(dad|mom|mother|father|sister|brother|friend|daughter|son|spouse|partner|wife|husband|boss|coworker|uncle|aunt|grandpa|grandma).*(how|what)/i,
-        /don'?t\s+know\s+what\s+to\s+say/i,
-        /was\s+(that|i)\s+stupid/i,
-        /help\s+me\s+(deal|cope|handle|navigate|talk)/i,
-        /what\s+should\s+i\s+(say|do)\s+(to|when|if)/i,
-        /how\s+do\s+i\s+respond/i,
-        /thanksgiving|christmas|holiday\s+dinner/i,
-        /family\s+(gathering|dinner|reunion)/i,
-        /workplace\s+(conflict|argument)/i,
-        /avoid\s+(an?\s+)?(argument|fight|conflict)/i,
-    ];
-
-    // Ambiguous patterns — could go multiple directions
+    // Ambiguous patterns — EVERYTHING goes here now
     const ambiguousPatterns = [
-        /^what\s+do\s+you\s+think\s+about/i,
-        /^your\s+(opinion|thoughts)\s+on/i,
-        /^thoughts\s*\?$/i,
-        /^what\s+about/i,
+        /.+/  // Matches everything - send all queries to Claude API
     ];
 
     // Compound/layered question patterns — contain multiple claims or embedded assumptions
