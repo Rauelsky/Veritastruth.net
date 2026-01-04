@@ -4733,6 +4733,8 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
         (function() {
             const urlParams = new URLSearchParams(window.location.search);
             const query = urlParams.get('q');
+            const autoRun = urlParams.get('auto');
+            
             if (query) {
                 const questionField = document.getElementById('question');
                 if (questionField) {
@@ -4742,8 +4744,19 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
                     if (counter) {
                         counter.textContent = questionField.value.length + '/600';
                     }
-                    // Focus the field so user can review/edit
-                    questionField.focus();
+                    
+                    // If auto=true, automatically click the assess button after a brief delay
+                    if (autoRun === 'true') {
+                        setTimeout(() => {
+                            const assessButton = document.getElementById('assessBtn');
+                            if (assessButton && !assessButton.disabled) {
+                                assessButton.click();
+                            }
+                        }, 500); // 500ms delay to let UI settle
+                    } else {
+                        // Otherwise, focus the field so user can review/edit
+                        questionField.focus();
+                    }
                 }
             }
         })();
