@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VERITAS - Understand & Explore</title>
+    <link rel="stylesheet" href="conversation.css">
+    <link rel="icon" type="image/png" href="logo-square-transparent.png">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <a href="index.html" class="logo">
+                <img src="veritas-logo.png" alt="VERITAS" class="logo-img">
+            </a>
+            <div class="controls">
+                <select id="mode-select" aria-label="Conversation mode">
+                    <option value="standard">💬 Understand & Explore</option>
+                    <option value="armor">🛡️ Armor Mode</option>
+                    <option value="mirror">🪞 The Mirror</option>
+                </select>
+            </div>
+            <button id="menu-btn" class="menu-btn" aria-label="Menu">☰</button>
+        </header>
+        
+        <div id="mode-banner" class="mode-banner standard">
+            <span class="mode-icon">💬</span>
+            <span class="mode-text">Understand & Explore</span>
+        </div>
+        
+        <main id="chat-container" role="log" aria-live="polite">
+            <!-- Messages will be inserted here -->
+        </main>
+        
+        <footer>
+            <div class="input-area">
+                <textarea 
+                    id="user-input" 
+                    placeholder="Type your message..." 
+                    rows="1"
+                    aria-label="Your message"
+                ></textarea>
+                <button id="send-btn" aria-label="Send message">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="22" y1="2" x2="11" y2="13"></line>
+                        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                    </svg>
+                </button>
+            </div>
+            <div class="actions">
+                <button id="export-btn" title="Export conversation">
+                    <span class="action-icon">📤</span>
+                    <span class="action-text">Export</span>
+                </button>
+                <button id="new-btn" title="Start new conversation">
+                    <span class="action-icon">🔄</span>
+                    <span class="action-text">New</span>
+                </button>
+                <a href="index.html" class="action-link" title="Back to home">
+                    <span class="action-icon">⬅</span>
+                    <span class="action-text">Home</span>
+                </a>
+            </div>
+        </footer>
+    </div>
+    
+    <!-- Mobile menu overlay -->
+    <div id="menu-overlay" class="menu-overlay hidden">
+        <div class="menu-content">
+            <button id="menu-close" class="menu-close">✕</button>
+            <nav class="menu-nav">
+                <a href="index.html">Home</a>
+                <a href="assess.html">Evaluate & Assess</a>
+                <a href="conversation.html" class="active">Understand & Explore</a>
+                <a href="documentation.html">Documentation</a>
+            </nav>
+            <div class="menu-actions">
+                <button id="menu-export">📤 Export Conversation</button>
+                <button id="menu-new">🔄 New Conversation</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="conversation.js"></script>
+</body>
+</html>
