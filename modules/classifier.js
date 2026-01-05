@@ -116,36 +116,9 @@ const VeracityClassifier = (function() {
         /.+/  // Matches everything - send all queries to Claude API
     ];
 
-    // Compound/layered question patterns — contain multiple claims or embedded assumptions
-    // These MUST trigger clarification to decompose before routing
-    const compoundPatterns = [
-        // "Is it true that X said Y" — contains both attribution AND content claims
-        /is\s+it\s+true\s+that\s+.+\s+(said|claimed|stated|tweeted|posted)\s+.+/i,
-        
-        // Questions with "and" or "or" connecting distinct claims
-        /\?\s*$.*\b(and\s+(that|also|if)|or\s+(that|if|whether))\b/i,
-        
-        // "Did X cause Y" where Y itself may be false
-        /did\s+.+\s+cause\s+.+/i,
-        
-        // Questions containing quotations or reported speech with embedded claims
-        /.+\s+(said|claimed|believes)\s+(that\s+)?.+\s+(is|was|caused|killed|died)/i,
-        
-        // "Why did X" — presupposes X happened
-        /^why\s+did\s+.+/i,
-        
-        // "When did X stop" — classic loaded question
-        /when\s+did\s+.+\s+stop/i,
-        
-        // Multiple question marks or semicolons (multiple questions in one)
-        /\?.*\?/,
-        
-        // "Is it true that... and..." — compound truth claims
-        /is\s+it\s+true\s+that\s+.+\s+and\s+.+/i,
-        
-        // Attribution + causation combinations
-        /.+\s+(murder|death|died|killed).+\s+(caused|because|due\s+to)/i,
-    ];
+    // Compound/layered question patterns — DISABLED in v2.0
+    // Let Claude API handle compound questions with better grammar and context
+    const compoundPatterns = [];
 
     // ==================== TEMPORAL VERIFICATION PATTERNS ====================
     // These patterns indicate claims that REQUIRE real-time verification
