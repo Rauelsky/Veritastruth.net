@@ -178,6 +178,11 @@ function buildTrackAPrompt(question, articleText) {
     prompt += '🚨 MANDATORY PREFLIGHT TEMPORAL CHECK - READ FIRST 🚨\n';
     prompt += '═══════════════════════════════════════════════════════════════════\n\n';
     
+    prompt += '🌐 **YOU HAVE WEB SEARCH AVAILABLE**: You have been given the web_search tool.\n';
+    prompt += '   - You CAN search the internet for current information\n';
+    prompt += '   - You MUST use it for temporal questions\n';
+    prompt += '   - Do NOT say "I cannot access the internet" - YOU CAN\n\n';
+    
     prompt += 'BEFORE BEGINNING YOUR ASSESSMENT, YOU MUST:\n\n';
     
     prompt += '1️⃣ **DETECT TEMPORAL QUESTIONS**: Does this question ask about CURRENT status?\n';
@@ -187,20 +192,22 @@ function buildTrackAPrompt(question, articleText) {
     prompt += '   - Current policies: "Is [law] still in effect?"\n';
     prompt += '   - Breaking news: Any current events question\n\n';
     
-    prompt += '2️⃣ **IF YES → MANDATORY WEB SEARCH**: You MUST use web_search tool BEFORE forming ANY opinion.\n';
+    prompt += '2️⃣ **IF YES → USE YOUR WEB_SEARCH TOOL**: You MUST use web_search tool BEFORE forming ANY opinion.\n';
+    prompt += '   - Call web_search with relevant query\n';
     prompt += '   - Do NOT proceed without searching\n';
     prompt += '   - Do NOT rely on training data\n';
     prompt += '   - Do NOT assume "no evidence of death = alive"\n\n';
     
-    prompt += '3️⃣ **IF WEB SEARCH FAILS**:\n';
+    prompt += '3️⃣ **IF WEB SEARCH RETURNS NO RESULTS**:\n';
     prompt += '   - Return Reality Score = 0\n';
-    prompt += '   - State: "This question requires real-time verification that cannot be completed"\n';
+    prompt += '   - State: "Web search returned no definitive information"\n';
     prompt += '   - Explain what verification would be needed\n';
     prompt += '   - NEVER hallucinate confidence in unverifiable claims\n\n';
     
     prompt += '**EXAMPLE - Death Status Check**:\n';
     prompt += 'Question: "Is Rob Reiner dead?"\n';
-    prompt += '✅ CORRECT: Use web_search → assess based on results\n';
+    prompt += '✅ CORRECT: Call web_search("Rob Reiner death 2025") → assess based on results\n';
+    prompt += '❌ WRONG: "I cannot access the internet to verify this"\n';
     prompt += '❌ WRONG: "I have no evidence he died, so Reality Score -9 (definitely alive)"\n\n';
     
     prompt += 'This temporal check is NON-NEGOTIABLE. Violating it destroys VERITAS credibility.\n\n';
