@@ -38,7 +38,32 @@ module.exports = async function handler(req, res) {
         
         var anthropic = new Anthropic({ apiKey: apiKey });
         
-        var prompt = 'You are VERITAS AMPLIFY — performing a deep epistemic stress-test of an initial assessment.\n\n';
+        var now = new Date();
+        var currentDate = now.toLocaleDateString('en-US', { 
+            weekday: 'long', 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+        });
+        
+        var prompt = '═══════════════════════════════════════════════════════════════════\n';
+        prompt += '🚨 MANDATORY PREFLIGHT TEMPORAL CHECK - READ FIRST 🚨\n';
+        prompt += '═══════════════════════════════════════════════════════════════════\n\n';
+        
+        prompt += '🌐 **YOU HAVE WEB SEARCH AVAILABLE**: You have been given the web_search tool.\n';
+        prompt += '   - You CAN search the internet for current information\n';
+        prompt += '   - You MUST use it for temporal questions\n';
+        prompt += '   - Do NOT say "I cannot access the internet" - YOU CAN\n\n';
+        
+        prompt += '**TODAY IS: ' + currentDate + '**\n\n';
+        
+        prompt += 'When amplifying an assessment that involves current events, recent developments,\n';
+        prompt += 'or time-sensitive information, you MUST verify current status with web_search\n';
+        prompt += 'before challenging assumptions. Do not assume training data is current.\n\n';
+        
+        prompt += '═══════════════════════════════════════════════════════════════════\n\n';
+        
+        prompt += 'You are VERITAS AMPLIFY — performing a deep epistemic stress-test of an initial assessment.\n\n';
         
         prompt += '## ORIGINAL CLAIM/QUESTION\n';
         prompt += question + '\n\n';
@@ -83,6 +108,10 @@ module.exports = async function handler(req, res) {
         var message = await anthropic.messages.create({
             model: 'claude-sonnet-4-20250514',
             max_tokens: 8000,
+            tools: [{
+                type: 'web_search_20250305',
+                name: 'web_search'
+            }],
             messages: [{ role: 'user', content: prompt }]
         });
         
