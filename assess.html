@@ -7,6 +7,12 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Veracity v5.2 Module Dependencies -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+    <link rel="stylesheet" href="/modules/sidebar-actions.css">
+    
     <style>
         :root {
             /* Scientific Dark Theme */
@@ -2733,6 +2739,25 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
             <div style="text-align: center; margin-top: 24px;">
                 <button class="btn btn-secondary" onclick="clearForm()">↻ New Assessment</button>
             </div>
+
+            <!-- Export Actions Bar (v5.2) -->
+            <div class="export-actions-bar" id="exportActionsBar" style="display: none; margin-top: 24px; padding: 20px; background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.8) 100%); border-radius: 10px; border: 1px solid var(--border-medium);">
+                <div style="flex-basis: 100%; font-size: 0.85rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px;">📤 Export Assessment</div>
+                <div style="display: flex; flex-wrap: wrap; gap: 12px;">
+                    <button onclick="exportCurrentAssessment('pdf')" style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; background: var(--bg-tertiary); border: 1px solid var(--border-medium); border-radius: 8px; color: var(--text-secondary); font-size: 0.9rem; font-weight: 500; cursor: pointer; transition: all 0.2s ease;" onmouseover="this.style.borderColor='var(--accent-teal)'; this.style.color='var(--accent-teal)';" onmouseout="this.style.borderColor='var(--border-medium)'; this.style.color='var(--text-secondary)';">
+                        <span>📄</span> PDF
+                    </button>
+                    <button onclick="exportCurrentAssessment('json')" style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; background: var(--bg-tertiary); border: 1px solid var(--border-medium); border-radius: 8px; color: var(--text-secondary); font-size: 0.9rem; font-weight: 500; cursor: pointer; transition: all 0.2s ease;" onmouseover="this.style.borderColor='var(--accent-teal)'; this.style.color='var(--accent-teal)';" onmouseout="this.style.borderColor='var(--border-medium)'; this.style.color='var(--text-secondary)';">
+                        <span>💾</span> JSON
+                    </button>
+                    <button onclick="exportCurrentAssessment('md')" style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; background: var(--bg-tertiary); border: 1px solid var(--border-medium); border-radius: 8px; color: var(--text-secondary); font-size: 0.9rem; font-weight: 500; cursor: pointer; transition: all 0.2s ease;" onmouseover="this.style.borderColor='var(--accent-teal)'; this.style.color='var(--accent-teal)';" onmouseout="this.style.borderColor='var(--border-medium)'; this.style.color='var(--text-secondary)';">
+                        <span>📝</span> Markdown
+                    </button>
+                    <button onclick="printCurrentAssessment()" style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; background: var(--bg-tertiary); border: 1px solid var(--border-medium); border-radius: 8px; color: var(--text-secondary); font-size: 0.9rem; font-weight: 500; cursor: pointer; transition: all 0.2s ease;" onmouseover="this.style.borderColor='var(--accent-teal)'; this.style.color='var(--accent-teal)';" onmouseout="this.style.borderColor='var(--border-medium)'; this.style.color='var(--text-secondary)';">
+                        <span>🖨️</span> Print
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -5020,6 +5045,90 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
             </div>
         </div>
     </div>
+
+    <!-- Veracity v5.2 Modules -->
+    <script src="/modules/export-universal.js"></script>
+    <script src="/modules/sidebar-actions.js"></script>
+    <script>
+        // ================================
+        // EXPORT FUNCTIONS (v5.2)
+        // ================================
+        function exportCurrentAssessment(type) {
+            if (!lastAssessment) {
+                alert('No assessment available to export. Please run an assessment first.');
+                return;
+            }
+            
+            UniversalExport.exportAssessment({
+                type: type,
+                claim: lastAssessment.question,
+                realityScore: lastAssessment.realityScore,
+                integrityScore: lastAssessment.integrityScore,
+                sections: {
+                    overallAssessment: lastAssessment.structured?.overallAssessment || '',
+                    underlyingReality: lastAssessment.structured?.underlyingReality || '',
+                    centralClaims: lastAssessment.structured?.centralClaims || '',
+                    evidenceAnalysis: lastAssessment.structured?.evidenceAnalysis || '',
+                    whatWeKnow: lastAssessment.structured?.whatWeKnow || '',
+                    whatRemains: lastAssessment.structured?.whatRemains || '',
+                    contextualFactors: lastAssessment.structured?.contextualFactors || '',
+                    plainTruth: lastAssessment.structured?.plainTruth || ''
+                },
+                sources: lastAssessment.structured?.sources || [],
+                metadata: {
+                    assessmentDate: new Date().toISOString(),
+                    questionType: lastAssessment.structured?.questionType || 'Unknown'
+                }
+            });
+        }
+        
+        function printCurrentAssessment() {
+            var resultsSection = document.getElementById('resultsSection');
+            if (!resultsSection || !resultsSection.classList.contains('visible')) {
+                alert('No assessment available to print. Please run an assessment first.');
+                return;
+            }
+            
+            UniversalExport.print({
+                content: resultsSection,
+                title: 'Veracity Assessment - ' + (lastAssessment?.question || 'Assessment')
+            });
+        }
+        
+        function showExportBar() {
+            var exportBar = document.getElementById('exportActionsBar');
+            if (exportBar) {
+                exportBar.style.display = 'block';
+            }
+            // Initialize sidebar actions with assessment data
+            if (typeof SidebarActions !== 'undefined' && lastAssessment) {
+                SidebarActions.init('assess', {
+                    claim: lastAssessment.question,
+                    assessment: lastAssessment.structured
+                });
+            }
+        }
+        
+        // Hook into existing assessment completion
+        var originalDisplayResults = typeof displayResults === 'function' ? displayResults : null;
+        
+        // Patch: Show export bar after results display
+        document.addEventListener('DOMContentLoaded', function() {
+            // Watch for results section becoming visible
+            var observer = new MutationObserver(function(mutations) {
+                mutations.forEach(function(mutation) {
+                    if (mutation.target.classList && mutation.target.classList.contains('visible') && mutation.target.id === 'resultsSection') {
+                        setTimeout(showExportBar, 500);
+                    }
+                });
+            });
+            
+            var resultsSection = document.getElementById('resultsSection');
+            if (resultsSection) {
+                observer.observe(resultsSection, { attributes: true, attributeFilter: ['class'] });
+            }
+        });
+    </script>
 
 </body>
 </html>

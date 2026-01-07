@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VERITAS — Navigate Mode</title>
     <link href="https://fonts.googleapis.com/css2?family=Antonio:wght@300;400;500;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Veracity v5.2 Module Dependencies -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+    <link rel="stylesheet" href="/modules/sidebar-actions.css">
+    
     <style>
         :root {
             --bg-primary: #0a0a12;
@@ -477,6 +483,11 @@
     </main>
 
     <footer class="footer">
+        <div style="display: flex; justify-content: center; gap: 16px; margin-bottom: 8px;">
+            <button onclick="exportConversation('pdf')" style="background: transparent; border: 1px solid var(--border-medium); border-radius: 6px; padding: 6px 12px; color: var(--text-secondary); font-size: 11px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--track-primary)'; this.style.color='var(--track-primary)';" onmouseout="this.style.borderColor='var(--border-medium)'; this.style.color='var(--text-secondary)';">📄 Export PDF</button>
+            <button onclick="exportConversation('json')" style="background: transparent; border: 1px solid var(--border-medium); border-radius: 6px; padding: 6px 12px; color: var(--text-secondary); font-size: 11px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--track-primary)'; this.style.color='var(--track-primary)';" onmouseout="this.style.borderColor='var(--border-medium)'; this.style.color='var(--text-secondary)';">💾 Export JSON</button>
+            <button onclick="exportConversation('md')" style="background: transparent; border: 1px solid var(--border-medium); border-radius: 6px; padding: 6px 12px; color: var(--text-secondary); font-size: 11px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--track-primary)'; this.style.color='var(--track-primary)';" onmouseout="this.style.borderColor='var(--border-medium)'; this.style.color='var(--text-secondary)';">📝 Export MD</button>
+        </div>
         <strong>VERITAS LLC</strong> — Prairie du Sac, Wisconsin · SEEK · QUESTION · UNDERSTAND · 
         <a href="veracity.html">Return to Veracity</a>
     </footer>
@@ -644,6 +655,49 @@
 
         document.addEventListener('DOMContentLoaded', init);
     })();
+    </script>
+    
+    <!-- Veracity v5.2 Modules -->
+    <script src="/modules/export-universal.js"></script>
+    <script src="/modules/sidebar-actions.js"></script>
+    <script>
+        // Export function for Track C conversations
+        function exportConversation(type) {
+            var messages = [];
+            var topic = '';
+            
+            // Get messages from DOM
+            var messageEls = document.querySelectorAll('.message');
+            messageEls.forEach(function(el) {
+                var role = el.classList.contains('user') ? 'user' : 'assistant';
+                var textEl = el.querySelector('.message-text');
+                if (textEl) {
+                    messages.push({
+                        role: role,
+                        content: textEl.textContent || textEl.innerText,
+                        timestamp: new Date().toISOString()
+                    });
+                }
+            });
+            
+            // Get topic from context card
+            var contextText = document.getElementById('contextText');
+            if (contextText) {
+                topic = contextText.textContent;
+            }
+            
+            if (messages.length === 0) {
+                alert('No conversation to export yet.');
+                return;
+            }
+            
+            UniversalExport.exportConversation({
+                type: type,
+                track: 'c',
+                topic: topic,
+                messages: messages
+            });
+        }
     </script>
 </body>
 </html>
