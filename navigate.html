@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VERITAS — Navigate Mode</title>
+    <link href="https://fonts.googleapis.com/css2?family=Antonio:wght@300;400;500;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0a12;
+            --bg-secondary: #0f172a;
+            --bg-card: #1e3a5f;
+            --bg-tertiary: #2d4a6f;
+            --bg-input: #0a0a12;
+            --track-primary: #14b8a6;
+            --track-secondary: #0d9488;
+            --track-glow: rgba(20, 184, 166, 0.4);
+            --accent-teal: #60a5fa;
+            --accent-green: #10b981;
+            --accent-amber: #d4a853;
+            --accent-red: #ef4444;
+            --safety-amber: #fbbf24;
+            --text-primary: #ffffff;
+            --text-secondary: #bfdbfe;
+            --text-muted: #60a5fa;
+            --text-dim: #3b82f6;
+            --border-subtle: #1e3a5f;
+            --border-medium: #3b82f6;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'IBM Plex Sans', -apple-system, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
+            border-bottom: 2px solid var(--track-primary);
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .back-btn {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-medium);
+            border-radius: 8px;
+            padding: 8px 16px;
+            color: var(--text-secondary);
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .back-btn:hover {
+            background: var(--track-primary);
+            color: var(--text-primary);
+        }
+
+        .header-title h1 {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+            letter-spacing: 2px;
+        }
+
+        .header-title .subtitle {
+            font-size: 11px;
+            color: var(--track-primary);
+            letter-spacing: 1px;
+        }
+
+        .api-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            background: var(--bg-tertiary);
+            border-radius: 20px;
+            font-size: 11px;
+            color: var(--accent-green);
+        }
+
+        .api-status .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--accent-green);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .main-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            max-width: 900px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .safety-notice {
+            background: linear-gradient(90deg, rgba(251, 191, 36, 0.1) 0%, rgba(251, 191, 36, 0.05) 100%);
+            border: 1px solid rgba(251, 191, 36, 0.3);
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .safety-notice.hidden { display: none; }
+        .safety-icon { font-size: 18px; flex-shrink: 0; }
+
+        .safety-content { flex: 1; }
+
+        .safety-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--safety-amber);
+            margin-bottom: 4px;
+        }
+
+        .safety-text {
+            font-size: 12px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .safety-link {
+            color: var(--safety-amber);
+            text-decoration: underline;
+        }
+
+        .safety-dismiss {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 4px;
+            font-size: 14px;
+        }
+
+        .context-card {
+            background: var(--bg-card);
+            border: 1px solid var(--track-primary);
+            border-left: 4px solid var(--track-primary);
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 20px;
+        }
+
+        .context-label {
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--track-primary);
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+        }
+
+        .context-text {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .chat-container {
+            flex: 1;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            min-height: 400px;
+        }
+
+        .chat-header {
+            background: var(--bg-tertiary);
+            padding: 12px 20px;
+            border-bottom: 1px solid var(--border-subtle);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .chat-header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .chat-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--track-primary) 0%, var(--track-secondary) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        .chat-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-primary);
+            letter-spacing: 1px;
+        }
+
+        .chat-mode {
+            font-size: 10px;
+            color: var(--accent-green);
+            background: rgba(16, 185, 129, 0.15);
+            padding: 4px 10px;
+            border-radius: 12px;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .message {
+            display: flex;
+            gap: 12px;
+            max-width: 85%;
+            animation: fadeSlideIn 0.3s ease;
+        }
+
+        @keyframes fadeSlideIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message.assistant { align-self: flex-start; }
+        .message.user { align-self: flex-end; flex-direction: row-reverse; }
+
+        .message-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .message.assistant .message-avatar {
+            background: linear-gradient(135deg, var(--track-primary) 0%, var(--track-secondary) 100%);
+            color: white;
+        }
+
+        .message.user .message-avatar {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-medium);
+            color: var(--text-secondary);
+        }
+
+        .message-content {
+            background: var(--bg-tertiary);
+            border-radius: 16px;
+            padding: 12px 16px;
+            border: 1px solid var(--border-subtle);
+        }
+
+        .message.assistant .message-content {
+            border-top-left-radius: 4px;
+            border-color: var(--track-primary);
+        }
+
+        .message.user .message-content {
+            border-top-right-radius: 4px;
+            background: var(--bg-secondary);
+        }
+
+        .message-text {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .message-text p { margin-bottom: 10px; }
+        .message-text p:last-child { margin-bottom: 0; }
+        .message-text strong { color: var(--text-primary); }
+        .message-text em { color: var(--track-primary); }
+        .message-text ul, .message-text ol { margin: 10px 0; padding-left: 20px; }
+        .message-text li { margin-bottom: 6px; }
+
+        .typing-indicator {
+            display: flex;
+            gap: 4px;
+            padding: 8px 0;
+        }
+
+        .typing-indicator span {
+            width: 8px;
+            height: 8px;
+            background: var(--track-primary);
+            border-radius: 50%;
+            animation: typingBounce 1.4s infinite ease-in-out;
+        }
+
+        .typing-indicator span:nth-child(1) { animation-delay: 0s; }
+        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typingBounce {
+            0%, 80%, 100% { transform: translateY(0); opacity: 0.4; }
+            40% { transform: translateY(-6px); opacity: 1; }
+        }
+
+        .error-message {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 8px;
+            padding: 12px 16px;
+            color: var(--accent-red);
+            font-size: 13px;
+            margin: 10px 0;
+        }
+
+        .input-area {
+            padding: 16px 20px;
+            background: var(--bg-tertiary);
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .input-wrapper {
+            display: flex;
+            gap: 12px;
+            align-items: flex-end;
+        }
+
+        .input-field {
+            flex: 1;
+            background: var(--bg-input);
+            border: 1px solid var(--border-medium);
+            border-radius: 12px;
+            padding: 14px 18px;
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 14px;
+            resize: none;
+            min-height: 50px;
+            max-height: 150px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: var(--track-primary);
+            box-shadow: 0 0 0 3px var(--track-glow);
+        }
+
+        .input-field::placeholder { color: var(--text-dim); }
+
+        .send-btn {
+            background: linear-gradient(180deg, var(--track-primary) 0%, var(--track-secondary) 100%);
+            border: none;
+            border-radius: 12px;
+            padding: 14px 24px;
+            color: var(--text-primary);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .send-btn:hover:not(:disabled) {
+            filter: brightness(1.15);
+            box-shadow: 0 0 20px var(--track-glow);
+        }
+
+        .send-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .footer {
+            padding: 12px 24px;
+            text-align: center;
+            font-size: 11px;
+            color: var(--text-dim);
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .footer a { color: var(--track-primary); text-decoration: none; }
+
+        @media (max-width: 768px) {
+            .header { flex-direction: column; gap: 12px; padding: 12px 16px; }
+            .header-left, .header-right { width: 100%; justify-content: space-between; }
+            .main-container { padding: 12px; }
+            .message { max-width: 95%; }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-left">
+            <a href="veracity.html" class="back-btn"><span>←</span> BACK TO VERACITY</a>
+            <div class="header-title">
+                <h1>TRACK C: NAVIGATE</h1>
+                <div class="subtitle">PRACTICAL GUIDANCE MODE</div>
+            </div>
+        </div>
+        <div class="header-right">
+            <div class="api-status"><span class="dot"></span><span>LIVE</span></div>
+        </div>
+    </header>
+
+    <main class="main-container">
+        <div class="safety-notice" id="safetyNotice">
+            <span class="safety-icon">⚠️</span>
+            <div class="safety-content">
+                <div class="safety-title">IMPORTANT</div>
+                <div class="safety-text">
+                    Navigate mode offers practical frameworks, not professional advice. For mental health concerns, please reach out to a qualified professional. 
+                    <a href="https://988lifeline.org" target="_blank" class="safety-link">988 Suicide & Crisis Lifeline</a> is available 24/7.
+                </div>
+            </div>
+            <button class="safety-dismiss" id="dismissSafety">✕</button>
+        </div>
+
+        <div class="context-card" id="contextCard">
+            <div class="context-label">YOUR SITUATION</div>
+            <div class="context-text" id="contextText">Loading your query...</div>
+        </div>
+
+        <div class="chat-container">
+            <div class="chat-header">
+                <div class="chat-header-left">
+                    <div class="chat-icon">🧭</div>
+                    <span class="chat-title">GUIDANCE DIALOGUE</span>
+                </div>
+                <span class="chat-mode">POWERED BY CLAUDE</span>
+            </div>
+            <div class="chat-messages" id="chatMessages"></div>
+            <div class="input-area">
+                <div class="input-wrapper">
+                    <textarea class="input-field" id="userInput" placeholder="Share more about your situation..." rows="1"></textarea>
+                    <button class="send-btn" id="sendBtn">SEND</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <strong>VERITAS LLC</strong> — Prairie du Sac, Wisconsin · SEEK · QUESTION · UNDERSTAND · 
+        <a href="veracity.html">Return to Veracity</a>
+    </footer>
+
+    <script>
+    (function() {
+        'use strict';
+
+        const state = {
+            isProcessing: false,
+            conversationHistory: [],
+            originalQuery: ''
+        };
+
+        const elements = {
+            contextCard: document.getElementById('contextCard'),
+            contextText: document.getElementById('contextText'),
+            chatMessages: document.getElementById('chatMessages'),
+            userInput: document.getElementById('userInput'),
+            sendBtn: document.getElementById('sendBtn'),
+            safetyNotice: document.getElementById('safetyNotice'),
+            dismissSafety: document.getElementById('dismissSafety')
+        };
+
+        function init() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const query = urlParams.get('q');
+            
+            if (query) {
+                state.originalQuery = decodeURIComponent(query);
+                elements.contextText.textContent = state.originalQuery;
+            } else {
+                elements.contextCard.style.display = 'none';
+            }
+
+            elements.sendBtn.addEventListener('click', handleSend);
+            elements.userInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    handleSend();
+                }
+            });
+            elements.userInput.addEventListener('input', () => {
+                elements.userInput.style.height = 'auto';
+                elements.userInput.style.height = Math.min(elements.userInput.scrollHeight, 150) + 'px';
+            });
+            elements.dismissSafety.addEventListener('click', () => {
+                elements.safetyNotice.classList.add('hidden');
+            });
+
+            setTimeout(startConversation, 500);
+        }
+
+        function startConversation() {
+            const openingMessage = state.originalQuery 
+                ? `Thank you for bringing this to Navigate mode. I can hear that this is something that matters to you:\n\n*"${state.originalQuery}"*\n\nI'm here to help you think through this — not to tell you what to do, but to help you find your own clarity.\n\nTo start: what's the part of this that feels most challenging or uncertain right now?`
+                : `Welcome to Navigate mode. I'm here to help you work through difficult situations — whether it's a tough conversation you need to have, a decision you're wrestling with, or just something weighing on you.\n\nI won't tell you what to do. Instead, I'll help you think through what matters to you and find your own best path forward.\n\nWhat's on your mind?`;
+
+            addMessage('assistant', openingMessage);
+            state.conversationHistory.push({ role: 'assistant', content: openingMessage });
+        }
+
+        async function handleSend() {
+            const input = elements.userInput.value.trim();
+            if (!input || state.isProcessing) return;
+
+            addMessage('user', input);
+            state.conversationHistory.push({ role: 'user', content: input });
+
+            elements.userInput.value = '';
+            elements.userInput.style.height = 'auto';
+            state.isProcessing = true;
+            elements.sendBtn.disabled = true;
+
+            const typingId = showTyping();
+
+            try {
+                const response = await fetch('/api/navigate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        messages: state.conversationHistory,
+                        originalQuery: state.originalQuery
+                    })
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || 'API request failed');
+                }
+
+                const data = await response.json();
+                removeTyping(typingId);
+                addMessage('assistant', data.content);
+                state.conversationHistory.push({ role: 'assistant', content: data.content });
+
+            } catch (error) {
+                removeTyping(typingId);
+                showError(`Connection error: ${error.message}. Please try again.`);
+            }
+
+            state.isProcessing = false;
+            elements.sendBtn.disabled = false;
+            elements.userInput.focus();
+        }
+
+        function addMessage(role, content) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${role}`;
+
+            const avatar = document.createElement('div');
+            avatar.className = 'message-avatar';
+            avatar.textContent = role === 'assistant' ? '🧭' : 'You';
+
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'message-content';
+
+            const textDiv = document.createElement('div');
+            textDiv.className = 'message-text';
+            textDiv.innerHTML = content
+                .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.+?)\*/g, '<em>$1</em>')
+                .replace(/^- /gm, '• ')
+                .replace(/\n\n/g, '</p><p>')
+                .replace(/\n/g, '<br>')
+                .replace(/^/, '<p>')
+                .replace(/$/, '</p>');
+
+            contentDiv.appendChild(textDiv);
+            messageDiv.appendChild(avatar);
+            messageDiv.appendChild(contentDiv);
+            elements.chatMessages.appendChild(messageDiv);
+            elements.chatMessages.scrollTop = elements.chatMessages.scrollHeight;
+        }
+
+        function showTyping() {
+            const id = 'typing-' + Date.now();
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message assistant';
+            messageDiv.id = id;
+            messageDiv.innerHTML = `
+                <div class="message-avatar">🧭</div>
+                <div class="message-content">
+                    <div class="typing-indicator"><span></span><span></span><span></span></div>
+                </div>
+            `;
+            elements.chatMessages.appendChild(messageDiv);
+            elements.chatMessages.scrollTop = elements.chatMessages.scrollHeight;
+            return id;
+        }
+
+        function removeTyping(id) {
+            const el = document.getElementById(id);
+            if (el) el.remove();
+        }
+
+        function showError(message) {
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error-message';
+            errorDiv.textContent = message;
+            elements.chatMessages.appendChild(errorDiv);
+            elements.chatMessages.scrollTop = elements.chatMessages.scrollHeight;
+            setTimeout(() => errorDiv.remove(), 5000);
+        }
+
+        document.addEventListener('DOMContentLoaded', init);
+    })();
+    </script>
+</body>
+</html>
