@@ -5059,25 +5059,18 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
                 return;
             }
             
+            // Pass the full structured object - the export module will extract what it needs
             UniversalExport.exportAssessment({
                 type: type,
                 claim: lastAssessment.question,
                 realityScore: lastAssessment.realityScore,
                 integrityScore: lastAssessment.integrityScore,
-                sections: {
-                    overallAssessment: lastAssessment.structured?.overallAssessment || '',
-                    underlyingReality: lastAssessment.structured?.underlyingReality || '',
-                    centralClaims: lastAssessment.structured?.centralClaims || '',
-                    evidenceAnalysis: lastAssessment.structured?.evidenceAnalysis || '',
-                    whatWeKnow: lastAssessment.structured?.whatWeKnow || '',
-                    whatRemains: lastAssessment.structured?.whatRemains || '',
-                    contextualFactors: lastAssessment.structured?.contextualFactors || '',
-                    plainTruth: lastAssessment.structured?.plainTruth || ''
-                },
+                sections: lastAssessment.structured || {},
                 sources: lastAssessment.structured?.sources || [],
                 metadata: {
                     assessmentDate: new Date().toISOString(),
-                    questionType: lastAssessment.structured?.questionType || 'Unknown'
+                    questionType: lastAssessment.structured?.questionType || 'Unknown',
+                    exactClaimBeingScored: lastAssessment.structured?.exactClaimBeingScored || ''
                 }
             });
         }
