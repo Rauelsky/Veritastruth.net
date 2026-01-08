@@ -368,62 +368,141 @@ const UniversalExport = {
     y = drawWrappedText(claim, margin + 15, y + 20, contentWidth - 30, 12);
     y += 25;
     
-    // ===== SCORES SECTION =====
-    checkPageBreak(100);
+    // ===== REALITY SCORE COMPONENTS =====
+    // Show individual factors instead of a single aggregated score
+    checkPageBreak(150);
     
     doc.setTextColor(13, 148, 136);
     doc.setFontSize(14);
     doc.setFont('helvetica', 'bold');
-    doc.text('Assessment Scores', margin, y);
-    y += 25;
+    doc.text('Reality Assessment', margin, y);
+    y += 8;
     
-    // Reality Score
-    const realityColor = this._getScoreColor(realityScore, 10);
-    doc.setFillColor(...realityColor.rgb);
-    doc.roundedRect(margin, y, 200, 50, 5, 5, 'F');
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'italic');
+    doc.setTextColor(107, 114, 128);
+    doc.text('Component scores shown individually - no single number captures complex truth', margin, y);
+    y += 20;
     
-    doc.setTextColor(realityColor.text[0], realityColor.text[1], realityColor.text[2]);
-    doc.setFontSize(11);
-    doc.setFont('helvetica', 'bold');
-    doc.text('Reality Score', margin + 15, y + 18);
-    
-    doc.setFontSize(22);
-    const scoreText = `${realityScore > 0 ? '+' : ''}${realityScore}/10`;
-    doc.text(scoreText, margin + 15, y + 40);
-    
-    // Integrity Score
-    if (integrityScore !== undefined) {
-      const integrityColor = this._getScoreColor(integrityScore, 1);
-      doc.setFillColor(...integrityColor.rgb);
-      doc.roundedRect(margin + 220, y, 200, 50, 5, 5, 'F');
-      
-      doc.setTextColor(integrityColor.text[0], integrityColor.text[1], integrityColor.text[2]);
-      doc.setFontSize(11);
-      doc.setFont('helvetica', 'bold');
-      doc.text('Integrity Score', margin + 235, y + 18);
-      
-      doc.setFontSize(22);
-      const intText = integrityScore.toFixed(2);
-      doc.text(intText, margin + 235, y + 40);
+    // Render Reality Score factors if available
+    const factors = sections.selectedFactors || [];
+    if (factors.length > 0) {
+      for (const factor of factors) {
+        checkPageBreak(60);
+        
+        const factorColor = this._getScoreColor(factor.score, 10);
+        
+        // Factor name and score on same line
+        doc.setFillColor(...factorColor.rgb);
+        doc.roundedRect(margin, y, contentWidth, 45, 4, 4, 'F');
+        
+        // Factor name
+        doc.setTextColor(factorColor.text[0], factorColor.text[1], factorColor.text[2]);
+        doc.setFontSize(11);
+        doc.setFont('helvetica', 'bold');
+        doc.text(factor.factor, margin + 10, y + 14);
+        
+        // Score badge
+        const scoreStr = `${factor.score > 0 ? '+' : ''}${factor.score}`;
+        const scoreWidth = doc.getTextWidth(scoreStr) + 16;
+        doc.setFillColor(255, 255, 255);
+        doc.roundedRect(pageWidth - margin - scoreWidth - 10, y + 5, scoreWidth, 20, 3, 3, 'F');
+        doc.setTextColor(factorColor.text[0], factorColor.text[1], factorColor.text[2]);
+        doc.setFontSize(12);
+        doc.text(scoreStr, pageWidth - margin - scoreWidth - 2, y + 18);
+        
+        // Weight
+        doc.setFontSize(9);
+        doc.setTextColor(107, 114, 128);
+        doc.text(`Weight: ${(factor.weight * 100).toFixed(0)}%`, margin + 10, y + 28);
+        
+        // Brief explanation (truncated if needed)
+        doc.setFontSize(9);
+        doc.setTextColor(75, 85, 99);
+        const explanationLines = doc.splitTextToSize(factor.explanation || '', contentWidth - 20);
+        const truncatedExplanation = explanationLines.slice(0, 1).join(' ');
+        doc.text(truncatedExplanation, margin + 10, y + 40);
+        
+        y += 55;
+      }
     }
     
-    y += 70;
+    y += 10;
+    
+    // ===== INTEGRITY SCORE COMPONENTS =====
+    checkPageBreak(150);
+    
+    doc.setTextColor(13, 148, 136);
+    doc.setFontSize(14);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Integrity Assessment', margin, y);
+    y += 8;
+    
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'italic');
+    doc.setTextColor(107, 114, 128);
+    doc.text('How honestly and rigorously is the claim presented?', margin, y);
+    y += 20;
+    
+    // Render Integrity components if available
+    const integrity = sections.integrity || {};
+    const integrityComponents = [
+      { key: 'observable', label: 'Observable Markers', data: integrity.observable },
+      { key: 'comparative', label: 'Comparative Analysis', data: integrity.comparative },
+      { key: 'bias', label: 'Bias Detection', data: integrity.bias }
+    ];
+    
+    for (const comp of integrityComponents) {
+      if (!comp.data || comp.data.score === undefined) continue;
+      
+      checkPageBreak(50);
+      
+      const compColor = this._getScoreColor(comp.data.score, 1);
+      
+      doc.setFillColor(...compColor.rgb);
+      doc.roundedRect(margin, y, contentWidth, 35, 4, 4, 'F');
+      
+      // Component name
+      doc.setTextColor(compColor.text[0], compColor.text[1], compColor.text[2]);
+      doc.setFontSize(11);
+      doc.setFont('helvetica', 'bold');
+      doc.text(comp.label, margin + 10, y + 14);
+      
+      // Score badge
+      const scoreStr = comp.data.score.toFixed(2);
+      const scoreWidth = doc.getTextWidth(scoreStr) + 16;
+      doc.setFillColor(255, 255, 255);
+      doc.roundedRect(pageWidth - margin - scoreWidth - 10, y + 5, scoreWidth, 20, 3, 3, 'F');
+      doc.setTextColor(compColor.text[0], compColor.text[1], compColor.text[2]);
+      doc.setFontSize(12);
+      doc.text(scoreStr, pageWidth - margin - scoreWidth - 2, y + 18);
+      
+      // Percentile if available
+      if (comp.data.percentile !== undefined) {
+        doc.setFontSize(9);
+        doc.setTextColor(107, 114, 128);
+        doc.text(`Percentile: ${comp.data.percentile}%`, margin + 10, y + 28);
+      }
+      
+      y += 45;
+    }
+    
+    y += 15;
     
     // ===== ASSESSMENT SECTIONS =====
     // Full section order matching the actual assessment structure
+    // Note: Skip selectedFactors and integrity since we rendered them above
     const sectionOrder = [
-      { key: 'selectedFactors', title: '📊 Reality Score Breakdown' },
-      { key: 'underlyingReality', title: '🔍 The Underlying Reality' },
-      { key: 'centralClaims', title: '🎯 Central Claims' },
-      { key: 'frameworkAnalysis', title: '🧩 Framework Analysis' },
-      { key: 'truthDistortionPatterns', title: '⚠️ Truth Distortion Patterns' },
-      { key: 'evidenceAnalysis', title: '⚖️ Evidence Analysis' },
-      { key: 'integrity', title: '🔬 Integrity Analysis' },
-      { key: 'whatWeCanBeConfidentAbout', title: '✓ What We Can Be Confident About' },
-      { key: 'whatRemainsUncertain', title: '? What Remains Uncertain' },
-      { key: 'lessonsForAssessment', title: '💡 Lessons & Implications' },
-      { key: 'methodologyNotes', title: '📋 Methodology Notes' },
-      { key: 'plainTruth', title: '🎭 The Plain Truth' }
+      { key: 'underlyingReality', title: 'The Underlying Reality' },
+      { key: 'centralClaims', title: 'Central Claims' },
+      { key: 'frameworkAnalysis', title: 'Framework Analysis' },
+      { key: 'truthDistortionPatterns', title: 'Truth Distortion Patterns' },
+      { key: 'evidenceAnalysis', title: 'Evidence Analysis' },
+      { key: 'whatWeCanBeConfidentAbout', title: 'What We Can Be Confident About' },
+      { key: 'whatRemainsUncertain', title: 'What Remains Uncertain' },
+      { key: 'lessonsForAssessment', title: 'Lessons and Implications' },
+      { key: 'methodologyNotes', title: 'Methodology Notes' },
+      { key: 'plainTruth', title: 'The Plain Truth' }
     ];
     
     for (const { key, title } of sectionOrder) {
@@ -436,7 +515,7 @@ const UniversalExport = {
       
       checkPageBreak(80);
       
-      // Section header
+      // Section header (no emojis - they don't render well in PDF)
       doc.setTextColor(13, 148, 136);
       doc.setFontSize(13);
       doc.setFont('helvetica', 'bold');
@@ -768,26 +847,60 @@ const UniversalExport = {
     md += `## Claim Assessed\n\n`;
     md += `> ${claim}\n\n`;
     
-    // Scores
-    md += `## Scores\n\n`;
-    md += `- **Reality Score:** ${realityScore > 0 ? '+' : ''}${realityScore}/10\n`;
-    if (integrityScore !== undefined) {
-      md += `- **Integrity Score:** ${integrityScore.toFixed(2)}\n`;
-    }
-    md += `\n`;
+    // Reality Score Components
+    md += `## Reality Assessment\n\n`;
+    md += `*Component scores shown individually - no single number captures complex truth*\n\n`;
     
-    // Sections - using same structure as PDF
+    const factors = sections.selectedFactors || [];
+    if (factors.length > 0) {
+      for (const factor of factors) {
+        const scorePrefix = factor.score > 0 ? '+' : '';
+        md += `### ${factor.factor}: ${scorePrefix}${factor.score}\n`;
+        md += `*Weight: ${(factor.weight * 100).toFixed(0)}%*\n\n`;
+        md += `${factor.explanation}\n\n`;
+      }
+    }
+    
+    // Integrity Score Components
+    md += `## Integrity Assessment\n\n`;
+    md += `*How honestly and rigorously is the claim presented?*\n\n`;
+    
+    const integrity = sections.integrity || {};
+    if (integrity.observable) {
+      md += `### Observable Markers: ${integrity.observable.score.toFixed(2)}\n\n`;
+      if (integrity.observable.sourcesCitedEvidence) md += `- Sources: ${integrity.observable.sourcesCitedEvidence}\n`;
+      if (integrity.observable.limitationsEvidence) md += `- Limitations: ${integrity.observable.limitationsEvidence}\n`;
+      if (integrity.observable.fallaciesEvidence) md += `- Fallacies: ${integrity.observable.fallaciesEvidence}\n`;
+      md += `\n`;
+    }
+    if (integrity.comparative) {
+      md += `### Comparative Analysis: ${integrity.comparative.score.toFixed(2)}\n`;
+      if (integrity.comparative.percentile) md += `*Percentile: ${integrity.comparative.percentile}%*\n`;
+      md += `\n`;
+      if (integrity.comparative.baseline) md += `${integrity.comparative.baseline}\n\n`;
+      if (integrity.comparative.gaps && integrity.comparative.gaps.length) {
+        md += `**Gaps identified:**\n`;
+        integrity.comparative.gaps.forEach(gap => md += `- ${gap}\n`);
+        md += `\n`;
+      }
+    }
+    if (integrity.bias) {
+      md += `### Bias Detection: ${integrity.bias.score.toFixed(2)}\n\n`;
+      if (integrity.bias.inflammatoryLanguage) md += `- Inflammatory Language: ${integrity.bias.inflammatoryLanguage}\n`;
+      if (integrity.bias.oneSidedFraming) md += `- One-Sided Framing: ${integrity.bias.oneSidedFraming}\n`;
+      md += `\n`;
+    }
+    
+    // Remaining Sections (skip selectedFactors and integrity since we rendered them above)
     const sectionOrder = [
-      { key: 'selectedFactors', title: 'Reality Score Breakdown' },
       { key: 'underlyingReality', title: 'The Underlying Reality' },
       { key: 'centralClaims', title: 'Central Claims' },
       { key: 'frameworkAnalysis', title: 'Framework Analysis' },
       { key: 'truthDistortionPatterns', title: 'Truth Distortion Patterns' },
       { key: 'evidenceAnalysis', title: 'Evidence Analysis' },
-      { key: 'integrity', title: 'Integrity Analysis' },
       { key: 'whatWeCanBeConfidentAbout', title: 'What We Can Be Confident About' },
       { key: 'whatRemainsUncertain', title: 'What Remains Uncertain' },
-      { key: 'lessonsForAssessment', title: 'Lessons & Implications' },
+      { key: 'lessonsForAssessment', title: 'Lessons and Implications' },
       { key: 'methodologyNotes', title: 'Methodology Notes' },
       { key: 'plainTruth', title: 'The Plain Truth' }
     ];
