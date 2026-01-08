@@ -639,75 +639,53 @@
             flex-shrink: 0;
         }
 
-        /* Reality Factors Display */
+        /* Reality Sub-bars - matching integrity style */
         .score-subtitle {
-            font-size: 0.75rem;
+            font-size: 0.65rem;
             color: var(--text-muted);
             font-style: italic;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
         }
 
-        .reality-factors {
+        .reality-sub-bars {
+            margin-top: 6px;
+            padding-top: 4px;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .reality-sub-bar {
             display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .factor-placeholder {
-            color: var(--text-dim);
-            font-size: 0.85rem;
-            font-style: italic;
-            padding: 12px;
-            text-align: center;
-        }
-
-        .reality-factor {
-            background: var(--bg-tertiary);
-            border-radius: 8px;
-            padding: 10px 12px;
-            border-left: 4px solid var(--accent-teal);
-        }
-
-        .reality-factor.positive { border-left-color: var(--accent-green); }
-        .reality-factor.negative { border-left-color: var(--accent-red); }
-        .reality-factor.neutral { border-left-color: var(--accent-amber); }
-
-        .factor-header {
-            display: flex;
-            justify-content: space-between;
             align-items: center;
-            margin-bottom: 4px;
+            gap: 4px;
+            margin-bottom: 1px;
         }
 
-        .factor-name {
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: var(--text-primary);
+        .reality-sub-bar:last-child { margin-bottom: 0; }
+
+        .reality-track {
+            flex: 1;
+            height: 2px;
+            background: var(--border-medium);
+            border-radius: 1px;
+            position: relative;
         }
 
-        .factor-score {
-            font-family: 'IBM Plex Mono', monospace;
-            font-size: 0.9rem;
-            font-weight: 600;
-            padding: 2px 8px;
-            border-radius: 4px;
-            background: var(--bg-input);
+        .sub-bar-fill-reality {
+            height: 100%;
+            border-radius: 1px;
+            position: absolute;
+            left: 50%;
+            transition: width 0.3s ease;
         }
 
-        .factor-score.positive { color: var(--accent-green); }
-        .factor-score.negative { color: var(--accent-red); }
-        .factor-score.neutral { color: var(--accent-amber); }
-
-        .factor-weight {
-            font-size: 0.7rem;
-            color: var(--text-muted);
-            margin-bottom: 6px;
+        .sub-bar-fill-reality.positive {
+            background: var(--accent-green);
         }
 
-        .factor-explanation {
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-            line-height: 1.4;
+        .sub-bar-fill-reality.negative {
+            background: var(--accent-red);
+            transform: scaleX(-1);
+            transform-origin: left center;
         }
 
         /* ================================
@@ -2513,10 +2491,16 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
                     <div class="score-card reality">
                         <div class="score-label">Reality Assessment</div>
                         <div class="score-subtitle">Component scores - no single number captures complex truth</div>
-                        <!-- Reality Factor Sub-bars -->
-                        <div class="reality-factors" id="realityFactors">
-                            <!-- Populated by JS -->
-                            <div class="factor-placeholder">Run assessment to see factor breakdown</div>
+                        <!-- Reality Factor Sub-bars (matching Integrity style) -->
+                        <div class="reality-sub-bars" id="realitySubBars">
+                            <!-- Populated by JS - same style as integrity sub-bars -->
+                            <div class="reality-sub-bar">
+                                <span class="sub-bar-label">Loading...</span>
+                                <div class="sub-bar-track reality-track">
+                                    <div class="sub-bar-fill-reality" style="width: 0%;"></div>
+                                </div>
+                                <span class="sub-bar-value">—</span>
+                            </div>
                         </div>
                     </div>
                     
@@ -2887,10 +2871,10 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
             // Reset score displays to default state
             document.getElementById('claimText').textContent = '—';
             
-            // Reset reality factors display
-            var realityFactors = document.getElementById('realityFactors');
-            if (realityFactors) {
-                realityFactors.innerHTML = '<div class="factor-placeholder">Run assessment to see factor breakdown</div>';
+            // Reset reality sub-bars display
+            var realitySubBars = document.getElementById('realitySubBars');
+            if (realitySubBars) {
+                realitySubBars.innerHTML = '<div class="reality-sub-bar"><span class="sub-bar-label">Loading...</span><div class="sub-bar-track reality-track"><div class="sub-bar-fill-reality" style="width: 0%;"></div></div><span class="sub-bar-value">—</span></div>';
             }
             
             // Reset all collapsible sections - collapse AND clear content
@@ -3460,34 +3444,28 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
         }
 
         function updateRealityFactors(factors) {
-            var container = document.getElementById('realityFactors');
+            var container = document.getElementById('realitySubBars');
             if (!container) return;
             
             if (!factors || factors.length === 0) {
-                container.innerHTML = '<div class="factor-placeholder">No factor breakdown available</div>';
+                container.innerHTML = '<div class="reality-sub-bar"><span class="sub-bar-label" style="width: 100%; text-align: center; color: var(--text-dim);">No factors available</span></div>';
                 return;
             }
             
             var html = '';
             factors.forEach(function(factor) {
                 var score = parseInt(factor.score);
-                var scoreClass = score > 2 ? 'positive' : (score < -2 ? 'negative' : 'neutral');
+                var scoreClass = score >= 0 ? 'positive' : 'negative';
                 var scorePrefix = score > 0 ? '+' : '';
+                // Width: score of +/-10 = 50% from center
+                var width = Math.abs(score) * 5;
                 
-                html += '<div class="reality-factor ' + scoreClass + '">';
-                html += '  <div class="factor-header">';
-                html += '    <span class="factor-name">' + escapeHtml(factor.factor) + '</span>';
-                html += '    <span class="factor-score ' + scoreClass + '">' + scorePrefix + score + '</span>';
+                html += '<div class="reality-sub-bar">';
+                html += '  <span class="sub-bar-label">' + escapeHtml(factor.factor) + '</span>';
+                html += '  <div class="sub-bar-track reality-track">';
+                html += '    <div class="sub-bar-fill-reality ' + scoreClass + '" style="width: ' + width + '%;"></div>';
                 html += '  </div>';
-                html += '  <div class="factor-weight">Weight: ' + (factor.weight * 100).toFixed(0) + '%</div>';
-                if (factor.explanation) {
-                    // Truncate long explanations for display
-                    var explanation = factor.explanation;
-                    if (explanation.length > 200) {
-                        explanation = explanation.substring(0, 200) + '...';
-                    }
-                    html += '  <div class="factor-explanation">' + escapeHtml(explanation) + '</div>';
-                }
+                html += '  <span class="sub-bar-value">' + scorePrefix + score + '</span>';
                 html += '</div>';
             });
             
