@@ -410,19 +410,28 @@ const UniversalExport = {
     y += 70;
     
     // ===== ASSESSMENT SECTIONS =====
+    // Full section order matching the actual assessment structure
     const sectionOrder = [
-      { key: 'overallAssessment', title: 'Overall Assessment' },
-      { key: 'underlyingReality', title: 'The Underlying Reality' },
-      { key: 'centralClaims', title: 'Central Claims' },
-      { key: 'evidenceAnalysis', title: 'Evidence Analysis' },
-      { key: 'whatWeKnow', title: 'What We Know' },
-      { key: 'whatRemains', title: 'What Remains Uncertain' },
-      { key: 'contextualFactors', title: 'Contextual Factors' },
-      { key: 'plainTruth', title: 'The Plain Truth' }
+      { key: 'selectedFactors', title: '📊 Reality Score Breakdown' },
+      { key: 'underlyingReality', title: '🔍 The Underlying Reality' },
+      { key: 'centralClaims', title: '🎯 Central Claims' },
+      { key: 'frameworkAnalysis', title: '🧩 Framework Analysis' },
+      { key: 'truthDistortionPatterns', title: '⚠️ Truth Distortion Patterns' },
+      { key: 'evidenceAnalysis', title: '⚖️ Evidence Analysis' },
+      { key: 'integrity', title: '🔬 Integrity Analysis' },
+      { key: 'whatWeCanBeConfidentAbout', title: '✓ What We Can Be Confident About' },
+      { key: 'whatRemainsUncertain', title: '? What Remains Uncertain' },
+      { key: 'lessonsForAssessment', title: '💡 Lessons & Implications' },
+      { key: 'methodologyNotes', title: '📋 Methodology Notes' },
+      { key: 'plainTruth', title: '🎭 The Plain Truth' }
     ];
     
     for (const { key, title } of sectionOrder) {
-      const content = sections[key];
+      const rawContent = sections[key];
+      if (!rawContent) continue;
+      
+      // Extract text from nested structures
+      const content = this._extractSectionText(key, rawContent);
       if (!content) continue;
       
       checkPageBreak(80);
@@ -767,20 +776,28 @@ const UniversalExport = {
     }
     md += `\n`;
     
-    // Sections
+    // Sections - using same structure as PDF
     const sectionOrder = [
-      { key: 'overallAssessment', title: 'Overall Assessment' },
+      { key: 'selectedFactors', title: 'Reality Score Breakdown' },
       { key: 'underlyingReality', title: 'The Underlying Reality' },
       { key: 'centralClaims', title: 'Central Claims' },
+      { key: 'frameworkAnalysis', title: 'Framework Analysis' },
+      { key: 'truthDistortionPatterns', title: 'Truth Distortion Patterns' },
       { key: 'evidenceAnalysis', title: 'Evidence Analysis' },
-      { key: 'whatWeKnow', title: 'What We Know' },
-      { key: 'whatRemains', title: 'What Remains Uncertain' },
-      { key: 'contextualFactors', title: 'Contextual Factors' },
+      { key: 'integrity', title: 'Integrity Analysis' },
+      { key: 'whatWeCanBeConfidentAbout', title: 'What We Can Be Confident About' },
+      { key: 'whatRemainsUncertain', title: 'What Remains Uncertain' },
+      { key: 'lessonsForAssessment', title: 'Lessons & Implications' },
+      { key: 'methodologyNotes', title: 'Methodology Notes' },
       { key: 'plainTruth', title: 'The Plain Truth' }
     ];
     
     for (const { key, title } of sectionOrder) {
-      const content = sections[key];
+      const rawContent = sections[key];
+      if (!rawContent) continue;
+      
+      // Extract text from nested structures
+      const content = this._extractSectionText(key, rawContent);
       if (!content) continue;
       
       md += `## ${title}\n\n`;
@@ -868,6 +885,136 @@ const UniversalExport = {
    * =============================================
    */
   
+  /**
+   * Extract readable text from nested assessment structures
+   * Handles objects, arrays, and primitives intelligently
+   */
+  _extractSectionText(key, data) {
+    if (!data) return '';
+    
+    // If it's already a string, return it
+    if (typeof data === 'string') return data;
+    
+    // If it's an array, format as bullet points
+    if (Array.isArray(data)) {
+      return data.map(item => {
+        if (typeof item === 'string') return `• ${item}`;
+        if (typeof item === 'object') {
+          // Handle selectedFactors array items
+          if (item.factor && item.explanation) {
+            return `• ${item.factor} (Score: ${item.score}, Weight: ${item.weight})\n  ${item.explanation}`;
+          }
+          // Generic object in array
+          return `• ${this._objectToText(item)}`;
+        }
+        return `• ${item}`;
+      }).join('\n\n');
+    }
+    
+    // Handle specific section structures
+    switch(key) {
+      case 'underlyingReality':
+        return [
+          data.coreFinding && `Core Finding: ${data.coreFinding}`,
+          data.howWeKnow && `How We Know: ${data.howWeKnow}`,
+          data.whyItMatters && `Why It Matters: ${data.whyItMatters}`
+        ].filter(Boolean).join('\n\n');
+        
+      case 'centralClaims':
+        return [
+          data.explicit && `Explicit Claims: ${data.explicit}`,
+          data.hidden && `Hidden Assumptions: ${data.hidden}`,
+          data.whatFramingServes && `What This Framing Serves: ${data.whatFramingServes}`
+        ].filter(Boolean).join('\n\n');
+        
+      case 'frameworkAnalysis':
+        return [
+          data.hiddenPremises && `Hidden Premises: ${data.hiddenPremises}`,
+          data.ideologicalOrigin && `Ideological Origin: ${data.ideologicalOrigin}`,
+          data.whatBeingObscured && `What's Being Obscured: ${data.whatBeingObscured}`,
+          data.reframingNeeded && `Reframing Needed: ${data.reframingNeeded}`
+        ].filter(Boolean).join('\n\n');
+        
+      case 'evidenceAnalysis':
+        let evidenceText = [];
+        if (data.forTheClaim && data.forTheClaim.length) {
+          evidenceText.push(`Evidence FOR the claim:\n${data.forTheClaim.map(e => `• ${e}`).join('\n')}`);
+        }
+        if (data.againstTheClaim && data.againstTheClaim.length) {
+          evidenceText.push(`Evidence AGAINST the claim:\n${data.againstTheClaim.map(e => `• ${e}`).join('\n')}`);
+        }
+        if (data.whatComplicatesIt) {
+          evidenceText.push(`What Complicates It: ${data.whatComplicatesIt}`);
+        }
+        if (data.whatRemainsGenuinelyUncertain) {
+          evidenceText.push(`Genuine Uncertainties: ${data.whatRemainsGenuinelyUncertain}`);
+        }
+        if (data.sourceQuality) {
+          evidenceText.push(`Source Quality: ${data.sourceQuality}`);
+        }
+        return evidenceText.join('\n\n');
+        
+      case 'integrity':
+        let integrityText = [];
+        if (data.observable) {
+          integrityText.push(`Observable Markers (Score: ${data.observable.score}):`);
+          if (data.observable.sourcesCited) integrityText.push(`• Sources Cited: ${data.observable.sourcesCited} - ${data.observable.sourcesCitedEvidence || ''}`);
+          if (data.observable.limitationsAcknowledged) integrityText.push(`• Limitations Acknowledged: ${data.observable.limitationsAcknowledged} - ${data.observable.limitationsEvidence || ''}`);
+          if (data.observable.fallaciesPresent) integrityText.push(`• Fallacies Present: ${data.observable.fallaciesPresent} - ${data.observable.fallaciesEvidence || ''}`);
+        }
+        if (data.comparative) {
+          integrityText.push(`\nComparative Analysis (Score: ${data.comparative.score}):`);
+          if (data.comparative.baseline) integrityText.push(`• Baseline: ${data.comparative.baseline}`);
+          if (data.comparative.gaps && data.comparative.gaps.length) {
+            integrityText.push(`• Gaps: ${data.comparative.gaps.join('; ')}`);
+          }
+        }
+        if (data.bias) {
+          integrityText.push(`\nBias Analysis (Score: ${data.bias.score}):`);
+          if (data.bias.inflammatoryLanguage) integrityText.push(`• Inflammatory Language: ${data.bias.inflammatoryLanguage}`);
+          if (data.bias.oneSidedFraming) integrityText.push(`• One-Sided Framing: ${data.bias.oneSidedFraming}`);
+        }
+        return integrityText.join('\n');
+        
+      case 'plainTruth':
+        return [
+          data.historicalPattern && `Historical Pattern: ${data.historicalPattern}`,
+          data.whatYouCanDo && `What You Can Do: ${data.whatYouCanDo}`
+        ].filter(Boolean).join('\n\n');
+        
+      case 'methodologyNotes':
+        return [
+          data.realityScoreRationale && `Reality Score Rationale: ${data.realityScoreRationale}`,
+          data.integrityScoreRationale && `Integrity Score Rationale: ${data.integrityScoreRationale}`
+        ].filter(Boolean).join('\n\n');
+        
+      default:
+        // Generic object handling
+        return this._objectToText(data);
+    }
+  },
+  
+  /**
+   * Convert a generic object to readable text
+   */
+  _objectToText(obj) {
+    if (!obj || typeof obj !== 'object') return String(obj);
+    
+    return Object.entries(obj)
+      .filter(([k, v]) => v !== null && v !== undefined && v !== '')
+      .map(([k, v]) => {
+        const label = k.replace(/([A-Z])/g, ' $1').replace(/^./, s => s.toUpperCase());
+        if (Array.isArray(v)) {
+          return `${label}:\n${v.map(item => `  • ${typeof item === 'object' ? JSON.stringify(item) : item}`).join('\n')}`;
+        }
+        if (typeof v === 'object') {
+          return `${label}: ${JSON.stringify(v)}`;
+        }
+        return `${label}: ${v}`;
+      })
+      .join('\n');
+  },
+
   // Generate unique filename with timestamp
   _generateFilename(base, extension) {
     const timestamp = new Date().toISOString().slice(0, 10);
