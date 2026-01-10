@@ -1930,6 +1930,251 @@
             display: none;
         }
 
+        /* ========== VISION INTRO OVERLAY - appears after splash ========== */
+        .vision-intro-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #000;
+            z-index: 2400;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 1s ease, visibility 0s 1s;
+        }
+
+        .vision-intro-overlay.visible {
+            opacity: 1;
+            visibility: visible;
+            transition: opacity 1s ease, visibility 0s;
+        }
+
+        .vision-intro-overlay.fade-out {
+            opacity: 0;
+            transition: opacity 1.5s ease;
+        }
+
+        .vision-intro-overlay video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: opacity 1s ease;
+            z-index: 1;
+        }
+
+        .vision-intro-overlay video.fading {
+            opacity: 0.3;
+        }
+
+        .vision-intro-text-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 40px;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .vision-intro-text {
+            font-size: 32px;
+            font-weight: 500;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.9), 0 4px 20px rgba(0,0,0,0.8), 0 0 40px rgba(0,0,0,0.6);
+            opacity: 0;
+            transition: opacity 0.8s ease-in-out;
+            line-height: 1.4;
+        }
+
+        .vision-intro-text.slow-fade {
+            transition: opacity 2s ease-in-out;
+        }
+
+        .vision-intro-text.first-fade {
+            transition: opacity 1.19s ease-in-out;
+        }
+
+        .vision-intro-text.finale {
+            transition: opacity 0.8s ease-in-out;
+        }
+
+        .vision-intro-text.visible {
+            opacity: 1;
+        }
+
+        .vision-intro-text .highlight {
+            color: #4a9eff;
+            font-weight: bold;
+        }
+
+        .vision-intro-text.finale {
+            font-size: 42px;
+            font-weight: bold;
+        }
+
+        .vision-intro-text.finale .veritas {
+            color: #4a9eff;
+        }
+
+        /* Vision Intro Instructions - appears inside the vision overlay */
+        .vision-intro-instructions {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.85);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 1s ease, visibility 0s 1s;
+            pointer-events: none;
+            z-index: 3;
+        }
+
+        .vision-intro-instructions.visible {
+            opacity: 1;
+            visibility: visible;
+            transition: opacity 1s ease, visibility 0s;
+            pointer-events: auto;
+        }
+
+        .vision-intro-instructions.slow-fade-in {
+            transition: opacity 4s ease, visibility 0s;
+        }
+
+        .vision-intro-instructions.fade-out {
+            opacity: 0;
+            transition: opacity 1.5s ease;
+        }
+
+        .vision-intro-instructions-content {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .vision-intro-instructions h2 {
+            color: #4a9eff;
+            font-size: 28px;
+            margin-bottom: 25px;
+        }
+
+        .vision-intro-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            margin-bottom: 15px;
+            max-width: 500px;
+        }
+
+        .vision-intro-step-number {
+            background: #4a9eff;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .vision-intro-step-text {
+            font-size: 16px;
+            line-height: 1.5;
+            color: #e0e0e0;
+        }
+
+        .vision-intro-enter-prompt {
+            margin-top: 30px;
+            font-size: 14px;
+            color: #888;
+            animation: visionPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes visionPulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        /* Mobile adjustments for Vision Intro */
+        @media (max-width: 1024px) {
+            .vision-intro-text-overlay {
+                padding: 20px;
+            }
+
+            .vision-intro-text {
+                font-size: 24px;
+                line-height: 1.3;
+            }
+
+            .vision-intro-text.finale {
+                font-size: 32px;
+            }
+
+            .vision-intro-instructions {
+                padding: 20px;
+            }
+
+            .vision-intro-instructions h2 {
+                font-size: 22px;
+                margin-bottom: 20px;
+            }
+
+            .vision-intro-step {
+                gap: 10px;
+                margin-bottom: 12px;
+            }
+
+            .vision-intro-step-number {
+                width: 24px;
+                height: 24px;
+                font-size: 12px;
+            }
+
+            .vision-intro-step-text {
+                font-size: 14px;
+            }
+
+            .vision-intro-enter-prompt {
+                font-size: 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .vision-intro-text {
+                font-size: 20px;
+            }
+
+            .vision-intro-text.finale {
+                font-size: 26px;
+            }
+
+            .vision-intro-instructions-content {
+                width: 100%;
+            }
+
+            .vision-intro-step {
+                max-width: 100%;
+            }
+        }
+
         /* Instructions Overlay - appears after splash */
         .instructions-overlay {
             position: fixed;
@@ -2129,7 +2374,46 @@
         </div>
     </div>
 
-    <!-- Instructions Overlay -->
+    <!-- Vision Intro Overlay - appears after splash, before instructions -->
+    <div class="vision-intro-overlay" id="visionIntroOverlay">
+        <video id="visionVideo" loop playsinline webkit-playsinline>
+            <source src="The_Vision_of_VERITAS-comp.mp4" type="video/mp4">
+        </video>
+        <div class="vision-intro-text-overlay">
+            <div class="vision-intro-text" id="visionIntroText"></div>
+        </div>
+        
+        <!-- Instructions appear inside the vision overlay at the end -->
+        <div class="vision-intro-instructions" id="visionIntroInstructions">
+            <div class="vision-intro-instructions-content">
+                <h2>How to Use This Demo</h2>
+                <div class="vision-intro-step">
+                    <span class="vision-intro-step-number">1</span>
+                    <span class="vision-intro-step-text">Hover near the <strong>left edge</strong> of the screen to open the topic menu</span>
+                </div>
+                <div class="vision-intro-step">
+                    <span class="vision-intro-step-number">2</span>
+                    <span class="vision-intro-step-text">Select a topic to view articles from different perspectives</span>
+                </div>
+                <div class="vision-intro-step">
+                    <span class="vision-intro-step-number">3</span>
+                    <span class="vision-intro-step-text">Click any article to read it - a VERITAS badge will appear</span>
+                </div>
+                <div class="vision-intro-step">
+                    <span class="vision-intro-step-number">4</span>
+                    <span class="vision-intro-step-text">Click the VERITAS badge to toggle between the original article and our assessment</span>
+                </div>
+                <div class="vision-intro-step">
+                    <span class="vision-intro-step-number">5</span>
+                    <span class="vision-intro-step-text">Click "View Full Assessment" to see detailed analysis</span>
+                </div>
+                <div class="vision-intro-enter-prompt">Press Enter or click below to begin the demo...</div>
+                <button type="button" id="visionDismissBtn" style="margin-top: 20px; background: #4a9eff; color: white; border: none; padding: 12px 30px; border-radius: 8px; font-size: 16px; cursor: pointer;">Got It!</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Instructions Overlay (legacy - kept for End Demo button) -->
     <div class="instructions-overlay" id="instructionsOverlay">
         <div class="instructions-title">How to Use This Demo</div>
         <div class="instructions-list">
@@ -3967,7 +4251,7 @@
             <div class="section">
                 <div class="section-title">Why Not Lower Than +2?</div>
                 <div class="section-content">
-                    <p>This gets +2 rather than a negative score because:</p>
+                    <p>This gets +2 rather than a negative value because:</p>
                     <ul>
                         <li>The underlying facts are real and documented</li>
                         <li>The database methodology is transparent (cases are linked to sources)</li>
@@ -4639,7 +4923,7 @@
             </div>
 
             <div class="section">
-                <div class="section-title">Why This Confidence Score?</div>
+                <div class="section-title">Why This Confidence Profile?</div>
                 <div class="section-content">
                     <p><strong>The SOC-8 merits high confidence (+8) because:</strong></p>
 
@@ -4826,7 +5110,7 @@
             </div>
 
             <div class="section">
-                <div class="section-title">Why This Confidence Score?</div>
+                <div class="section-title">Why This Confidence Profile?</div>
                 <div class="section-content">
                     <p><strong>The article merits moderate confidence (+4) because:</strong></p>
 
@@ -5020,7 +5304,7 @@
             </div>
 
             <div class="section">
-                <div class="section-title">Why This Confidence Score?</div>
+                <div class="section-title">Why This Confidence Profile?</div>
                 <div class="section-content">
                     <p><strong>The article merits low confidence (-6) because:</strong></p>
 
@@ -5218,7 +5502,7 @@
         <div class="assessment-summary">
             <div class="current-score">
                 <div class="score-value" id="mobileCurrentScore">+7</div>
-                <div class="score-label">Current Article Score</div>
+                <div class="score-label">Current Article Profile</div>
             </div>
         </div>
         <div class="article-list" id="mobileArticleList">
@@ -5420,16 +5704,35 @@
             // Splash overlay - click anywhere to dismiss
             const splashOverlay = document.getElementById('splashOverlay');
             const instructionsOverlay = document.getElementById('instructionsOverlay');
+            const visionIntroOverlay = document.getElementById('visionIntroOverlay');
             
             splashOverlay.addEventListener('click', function() {
+                // Start vision intro immediately, then fade splash over video
+                const visionOverlay = document.getElementById('visionIntroOverlay');
+                const visionVideo = document.getElementById('visionVideo');
+                const visionText = document.getElementById('visionIntroText');
+                const visionInstructions = document.getElementById('visionIntroInstructions');
+                
+                // Reset state
+                visionCurrentTextIndex = -1;
+                visionMode = 'playing';
+                visionText.classList.remove('visible', 'finale', 'slow-fade', 'first-fade');
+                visionText.innerHTML = '';
+                visionInstructions.classList.remove('visible', 'slow-fade-in', 'fade-out');
+                visionVideo.classList.remove('fading');
+                visionVideo.volume = 1;
+                visionVideo.currentTime = 0;
+                
+                // Show vision overlay and start video AND text sequence together
+                visionOverlay.classList.add('visible');
+                visionVideo.play();
+                visionPreviewInterval = setInterval(updateVisionIntro, 50);
+                
+                // Dissolve splash overlay over the playing video
                 splashOverlay.classList.add('fade-out');
                 setTimeout(function() {
                     splashOverlay.classList.add('hidden');
-                    // Show instructions overlay after splash fades
-                    setTimeout(function() {
-                        instructionsOverlay.classList.add('visible');
-                    }, 300);
-                }, 1500); // Wait for fade out animation to complete
+                }, 1500);
             });
             
             // Instructions dismiss button - use event listener instead of onclick for better mobile support
@@ -5855,6 +6158,243 @@
                 giPanel.classList.add('open');
             }
         }
+
+        // ========== VISION INTRO SEQUENCE ==========
+        const visionTextSequence = [
+            { text: 'Imagine a world', type: 'normal' },
+            { text: 'Where all the information you consume', type: 'normal' },
+            { text: 'From any source on the web or social media', type: 'normal' },
+            { text: 'Could be not <span class="highlight">ONLY</span> fact checked', type: 'normal' },
+            { text: 'But evaluated by a broad range of actual experts<br>and an AI', type: 'normal' },
+            { text: 'that can examine the entire body of<br>human knowledge', type: 'normal' },
+            { text: 'to help you understand truth in context?', type: 'normal' },
+            { text: 'This is', type: 'finale' },
+            { text: 'the world that', type: 'finale' },
+            { text: '<span class="veritas">VERITAS</span> Imagines', type: 'finale-hold' }
+        ];
+
+        const visionTimings = [0, 6.33, 11.74, 15.36, 18.64, 24.36, 29.08, 33.71, 36.28, 39.04];
+        const visionEndTime = 44.37;
+
+        let visionPreviewInterval = null;
+        let visionCurrentTextIndex = -1;
+        let visionMode = 'idle';
+
+        function startVisionIntro() {
+            const visionOverlay = document.getElementById('visionIntroOverlay');
+            const visionVideo = document.getElementById('visionVideo');
+            const visionText = document.getElementById('visionIntroText');
+            const visionInstructions = document.getElementById('visionIntroInstructions');
+            
+            // Reset state
+            visionCurrentTextIndex = -1;
+            visionMode = 'playing';
+            visionText.classList.remove('visible', 'finale', 'slow-fade', 'first-fade');
+            visionText.innerHTML = '';
+            visionInstructions.classList.remove('visible', 'slow-fade-in', 'fade-out');
+            visionVideo.classList.remove('fading');
+            visionVideo.volume = 1;
+            visionVideo.currentTime = 0;
+            
+            // Show overlay and start video
+            visionOverlay.classList.add('visible');
+            visionVideo.play();
+            
+            // Start the text sequence
+            visionPreviewInterval = setInterval(updateVisionIntro, 50);
+        }
+
+        function startVisionIntroSequence() {
+            const visionText = document.getElementById('visionIntroText');
+            const visionInstructions = document.getElementById('visionIntroInstructions');
+            
+            // Reset state for text sequence
+            visionCurrentTextIndex = -1;
+            visionMode = 'playing';
+            visionText.classList.remove('visible', 'finale', 'slow-fade', 'first-fade');
+            visionText.innerHTML = '';
+            visionInstructions.classList.remove('visible', 'slow-fade-in', 'fade-out');
+            
+            // Start the text sequence
+            visionPreviewInterval = setInterval(updateVisionIntro, 50);
+        }
+
+        function updateVisionIntro() {
+            const visionVideo = document.getElementById('visionVideo');
+            const visionText = document.getElementById('visionIntroText');
+            const currentTime = visionVideo.currentTime;
+            
+            // Find which text should be showing
+            let newIndex = -1;
+            for (let i = visionTimings.length - 1; i >= 0; i--) {
+                if (currentTime >= visionTimings[i]) {
+                    newIndex = i;
+                    break;
+                }
+            }
+            
+            // Check if we've hit the end time - show instructions
+            if (currentTime >= visionEndTime && visionMode === 'playing') {
+                showVisionInstructions();
+                return;
+            }
+            
+            // Update text if changed
+            if (newIndex !== visionCurrentTextIndex) {
+                visionCurrentTextIndex = newIndex;
+                
+                if (newIndex === -1) {
+                    visionText.classList.remove('visible', 'finale', 'slow-fade', 'first-fade');
+                    visionText.innerHTML = '';
+                } else {
+                    const item = visionTextSequence[newIndex];
+                    visionText.classList.remove('slow-fade', 'first-fade');
+                    
+                    if (item.type === 'finale' || item.type === 'finale-hold') {
+                        visionText.classList.add('finale');
+                    } else {
+                        visionText.classList.remove('finale');
+                    }
+                    
+                    // Add slow fade class for VERITAS Imagines
+                    if (item.type === 'finale-hold') {
+                        visionText.classList.add('slow-fade');
+                    }
+                    
+                    // Add first-fade class for "Imagine a world" (index 0)
+                    if (newIndex === 0) {
+                        visionText.classList.add('first-fade');
+                    }
+                    
+                    visionText.innerHTML = item.text;
+                    visionText.classList.add('visible');
+                }
+            }
+            
+            // Fade out logic for normal items - fade 0.8s before next text for smooth transition
+            if (visionCurrentTextIndex >= 0 && visionCurrentTextIndex < 7) {
+                const nextTime = visionTimings[visionCurrentTextIndex + 1];
+                if (currentTime >= nextTime - 0.8) {
+                    visionText.classList.remove('visible');
+                }
+            }
+            
+            // Fade out logic for finale items (7 and 8) - fade before next beat
+            if (visionCurrentTextIndex === 7 || visionCurrentTextIndex === 8) {
+                const nextTime = visionTimings[visionCurrentTextIndex + 1];
+                if (currentTime >= nextTime - 0.8) {
+                    visionText.classList.remove('visible');
+                }
+            }
+            
+            // Fade out for finale-hold (index 9) - slow fade before end (starts 2s before)
+            if (visionCurrentTextIndex === 9) {
+                if (currentTime >= visionEndTime - 2.0) {
+                    visionText.classList.remove('visible');
+                }
+            }
+        }
+
+        function showVisionInstructions() {
+            if (visionPreviewInterval) {
+                clearInterval(visionPreviewInterval);
+                visionPreviewInterval = null;
+            }
+            
+            const visionVideo = document.getElementById('visionVideo');
+            const visionText = document.getElementById('visionIntroText');
+            const visionInstructions = document.getElementById('visionIntroInstructions');
+            
+            visionMode = 'instructions';
+            visionText.classList.remove('visible', 'finale', 'slow-fade', 'first-fade');
+            visionText.innerHTML = '';
+            visionVideo.classList.add('fading');
+            visionInstructions.classList.add('visible', 'slow-fade-in');
+        }
+
+        function dismissVisionIntro() {
+            const visionOverlay = document.getElementById('visionIntroOverlay');
+            const visionVideo = document.getElementById('visionVideo');
+            const visionInstructions = document.getElementById('visionIntroInstructions');
+            
+            visionInstructions.classList.add('fade-out');
+            
+            // Fade out video (with audio)
+            let volume = visionVideo.volume;
+            const fadeInterval = setInterval(() => {
+                volume -= 0.05;
+                if (volume <= 0) {
+                    clearInterval(fadeInterval);
+                    visionVideo.pause();
+                    visionVideo.volume = 1;
+                    visionVideo.currentTime = 0;
+                    visionVideo.classList.remove('fading');
+                    
+                    // Fade out entire overlay
+                    visionOverlay.classList.add('fade-out');
+                    
+                    setTimeout(() => {
+                        visionOverlay.classList.remove('visible', 'fade-out');
+                        visionInstructions.classList.remove('visible', 'fade-out', 'slow-fade-in');
+                        visionMode = 'idle';
+                        
+                        // Demo starts - show Election Fraud by default
+                        switchTopic('election-fraud');
+                        
+                        // AUTO-REVEAL SIDEBAR one time only
+                        const sidebar = document.querySelector('.veritas-sidebar');
+                        if (sidebar) {
+                            sidebar.classList.add('active');
+                            
+                            // Set up one-time listener to hide sidebar when user engages
+                            const hideOnEngage = function(e) {
+                                // If user clicks on sidebar content (topic, article, etc.)
+                                if (sidebar.contains(e.target)) {
+                                    // Let the click do its thing, then hide sidebar after a moment
+                                    setTimeout(() => {
+                                        sidebar.classList.remove('active');
+                                    }, 300);
+                                    // Remove this listener - one time only
+                                    document.removeEventListener('click', hideOnEngage);
+                                } else {
+                                    // Clicked outside sidebar - hide it
+                                    sidebar.classList.remove('active');
+                                    document.removeEventListener('click', hideOnEngage);
+                                }
+                            };
+                            
+                            // Small delay before adding listener so the current click doesn't trigger it
+                            setTimeout(() => {
+                                document.addEventListener('click', hideOnEngage);
+                            }, 100);
+                        }
+                    }, 1500);
+                } else {
+                    visionVideo.volume = volume;
+                }
+            }, 75);
+        }
+
+        // Vision intro dismiss button handler
+        document.addEventListener('DOMContentLoaded', function() {
+            const visionDismissBtn = document.getElementById('visionDismissBtn');
+            if (visionDismissBtn) {
+                visionDismissBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (visionMode === 'instructions') {
+                        dismissVisionIntro();
+                    }
+                });
+            }
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.code === 'Enter' && visionMode === 'instructions') {
+                e.preventDefault();
+                dismissVisionIntro();
+            }
+        });
     </script>
 
 </body>
