@@ -2490,7 +2490,7 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
                 <div class="score-grid">
                     <div class="score-card reality">
                         <div class="score-label">Reality Assessment</div>
-                        <div class="score-subtitle">Component scores - no single number captures complex truth</div>
+                        <div class="score-subtitle">Component indicators - no single number captures complex truth</div>
                         <!-- Reality Factor Sub-bars (matching Integrity style) -->
                         <div class="reality-sub-bars" id="realitySubBars">
                             <!-- Populated by JS - same style as integrity sub-bars -->
@@ -2590,12 +2590,12 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
                 <div class="two-column-grid">
                     <!-- LEFT COLUMN -->
                     <div class="column-left">
-                        <!-- Reality Score Breakdown FIRST -->
+                        <!-- Reality Profile Breakdown FIRST -->
                         <div class="collapsible-section">
                             <div class="section-header reality" onclick="toggleSection('reality')">
                                 <div class="button-group">
                                     <button class="section-toggle" id="realityToggle">+</button>
-                                    <h4>📊 Reality Score Breakdown</h4>
+                                    <h4>📊 Reality Profile Breakdown</h4>
                                 </div>
                             </div>
                             <div class="section-content" id="realityContent">
@@ -2666,12 +2666,12 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
 
                     <!-- RIGHT COLUMN -->
                     <div class="column-right">
-                        <!-- Integrity Score Breakdown FIRST -->
+                        <!-- Integrity Profile Breakdown FIRST -->
                         <div class="collapsible-section">
                             <div class="section-header integrity" onclick="toggleSection('integrity')">
                                 <div class="button-group">
                                     <button class="section-toggle" id="integrityToggle">+</button>
-                                    <h4>🔬 Integrity Score Breakdown</h4>
+                                    <h4>🔬 Integrity Profile Breakdown</h4>
                                 </div>
                             </div>
                             <div class="section-content" id="integrityContent">
@@ -2757,7 +2757,7 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
                     </div>
                     <div class="option-card">
                         <h4><span>✓</span> Verify</h4>
-                        <p>Get an independent second evaluation — fresh eyes, identical methodology, compare scores.</p>
+                        <p>Get an independent second evaluation — fresh eyes, identical methodology, compare profiles.</p>
                         <button class="btn btn-verify" id="verifyBtn" onclick="runVerify()" disabled>Run Verification</button>
                     </div>
                 </div>
@@ -2951,13 +2951,13 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
             // Score Context - warm interpretation
             var scoreContextHtml = '';
             scoreContextHtml += '<div class="score-context-item">';
-            scoreContextHtml += '<div class="score-context-label">Reality Score</div>';
+            scoreContextHtml += '<div class="score-context-label">Reality Profile</div>';
             scoreContextHtml += '<div class="score-context-value">' + (realityScore >= 0 ? '+' : '') + realityScore + '</div>';
             scoreContextHtml += '<div class="score-context-meaning">' + getWarmRealityMeaning(realityScore) + '</div>';
             scoreContextHtml += '</div>';
             
             scoreContextHtml += '<div class="score-context-item">';
-            scoreContextHtml += '<div class="score-context-label">Integrity Score</div>';
+            scoreContextHtml += '<div class="score-context-label">Integrity Profile</div>';
             scoreContextHtml += '<div class="score-context-value">' + (integrityScore >= 0 ? '+' : '') + integrityScore.toFixed(1) + '</div>';
             scoreContextHtml += '<div class="score-context-meaning">' + getWarmIntegrityMeaning(integrityScore) + '</div>';
             scoreContextHtml += '</div>';
@@ -3623,7 +3623,7 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
                 document.getElementById('evidenceContent').innerHTML = '<p>Structured data not available for this section.</p>';
             }
             
-            // Render Reality Score Breakdown - supports BOTH old (realityFactors) and new (selectedFactors) formats
+            // Render Reality Profile Breakdown - supports BOTH old (realityFactors) and new (selectedFactors) formats
             var realityHtml = '';
             
             // NEW FORMAT: Dynamic selectedFactors
@@ -3631,7 +3631,7 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
                 // Show exact claim being scored
                 if (data.exactClaimBeingScored) {
                     realityHtml += '<div class="exact-claim-box">';
-                    realityHtml += '<div class="exact-claim-label">📍 Exact Claim Being Scored:</div>';
+                    realityHtml += '<div class="exact-claim-label">📍 Exact Claim Being Assessed:</div>';
                     realityHtml += '<div class="exact-claim-text">' + data.exactClaimBeingScored + '</div>';
                     realityHtml += '</div>';
                 }
@@ -3665,7 +3665,7 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
                 
                 // Show score calculation
                 if (data.scoreCalculation) {
-                    realityHtml += '<div class="calculation-box"><strong>Score Calculation:</strong> ' + data.scoreCalculation + '</div>';
+                    realityHtml += '<div class="calculation-box"><strong>Profile Calculation:</strong> ' + data.scoreCalculation + '</div>';
                 } else {
                     // Calculate if not provided
                     var calcParts = [];
@@ -3715,7 +3715,7 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
             
             document.getElementById('realityContent').innerHTML = realityHtml || '<p>Structured data not available for this section.</p>';
             
-            // Render Integrity Score Breakdown
+            // Render Integrity Profile Breakdown
             if (structured && structured.integrity) {
                 var int = structured.integrity;
                 var intHtml = '<p class="dimension-desc"><em>Integrity 2.0 measures three dimensions of epistemological honesty. Click each to expand.</em></p>';
@@ -3829,10 +3829,10 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
                 var mn = structured.methodologyNotes;
                 var methodHtml = '';
                 if (mn.realityScoreRationale) {
-                    methodHtml += '<p><strong>Reality Score (' + (data.realityScore >= 0 ? '+' : '') + data.realityScore + '):</strong> ' + mn.realityScoreRationale + '</p>';
+                    methodHtml += '<p><strong>Reality Profile (' + (data.realityScore >= 0 ? '+' : '') + data.realityScore + '):</strong> ' + mn.realityScoreRationale + '</p>';
                 }
                 if (mn.integrityScoreRationale) {
-                    methodHtml += '<p><strong>Integrity Score (' + (data.integrityScore >= 0 ? '+' : '') + data.integrityScore.toFixed(1) + '):</strong> ' + mn.integrityScoreRationale + '</p>';
+                    methodHtml += '<p><strong>Integrity Profile (' + (data.integrityScore >= 0 ? '+' : '') + data.integrityScore.toFixed(1) + '):</strong> ' + mn.integrityScoreRationale + '</p>';
                 }
                 document.getElementById('methodologyContent').innerHTML = methodHtml || '<p>Not available.</p>';
             } else {
@@ -4477,8 +4477,8 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
             console.log('Populating ' + prefix + ' column with:', structured);
             
             var sections = [
-                { key: 'realityFactors', altKey: 'selectedFactors', title: '📊 Reality Score Breakdown', icon: 'reality' },
-                { key: 'integrity', title: '🔬 Integrity Score Breakdown', icon: 'integrity' },
+                { key: 'realityFactors', altKey: 'selectedFactors', title: '📊 Reality Profile Breakdown', icon: 'reality' },
+                { key: 'integrity', title: '🔬 Integrity Profile Breakdown', icon: 'integrity' },
                 { key: 'underlyingReality', title: '🔍 The Underlying Reality', icon: 'truth' },
                 { key: 'centralClaims', title: '🎯 Central Claims', icon: 'claims' },
                 { key: 'frameworkAnalysis', altKey: 'perspectiveAnalysis', title: '🧩 Framework Analysis', icon: 'framework' },
@@ -4850,11 +4850,11 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
                             <div class="comparison-card-header">Initial Assessment</div>
                             <div class="comparison-card-body">
                                 <div class="comparison-score-row">
-                                    <span class="comparison-score-label">Reality Score</span>
+                                    <span class="comparison-score-label">Reality Profile</span>
                                     <span class="comparison-score-value" id="initialRealityDisplay">—</span>
                                 </div>
                                 <div class="comparison-score-row">
-                                    <span class="comparison-score-label">Integrity Score</span>
+                                    <span class="comparison-score-label">Integrity Profile</span>
                                     <span class="comparison-score-value" id="initialIntegrityDisplay">—</span>
                                 </div>
                             </div>
@@ -4863,11 +4863,11 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
                             <div class="comparison-card-header">Verification Assessment</div>
                             <div class="comparison-card-body">
                                 <div class="comparison-score-row">
-                                    <span class="comparison-score-label">Reality Score</span>
+                                    <span class="comparison-score-label">Reality Profile</span>
                                     <span class="comparison-score-value" id="verifyRealityDisplay">—</span>
                                 </div>
                                 <div class="comparison-score-row">
-                                    <span class="comparison-score-label">Integrity Score</span>
+                                    <span class="comparison-score-label">Integrity Profile</span>
                                     <span class="comparison-score-value" id="verifyIntegrityDisplay">—</span>
                                 </div>
                             </div>
@@ -4890,14 +4890,14 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
                     <!-- Consensus Section (only shows when divergent) -->
                     <div class="consensus-section" id="consensusSection">
                         <h3><span>🤝</span> Seek Consensus</h3>
-                        <p>The assessments show significant divergence. An independent adjudicator can evaluate both analyses and determine a final authoritative score based on reasoning quality and evidence strength.</p>
+                        <p>The assessments show significant divergence. An independent adjudicator can evaluate both analyses and determine a final authoritative profile based on reasoning quality and evidence strength.</p>
                         <button class="btn-consensus" id="consensusBtn" onclick="runAdjudicate()">Run Adjudication</button>
                     </div>
                     
                     <!-- Adjudication Results (shows after consensus) -->
                     <div class="adjudication-results" id="adjudicationResults">
                         <div class="adjudication-header">
-                            <h3>Final Consensus Score</h3>
+                            <h3>Final Consensus Profile</h3>
                             <div class="final-scores">
                                 <div class="final-score-item">
                                     <div class="final-score-label">Reality</div>
