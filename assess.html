@@ -2380,11 +2380,27 @@
                         <div class="logo-text">VERITAS</div>
                     </div>
                 </div>
-                <div class="tagline">Truth Through Transparency</div>
+                <div class="tagline" data-i18n="tagline">Truth Through Transparency</div>
             </div>
             <div style="display: flex; align-items: center; gap: 16px;">
+                <select id="languageSelect" title="Universal Translator - Select Your Language" style="background: var(--bg-tertiary); color: var(--text-primary); border: 1px solid var(--border-medium); border-radius: 6px; padding: 6px 12px; font-size: 0.8rem; cursor: pointer;">
+                    <option value="en">🌐 English</option>
+                    <option value="es">🇪🇸 Español</option>
+                    <option value="fr">🇫🇷 Français</option>
+                    <option value="de">🇩🇪 Deutsch</option>
+                    <option value="it">🇮🇹 Italiano</option>
+                    <option value="pt">🇧🇷 Português</option>
+                    <option value="ru">🇷🇺 Русский</option>
+                    <option value="uk">🇺🇦 Українська</option>
+                    <option value="el">🇬🇷 Ελληνικά</option>
+                    <option value="ar">🇸🇦 العربية</option>
+                    <option value="he">🇮🇱 עברית</option>
+                    <option value="zh">🇨🇳 中文</option>
+                    <option value="ja">🇯🇵 日本語</option>
+                    <option value="ko">🇰🇷 한국어</option>
+                </select>
                 <a href="veracity.html" class="home-btn" style="display: flex; align-items: center; gap: 6px; padding: 6px 14px; background: var(--bg-tertiary); border: 1px solid var(--border-medium); border-radius: 20px; color: var(--text-secondary); text-decoration: none; font-size: 0.8rem; transition: all 0.2s ease;" onmouseover="this.style.borderColor='var(--accent-teal)'; this.style.color='var(--text-primary)';" onmouseout="this.style.borderColor='var(--border-medium)'; this.style.color='var(--text-secondary)';">
-                    <span style="font-size: 1rem;">🏠</span> Home
+                    <span style="font-size: 1rem;">🏠</span> <span data-i18n="home">Home</span>
                 </a>
                 <div class="version-badge">v5.0 — Track A</div>
             </div>
@@ -2397,8 +2413,8 @@
             <div class="card-header">
                 <div class="card-header-icon">📝</div>
                 <div>
-                    <div class="card-title">Claim Assessment</div>
-                    <div class="card-subtitle">Enter a claim or question to evaluate</div>
+                    <div class="card-title" data-i18n="inputCardTitle">Claim Assessment</div>
+                    <div class="card-subtitle" data-i18n="inputCardSubtitle">Enter a claim or question to evaluate</div>
                 </div>
             </div>
 
@@ -2406,32 +2422,32 @@
                 <div class="error" id="errorBox"></div>
 
                 <div class="form-group">
-                    <label class="form-label">Claim or Question</label>
-                    <textarea id="question" class="form-input" maxlength="600" placeholder="Enter the claim you want to assess...
+                    <label class="form-label" data-i18n="claimLabel">Claim or Question</label>
+                    <textarea id="question" class="form-input" maxlength="600" data-i18n-placeholder="claimPlaceholder" placeholder="Enter the claim you want to assess...
 
 Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateCharCounter()"></textarea>
                     <div class="char-counter" id="charCounter">0 / 280 characters</div>
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label" for="articleUrl">URL to Analyze (Optional)</label>
+                    <label class="form-label" for="articleUrl" data-i18n="urlLabel">URL to Analyze (Optional)</label>
                     <input type="url" id="articleUrl" name="articleUrl" class="form-input" placeholder="https://example.com/article-to-assess" autocomplete="off">
-                    <div class="field-hint">VERITAS will fetch and analyze the content at this URL</div>
+                    <div class="field-hint" data-i18n="urlHint">VERITAS will fetch and analyze the content at this URL</div>
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label" for="articleText">Article Text (Optional)</label>
-                    <textarea id="articleText" name="articleText" class="form-input" placeholder="Or paste article text directly here..."></textarea>
+                    <label class="form-label" for="articleText" data-i18n="articleTextLabel">Article Text (Optional)</label>
+                    <textarea id="articleText" name="articleText" class="form-input" data-i18n-placeholder="articleTextPlaceholder" placeholder="Or paste article text directly here..."></textarea>
                 </div>
 
                 <!-- API Key Section (Collapsible) -->
                 <div class="api-key-section">
                     <div class="api-key-toggle" onclick="toggleApiKey()">
-                        <span>🔑 Use Your Own API Key</span>
+                        <span data-i18n="apiKeyToggle">🔑 Use Your Own API Key</span>
                         <span class="toggle-icon" id="apiKeyToggleIcon">+</span>
                     </div>
                     <div class="api-key-content" id="apiKeyContent">
-                        <label class="form-label" for="apiKey">API Key</label>
+                        <label class="form-label" for="apiKey" data-i18n="apiKeyLabel">API Key</label>
                         <input type="password" id="apiKey" name="apiKey" class="form-input" placeholder="sk-ant-api..." autocomplete="off">
                         <div class="field-hint">Your key is never stored. Get one at <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a></div>
                     </div>
@@ -2440,14 +2456,14 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
                 <!-- Usage Counter -->
                 <div class="usage-counter" id="usageCounter">
                     <span class="usage-icon">🎟️</span>
-                    <span class="usage-text">Free assessments remaining today: <strong id="remainingCount">5</strong>/5</span>
+                    <span class="usage-text"><span data-i18n="usageText">Free assessments remaining today:</span> <strong id="remainingCount">5</strong>/5</span>
                 </div>
 
                 <div class="button-row">
                     <button class="btn btn-primary" id="assessBtn" onclick="runAssessment()">
-                        <span>⚡</span> Run Assessment
+                        <span>⚡</span> <span data-i18n="runAssessment">Run Assessment</span>
                     </button>
-                    <button class="btn btn-secondary" onclick="clearForm()">Clear</button>
+                    <button class="btn btn-secondary" onclick="clearForm()"><span data-i18n="clear">Clear</span></button>
                 </div>
 
                 <!-- Processing Indicator (compact, inside card) -->
@@ -2455,17 +2471,17 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
                     <div class="processing-row">
                         <div class="processing-icon"></div>
                         <div class="processing-text">
-                            <div class="processing-title">Assessment in Progress</div>
-                            <div class="processing-status">Searching sources and analyzing evidence...</div>
+                            <div class="processing-title" data-i18n="processingTitle">Assessment in Progress</div>
+                            <div class="processing-status" data-i18n="processingStatus">Searching sources and analyzing evidence...</div>
                         </div>
                         <div class="processing-timer">
                             <div class="timer-block">
                                 <div class="timer-value" id="timerMin">00</div>
-                                <div class="timer-label">Min</div>
+                                <div class="timer-label" data-i18n="min">Min</div>
                             </div>
                             <div class="timer-block">
                                 <div class="timer-value" id="timerSec">00</div>
-                                <div class="timer-label">Sec</div>
+                                <div class="timer-label" data-i18n="sec">Sec</div>
                             </div>
                         </div>
                     </div>
@@ -2482,15 +2498,15 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
             <div class="score-panel">
                 <div class="score-header">
                     <div class="claim-display">
-                        <div class="claim-label">Claim Assessed</div>
+                        <div class="claim-label" data-i18n="claimAssessed">Claim Assessed</div>
                         <div class="claim-text" id="claimText">—</div>
                     </div>
                 </div>
 
                 <div class="score-grid">
                     <div class="score-card reality">
-                        <div class="score-label">Reality Assessment</div>
-                        <div class="score-subtitle">Component indicators - no single number captures complex truth</div>
+                        <div class="score-label" data-i18n="realityAssessment">Reality Assessment</div>
+                        <div class="score-subtitle" data-i18n="realitySubtitle">Component indicators - no single number captures complex truth</div>
                         <!-- Reality Factor Sub-bars (matching Integrity style) -->
                         <div class="reality-sub-bars" id="realitySubBars">
                             <!-- Populated by JS - same style as integrity sub-bars -->
@@ -2505,26 +2521,26 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
                     </div>
                     
                     <div class="score-card integrity">
-                        <div class="score-label">Integrity Assessment</div>
-                        <div class="score-subtitle">How honestly is this claim presented?</div>
+                        <div class="score-label" data-i18n="integrityAssessment">Integrity Assessment</div>
+                        <div class="score-subtitle" data-i18n="integritySubtitle">How honestly is this claim presented?</div>
                         <!-- Integrity Sub-bars -->
                         <div class="integrity-sub-bars" id="integritySubBars">
                             <div class="integrity-sub-bar">
-                                <span class="sub-bar-label">Observable</span>
+                                <span class="sub-bar-label" data-i18n="observable">Observable</span>
                                 <div class="sub-bar-track">
                                     <div class="sub-bar-fill positive" id="observableFill" style="width: 0%;"></div>
                                 </div>
                                 <span class="sub-bar-value" id="observableValue">—</span>
                             </div>
                             <div class="integrity-sub-bar">
-                                <span class="sub-bar-label">Comparative</span>
+                                <span class="sub-bar-label" data-i18n="comparative">Comparative</span>
                                 <div class="sub-bar-track">
                                     <div class="sub-bar-fill positive" id="comparativeFill" style="width: 0%;"></div>
                                 </div>
                                 <span class="sub-bar-value" id="comparativeValue">—</span>
                             </div>
                             <div class="integrity-sub-bar">
-                                <span class="sub-bar-label">Bias</span>
+                                <span class="sub-bar-label" data-i18n="bias">Bias</span>
                                 <div class="sub-bar-track">
                                     <div class="sub-bar-fill positive" id="biasFill" style="width: 0%;"></div>
                                 </div>
@@ -2539,10 +2555,10 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
             <div class="assessment-content">
                 <div class="assessment-header">
                     <span>📋</span>
-                    <h3>Assessment Details</h3>
+                    <h3 data-i18n="assessmentDetails">Assessment Details</h3>
                 </div>
 
-                <div class="scroll-hint">
+                <div class="scroll-hint" data-i18n="scrollHint">
                     👈 Swipe left/right to see all analysis sections 👉
                 </div>
 
@@ -2551,23 +2567,23 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
                     <div class="plain-truth-header" onclick="togglePlainTruth()">
                         <button class="plain-truth-toggle" id="plainTruthToggle">−</button>
                         <div class="plain-truth-title">
-                            <span>🎭</span> The Plain Truth
+                            <span>🎭</span> <span data-i18n="plainTruth">The Plain Truth</span>
                         </div>
                     </div>
                     <div class="plain-truth-content" id="plainTruthContent">
-                        <p class="plain-truth-intro">Here's what this assessment means in plain language—no jargon, no judgment. We're all trying to figure out what's true together.</p>
+                        <p class="plain-truth-intro" data-i18n="plainTruthIntro">Here's what this assessment means in plain language—no jargon, no judgment. We're all trying to figure out what's true together.</p>
                         
                         <div class="score-context" id="plainTruthScoreContext">
                             <!-- Populated by JavaScript -->
                         </div>
                         
                         <div class="plain-truth-box" id="plainTruthSummary">
-                            <h4>📖 What We Found</h4>
+                            <h4 data-i18n="whatWeFound">📖 What We Found</h4>
                             <p id="plainTruthSummaryText">Loading...</p>
                         </div>
                         
                         <div class="plain-truth-box" id="plainTruthWhyBelievable">
-                            <h4>🧠 Why This Might Feel True (Or False)</h4>
+                            <h4 data-i18n="whyFeels">🧠 Why This Might Feel True (Or False)</h4>
                             <p id="plainTruthWhyText">Loading...</p>
                         </div>
                         
@@ -2581,7 +2597,7 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
                         </div>
                         
                         <div class="plain-truth-empowerment">
-                            <h4>✨ What You Can Do</h4>
+                            <h4 data-i18n="whatYouCanDo">✨ What You Can Do</h4>
                             <p id="plainTruthEmpowermentText">Now that you've seen the analysis, you're better equipped to evaluate similar claims. The goal isn't to never be fooled—it's to get better at noticing when we might be.</p>
                         </div>
                     </div>
@@ -2595,7 +2611,7 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
                             <div class="section-header reality" onclick="toggleSection('reality')">
                                 <div class="button-group">
                                     <button class="section-toggle" id="realityToggle">+</button>
-                                    <h4>📊 Reality Profile Breakdown</h4>
+                                    <h4 data-i18n="realityProfileBreakdown">📊 Reality Profile Breakdown</h4>
                                 </div>
                             </div>
                             <div class="section-content" id="realityContent">
@@ -2607,7 +2623,7 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
                             <div class="section-header truth" onclick="toggleSection('truth')">
                                 <div class="button-group">
                                     <button class="section-toggle" id="truthToggle">+</button>
-                                    <h4>🔍 The Underlying Reality</h4>
+                                    <h4 data-i18n="underlyingReality">🔍 The Underlying Reality</h4>
                                 </div>
                             </div>
                             <div class="section-content" id="truthContent">
@@ -2619,7 +2635,7 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
                             <div class="section-header claims" onclick="toggleSection('claims')">
                                 <div class="button-group">
                                     <button class="section-toggle" id="claimsToggle">+</button>
-                                    <h4>🎯 Central Claims<br>(Explicit & Hidden)</h4>
+                                    <h4 data-i18n="centralClaims">🎯 Central Claims<br>(Explicit & Hidden)</h4>
                                 </div>
                             </div>
                             <div class="section-content" id="claimsContent">
@@ -2631,7 +2647,7 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
                             <div class="section-header framework" onclick="toggleSection('framework')">
                                 <div class="button-group">
                                     <button class="section-toggle" id="frameworkToggle">+</button>
-                                    <h4>🧩 Examining the Framework</h4>
+                                    <h4 data-i18n="examiningFramework">🧩 Examining the Framework</h4>
                                 </div>
                             </div>
                             <div class="section-content" id="frameworkContent">
@@ -2643,7 +2659,7 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
                             <div class="section-header distortion" onclick="toggleSection('distortion')">
                                 <div class="button-group">
                                     <button class="section-toggle" id="distortionToggle">+</button>
-                                    <h4>⚠️ Truth Distortion Patterns</h4>
+                                    <h4 data-i18n="truthDistortionPatterns">⚠️ Truth Distortion Patterns</h4>
                                 </div>
                             </div>
                             <div class="section-content" id="distortionContent">
@@ -2655,7 +2671,7 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
                             <div class="section-header evidence" onclick="toggleSection('evidence')">
                                 <div class="button-group">
                                     <button class="section-toggle" id="evidenceToggle">+</button>
-                                    <h4>⚖️ Evidence Analysis</h4>
+                                    <h4 data-i18n="evidenceAnalysis">⚖️ Evidence Analysis</h4>
                                 </div>
                             </div>
                             <div class="section-content" id="evidenceContent">
@@ -2671,7 +2687,7 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
                             <div class="section-header integrity" onclick="toggleSection('integrity')">
                                 <div class="button-group">
                                     <button class="section-toggle" id="integrityToggle">+</button>
-                                    <h4>🔬 Integrity Profile Breakdown</h4>
+                                    <h4 data-i18n="integrityProfileBreakdown">🔬 Integrity Profile Breakdown</h4>
                                 </div>
                             </div>
                             <div class="section-content" id="integrityContent">
@@ -2683,7 +2699,7 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
                             <div class="section-header confident" onclick="toggleSection('confident')">
                                 <div class="button-group">
                                     <button class="section-toggle" id="confidentToggle">+</button>
-                                    <h4>✓ What We Can Be<br>Confident About</h4>
+                                    <h4 data-i18n="whatWeCanBeConfident">✓ What We Can Be<br>Confident About</h4>
                                 </div>
                             </div>
                             <div class="section-content" id="confidentContent">
@@ -2695,7 +2711,7 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
                             <div class="section-header uncertain" onclick="toggleSection('uncertain')">
                                 <div class="button-group">
                                     <button class="section-toggle" id="uncertainToggle">+</button>
-                                    <h4>❓ What Remains Uncertain</h4>
+                                    <h4 data-i18n="whatRemainsUncertain">❓ What Remains Uncertain</h4>
                                 </div>
                             </div>
                             <div class="section-content" id="uncertainContent">
@@ -2707,7 +2723,7 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
                             <div class="section-header lessons" onclick="toggleSection('lessons')">
                                 <div class="button-group">
                                     <button class="section-toggle" id="lessonsToggle">+</button>
-                                    <h4>💡 Lessons for<br>Information Assessment</h4>
+                                    <h4 data-i18n="lessonsForAssessment">💡 Lessons for<br>Information Assessment</h4>
                                 </div>
                             </div>
                             <div class="section-content" id="lessonsContent">
@@ -2719,7 +2735,7 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
                             <div class="section-header methodology" onclick="toggleSection('methodology')">
                                 <div class="button-group">
                                     <button class="section-toggle" id="methodologyToggle">+</button>
-                                    <h4>📝 Methodology Notes</h4>
+                                    <h4 data-i18n="methodologyNotes">📝 Methodology Notes</h4>
                                 </div>
                             </div>
                             <div class="section-content" id="methodologyContent">
@@ -2731,7 +2747,7 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
                             <div class="section-header sources" onclick="toggleSection('sources')">
                                 <div class="button-group">
                                     <button class="section-toggle" id="sourcesToggle">+</button>
-                                    <h4>📖 Key Sources Referenced</h4>
+                                    <h4 data-i18n="keySourcesReferenced">📖 Key Sources Referenced</h4>
                                 </div>
                             </div>
                             <div class="section-content" id="sourcesContent">
@@ -2746,51 +2762,51 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
             <div class="options-panel" id="optionsPanel">
                 <div class="options-header">
                     <span>🔬</span>
-                    <h3>Further Analysis</h3>
+                    <h3 data-i18n="furtherAnalysis">Further Analysis</h3>
                 </div>
 
                 <div class="options-grid">
                     <div class="option-card">
-                        <h4><span>🔍</span> Amplify</h4>
-                        <p>Stress-test the assessment — challenge assumptions, explore alternative interpretations, find blind spots.</p>
-                        <button class="btn btn-amplify" id="amplifyBtn" onclick="runAmplify()" disabled>Amplify Analysis</button>
+                        <h4><span>🔍</span> <span data-i18n="amplifyTitle">Amplify</span></h4>
+                        <p data-i18n="amplifyDesc">Stress-test the assessment — challenge assumptions, explore alternative interpretations, find blind spots.</p>
+                        <button class="btn btn-amplify" id="amplifyBtn" onclick="runAmplify()" disabled><span data-i18n="amplifyBtn">Amplify Analysis</span></button>
                     </div>
                     <div class="option-card">
-                        <h4><span>✓</span> Verify</h4>
-                        <p>Get an independent second evaluation — fresh eyes, identical methodology, compare profiles.</p>
-                        <button class="btn btn-verify" id="verifyBtn" onclick="runVerify()" disabled>Run Verification</button>
+                        <h4><span>✓</span> <span data-i18n="verifyTitle">Verify</span></h4>
+                        <p data-i18n="verifyDesc">Get an independent second evaluation — fresh eyes, identical methodology, compare profiles.</p>
+                        <button class="btn btn-verify" id="verifyBtn" onclick="runVerify()" disabled><span data-i18n="verifyBtn">Run Verification</span></button>
                     </div>
                 </div>
 
                 <div class="cooldown-notice" id="cooldownNotice">
                     <div>
-                        <span class="cooldown-label">Epistemic Reset</span>
+                        <span class="cooldown-label" data-i18n="cooldownLabel">Epistemic Reset</span>
                         <div class="cooldown-timer" id="cooldownTimer">1:00</div>
                     </div>
-                    <p>Deep analysis available in</p>
+                    <p data-i18n="cooldownText">Deep analysis available in</p>
                 </div>
             </div>
 
             <!-- New Assessment Button -->
             <div style="text-align: center; margin-top: 24px;">
-                <button class="btn btn-secondary" onclick="clearForm()">↻ New Assessment</button>
+                <button class="btn btn-secondary" onclick="clearForm()" data-i18n="newAssessment">↻ New Assessment</button>
             </div>
 
             <!-- Export Actions Bar (v5.2) -->
             <div class="export-actions-bar" id="exportActionsBar" style="display: none; margin-top: 24px; padding: 20px; background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.8) 100%); border-radius: 10px; border: 1px solid var(--border-medium);">
-                <div style="flex-basis: 100%; font-size: 0.85rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px;">📤 Export Assessment</div>
+                <div style="flex-basis: 100%; font-size: 0.85rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px;" data-i18n="exportTitle">📤 Export Assessment</div>
                 <div style="display: flex; flex-wrap: wrap; gap: 12px;">
                     <button onclick="exportCurrentAssessment('pdf')" style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; background: var(--bg-tertiary); border: 1px solid var(--border-medium); border-radius: 8px; color: var(--text-secondary); font-size: 0.9rem; font-weight: 500; cursor: pointer; transition: all 0.2s ease;" onmouseover="this.style.borderColor='var(--accent-teal)'; this.style.color='var(--accent-teal)';" onmouseout="this.style.borderColor='var(--border-medium)'; this.style.color='var(--text-secondary)';">
-                        <span>📄</span> PDF
+                        <span>📄</span> <span data-i18n="exportPDF">PDF</span>
                     </button>
                     <button onclick="exportCurrentAssessment('json')" style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; background: var(--bg-tertiary); border: 1px solid var(--border-medium); border-radius: 8px; color: var(--text-secondary); font-size: 0.9rem; font-weight: 500; cursor: pointer; transition: all 0.2s ease;" onmouseover="this.style.borderColor='var(--accent-teal)'; this.style.color='var(--accent-teal)';" onmouseout="this.style.borderColor='var(--border-medium)'; this.style.color='var(--text-secondary)';">
-                        <span>💾</span> JSON
+                        <span>💾</span> <span data-i18n="exportJSON">JSON</span>
                     </button>
                     <button onclick="exportCurrentAssessment('md')" style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; background: var(--bg-tertiary); border: 1px solid var(--border-medium); border-radius: 8px; color: var(--text-secondary); font-size: 0.9rem; font-weight: 500; cursor: pointer; transition: all 0.2s ease;" onmouseover="this.style.borderColor='var(--accent-teal)'; this.style.color='var(--accent-teal)';" onmouseout="this.style.borderColor='var(--border-medium)'; this.style.color='var(--text-secondary)';">
-                        <span>📝</span> Markdown
+                        <span>📝</span> <span data-i18n="exportMarkdown">Markdown</span>
                     </button>
                     <button onclick="printCurrentAssessment()" style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; background: var(--bg-tertiary); border: 1px solid var(--border-medium); border-radius: 8px; color: var(--text-secondary); font-size: 0.9rem; font-weight: 500; cursor: pointer; transition: all 0.2s ease;" onmouseover="this.style.borderColor='var(--accent-teal)'; this.style.color='var(--accent-teal)';" onmouseout="this.style.borderColor='var(--border-medium)'; this.style.color='var(--text-secondary)';">
-                        <span>🖨️</span> Print
+                        <span>🖨️</span> <span data-i18n="exportPrint">Print</span>
                     </button>
                 </div>
             </div>
@@ -3880,6 +3896,9 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
             
             showProcessing();
             
+            // Get current language from Universal Translator
+            var currentLanguage = localStorage.getItem('veritasLanguage') || 'en';
+            
             fetch('/api/assess', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -3888,7 +3907,8 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
                     articleText: articleText,
                     articleUrl: articleUrl,
                     userApiKey: userApiKey,
-                    track: 'a'
+                    track: 'a',
+                    language: currentLanguage
                 })
             })
             .then(function(res) {
@@ -3986,6 +4006,9 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
             // Get API key if provided
             var userApiKey = document.getElementById('apiKey').value.trim();
             
+            // Get current language from Universal Translator
+            var currentLanguage = localStorage.getItem('veritasLanguage') || 'en';
+            
             // Call the Amplify API
             fetch('/api/amplify', {
                 method: 'POST',
@@ -3995,7 +4018,8 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
                     initialAssessment: lastAssessment.assessment,
                     realityScore: lastAssessment.realityScore,
                     integrityScore: lastAssessment.integrityScore,
-                    userApiKey: userApiKey
+                    userApiKey: userApiKey,
+                    language: currentLanguage
                 })
             })
             .then(function(res) {
@@ -4186,6 +4210,9 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
             // Get API key if provided
             var userApiKey = document.getElementById('apiKey').value.trim();
             
+            // Get current language from Universal Translator
+            var currentLanguage = localStorage.getItem('veritasLanguage') || 'en';
+            
             // Call the Verify API
             fetch('/api/verify', {
                 method: 'POST',
@@ -4195,6 +4222,7 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
                     articleText: lastAssessment.articleText || '',
                     track: 'a',
                     userApiKey: userApiKey,
+                    language: currentLanguage,
                     initialAssessment: {
                         realityScore: lastAssessment.realityScore,
                         integrityScore: lastAssessment.integrityScore,
@@ -4305,6 +4333,9 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
             
             var userApiKey = document.getElementById('apiKey').value.trim();
             
+            // Get current language from Universal Translator
+            var currentLanguage = localStorage.getItem('veritasLanguage') || 'en';
+            
             fetch('/api/adjudicate', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -4316,7 +4347,8 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
                     verifyScore: lastVerification.realityScore,
                     initialStructured: lastAssessment.structured,
                     verifyStructured: lastVerification.structured,
-                    userApiKey: userApiKey
+                    userApiKey: userApiKey,
+                    language: currentLanguage
                 })
             })
             .then(function(res) {
@@ -4924,7 +4956,7 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
     <div class="amplify-modal-overlay" id="amplifyModal">
         <div class="amplify-modal">
             <div class="amplify-modal-header">
-                <h2><span>🔍</span> Amplified Analysis</h2>
+                <h2><span>🔍</span> <span data-i18n="amplifyModalTitle">Amplified Analysis</span></h2>
                 <button class="amplify-modal-close" onclick="closeAmplifyModal()">&times;</button>
             </div>
             <div class="amplify-modal-body">
@@ -4961,7 +4993,7 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
                             <div class="amplify-section-header" onclick="toggleAmplifySection('challenges')">
                                 <button class="amplify-section-toggle" id="challengesToggle">+</button>
                                 <div class="amplify-section-title challenges">
-                                    <span>⚠️</span> Challenges to Assumptions
+                                    <span>⚠️</span> <span data-i18n="challenges">Challenges to Assumptions</span>
                                 </div>
                             </div>
                             <div class="amplify-section-content" id="challengesContent">
@@ -4974,7 +5006,7 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
                             <div class="amplify-section-header" onclick="toggleAmplifySection('alternatives')">
                                 <button class="amplify-section-toggle" id="alternativesToggle">+</button>
                                 <div class="amplify-section-title alternatives">
-                                    <span>🔄</span> Alternative Interpretations
+                                    <span>🔄</span> <span data-i18n="alternatives">Alternative Interpretations</span>
                                 </div>
                             </div>
                             <div class="amplify-section-content" id="alternativesContent">
@@ -4987,7 +5019,7 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
                             <div class="amplify-section-header" onclick="toggleAmplifySection('blindspots')">
                                 <button class="amplify-section-toggle" id="blindspotsToggle">+</button>
                                 <div class="amplify-section-title blindspots">
-                                    <span>👁️</span> Blind Spots
+                                    <span>👁️</span> <span data-i18n="blindspots">Blind Spots</span>
                                 </div>
                             </div>
                             <div class="amplify-section-content" id="blindspotsContent">
@@ -5000,7 +5032,7 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
                             <div class="amplify-section-header" onclick="toggleAmplifySection('stresstests')">
                                 <button class="amplify-section-toggle" id="stresstestsToggle">+</button>
                                 <div class="amplify-section-title stresstests">
-                                    <span>🔬</span> Stress Tests
+                                    <span>🔬</span> <span data-i18n="stresstests">Stress Tests</span>
                                 </div>
                             </div>
                             <div class="amplify-section-content" id="stresstestsContent">
@@ -5013,7 +5045,7 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
                             <div class="amplify-section-header" onclick="toggleAmplifySection('changes')">
                                 <button class="amplify-section-toggle" id="changesToggle">+</button>
                                 <div class="amplify-section-title changes">
-                                    <span>📊</span> Significant Changes
+                                    <span>📊</span> <span data-i18n="changes">Significant Changes</span>
                                 </div>
                             </div>
                             <div class="amplify-section-content" id="changesContent">
@@ -5026,12 +5058,31 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
                             <div class="amplify-section-header" onclick="toggleAmplifySection('bottomline')">
                                 <button class="amplify-section-toggle" id="bottomlineToggle">+</button>
                                 <div class="amplify-section-title bottomline">
-                                    <span>📋</span> Bottom Line Analysis
+                                    <span>📋</span> <span data-i18n="bottomline">Bottom Line Analysis</span>
                                 </div>
                             </div>
                             <div class="amplify-section-content" id="bottomlineContent">
                                 <p class="amplify-bottomline-text" id="bottomlineText"></p>
                             </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Amplify Export Bar -->
+                    <div class="amplify-export-bar" id="amplifyExportBar" style="margin-top: 24px; padding: 16px; background: rgba(15, 23, 42, 0.6); border-radius: 8px; border: 1px solid var(--border-medium);">
+                        <div style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px;" data-i18n="exportAmplifyTitle">📤 Export Amplified Analysis</div>
+                        <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                            <button onclick="exportAmplifyAnalysis('pdf')" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; background: var(--bg-tertiary); border: 1px solid var(--border-medium); border-radius: 6px; color: var(--text-secondary); font-size: 0.85rem; font-weight: 500; cursor: pointer; transition: all 0.2s ease;" onmouseover="this.style.borderColor='var(--accent-purple)'; this.style.color='var(--accent-purple)';" onmouseout="this.style.borderColor='var(--border-medium)'; this.style.color='var(--text-secondary)';">
+                                <span>📄</span> <span data-i18n="exportPDF">PDF</span>
+                            </button>
+                            <button onclick="exportAmplifyAnalysis('json')" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; background: var(--bg-tertiary); border: 1px solid var(--border-medium); border-radius: 6px; color: var(--text-secondary); font-size: 0.85rem; font-weight: 500; cursor: pointer; transition: all 0.2s ease;" onmouseover="this.style.borderColor='var(--accent-purple)'; this.style.color='var(--accent-purple)';" onmouseout="this.style.borderColor='var(--border-medium)'; this.style.color='var(--text-secondary)';">
+                                <span>💾</span> <span data-i18n="exportJSON">JSON</span>
+                            </button>
+                            <button onclick="exportAmplifyAnalysis('md')" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; background: var(--bg-tertiary); border: 1px solid var(--border-medium); border-radius: 6px; color: var(--text-secondary); font-size: 0.85rem; font-weight: 500; cursor: pointer; transition: all 0.2s ease;" onmouseover="this.style.borderColor='var(--accent-purple)'; this.style.color='var(--accent-purple)';" onmouseout="this.style.borderColor='var(--border-medium)'; this.style.color='var(--text-secondary)';">
+                                <span>📝</span> <span data-i18n="exportMarkdown">Markdown</span>
+                            </button>
+                            <button onclick="printAmplifyAnalysis()" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; background: var(--bg-tertiary); border: 1px solid var(--border-medium); border-radius: 6px; color: var(--text-secondary); font-size: 0.85rem; font-weight: 500; cursor: pointer; transition: all 0.2s ease;" onmouseover="this.style.borderColor='var(--accent-purple)'; this.style.color='var(--accent-purple)';" onmouseout="this.style.borderColor='var(--border-medium)'; this.style.color='var(--text-secondary)';">
+                                <span>🖨️</span> <span data-i18n="exportPrint">Print</span>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -5049,7 +5100,7 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
             <div class="compare-modal-body">
                 <!-- Initial Assessment Column -->
                 <div class="compare-column initial">
-                    <div class="compare-column-header">Initial Assessment</div>
+                    <div class="compare-column-header" data-i18n="initialAssessment">Initial Assessment</div>
                     <div class="compare-column-scores">
                         <div class="compare-score-item">
                             <div class="compare-score-label">Reality</div>
@@ -5067,7 +5118,7 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
                 
                 <!-- Verification Assessment Column -->
                 <div class="compare-column verification">
-                    <div class="compare-column-header">Verification Assessment</div>
+                    <div class="compare-column-header" data-i18n="verificationAssessment">Verification Assessment</div>
                     <div class="compare-column-scores">
                         <div class="compare-score-item">
                             <div class="compare-score-label">Reality</div>
@@ -5081,6 +5132,25 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
                     <div class="compare-column-content" id="verifyCompareContent">
                         <!-- Sections populated by JS -->
                     </div>
+                </div>
+            </div>
+            
+            <!-- Comparison Export Bar -->
+            <div class="compare-export-bar" id="compareExportBar" style="margin-top: 20px; padding: 16px; background: rgba(15, 23, 42, 0.6); border-radius: 8px; border: 1px solid var(--border-medium);">
+                <div style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px;" data-i18n="exportCompareTitle">📤 Export Comparison</div>
+                <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                    <button onclick="exportComparison('pdf')" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; background: var(--bg-tertiary); border: 1px solid var(--border-medium); border-radius: 6px; color: var(--text-secondary); font-size: 0.85rem; font-weight: 500; cursor: pointer; transition: all 0.2s ease;" onmouseover="this.style.borderColor='var(--accent-teal)'; this.style.color='var(--accent-teal)';" onmouseout="this.style.borderColor='var(--border-medium)'; this.style.color='var(--text-secondary)';">
+                        <span>📄</span> <span data-i18n="exportPDF">PDF</span>
+                    </button>
+                    <button onclick="exportComparison('json')" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; background: var(--bg-tertiary); border: 1px solid var(--border-medium); border-radius: 6px; color: var(--text-secondary); font-size: 0.85rem; font-weight: 500; cursor: pointer; transition: all 0.2s ease;" onmouseover="this.style.borderColor='var(--accent-teal)'; this.style.color='var(--accent-teal)';" onmouseout="this.style.borderColor='var(--border-medium)'; this.style.color='var(--text-secondary)';">
+                        <span>💾</span> <span data-i18n="exportJSON">JSON</span>
+                    </button>
+                    <button onclick="exportComparison('md')" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; background: var(--bg-tertiary); border: 1px solid var(--border-medium); border-radius: 6px; color: var(--text-secondary); font-size: 0.85rem; font-weight: 500; cursor: pointer; transition: all 0.2s ease;" onmouseover="this.style.borderColor='var(--accent-teal)'; this.style.color='var(--accent-teal)';" onmouseout="this.style.borderColor='var(--border-medium)'; this.style.color='var(--text-secondary)';">
+                        <span>📝</span> <span data-i18n="exportMarkdown">Markdown</span>
+                    </button>
+                    <button onclick="printComparison()" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; background: var(--bg-tertiary); border: 1px solid var(--border-medium); border-radius: 6px; color: var(--text-secondary); font-size: 0.85rem; font-weight: 500; cursor: pointer; transition: all 0.2s ease;" onmouseover="this.style.borderColor='var(--accent-teal)'; this.style.color='var(--accent-teal)';" onmouseout="this.style.borderColor='var(--border-medium)'; this.style.color='var(--text-secondary)';">
+                        <span>🖨️</span> <span data-i18n="exportPrint">Print</span>
+                    </button>
                 </div>
             </div>
         </div>
@@ -5128,6 +5198,91 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
             });
         }
         
+        // ================================
+        // AMPLIFY EXPORT FUNCTIONS
+        // ================================
+        var lastAmplifyData = null; // Store amplify results for export
+        
+        function exportAmplifyAnalysis(type) {
+            if (!lastAmplifyData) {
+                alert('No amplified analysis available to export. Please run an amplification first.');
+                return;
+            }
+            
+            UniversalExport.exportAssessment({
+                type: type,
+                claim: lastAssessment?.question || 'Unknown Claim',
+                title: 'Amplified Analysis',
+                sections: {
+                    challenges: lastAmplifyData.challenges || [],
+                    alternatives: lastAmplifyData.alternatives || [],
+                    blindspots: lastAmplifyData.blindspots || [],
+                    stresstests: lastAmplifyData.stresstests || [],
+                    changes: lastAmplifyData.changes || [],
+                    bottomline: lastAmplifyData.bottomline || ''
+                },
+                metadata: {
+                    analysisType: 'Amplification',
+                    originalAssessmentDate: lastAssessment?.timestamp || new Date().toISOString(),
+                    amplifyDate: new Date().toISOString()
+                }
+            });
+        }
+        
+        function printAmplifyAnalysis() {
+            var amplifyResults = document.getElementById('amplifyResults');
+            if (!amplifyResults || amplifyResults.style.display === 'none') {
+                alert('No amplified analysis available to print. Please run an amplification first.');
+                return;
+            }
+            
+            UniversalExport.print({
+                content: amplifyResults,
+                title: 'Amplified Analysis - ' + (lastAssessment?.question || 'Assessment')
+            });
+        }
+        
+        // ================================
+        // COMPARISON EXPORT FUNCTIONS
+        // ================================
+        var lastComparisonData = null; // Store comparison results for export
+        
+        function exportComparison(type) {
+            if (!lastComparisonData) {
+                alert('No comparison available to export. Please run a verification first.');
+                return;
+            }
+            
+            UniversalExport.exportAssessment({
+                type: type,
+                claim: lastAssessment?.question || 'Unknown Claim',
+                title: 'Assessment Comparison',
+                sections: {
+                    initial: lastComparisonData.initial || {},
+                    verification: lastComparisonData.verification || {},
+                    differences: lastComparisonData.differences || []
+                },
+                metadata: {
+                    analysisType: 'Verification Comparison',
+                    comparisonDate: new Date().toISOString()
+                }
+            });
+        }
+        
+        function printComparison() {
+            var compareModal = document.getElementById('compareModal');
+            var compareBody = compareModal?.querySelector('.compare-modal-body');
+            if (!compareBody) {
+                alert('No comparison available to print. Please run a verification first.');
+                return;
+            }
+            
+            UniversalExport.print({
+                content: compareBody,
+                title: 'Assessment Comparison - ' + (lastAssessment?.question || 'Assessment')
+            });
+        }
+        
         function showExportBar() {
             var exportBar = document.getElementById('exportActionsBar');
             if (exportBar) {
@@ -5162,6 +5317,9 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
             }
         });
     </script>
+    
+    <!-- VERITAS Universal Translator - External Translation System -->
+    <script src="api/veritas-translations.js"></script>
 
 </body>
 </html>

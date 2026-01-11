@@ -4,133 +4,196 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VERITAS — Navigate Mode</title>
-    <link href="https://fonts.googleapis.com/css2?family=Antonio:wght@300;400;500;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
     
     <!-- Veracity v5.2 Module Dependencies -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
-    <link rel="stylesheet" href="/modules/sidebar-actions.css">
     
     <style>
         :root {
-            --bg-primary: #0a0a12;
-            --bg-secondary: #0f172a;
-            --bg-card: #1e3a5f;
-            --bg-tertiary: #2d4a6f;
-            --bg-input: #0a0a12;
+            /* Scientific Dark Theme - Track C (Teal/Guidance) */
+            --bg-primary: #0a0f1a;
+            --bg-secondary: #111827;
+            --bg-card: #1a2332;
+            --bg-tertiary: #1e293b;
+            --bg-input: #0d1117;
+            
+            /* Track C Accent - Teal for guidance/navigation */
             --track-primary: #14b8a6;
             --track-secondary: #0d9488;
-            --track-glow: rgba(20, 184, 166, 0.4);
-            --accent-teal: #60a5fa;
+            --track-glow: rgba(20, 184, 166, 0.3);
+            
+            /* Accent Colors */
+            --accent-teal: #0d9488;
+            --accent-teal-dim: #0f766e;
+            --accent-cyan: #22d3ee;
+            --accent-blue: #3b82f6;
             --accent-green: #10b981;
-            --accent-amber: #d4a853;
+            --accent-amber: #f59e0b;
             --accent-red: #ef4444;
-            --safety-amber: #fbbf24;
-            --text-primary: #ffffff;
-            --text-secondary: #bfdbfe;
-            --text-muted: #60a5fa;
-            --text-dim: #3b82f6;
-            --border-subtle: #1e3a5f;
-            --border-medium: #3b82f6;
+            --accent-purple: #8b5cf6;
+            
+            /* Text Colors */
+            --text-primary: #e2e8f0;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --text-dim: #475569;
+            
+            /* Borders */
+            --border-subtle: #1e293b;
+            --border-medium: #334155;
+            --border-accent: var(--track-primary);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            font-family: 'IBM Plex Sans', -apple-system, sans-serif;
+            font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
             background: var(--bg-primary);
             color: var(--text-primary);
             min-height: 100vh;
+            line-height: 1.6;
             display: flex;
             flex-direction: column;
         }
 
-        .header {
+        /* RTL Support */
+        body.rtl { direction: rtl; }
+        body.rtl .header-content { flex-direction: row-reverse; }
+        body.rtl .message.user { flex-direction: row-reverse; }
+        body.rtl .message.assistant { flex-direction: row; }
+
+        /* Header */
+        .site-header {
             background: linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
-            border-bottom: 2px solid var(--track-primary);
+            border-bottom: 1px solid var(--track-primary);
             padding: 16px 24px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 900px;
+            margin: 0 auto;
             display: flex;
             align-items: center;
             justify-content: space-between;
         }
 
-        .header-left {
+        .logo-section {
             display: flex;
-            align-items: center;
-            gap: 16px;
+            flex-direction: column;
+            gap: 0;
         }
 
-        .back-btn {
-            background: var(--bg-tertiary);
-            border: 1px solid var(--border-medium);
+        .logo-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-img { height: 36px; width: auto; }
+
+        .logo-fallback {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-mark {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--track-primary) 0%, var(--accent-cyan) 100%);
             border-radius: 8px;
-            padding: 8px 16px;
-            color: var(--text-secondary);
-            font-size: 12px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s;
-            text-decoration: none;
             display: flex;
             align-items: center;
-            gap: 8px;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--bg-primary);
         }
 
-        .back-btn:hover {
-            background: var(--track-primary);
-            color: var(--text-primary);
-        }
-
-        .header-title h1 {
-            font-size: 18px;
-            font-weight: 600;
+        .logo-text {
+            font-size: 1.25rem;
+            font-weight: 700;
             color: var(--text-primary);
             letter-spacing: 2px;
         }
 
-        .header-title .subtitle {
-            font-size: 11px;
-            color: var(--track-primary);
-            letter-spacing: 1px;
+        .tagline {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-left: 48px;
+            margin-top: -4px;
+            letter-spacing: 0.5px;
         }
 
-        .api-status {
+        .header-controls {
             display: flex;
             align-items: center;
-            gap: 8px;
-            padding: 6px 12px;
+            gap: 12px;
+        }
+
+        .language-select {
             background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-medium);
+            border-radius: 6px;
+            padding: 6px 12px;
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+
+        .language-select:hover {
+            border-color: var(--track-primary);
+        }
+
+        .home-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-medium);
             border-radius: 20px;
-            font-size: 11px;
-            color: var(--accent-green);
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: all 0.2s ease;
         }
 
-        .api-status .dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--accent-green);
-            animation: pulse 2s infinite;
+        .home-btn:hover {
+            border-color: var(--track-primary);
+            color: var(--text-primary);
         }
 
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
+        .version-badge {
+            font-size: 0.7rem;
+            color: var(--track-primary);
+            background: var(--bg-tertiary);
+            padding: 6px 12px;
+            border-radius: 20px;
+            border: 1px solid var(--track-primary);
         }
 
-        .main-container {
+        /* Main Container */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 24px;
             flex: 1;
             display: flex;
             flex-direction: column;
-            max-width: 900px;
-            width: 100%;
-            margin: 0 auto;
-            padding: 20px;
         }
 
+        /* Safety Notice */
         .safety-notice {
-            background: linear-gradient(90deg, rgba(251, 191, 36, 0.1) 0%, rgba(251, 191, 36, 0.05) 100%);
-            border: 1px solid rgba(251, 191, 36, 0.3);
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.3);
             border-radius: 8px;
             padding: 12px 16px;
             margin-bottom: 20px;
@@ -140,111 +203,99 @@
         }
 
         .safety-notice.hidden { display: none; }
-        .safety-icon { font-size: 18px; flex-shrink: 0; }
+
+        .safety-icon { font-size: 1.2rem; }
 
         .safety-content { flex: 1; }
 
         .safety-title {
-            font-size: 12px;
             font-weight: 600;
-            color: var(--safety-amber);
+            color: var(--accent-amber);
+            font-size: 0.85rem;
             margin-bottom: 4px;
         }
 
         .safety-text {
-            font-size: 12px;
+            font-size: 0.8rem;
             color: var(--text-secondary);
             line-height: 1.5;
         }
 
-        .safety-link {
-            color: var(--safety-amber);
-            text-decoration: underline;
+        .safety-text a {
+            color: var(--accent-amber);
+            text-decoration: none;
         }
 
+        .safety-text a:hover { text-decoration: underline; }
+
         .safety-dismiss {
-            background: transparent;
+            background: none;
             border: none;
             color: var(--text-muted);
             cursor: pointer;
+            font-size: 1rem;
             padding: 4px;
-            font-size: 14px;
         }
 
+        .safety-dismiss:hover { color: var(--text-primary); }
+
+        /* Context Card */
         .context-card {
             background: var(--bg-card);
-            border: 1px solid var(--track-primary);
-            border-left: 4px solid var(--track-primary);
+            border: 1px solid var(--border-subtle);
             border-radius: 12px;
             padding: 16px 20px;
             margin-bottom: 20px;
         }
 
         .context-label {
-            font-size: 10px;
-            font-weight: 600;
+            font-size: 0.75rem;
             color: var(--track-primary);
-            letter-spacing: 2px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
             margin-bottom: 8px;
         }
 
         .context-text {
-            font-size: 14px;
-            color: var(--text-secondary);
+            font-size: 0.95rem;
+            color: var(--text-primary);
             line-height: 1.5;
         }
 
-        .chat-container {
-            flex: 1;
+        /* Chat Area */
+        .chat-card {
             background: var(--bg-card);
             border: 1px solid var(--border-subtle);
             border-radius: 12px;
+            flex: 1;
             display: flex;
             flex-direction: column;
-            overflow: hidden;
             min-height: 400px;
         }
 
         .chat-header {
             background: var(--bg-tertiary);
-            padding: 12px 20px;
+            padding: 16px 20px;
             border-bottom: 1px solid var(--border-subtle);
+            border-radius: 12px 12px 0 0;
             display: flex;
             align-items: center;
             justify-content: space-between;
         }
 
-        .chat-header-left {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .chat-icon {
-            width: 32px;
-            height: 32px;
-            background: linear-gradient(135deg, var(--track-primary) 0%, var(--track-secondary) 100%);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-        }
-
         .chat-title {
-            font-size: 13px;
+            font-size: 1rem;
             font-weight: 600;
             color: var(--text-primary);
-            letter-spacing: 1px;
         }
 
-        .chat-mode {
-            font-size: 10px;
-            color: var(--accent-green);
-            background: rgba(16, 185, 129, 0.15);
+        .chat-badge {
+            font-size: 0.7rem;
+            color: var(--bg-primary);
+            background: var(--track-primary);
             padding: 4px 10px;
             border-radius: 12px;
-            border: 1px solid rgba(16, 185, 129, 0.3);
+            font-weight: 500;
         }
 
         .chat-messages {
@@ -260,69 +311,53 @@
             display: flex;
             gap: 12px;
             max-width: 85%;
-            animation: fadeSlideIn 0.3s ease;
         }
 
-        @keyframes fadeSlideIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        .message.user {
+            align-self: flex-end;
+            flex-direction: row-reverse;
         }
 
-        .message.assistant { align-self: flex-start; }
-        .message.user { align-self: flex-end; flex-direction: row-reverse; }
+        .message.assistant {
+            align-self: flex-start;
+        }
 
         .message-avatar {
-            width: 36px;
-            height: 36px;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 14px;
-            font-weight: 600;
+            font-size: 0.9rem;
             flex-shrink: 0;
         }
 
-        .message.assistant .message-avatar {
-            background: linear-gradient(135deg, var(--track-primary) 0%, var(--track-secondary) 100%);
-            color: white;
+        .message.user .message-avatar {
+            background: var(--accent-blue);
         }
 
-        .message.user .message-avatar {
-            background: var(--bg-tertiary);
-            border: 1px solid var(--border-medium);
-            color: var(--text-secondary);
+        .message.assistant .message-avatar {
+            background: var(--track-primary);
         }
 
         .message-content {
             background: var(--bg-tertiary);
-            border-radius: 16px;
             padding: 12px 16px;
-            border: 1px solid var(--border-subtle);
-        }
-
-        .message.assistant .message-content {
-            border-top-left-radius: 4px;
-            border-color: var(--track-primary);
-        }
-
-        .message.user .message-content {
-            border-top-right-radius: 4px;
-            background: var(--bg-secondary);
-        }
-
-        .message-text {
-            font-size: 14px;
-            color: var(--text-secondary);
+            border-radius: 12px;
+            font-size: 0.9rem;
             line-height: 1.6;
         }
 
-        .message-text p { margin-bottom: 10px; }
-        .message-text p:last-child { margin-bottom: 0; }
-        .message-text strong { color: var(--text-primary); }
-        .message-text em { color: var(--track-primary); }
-        .message-text ul, .message-text ol { margin: 10px 0; padding-left: 20px; }
-        .message-text li { margin-bottom: 6px; }
+        .message.user .message-content {
+            background: var(--accent-blue);
+            color: white;
+            border-radius: 12px 12px 4px 12px;
+        }
+
+        .message.assistant .message-content {
+            border-radius: 12px 12px 12px 4px;
+        }
 
         .typing-indicator {
             display: flex;
@@ -333,370 +368,503 @@
         .typing-indicator span {
             width: 8px;
             height: 8px;
-            background: var(--track-primary);
+            background: var(--text-muted);
             border-radius: 50%;
-            animation: typingBounce 1.4s infinite ease-in-out;
+            animation: typing 1.4s infinite ease-in-out;
         }
 
-        .typing-indicator span:nth-child(1) { animation-delay: 0s; }
         .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
         .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
 
-        @keyframes typingBounce {
-            0%, 80%, 100% { transform: translateY(0); opacity: 0.4; }
-            40% { transform: translateY(-6px); opacity: 1; }
+        @keyframes typing {
+            0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+            30% { transform: translateY(-4px); opacity: 1; }
         }
 
-        .error-message {
-            background: rgba(239, 68, 68, 0.1);
-            border: 1px solid rgba(239, 68, 68, 0.3);
-            border-radius: 8px;
-            padding: 12px 16px;
-            color: var(--accent-red);
-            font-size: 13px;
-            margin: 10px 0;
-        }
-
-        .input-area {
+        /* Input Area */
+        .chat-input-area {
             padding: 16px 20px;
-            background: var(--bg-tertiary);
             border-top: 1px solid var(--border-subtle);
-        }
-
-        .input-wrapper {
             display: flex;
             gap: 12px;
-            align-items: flex-end;
         }
 
-        .input-field {
+        .chat-input {
             flex: 1;
             background: var(--bg-input);
             border: 1px solid var(--border-medium);
-            border-radius: 12px;
-            padding: 14px 18px;
+            border-radius: 8px;
+            padding: 12px 16px;
             color: var(--text-primary);
             font-family: inherit;
-            font-size: 14px;
+            font-size: 0.9rem;
             resize: none;
-            min-height: 50px;
-            max-height: 150px;
-            transition: border-color 0.2s, box-shadow 0.2s;
+            min-height: 44px;
+            max-height: 120px;
         }
 
-        .input-field:focus {
+        .chat-input:focus {
             outline: none;
             border-color: var(--track-primary);
             box-shadow: 0 0 0 3px var(--track-glow);
         }
 
-        .input-field::placeholder { color: var(--text-dim); }
-
-        .send-btn {
-            background: linear-gradient(180deg, var(--track-primary) 0%, var(--track-secondary) 100%);
-            border: none;
-            border-radius: 12px;
-            padding: 14px 24px;
-            color: var(--text-primary);
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
+        .chat-input::placeholder {
+            color: var(--text-muted);
         }
 
-        .send-btn:hover:not(:disabled) {
-            filter: brightness(1.15);
-            box-shadow: 0 0 20px var(--track-glow);
+        .send-btn {
+            background: var(--track-primary);
+            border: none;
+            border-radius: 8px;
+            padding: 12px 16px;
+            color: var(--bg-primary);
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .send-btn:hover {
+            background: var(--track-secondary);
+            transform: translateY(-1px);
         }
 
         .send-btn:disabled {
             opacity: 0.5;
             cursor: not-allowed;
+            transform: none;
         }
 
-        .footer {
-            padding: 12px 24px;
-            text-align: center;
-            font-size: 11px;
-            color: var(--text-dim);
+        /* Footer Actions */
+        .footer-actions {
+            padding: 16px 20px;
             border-top: 1px solid var(--border-subtle);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
         }
 
-        .footer a { color: var(--track-primary); text-decoration: none; }
+        .export-buttons {
+            display: flex;
+            gap: 8px;
+        }
 
+        .export-btn {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-medium);
+            border-radius: 6px;
+            padding: 8px 12px;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .export-btn:hover {
+            border-color: var(--track-primary);
+            color: var(--text-primary);
+        }
+
+        .footer-motto {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            letter-spacing: 2px;
+        }
+
+        /* Responsive */
         @media (max-width: 768px) {
-            .header { flex-direction: column; gap: 12px; padding: 12px 16px; }
-            .header-left, .header-right { width: 100%; justify-content: space-between; }
-            .main-container { padding: 12px; }
+            .header-content {
+                flex-direction: column;
+                gap: 12px;
+                align-items: flex-start;
+            }
+
+            .header-controls {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .container { padding: 16px; }
+
             .message { max-width: 95%; }
+
+            .footer-actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .export-buttons {
+                justify-content: center;
+            }
+
+            .footer-motto {
+                text-align: center;
+            }
         }
     </style>
 </head>
 <body>
-    <header class="header">
-        <div class="header-left">
-            <a href="veracity.html" class="back-btn"><span>←</span> BACK TO VERACITY</a>
-            <div class="header-title">
-                <h1>TRACK C: NAVIGATE</h1>
-                <div class="subtitle">PRACTICAL GUIDANCE MODE</div>
+    <!-- Header -->
+    <header class="site-header">
+        <div class="header-content">
+            <div class="logo-section">
+                <div class="logo-row">
+                    <img src="/veritas-logo-horizontal.png" alt="VERITAS LLC" class="logo-img" onerror="this.style.display='none'; document.getElementById('fallbackLogo').style.display='flex';">
+                    <div id="fallbackLogo" class="logo-fallback" style="display: none;">
+                        <div class="logo-mark">V</div>
+                        <div class="logo-text">VERITAS</div>
+                    </div>
+                </div>
+                <div class="tagline" data-i18n="tagline">Truth Through Transparency</div>
             </div>
-        </div>
-        <div class="header-right">
-            <div class="api-status"><span class="dot"></span><span>LIVE</span></div>
+            <div class="header-controls">
+                <select id="languageSelect" class="language-select" title="Universal Translator">
+                    <option value="en">🌐 English</option>
+                    <option value="es">🇪🇸 Español</option>
+                    <option value="fr">🇫🇷 Français</option>
+                    <option value="de">🇩🇪 Deutsch</option>
+                    <option value="it">🇮🇹 Italiano</option>
+                    <option value="pt">🇧🇷 Português</option>
+                    <option value="ru">🇷🇺 Русский</option>
+                    <option value="uk">🇺🇦 Українська</option>
+                    <option value="el">🇬🇷 Ελληνικά</option>
+                    <option value="zh">🇨🇳 中文</option>
+                    <option value="ja">🇯🇵 日本語</option>
+                    <option value="ko">🇰🇷 한국어</option>
+                    <option value="ar">🇸🇦 العربية</option>
+                    <option value="he">🇮🇱 עברית</option>
+                </select>
+                <a href="veracity.html" class="home-btn">
+                    <span>🏠</span> <span data-i18n="home">Home</span>
+                </a>
+                <div class="version-badge">Track C — Navigate</div>
+            </div>
         </div>
     </header>
 
-    <main class="main-container">
+    <div class="container">
+        <!-- Safety Notice -->
         <div class="safety-notice" id="safetyNotice">
             <span class="safety-icon">⚠️</span>
             <div class="safety-content">
-                <div class="safety-title">IMPORTANT</div>
+                <div class="safety-title" data-i18n="safetyTitle">Important</div>
                 <div class="safety-text">
-                    Navigate mode offers practical frameworks, not professional advice. For mental health concerns, please reach out to a qualified professional. 
-                    <a href="https://988lifeline.org" target="_blank" class="safety-link">988 Suicide & Crisis Lifeline</a> is available 24/7.
+                    <span data-i18n="safetyText">Navigate mode offers practical frameworks, not professional advice. For mental health concerns, please reach out to a qualified professional.</span>
+                    <br><a href="https://988lifeline.org" target="_blank" data-i18n="safetyLink">988 Suicide & Crisis Lifeline</a> <span data-i18n="safetyAvailable">is available 24/7.</span>
                 </div>
             </div>
-            <button class="safety-dismiss" id="dismissSafety">✕</button>
+            <button class="safety-dismiss" onclick="dismissSafety()" aria-label="Dismiss">✕</button>
         </div>
 
+        <!-- Context Card -->
         <div class="context-card" id="contextCard">
-            <div class="context-label">YOUR SITUATION</div>
-            <div class="context-text" id="contextText">Loading your query...</div>
+            <div class="context-label" data-i18n="yourSituation">Your Situation</div>
+            <div class="context-text" id="contextText" data-i18n="loadingQuery">Loading your query...</div>
         </div>
 
-        <div class="chat-container">
+        <!-- Chat Card -->
+        <div class="chat-card">
             <div class="chat-header">
-                <div class="chat-header-left">
-                    <div class="chat-icon">🧭</div>
-                    <span class="chat-title">GUIDANCE DIALOGUE</span>
-                </div>
-                <span class="chat-mode">POWERED BY CLAUDE</span>
+                <div class="chat-title" data-i18n="guidanceDialogue">Guidance Dialogue</div>
+                <div class="chat-badge" data-i18n="poweredByClaude">Powered by Claude</div>
             </div>
-            <div class="chat-messages" id="chatMessages"></div>
-            <div class="input-area">
-                <div class="input-wrapper">
-                    <textarea class="input-field" id="userInput" placeholder="Share more about your situation..." rows="1"></textarea>
-                    <button class="send-btn" id="sendBtn">SEND</button>
+
+            <div class="chat-messages" id="chatMessages">
+                <!-- Messages will be inserted here -->
+            </div>
+
+            <div class="chat-input-area">
+                <textarea 
+                    id="userInput" 
+                    class="chat-input" 
+                    placeholder="Share more about your situation..."
+                    data-i18n-placeholder="navigatePlaceholder"
+                    rows="1"
+                ></textarea>
+                <button class="send-btn" id="sendBtn" onclick="sendMessage()" data-i18n-title="sendMessage">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="22" y1="2" x2="11" y2="13"></line>
+                        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="footer-actions">
+                <div class="export-buttons">
+                    <button class="export-btn" onclick="exportPDF()" data-i18n="exportPDF">📄 PDF</button>
+                    <button class="export-btn" onclick="exportJSON()" data-i18n="exportJSON">📋 JSON</button>
+                    <button class="export-btn" onclick="exportMarkdown()" data-i18n="exportMarkdown">📝 Markdown</button>
                 </div>
+                <div class="footer-motto" data-i18n="footerMotto">SEEK · QUESTION · UNDERSTAND</div>
             </div>
         </div>
-    </main>
+    </div>
 
-    <footer class="footer">
-        <div style="display: flex; justify-content: center; gap: 16px; margin-bottom: 8px;">
-            <button onclick="exportConversation('pdf')" style="background: transparent; border: 1px solid var(--border-medium); border-radius: 6px; padding: 6px 12px; color: var(--text-secondary); font-size: 11px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--track-primary)'; this.style.color='var(--track-primary)';" onmouseout="this.style.borderColor='var(--border-medium)'; this.style.color='var(--text-secondary)';">📄 Export PDF</button>
-            <button onclick="exportConversation('json')" style="background: transparent; border: 1px solid var(--border-medium); border-radius: 6px; padding: 6px 12px; color: var(--text-secondary); font-size: 11px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--track-primary)'; this.style.color='var(--track-primary)';" onmouseout="this.style.borderColor='var(--border-medium)'; this.style.color='var(--text-secondary)';">💾 Export JSON</button>
-            <button onclick="exportConversation('md')" style="background: transparent; border: 1px solid var(--border-medium); border-radius: 6px; padding: 6px 12px; color: var(--text-secondary); font-size: 11px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--track-primary)'; this.style.color='var(--track-primary)';" onmouseout="this.style.borderColor='var(--border-medium)'; this.style.color='var(--text-secondary)';">📝 Export MD</button>
-        </div>
-        <strong>VERITAS LLC</strong> — Prairie du Sac, Wisconsin · SEEK · QUESTION · UNDERSTAND · 
-        <a href="veracity.html">Return to Veracity</a>
-    </footer>
-
+    <script src="api/veritas-translations.js"></script>
     <script>
-    (function() {
-        'use strict';
+        // State
+        let conversationHistory = [];
+        let currentLanguage = localStorage.getItem('veritasLanguage') || 'en';
+        let isProcessing = false;
 
-        const state = {
-            isProcessing: false,
-            conversationHistory: [],
-            originalQuery: ''
-        };
-
-        const elements = {
-            contextCard: document.getElementById('contextCard'),
-            contextText: document.getElementById('contextText'),
-            chatMessages: document.getElementById('chatMessages'),
-            userInput: document.getElementById('userInput'),
-            sendBtn: document.getElementById('sendBtn'),
-            safetyNotice: document.getElementById('safetyNotice'),
-            dismissSafety: document.getElementById('dismissSafety')
-        };
-
-        function init() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const query = urlParams.get('q');
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set language
+            document.getElementById('languageSelect').value = currentLanguage;
+            applyRTL(currentLanguage);
+            
+            // Get query from URL
+            const params = new URLSearchParams(window.location.search);
+            const query = params.get('q') || params.get('query');
             
             if (query) {
-                state.originalQuery = decodeURIComponent(query);
-                elements.contextText.textContent = state.originalQuery;
+                document.getElementById('contextText').textContent = decodeURIComponent(query);
+                // Auto-start conversation
+                startConversation(decodeURIComponent(query));
             } else {
-                elements.contextCard.style.display = 'none';
+                document.getElementById('contextText').textContent = 'No situation provided. Please describe what you need help with.';
             }
 
-            elements.sendBtn.addEventListener('click', handleSend);
-            elements.userInput.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
-                    handleSend();
+            // Language change handler
+            document.getElementById('languageSelect').addEventListener('change', function() {
+                currentLanguage = this.value;
+                localStorage.setItem('veritasLanguage', currentLanguage);
+                applyRTL(currentLanguage);
+                if (typeof applyTranslations === 'function') {
+                    applyTranslations(currentLanguage);
                 }
             });
-            elements.userInput.addEventListener('input', () => {
-                elements.userInput.style.height = 'auto';
-                elements.userInput.style.height = Math.min(elements.userInput.scrollHeight, 150) + 'px';
-            });
-            elements.dismissSafety.addEventListener('click', () => {
-                elements.safetyNotice.classList.add('hidden');
+
+            // Enter to send (Shift+Enter for newline)
+            document.getElementById('userInput').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendMessage();
+                }
             });
 
-            setTimeout(startConversation, 500);
+            // Auto-resize textarea
+            document.getElementById('userInput').addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+            });
+        });
+
+        function applyRTL(lang) {
+            if (lang === 'ar' || lang === 'he') {
+                document.body.classList.add('rtl');
+            } else {
+                document.body.classList.remove('rtl');
+            }
         }
 
-        function startConversation() {
-            const openingMessage = state.originalQuery 
-                ? `Thank you for bringing this to Navigate mode. I can hear that this is something that matters to you:\n\n*"${state.originalQuery}"*\n\nI'm here to help you think through this — not to tell you what to do, but to help you find your own clarity.\n\nTo start: what's the part of this that feels most challenging or uncertain right now?`
-                : `Welcome to Navigate mode. I'm here to help you work through difficult situations — whether it's a tough conversation you need to have, a decision you're wrestling with, or just something weighing on you.\n\nI won't tell you what to do. Instead, I'll help you think through what matters to you and find your own best path forward.\n\nWhat's on your mind?`;
-
-            addMessage('assistant', openingMessage);
-            state.conversationHistory.push({ role: 'assistant', content: openingMessage });
+        function dismissSafety() {
+            document.getElementById('safetyNotice').classList.add('hidden');
         }
 
-        async function handleSend() {
-            const input = elements.userInput.value.trim();
-            if (!input || state.isProcessing) return;
+        async function startConversation(query) {
+            // Add initial user context as first message
+            conversationHistory.push({
+                role: 'user',
+                content: query
+            });
 
-            addMessage('user', input);
-            state.conversationHistory.push({ role: 'user', content: input });
-
-            elements.userInput.value = '';
-            elements.userInput.style.height = 'auto';
-            state.isProcessing = true;
-            elements.sendBtn.disabled = true;
-
-            const typingId = showTyping();
+            // Show typing indicator
+            showTyping();
 
             try {
                 const response = await fetch('/api/navigate', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        messages: state.conversationHistory,
-                        originalQuery: state.originalQuery
+                        messages: conversationHistory,
+                        originalQuery: query,
+                        language: currentLanguage
                     })
                 });
 
-                if (!response.ok) {
-                    const error = await response.json();
-                    throw new Error(error.error || 'API request failed');
+                const data = await response.json();
+                hideTyping();
+
+                if (data.content) {
+                    conversationHistory.push({
+                        role: 'assistant',
+                        content: data.content
+                    });
+                    addMessage('assistant', data.content);
                 }
+            } catch (error) {
+                hideTyping();
+                console.error('Error:', error);
+                addMessage('assistant', 'I apologize, but I encountered an error. Please try again.');
+            }
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('userInput');
+            const message = input.value.trim();
+            
+            if (!message || isProcessing) return;
+            
+            isProcessing = true;
+            input.value = '';
+            input.style.height = 'auto';
+            document.getElementById('sendBtn').disabled = true;
+
+            // Add user message
+            addMessage('user', message);
+            conversationHistory.push({
+                role: 'user',
+                content: message
+            });
+
+            showTyping();
+
+            try {
+                const response = await fetch('/api/navigate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        messages: conversationHistory,
+                        language: currentLanguage
+                    })
+                });
 
                 const data = await response.json();
-                removeTyping(typingId);
-                addMessage('assistant', data.content);
-                state.conversationHistory.push({ role: 'assistant', content: data.content });
+                hideTyping();
 
+                if (data.content) {
+                    conversationHistory.push({
+                        role: 'assistant',
+                        content: data.content
+                    });
+                    addMessage('assistant', data.content);
+                }
             } catch (error) {
-                removeTyping(typingId);
-                showError(`Connection error: ${error.message}. Please try again.`);
+                hideTyping();
+                console.error('Error:', error);
+                addMessage('assistant', 'I apologize, but I encountered an error. Please try again.');
             }
 
-            state.isProcessing = false;
-            elements.sendBtn.disabled = false;
-            elements.userInput.focus();
+            isProcessing = false;
+            document.getElementById('sendBtn').disabled = false;
         }
 
         function addMessage(role, content) {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${role}`;
-
+            const container = document.getElementById('chatMessages');
+            const msg = document.createElement('div');
+            msg.className = `message ${role}`;
+            
             const avatar = document.createElement('div');
             avatar.className = 'message-avatar';
-            avatar.textContent = role === 'assistant' ? '🧭' : 'You';
-
+            avatar.textContent = role === 'user' ? '👤' : '🧭';
+            
             const contentDiv = document.createElement('div');
             contentDiv.className = 'message-content';
+            contentDiv.innerHTML = formatMessage(content);
+            
+            msg.appendChild(avatar);
+            msg.appendChild(contentDiv);
+            container.appendChild(msg);
+            
+            // Scroll to bottom
+            container.scrollTop = container.scrollHeight;
+        }
 
-            const textDiv = document.createElement('div');
-            textDiv.className = 'message-text';
-            textDiv.innerHTML = content
-                .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-                .replace(/\*(.+?)\*/g, '<em>$1</em>')
-                .replace(/^- /gm, '• ')
-                .replace(/\n\n/g, '</p><p>')
-                .replace(/\n/g, '<br>')
-                .replace(/^/, '<p>')
-                .replace(/$/, '</p>');
-
-            contentDiv.appendChild(textDiv);
-            messageDiv.appendChild(avatar);
-            messageDiv.appendChild(contentDiv);
-            elements.chatMessages.appendChild(messageDiv);
-            elements.chatMessages.scrollTop = elements.chatMessages.scrollHeight;
+        function formatMessage(text) {
+            // Basic markdown-ish formatting
+            return text
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                .replace(/\n/g, '<br>');
         }
 
         function showTyping() {
-            const id = 'typing-' + Date.now();
-            const messageDiv = document.createElement('div');
-            messageDiv.className = 'message assistant';
-            messageDiv.id = id;
-            messageDiv.innerHTML = `
+            const container = document.getElementById('chatMessages');
+            const typing = document.createElement('div');
+            typing.className = 'message assistant';
+            typing.id = 'typingIndicator';
+            typing.innerHTML = `
                 <div class="message-avatar">🧭</div>
                 <div class="message-content">
-                    <div class="typing-indicator"><span></span><span></span><span></span></div>
+                    <div class="typing-indicator">
+                        <span></span><span></span><span></span>
+                    </div>
                 </div>
             `;
-            elements.chatMessages.appendChild(messageDiv);
-            elements.chatMessages.scrollTop = elements.chatMessages.scrollHeight;
-            return id;
+            container.appendChild(typing);
+            container.scrollTop = container.scrollHeight;
         }
 
-        function removeTyping(id) {
-            const el = document.getElementById(id);
-            if (el) el.remove();
+        function hideTyping() {
+            const typing = document.getElementById('typingIndicator');
+            if (typing) typing.remove();
         }
 
-        function showError(message) {
-            const errorDiv = document.createElement('div');
-            errorDiv.className = 'error-message';
-            errorDiv.textContent = message;
-            elements.chatMessages.appendChild(errorDiv);
-            elements.chatMessages.scrollTop = elements.chatMessages.scrollHeight;
-            setTimeout(() => errorDiv.remove(), 5000);
-        }
-
-        document.addEventListener('DOMContentLoaded', init);
-    })();
-    </script>
-    
-    <!-- Veracity v5.2 Modules -->
-    <script src="/modules/export-universal.js"></script>
-    <script src="/modules/sidebar-actions.js"></script>
-    <script>
-        // Export function for Track C conversations
-        function exportConversation(type) {
-            var messages = [];
-            var topic = '';
+        // Export functions
+        function exportPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
             
-            // Get messages from DOM
-            var messageEls = document.querySelectorAll('.message');
-            messageEls.forEach(function(el) {
-                var role = el.classList.contains('user') ? 'user' : 'assistant';
-                var textEl = el.querySelector('.message-text');
-                if (textEl) {
-                    messages.push({
-                        role: role,
-                        content: textEl.textContent || textEl.innerText,
-                        timestamp: new Date().toISOString()
-                    });
+            doc.setFontSize(16);
+            doc.text('VERITAS Navigate - Conversation Export', 20, 20);
+            
+            let y = 40;
+            conversationHistory.forEach((msg, i) => {
+                const role = msg.role === 'user' ? 'You' : 'VERITAS';
+                const lines = doc.splitTextToSize(`${role}: ${msg.content}`, 170);
+                
+                if (y + lines.length * 7 > 280) {
+                    doc.addPage();
+                    y = 20;
                 }
+                
+                doc.setFontSize(10);
+                doc.text(lines, 20, y);
+                y += lines.length * 7 + 10;
             });
             
-            // Get topic from context card
-            var contextText = document.getElementById('contextText');
-            if (contextText) {
-                topic = contextText.textContent;
-            }
+            doc.save('veritas-navigate-export.pdf');
+        }
+
+        function exportJSON() {
+            const data = {
+                track: 'C - Navigate',
+                exported: new Date().toISOString(),
+                context: document.getElementById('contextText').textContent,
+                conversation: conversationHistory
+            };
             
-            if (messages.length === 0) {
-                alert('No conversation to export yet.');
-                return;
-            }
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'veritas-navigate-export.json';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function exportMarkdown() {
+            let md = '# VERITAS Navigate Export\n\n';
+            md += `**Context:** ${document.getElementById('contextText').textContent}\n\n`;
+            md += '---\n\n';
             
-            UniversalExport.exportConversation({
-                type: type,
-                track: 'c',
-                topic: topic,
-                messages: messages
+            conversationHistory.forEach(msg => {
+                const role = msg.role === 'user' ? '**You**' : '**VERITAS**';
+                md += `${role}:\n${msg.content}\n\n`;
             });
+            
+            const blob = new Blob([md], { type: 'text/markdown' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'veritas-navigate-export.md';
+            a.click();
+            URL.revokeObjectURL(url);
         }
     </script>
 </body>

@@ -104,6 +104,41 @@
             letter-spacing: 4px;
         }
 
+        /* Language Selector - Universal Translator */
+        .language-selector {
+            position: relative;
+        }
+        
+        .language-selector select {
+            background: rgba(15, 23, 42, 0.9);
+            color: var(--text-primary);
+            border: 1px solid var(--accent-teal);
+            border-radius: 6px;
+            padding: 6px 12px;
+            font-size: 14px;
+            font-family: 'IBM Plex Sans', sans-serif;
+            cursor: pointer;
+            outline: none;
+            transition: all 0.3s ease;
+            min-width: 140px;
+        }
+        
+        .language-selector select:hover {
+            border-color: var(--accent-amber);
+            box-shadow: 0 0 10px rgba(212, 168, 83, 0.3);
+        }
+        
+        .language-selector select:focus {
+            border-color: var(--accent-amber);
+            box-shadow: 0 0 15px rgba(212, 168, 83, 0.5);
+        }
+        
+        .language-selector select option {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            padding: 8px;
+        }
+
         .top-bracket-right {
             width: 160px;
             background: linear-gradient(180deg, rgba(33, 150, 243, 0.6) 0%, rgba(25, 118, 210, 0.6) 100%);
@@ -1404,10 +1439,28 @@
                 <span>SETTINGS</span>
             </div>
             <div class="top-middle">
-                <span>VERITAS - Truth Through Transparency</span>
+                <span id="mainTitle">VERITAS - Truth Through Transparency</span>
+                <div class="language-selector" style="margin-left: 20px;">
+                    <select id="languageSelect" title="Universal Translator - Select Your Language">
+                        <option value="en">🌐 English</option>
+                        <option value="es">🇪🇸 Español</option>
+                        <option value="fr">🇫🇷 Français</option>
+                        <option value="de">🇩🇪 Deutsch</option>
+                        <option value="it">🇮🇹 Italiano</option>
+                        <option value="pt">🇧🇷 Português</option>
+                        <option value="ru">🇷🇺 Русский</option>
+                        <option value="uk">🇺🇦 Українська</option>
+                        <option value="el">🇬🇷 Ελληνικά</option>
+                        <option value="ar">🇸🇦 العربية</option>
+                        <option value="he">🇮🇱 עברית</option>
+                        <option value="zh">🇨🇳 中文</option>
+                        <option value="ja">🇯🇵 日本語</option>
+                        <option value="ko">🇰🇷 한국어</option>
+                    </select>
+                </div>
             </div>
             <div class="top-bracket-right" onclick="location.reload()" style="cursor: pointer;" title="Refresh Interface">
-                <span>REFRESH</span>
+                <span id="refreshLabel">REFRESH</span>
             </div>
         </div>
 
@@ -1603,21 +1656,126 @@
     </div>
 
     <!-- Test Panel -->
-    <button class="test-toggle" id="testToggle">TEST CASES</button>
+    <button class="test-toggle" id="testToggle">TEST HARNESS</button>
+    
+    <!-- Password Modal -->
+    <div id="passwordModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:10000; justify-content:center; align-items:center;">
+        <div style="background:var(--bg-secondary); padding:30px; border-radius:12px; border:2px solid var(--accent-gold); text-align:center; max-width:300px;">
+            <h3 style="color:var(--accent-gold); margin-bottom:15px;">🔐 Test Harness Access</h3>
+            <input type="password" id="testPassword" placeholder="Enter access code" style="width:100%; padding:10px; margin-bottom:15px; background:var(--bg-tertiary); border:1px solid var(--border-subtle); border-radius:6px; color:var(--text-primary); font-size:16px;">
+            <div style="display:flex; gap:10px; justify-content:center;">
+                <button id="passwordSubmit" style="padding:10px 20px; background:var(--accent-gold); color:black; border:none; border-radius:6px; cursor:pointer; font-weight:bold;">ENTER</button>
+                <button id="passwordCancel" style="padding:10px 20px; background:var(--bg-tertiary); color:var(--text-primary); border:1px solid var(--border-subtle); border-radius:6px; cursor:pointer;">CANCEL</button>
+            </div>
+            <p id="passwordError" style="color:#ff6b6b; margin-top:10px; display:none; font-size:12px;">Invalid code. Try again.</p>
+        </div>
+    </div>
+    
     <div class="test-panel" id="testPanel">
-        <h4>SAMPLE INPUTS</h4>
-        <div class="test-item" data-input="Is the Earth flat?">Is the Earth flat? <span class="a">A</span></div>
-        <div class="test-item" data-input="I believe vaccines cause autism.">I believe vaccines cause autism. <span class="b">B</span></div>
-        <div class="test-item" data-input="How do I talk to my anti-vax sister?">How do I talk to my anti-vax sister? <span class="c">C</span></div>
-        <div class="test-item" data-input="Trump said Rob Reiner died from TDS. Is that true?">Trump said Rob Reiner died... <span class="a">A</span></div>
-        <div class="test-item" data-input="How can I confront friends who believe Trump's claim?">How can I confront friends... <span class="c">C</span></div>
-        <div class="test-item" data-input="Abortion is murder.">Abortion is murder. <span class="b">B</span></div>
-        <div class="test-item" data-input="Is abortion legal in Wisconsin?">Is abortion legal in Wisconsin? <span class="a">A</span></div>
-        <div class="test-item" data-input="My daughter wants an abortion and I don't know what to say.">My daughter wants an abortion... <span class="c">C</span></div>
-        <div class="test-item" data-input="Climate change is a hoax.">Climate change is a hoax. <span class="b">B</span></div>
-        <div class="test-item" data-input="The 2020 election was stolen.">The 2020 election was stolen. <span class="b">B</span></div>
-        <div class="test-item" data-input="What do you think about gun control?">What do you think about gun control? <span class="q">?</span></div>
-        <div class="test-item" data-input="God exists.">God exists. <span class="b">B</span></div>
+        <h4>TEST HARNESS v1.0 - Finding Who Gets Left Behind</h4>
+        <div style="max-height:70vh; overflow-y:auto; padding-right:10px;">
+        
+        <h5 style="color:var(--accent-gold); margin:15px 0 8px 0; font-size:12px; text-transform:uppercase; letter-spacing:1px;">A: Economic Stress</h5>
+        <div class="test-item" data-input="My landlord says I gotta be out by Friday but I paid rent I got the receipt">Landlord says out by Friday but I paid...</div>
+        <div class="test-item" data-input="They saying the plant is closing but management says everything fine who do I believe">Plant closing but management says fine...</div>
+        <div class="test-item" data-input="Payday loan place told me 15% but now they want $800 on a $300 loan that can't be legal">Payday loan $800 on $300 can't be legal...</div>
+        <div class="test-item" data-input="Food stamps office say I make too much but I only work part time at Dollar General">Food stamps say I make too much...</div>
+        <div class="test-item" data-input="My cousin says disability is a scam and I should just work through the pain">Cousin says disability is a scam...</div>
+        <div class="test-item" data-input="Boss says overtime is optional but last guy who said no got fired">Boss says overtime optional but...</div>
+        <div class="test-item" data-input="Mechanic wants $2000 to fix my car but my neighbor says he's ripping me off">Mechanic wants $2000 neighbor says rip off...</div>
+        <div class="test-item" data-input="They cut off our water but we paid what we could is that even allowed">Cut off water but we paid what we could...</div>
+        
+        <h5 style="color:var(--accent-gold); margin:15px 0 8px 0; font-size:12px; text-transform:uppercase; letter-spacing:1px;">B: Educational Variation</h5>
+        <div class="test-item" data-input="I never finished school but I know what I seen with my own eyes">Never finished school but I know what I seen...</div>
+        <div class="test-item" data-input="The doctors keep using words I don't understand and then get mad when I ask questions">Doctors use words I don't understand...</div>
+        <div class="test-item" data-input="My professor says one thing but my pastor says the opposite and I don't know what to think">Professor says one thing pastor says opposite...</div>
+        <div class="test-item" data-input="I read the study myself and it doesn't say what the news says it says">Read the study myself doesn't say what news says...</div>
+        <div class="test-item" data-input="Everyone in my family dropped out and we all doing fine why do they push college so hard">Family dropped out we doing fine why push college...</div>
+        <div class="test-item" data-input="I got my PhD but my mama still thinks she knows better about everything">Got PhD but mama thinks she knows better...</div>
+        <div class="test-item" data-input="The YouTube guy explains it better than any teacher I ever had">YouTube guy explains better than any teacher...</div>
+        <div class="test-item" data-input="They want me to cite sources but I learned this from my grandmother">Want me to cite sources but learned from grandma...</div>
+        
+        <h5 style="color:var(--accent-gold); margin:15px 0 8px 0; font-size:12px; text-transform:uppercase; letter-spacing:1px;">C: Racial/Cultural Trust Gaps</h5>
+        <div class="test-item" data-input="Why should I trust the CDC when Tuskegee happened">Why trust CDC when Tuskegee happened...</div>
+        <div class="test-item" data-input="Police report says one thing but everybody in the neighborhood saw different">Police report says one thing neighborhood saw different...</div>
+        <div class="test-item" data-input="They keep telling us to vote but nothing ever changes for us">Keep telling us to vote but nothing changes...</div>
+        <div class="test-item" data-input="Immigration lawyer says one thing, ICE says another, community says trust nobody">Lawyer says one thing ICE says another...</div>
+        <div class="test-item" data-input="My abuela's remedios work better than what the clinic gives me">Abuela's remedios work better than clinic...</div>
+        <div class="test-item" data-input="They say affirmative action is over but then why did I get this job">Affirmative action over but why did I get job...</div>
+        <div class="test-item" data-input="White people get to be individuals but we always representing the whole race">White people individuals we represent whole race...</div>
+        <div class="test-item" data-input="The history books don't tell the real story about what happened to our people">History books don't tell real story...</div>
+        
+        <h5 style="color:var(--accent-gold); margin:15px 0 8px 0; font-size:12px; text-transform:uppercase; letter-spacing:1px;">D: Generational/Age Divides</h5>
+        <div class="test-item" data-input="My grandkids say I can't believe everything on Facebook but I trust my friends">Grandkids say can't believe Facebook...</div>
+        <div class="test-item" data-input="Old people just don't get how the world works anymore">Old people don't get how world works...</div>
+        <div class="test-item" data-input="My parents believe everything on TV news like it's still Walter Cronkite">Parents believe TV news like Walter Cronkite...</div>
+        <div class="test-item" data-input="Kids these days can't tell real from fake cuz they grew up with screens">Kids can't tell real from fake screens...</div>
+        <div class="test-item" data-input="TikTok told me about this and then I researched it and it's true">TikTok told me then I researched it's true...</div>
+        <div class="test-item" data-input="Back in my day we didn't need fact checkers we had common sense">Back in my day didn't need fact checkers...</div>
+        <div class="test-item" data-input="OK boomer but actually explain why you think that way">OK boomer but explain why you think that...</div>
+        <div class="test-item" data-input="My teenager says I'm a conspiracy theorist for questioning the vaccine">Teenager says I'm conspiracy theorist...</div>
+        
+        <h5 style="color:var(--accent-gold); margin:15px 0 8px 0; font-size:12px; text-transform:uppercase; letter-spacing:1px;">E: Rural/Urban Divide</h5>
+        <div class="test-item" data-input="City people don't understand nothing about how we live out here">City people don't understand how we live...</div>
+        <div class="test-item" data-input="The news never covers what's happening in our community">News never covers our community...</div>
+        <div class="test-item" data-input="Everyone in this town knows the sheriff is corrupt but nobody will print it">Everyone knows sheriff corrupt won't print it...</div>
+        <div class="test-item" data-input="They say small farms are dying but they're the ones killing us with regulations">Small farms dying they killing us regulations...</div>
+        <div class="test-item" data-input="Ain't no Uber out here ain't no Amazon same day what do they know about convenience">No Uber no Amazon what do they know...</div>
+        <div class="test-item" data-input="All the smart kids leave and never come back what does that tell you">Smart kids leave never come back...</div>
+        <div class="test-item" data-input="Factory farm moved in and now everyone's sick but the company says the water's fine">Factory farm everyone sick water's fine...</div>
+        <div class="test-item" data-input="They want us to go electric but nearest charging station is 50 miles">Want us electric charging station 50 miles...</div>
+        
+        <h5 style="color:var(--accent-gold); margin:15px 0 8px 0; font-size:12px; text-transform:uppercase; letter-spacing:1px;">F: Religious/Secular Tensions</h5>
+        <div class="test-item" data-input="The Bible says it, I believe it, that settles it">Bible says it I believe it settles it...</div>
+        <div class="test-item" data-input="How can you believe in science AND God">How can you believe science AND God...</div>
+        <div class="test-item" data-input="My faith tells me one thing but my heart tells me another">Faith tells me one thing heart tells another...</div>
+        <div class="test-item" data-input="They say we're hateful but we're just following what we believe">They say hateful just following what we believe...</div>
+        <div class="test-item" data-input="I left the church but I still don't trust atheists">Left church still don't trust atheists...</div>
+        <div class="test-item" data-input="Science keeps changing its mind so how is that better than scripture">Science keeps changing how better than scripture...</div>
+        <div class="test-item" data-input="My imam says one thing, the news says Muslims believe another">Imam says one thing news says Muslims believe...</div>
+        <div class="test-item" data-input="I'm spiritual but not religious so where does that leave me">Spiritual not religious where does that leave me...</div>
+        
+        <h5 style="color:var(--accent-gold); margin:15px 0 8px 0; font-size:12px; text-transform:uppercase; letter-spacing:1px;">G: Mental Health & Neurodivergence</h5>
+        <div class="test-item" data-input="Everyone thinks I'm paranoid but I notice patterns nobody else sees">Everyone thinks paranoid I notice patterns...</div>
+        <div class="test-item" data-input="When I'm manic everything makes sense but then later I can't trust my own thoughts">When manic makes sense later can't trust thoughts...</div>
+        <div class="test-item" data-input="They say I'm on the spectrum like it's a bad thing but I'm just more logical">On the spectrum bad thing just more logical...</div>
+        <div class="test-item" data-input="The voices tell me things and sometimes they're right">Voices tell me things sometimes they're right...</div>
+        <div class="test-item" data-input="I can't tell if this is anxiety or intuition">Can't tell if anxiety or intuition...</div>
+        <div class="test-item" data-input="My ADHD means I research everything obsessively or not at all">ADHD research obsessively or not at all...</div>
+        <div class="test-item" data-input="Depression makes everything feel hopeless so why bother finding truth">Depression hopeless why bother finding truth...</div>
+        <div class="test-item" data-input="Therapist says my family is toxic but she only hears my side">Therapist says family toxic only hears my side...</div>
+        
+        <h5 style="color:var(--accent-gold); margin:15px 0 8px 0; font-size:12px; text-transform:uppercase; letter-spacing:1px;">H: Political Alienation</h5>
+        <div class="test-item" data-input="Both parties are the same they all work for corporations">Both parties same work for corporations...</div>
+        <div class="test-item" data-input="I stopped voting because my vote doesn't count anyway">Stopped voting vote doesn't count...</div>
+        <div class="test-item" data-input="They call me extremist but I just want things to be fair">Call me extremist just want fair...</div>
+        <div class="test-item" data-input="The whole system is rigged so why play by their rules">System rigged why play by rules...</div>
+        <div class="test-item" data-input="I'm not left or right I'm just tired">Not left or right just tired...</div>
+        <div class="test-item" data-input="They cancelled me for asking questions so now I don't trust anything mainstream">Cancelled for questions don't trust mainstream...</div>
+        <div class="test-item" data-input="Revolution is the only answer but nobody wants to hear it">Revolution only answer nobody wants to hear...</div>
+        <div class="test-item" data-input="I used to believe in democracy but now I don't know">Used to believe democracy now don't know...</div>
+        
+        <h5 style="color:var(--accent-gold); margin:15px 0 8px 0; font-size:12px; text-transform:uppercase; letter-spacing:1px;">I: Language & Immigration</h5>
+        <div class="test-item" data-input="In my country this means something different">In my country means something different...</div>
+        <div class="test-item" data-input="I understand English but American culture doesn't make sense">Understand English American culture doesn't make sense...</div>
+        <div class="test-item" data-input="They say I have an accent like I'm the one who talks wrong">They say accent like I talk wrong...</div>
+        <div class="test-item" data-input="My kids translate for me but sometimes I think they change what I said">Kids translate think they change what I said...</div>
+        <div class="test-item" data-input="The form asks questions that don't apply to my situation">Form asks questions don't apply to situation...</div>
+        <div class="test-item" data-input="Back home we knew who to trust here everyone is stranger">Back home knew who to trust here everyone stranger...</div>
+        <div class="test-item" data-input="They want documents but my country didn't give documents">Want documents my country didn't give documents...</div>
+        <div class="test-item" data-input="American dream was a lie but I can't go back now">American dream was lie can't go back...</div>
+        
+        <h5 style="color:var(--accent-gold); margin:15px 0 8px 0; font-size:12px; text-transform:uppercase; letter-spacing:1px;">J: Trauma & Crisis</h5>
+        <div class="test-item" data-input="I don't care what's true anymore I just need this to stop">Don't care what's true need this to stop...</div>
+        <div class="test-item" data-input="Everyone has an opinion about my situation but nobody actually helps">Everyone has opinion nobody helps...</div>
+        <div class="test-item" data-input="The shelter says one thing, the hotline says another, I just need somewhere safe tonight">Shelter says one thing need safe tonight...</div>
+        <div class="test-item" data-input="After what happened I can't trust anyone especially not experts">After what happened can't trust anyone...</div>
+        <div class="test-item" data-input="They say time heals but it's been years and I still can't think straight">Time heals but years still can't think straight...</div>
+        <div class="test-item" data-input="My abuser was so convincing everyone believed them over me">Abuser convincing everyone believed them...</div>
+        <div class="test-item" data-input="I know I should leave but what about the kids">Know I should leave but what about kids...</div>
+        <div class="test-item" data-input="The system that was supposed to protect me is the one that hurt me">System supposed to protect is the one that hurt...</div>
+        
+        </div>
     </div>
 
     <script src="modules/classifier.js"></script>
@@ -1782,18 +1940,21 @@
              * Main entry point: Generate three adaptive buttons for ambiguous input
              * Returns button configuration object or falls back to generic buttons
              */
-            generateButtons: async function(input) {
+            generateButtons: async function(input, language = null) {
+                // Get current language from localStorage if not provided
+                const lang = language || localStorage.getItem('veritasLanguage') || 'en';
+                
                 if (!input || !input.trim()) {
-                    return this.getFallbackButtons();
+                    return this.getFallbackButtons(lang);
                 }
 
                 try {
-                    const buttonData = await this.callClaudeAPI(input);
+                    const buttonData = await this.callClaudeAPI(input, lang);
                     return this.formatButtonResponse(buttonData);
                     
                 } catch (error) {
                     console.error('VeracityAdaptive API Error:', error);
-                    return this.getFallbackButtons();
+                    return this.getFallbackButtons(lang);
                 }
             },
 
@@ -1803,8 +1964,8 @@
              * NOTE: This calls a Vercel serverless function that handles the API key securely.
              * The function reads VERITAS_DEV from Vercel environment variables.
              */
-            callClaudeAPI: async function(userInput) {
-                const prompt = this.buildPrompt(userInput);
+            callClaudeAPI: async function(userInput, lang) {
+                const prompt = this.buildPrompt(userInput, lang);
                 
                 // Call our Vercel serverless function instead of Anthropic directly
                 const response = await fetch("/api/claude", {
@@ -1841,7 +2002,19 @@
             /**
              * Build the prompt for Claude API
              */
-            buildPrompt: function(userInput) {
+            buildPrompt: function(userInput, lang) {
+                // Language names for Claude instruction
+                const languageNames = {
+                    en: 'English', es: 'Spanish', fr: 'French', de: 'German',
+                    pt: 'Portuguese', ru: 'Russian', uk: 'Ukrainian', el: 'Greek',
+                    zh: 'Chinese (Simplified)', ja: 'Japanese', ko: 'Korean',
+                    ar: 'Arabic', he: 'Hebrew'
+                };
+                const targetLanguage = languageNames[lang] || 'English';
+                const languageInstruction = lang !== 'en' 
+                    ? `\n\nIMPORTANT: Generate all button text in ${targetLanguage}. The user's interface is in ${targetLanguage}.`
+                    : '';
+                
                 return `A user asked: "${userInput}"
 
 Generate three button options that meet them where they are. Use their language, match their tone, acknowledge their feelings.
@@ -1855,7 +2028,7 @@ CRITICAL RULES:
 2. BE DIRECT - Don't sanitize or soften their words unless it helps clarity
 3. MEET THEM WHERE THEY ARE - Frustrated? Acknowledge it. Curious? Reflect that.
 4. KEEP IT REAL - Sound like a human friend, not a therapist or robot
-5. Each button: 80-150 characters
+5. Each button: 80-150 characters${languageInstruction}
 
 EXAMPLES:
 
@@ -1924,20 +2097,25 @@ Respond ONLY with valid JSON (no markdown, no code blocks):
             },
 
             /**
-             * Fallback buttons when API fails
+             * Fallback buttons when API fails - uses translations if available
              */
-            getFallbackButtons: function() {
+            getFallbackButtons: function(lang) {
+                // Try to get translations from the inline translations object
+                const t = (typeof translations !== 'undefined' && translations[lang]) 
+                    ? translations[lang] 
+                    : null;
+                
                 return {
                     trackA: { 
-                        label: 'I want to verify facts', 
+                        label: t ? (t.fallbackTrackA || 'I want to verify facts') : 'I want to verify facts', 
                         track: 'A'
                     },
                     trackB: { 
-                        label: 'I want to explore beliefs', 
+                        label: t ? (t.fallbackTrackB || 'I want to explore beliefs') : 'I want to explore beliefs', 
                         track: 'B'
                     },
                     trackC: { 
-                        label: 'I need practical guidance', 
+                        label: t ? (t.fallbackTrackC || 'I need practical guidance') : 'I need practical guidance', 
                         track: 'C'
                     }
                 };
@@ -2285,20 +2463,61 @@ Respond ONLY with valid JSON (no markdown, no code blocks):
             });
         });
 
-        // Test panel
+        // Test panel with password protection
         const testToggle = document.getElementById('testToggle');
         const testPanel = document.getElementById('testPanel');
+        const passwordModal = document.getElementById('passwordModal');
+        const passwordInput = document.getElementById('testPassword');
+        const passwordSubmit = document.getElementById('passwordSubmit');
+        const passwordCancel = document.getElementById('passwordCancel');
+        const passwordError = document.getElementById('passwordError');
+        let testUnlocked = false;
+        const SECRET_CODE = '122590';
 
         testToggle.addEventListener('click', () => {
-            testPanel.classList.toggle('visible');
-            testToggle.textContent = testPanel.classList.contains('visible') ? 'HIDE TESTS' : 'TEST CASES';
+            if (testPanel.classList.contains('visible')) {
+                // If already visible, just hide it
+                testPanel.classList.remove('visible');
+                testToggle.textContent = 'TEST HARNESS';
+            } else if (testUnlocked) {
+                // Already unlocked, show directly
+                testPanel.classList.add('visible');
+                testToggle.textContent = 'HIDE TESTS';
+            } else {
+                // Need password
+                passwordModal.style.display = 'flex';
+                passwordInput.value = '';
+                passwordError.style.display = 'none';
+                passwordInput.focus();
+            }
+        });
+
+        passwordSubmit.addEventListener('click', () => {
+            if (passwordInput.value === SECRET_CODE) {
+                testUnlocked = true;
+                passwordModal.style.display = 'none';
+                testPanel.classList.add('visible');
+                testToggle.textContent = 'HIDE TESTS';
+            } else {
+                passwordError.style.display = 'block';
+                passwordInput.value = '';
+                passwordInput.focus();
+            }
+        });
+
+        passwordInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') passwordSubmit.click();
+        });
+
+        passwordCancel.addEventListener('click', () => {
+            passwordModal.style.display = 'none';
         });
 
         document.querySelectorAll('.test-item').forEach(item => {
             item.addEventListener('click', () => {
                 userInput.value = item.dataset.input;
                 testPanel.classList.remove('visible');
-                testToggle.textContent = 'TEST CASES';
+                testToggle.textContent = 'TEST HARNESS';
                 submitBtn.click();
             });
         });
@@ -2524,6 +2743,553 @@ Respond ONLY with valid JSON (no markdown, no code blocks):
         
         // Refresh weather every 15 minutes
         setInterval(getLocationAndWeather, 900000);
+
+        // ==================== UNIVERSAL TRANSLATOR ====================
+        // VERITAS speaks your language - 6,000 years of wisdom, delivered in your mother tongue
+        
+        const translations = {
+            en: {
+                mainTitle: "VERITAS - Truth Through Transparency",
+                home: "🏠 HOME",
+                settings: "SETTINGS",
+                refresh: "REFRESH",
+                placeholder: "Share what's on your mind, ask a question, or paste an article to explore...",
+                submit: "ENGAGE VERITAS",
+                clear: "CLEAR",
+                testHarness: "TEST HARNESS",
+                hideTests: "HIDE TESTS",
+                history: "HISTORY",
+                sciences: "SCIENCES",
+                philosophy: "PHILOSOPHY",
+                arts: "ARTS",
+                economics: "ECONOMICS",
+                politics: "POLITICS",
+                religion: "RELIGION",
+                psychology: "PSYCHOLOGY",
+                technology: "TECHNOLOGY",
+                medicine: "MEDICINE",
+                archives: "ARCHIVES",
+                research: "RESEARCH",
+                wisdom: "WISDOM",
+                culture: "CULTURE",
+                markets: "MARKETS",
+                policy: "POLICY",
+                faith: "FAITH",
+                mind: "MIND",
+                digital: "DIGITAL",
+                health: "HEALTH"
+            },
+            es: {
+                mainTitle: "VERITAS - La Verdad a Través de la Transparencia",
+                home: "🏠 INICIO",
+                settings: "AJUSTES",
+                refresh: "ACTUALIZAR",
+                placeholder: "Comparte lo que piensas, haz una pregunta o pega un artículo para explorar...",
+                submit: "ACTIVAR VERITAS",
+                clear: "BORRAR",
+                testHarness: "PRUEBAS",
+                hideTests: "OCULTAR",
+                history: "HISTORIA",
+                sciences: "CIENCIAS",
+                philosophy: "FILOSOFÍA",
+                arts: "ARTES",
+                economics: "ECONOMÍA",
+                politics: "POLÍTICA",
+                religion: "RELIGIÓN",
+                psychology: "PSICOLOGÍA",
+                technology: "TECNOLOGÍA",
+                medicine: "MEDICINA",
+                archives: "ARCHIVOS",
+                research: "INVESTIGAR",
+                wisdom: "SABIDURÍA",
+                culture: "CULTURA",
+                markets: "MERCADOS",
+                policy: "POLÍTICAS",
+                faith: "FE",
+                mind: "MENTE",
+                digital: "DIGITAL",
+                health: "SALUD"
+            },
+            fr: {
+                mainTitle: "VERITAS - La Vérité par la Transparence",
+                home: "🏠 ACCUEIL",
+                settings: "PARAMÈTRES",
+                refresh: "ACTUALISER",
+                placeholder: "Partagez vos pensées, posez une question ou collez un article à explorer...",
+                submit: "ACTIVER VERITAS",
+                clear: "EFFACER",
+                testHarness: "TESTS",
+                hideTests: "MASQUER",
+                history: "HISTOIRE",
+                sciences: "SCIENCES",
+                philosophy: "PHILOSOPHIE",
+                arts: "ARTS",
+                economics: "ÉCONOMIE",
+                politics: "POLITIQUE",
+                religion: "RELIGION",
+                psychology: "PSYCHOLOGIE",
+                technology: "TECHNOLOGIE",
+                medicine: "MÉDECINE",
+                archives: "ARCHIVES",
+                research: "RECHERCHE",
+                wisdom: "SAGESSE",
+                culture: "CULTURE",
+                markets: "MARCHÉS",
+                policy: "POLITIQUE",
+                faith: "FOI",
+                mind: "ESPRIT",
+                digital: "NUMÉRIQUE",
+                health: "SANTÉ"
+            },
+            de: {
+                mainTitle: "VERITAS - Wahrheit durch Transparenz",
+                home: "🏠 STARTSEITE",
+                settings: "EINSTELLUNGEN",
+                refresh: "AKTUALISIEREN",
+                placeholder: "Teile deine Gedanken, stelle eine Frage oder füge einen Artikel ein...",
+                submit: "VERITAS AKTIVIEREN",
+                clear: "LÖSCHEN",
+                testHarness: "TESTS",
+                hideTests: "VERBERGEN",
+                history: "GESCHICHTE",
+                sciences: "WISSENSCHAFTEN",
+                philosophy: "PHILOSOPHIE",
+                arts: "KUNST",
+                economics: "WIRTSCHAFT",
+                politics: "POLITIK",
+                religion: "RELIGION",
+                psychology: "PSYCHOLOGIE",
+                technology: "TECHNOLOGIE",
+                medicine: "MEDIZIN",
+                archives: "ARCHIVE",
+                research: "FORSCHUNG",
+                wisdom: "WEISHEIT",
+                culture: "KULTUR",
+                markets: "MÄRKTE",
+                policy: "POLITIK",
+                faith: "GLAUBE",
+                mind: "GEIST",
+                digital: "DIGITAL",
+                health: "GESUNDHEIT"
+            },
+            zh: {
+                mainTitle: "VERITAS - 透明见真理",
+                home: "🏠 首页",
+                settings: "设置",
+                refresh: "刷新",
+                placeholder: "分享你的想法，提问，或粘贴文章进行探索...",
+                submit: "启动 VERITAS",
+                clear: "清除",
+                testHarness: "测试",
+                hideTests: "隐藏",
+                history: "历史",
+                sciences: "科学",
+                philosophy: "哲学",
+                arts: "艺术",
+                economics: "经济",
+                politics: "政治",
+                religion: "宗教",
+                psychology: "心理学",
+                technology: "科技",
+                medicine: "医学",
+                archives: "档案",
+                research: "研究",
+                wisdom: "智慧",
+                culture: "文化",
+                markets: "市场",
+                policy: "政策",
+                faith: "信仰",
+                mind: "心智",
+                digital: "数字",
+                health: "健康"
+            },
+            ja: {
+                mainTitle: "VERITAS - 透明性を通じた真実",
+                home: "🏠 ホーム",
+                settings: "設定",
+                refresh: "更新",
+                placeholder: "あなたの考えを共有し、質問し、または記事を貼り付けて探索してください...",
+                submit: "VERITAS を起動",
+                clear: "クリア",
+                testHarness: "テスト",
+                hideTests: "非表示",
+                history: "歴史",
+                sciences: "科学",
+                philosophy: "哲学",
+                arts: "芸術",
+                economics: "経済",
+                politics: "政治",
+                religion: "宗教",
+                psychology: "心理学",
+                technology: "テクノロジー",
+                medicine: "医学",
+                archives: "アーカイブ",
+                research: "研究",
+                wisdom: "知恵",
+                culture: "文化",
+                markets: "市場",
+                policy: "政策",
+                faith: "信仰",
+                mind: "心",
+                digital: "デジタル",
+                health: "健康"
+            },
+            ko: {
+                mainTitle: "VERITAS - 투명성을 통한 진실",
+                home: "🏠 홈",
+                settings: "설정",
+                refresh: "새로고침",
+                placeholder: "생각을 나누거나, 질문하거나, 기사를 붙여넣어 탐색하세요...",
+                submit: "VERITAS 시작",
+                clear: "지우기",
+                testHarness: "테스트",
+                hideTests: "숨기기",
+                history: "역사",
+                sciences: "과학",
+                philosophy: "철학",
+                arts: "예술",
+                economics: "경제",
+                politics: "정치",
+                religion: "종교",
+                psychology: "심리학",
+                technology: "기술",
+                medicine: "의학",
+                archives: "기록",
+                research: "연구",
+                wisdom: "지혜",
+                culture: "문화",
+                markets: "시장",
+                policy: "정책",
+                faith: "신앙",
+                mind: "마음",
+                digital: "디지털",
+                health: "건강"
+            },
+            ar: {
+                mainTitle: "VERITAS - الحقيقة من خلال الشفافية",
+                home: "🏠 الرئيسية",
+                settings: "الإعدادات",
+                refresh: "تحديث",
+                placeholder: "شارك أفكارك، اطرح سؤالاً، أو الصق مقالاً للاستكشاف...",
+                submit: "تفعيل VERITAS",
+                clear: "مسح",
+                testHarness: "اختبارات",
+                hideTests: "إخفاء",
+                history: "التاريخ",
+                sciences: "العلوم",
+                philosophy: "الفلسفة",
+                arts: "الفنون",
+                economics: "الاقتصاد",
+                politics: "السياسة",
+                religion: "الدين",
+                psychology: "علم النفس",
+                technology: "التكنولوجيا",
+                medicine: "الطب",
+                archives: "الأرشيف",
+                research: "البحث",
+                wisdom: "الحكمة",
+                culture: "الثقافة",
+                markets: "الأسواق",
+                policy: "السياسات",
+                faith: "الإيمان",
+                mind: "العقل",
+                digital: "رقمي",
+                health: "الصحة"
+            },
+            hi: {
+                mainTitle: "VERITAS - पारदर्शिता से सत्य",
+                home: "🏠 होम",
+                settings: "सेटिंग्स",
+                refresh: "रीफ्रेश",
+                placeholder: "अपने विचार साझा करें, सवाल पूछें, या लेख पेस्ट करें...",
+                submit: "VERITAS शुरू करें",
+                clear: "साफ़ करें",
+                testHarness: "परीक्षण",
+                hideTests: "छुपाएं",
+                history: "इतिहास",
+                sciences: "विज्ञान",
+                philosophy: "दर्शन",
+                arts: "कला",
+                economics: "अर्थशास्त्र",
+                politics: "राजनीति",
+                religion: "धर्म",
+                psychology: "मनोविज्ञान",
+                technology: "प्रौद्योगिकी",
+                medicine: "चिकित्सा",
+                archives: "संग्रह",
+                research: "शोध",
+                wisdom: "ज्ञान",
+                culture: "संस्कृति",
+                markets: "बाज़ार",
+                policy: "नीति",
+                faith: "आस्था",
+                mind: "मन",
+                digital: "डिजिटल",
+                health: "स्वास्थ्य"
+            },
+            ru: {
+                mainTitle: "VERITAS - Истина через прозрачность",
+                home: "🏠 ГЛАВНАЯ",
+                settings: "НАСТРОЙКИ",
+                refresh: "ОБНОВИТЬ",
+                placeholder: "Поделитесь мыслями, задайте вопрос или вставьте статью для изучения...",
+                submit: "ЗАПУСТИТЬ VERITAS",
+                clear: "ОЧИСТИТЬ",
+                testHarness: "ТЕСТЫ",
+                hideTests: "СКРЫТЬ",
+                history: "ИСТОРИЯ",
+                sciences: "НАУКИ",
+                philosophy: "ФИЛОСОФИЯ",
+                arts: "ИСКУССТВО",
+                economics: "ЭКОНОМИКА",
+                politics: "ПОЛИТИКА",
+                religion: "РЕЛИГИЯ",
+                psychology: "ПСИХОЛОГИЯ",
+                technology: "ТЕХНОЛОГИИ",
+                medicine: "МЕДИЦИНА",
+                archives: "АРХИВЫ",
+                research: "ИССЛЕДОВАНИЯ",
+                wisdom: "МУДРОСТЬ",
+                culture: "КУЛЬТУРА",
+                markets: "РЫНКИ",
+                policy: "ПОЛИТИКА",
+                faith: "ВЕРА",
+                mind: "РАЗУМ",
+                digital: "ЦИФРОВЫЕ",
+                health: "ЗДОРОВЬЕ"
+            },
+            pt: {
+                mainTitle: "VERITAS - Verdade Através da Transparência",
+                home: "🏠 INÍCIO",
+                settings: "CONFIGURAÇÕES",
+                refresh: "ATUALIZAR",
+                placeholder: "Compartilhe seus pensamentos, faça uma pergunta ou cole um artigo para explorar...",
+                submit: "ATIVAR VERITAS",
+                clear: "LIMPAR",
+                testHarness: "TESTES",
+                hideTests: "OCULTAR",
+                history: "HISTÓRIA",
+                sciences: "CIÊNCIAS",
+                philosophy: "FILOSOFIA",
+                arts: "ARTES",
+                economics: "ECONOMIA",
+                politics: "POLÍTICA",
+                religion: "RELIGIÃO",
+                psychology: "PSICOLOGIA",
+                technology: "TECNOLOGIA",
+                medicine: "MEDICINA",
+                archives: "ARQUIVOS",
+                research: "PESQUISA",
+                wisdom: "SABEDORIA",
+                culture: "CULTURA",
+                markets: "MERCADOS",
+                policy: "POLÍTICAS",
+                faith: "FÉ",
+                mind: "MENTE",
+                digital: "DIGITAL",
+                health: "SAÚDE"
+            },
+            sw: {
+                mainTitle: "VERITAS - Ukweli Kupitia Uwazi",
+                home: "🏠 NYUMBANI",
+                settings: "MIPANGILIO",
+                refresh: "SASISHA",
+                placeholder: "Shiriki mawazo yako, uliza swali, au bandika makala kuchunguza...",
+                submit: "ANZISHA VERITAS",
+                clear: "FUTA",
+                testHarness: "MAJARIBIO",
+                hideTests: "FICHA",
+                history: "HISTORIA",
+                sciences: "SAYANSI",
+                philosophy: "FALSAFA",
+                arts: "SANAA",
+                economics: "UCHUMI",
+                politics: "SIASA",
+                religion: "DINI",
+                psychology: "SAIKOLOJIA",
+                technology: "TEKNOLOJIA",
+                medicine: "DAWA",
+                archives: "KUMBUKUMBU",
+                research: "UTAFITI",
+                wisdom: "HEKIMA",
+                culture: "UTAMADUNI",
+                markets: "MASOKO",
+                policy: "SERA",
+                faith: "IMANI",
+                mind: "AKILI",
+                digital: "DIJITALI",
+                health: "AFYA"
+            },
+            he: {
+                mainTitle: "VERITAS - אמת דרך שקיפות",
+                home: "🏠 בית",
+                settings: "הגדרות",
+                refresh: "רענן",
+                placeholder: "שתף את מחשבותיך, שאל שאלה, או הדבק מאמר לחקירה...",
+                submit: "הפעל VERITAS",
+                clear: "נקה",
+                testHarness: "בדיקות",
+                hideTests: "הסתר",
+                history: "היסטוריה",
+                sciences: "מדעים",
+                philosophy: "פילוסופיה",
+                arts: "אמנות",
+                economics: "כלכלה",
+                politics: "פוליטיקה",
+                religion: "דת",
+                psychology: "פסיכולוגיה",
+                technology: "טכנולוגיה",
+                medicine: "רפואה",
+                archives: "ארכיון",
+                research: "מחקר",
+                wisdom: "חכמה",
+                culture: "תרבות",
+                markets: "שווקים",
+                policy: "מדיניות",
+                faith: "אמונה",
+                mind: "נפש",
+                digital: "דיגיטלי",
+                health: "בריאות"
+            },
+            vi: {
+                mainTitle: "VERITAS - Sự Thật Qua Minh Bạch",
+                home: "🏠 TRANG CHỦ",
+                settings: "CÀI ĐẶT",
+                refresh: "LÀM MỚI",
+                placeholder: "Chia sẻ suy nghĩ, đặt câu hỏi, hoặc dán bài viết để khám phá...",
+                submit: "KÍCH HOẠT VERITAS",
+                clear: "XÓA",
+                testHarness: "KIỂM TRA",
+                hideTests: "ẨN",
+                history: "LỊCH SỬ",
+                sciences: "KHOA HỌC",
+                philosophy: "TRIẾT HỌC",
+                arts: "NGHỆ THUẬT",
+                economics: "KINH TẾ",
+                politics: "CHÍNH TRỊ",
+                religion: "TÔN GIÁO",
+                psychology: "TÂM LÝ",
+                technology: "CÔNG NGHỆ",
+                medicine: "Y HỌC",
+                archives: "LƯU TRỮ",
+                research: "NGHIÊN CỨU",
+                wisdom: "TRÍ TUỆ",
+                culture: "VĂN HÓA",
+                markets: "THỊ TRƯỜNG",
+                policy: "CHÍNH SÁCH",
+                faith: "ĐỨC TIN",
+                mind: "TÂM TRÍ",
+                digital: "SỐ",
+                health: "SỨC KHỎE"
+            },
+            uk: {
+                mainTitle: "VERITAS - Правда через прозорість",
+                home: "🏠 ГОЛОВНА",
+                settings: "НАЛАШТУВАННЯ",
+                refresh: "ОНОВИТИ",
+                placeholder: "Поділіться думками, задайте питання або вставте статтю для дослідження...",
+                submit: "ЗАПУСТИТИ VERITAS",
+                clear: "ОЧИСТИТИ",
+                testHarness: "ТЕСТИ",
+                hideTests: "СХОВАТИ",
+                history: "ІСТОРІЯ",
+                sciences: "НАУКИ",
+                philosophy: "ФІЛОСОФІЯ",
+                arts: "МИСТЕЦТВО",
+                economics: "ЕКОНОМІКА",
+                politics: "ПОЛІТИКА",
+                religion: "РЕЛІГІЯ",
+                psychology: "ПСИХОЛОГІЯ",
+                technology: "ТЕХНОЛОГІЇ",
+                medicine: "МЕДИЦИНА",
+                archives: "АРХІВИ",
+                research: "ДОСЛІДЖЕННЯ",
+                wisdom: "МУДРІСТЬ",
+                culture: "КУЛЬТУРА",
+                markets: "РИНКИ",
+                policy: "ПОЛІТИКА",
+                faith: "ВІРА",
+                mind: "РОЗУМ",
+                digital: "ЦИФРОВІ",
+                health: "ЗДОРОВ'Я"
+            }
+        };
+        
+        // Apply translations when language changes
+        document.getElementById('languageSelect').addEventListener('change', function() {
+            const lang = this.value;
+            const t = translations[lang] || translations['en'];
+            
+            // Update main title
+            document.getElementById('mainTitle').textContent = t.mainTitle;
+            
+            // Update top bar buttons
+            const homeBtn = document.querySelector('.top-bracket-left');
+            if (homeBtn) {
+                homeBtn.querySelector('span:first-child').textContent = t.home;
+                homeBtn.querySelector('span:last-child').textContent = t.settings;
+            }
+            document.getElementById('refreshLabel').textContent = t.refresh;
+            
+            // Update input placeholder
+            document.getElementById('userInput').placeholder = t.placeholder;
+            
+            // Update main buttons
+            document.getElementById('submitBtn').textContent = t.submit;
+            document.getElementById('clearBtn').textContent = t.clear;
+            
+            // Update test harness button
+            const testToggle = document.getElementById('testToggle');
+            if (!testPanel.classList.contains('visible')) {
+                testToggle.textContent = t.testHarness;
+            } else {
+                testToggle.textContent = t.hideTests;
+            }
+            
+            // Update sidebar labels
+            const sidebarLabels = document.querySelectorAll('.sidebar-label');
+            const labelMap = {
+                'HISTORY': t.history, 'SCIENCES': t.sciences, 'PHILOSOPHY': t.philosophy,
+                'ARTS': t.arts, 'ECONOMICS': t.economics, 'POLITICS': t.politics,
+                'RELIGION': t.religion, 'PSYCHOLOGY': t.psychology, 'TECHNOLOGY': t.technology,
+                'MEDICINE': t.medicine
+            };
+            sidebarLabels.forEach(label => {
+                const key = label.textContent.trim().toUpperCase();
+                if (labelMap[key]) label.textContent = labelMap[key];
+            });
+            
+            // Update sidebar actions
+            const sidebarActions = document.querySelectorAll('.sidebar-action');
+            const actionMap = {
+                'ARCHIVES': t.archives, 'RESEARCH': t.research, 'WISDOM': t.wisdom,
+                'CULTURE': t.culture, 'MARKETS': t.markets, 'POLICY': t.policy,
+                'FAITH': t.faith, 'MIND': t.mind, 'DIGITAL': t.digital, 'HEALTH': t.health
+            };
+            sidebarActions.forEach(action => {
+                const key = action.textContent.trim().toUpperCase();
+                if (actionMap[key]) action.textContent = actionMap[key];
+            });
+            
+            // Set text direction for RTL languages
+            if (['ar', 'he', 'fa'].includes(lang)) {
+                document.body.style.direction = 'rtl';
+            } else {
+                document.body.style.direction = 'ltr';
+            }
+            
+            // Store preference
+            localStorage.setItem('veritasLanguage', lang);
+            
+            console.log(`🌐 Universal Translator: Language set to ${lang}`);
+        });
+        
+        // Load saved language preference
+        const savedLang = localStorage.getItem('veritasLanguage');
+        if (savedLang) {
+            document.getElementById('languageSelect').value = savedLang;
+            document.getElementById('languageSelect').dispatchEvent(new Event('change'));
+        }
     </script>
 </body>
 </html>
