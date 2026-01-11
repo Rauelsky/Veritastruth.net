@@ -1,5 +1,5 @@
 /**
- * VERACITY v5.0 — TRACK B: INTERVIEW API
+ * VERACITY v5.2 — TRACK B: INTERVIEW API
  * =======================================
  * Vercel Serverless Function
  * 
@@ -11,7 +11,29 @@
  * 
  * Architecture: Modular prompt sections for safe editing
  * See /docs/WISDOM_ENGINE_ROADMAP.md for modification guidance
+ * 
+ * VINCULUM Integration: Universal Translator support for 14 languages
  */
+
+// ============================================
+// VINCULUM - UNIVERSAL TRANSLATOR SUPPORT
+// ============================================
+const LANGUAGE_NAMES = {
+    en: 'English',
+    es: 'Spanish (Español)',
+    fr: 'French (Français)',
+    de: 'German (Deutsch)',
+    it: 'Italian (Italiano)',
+    pt: 'Portuguese (Português)',
+    ru: 'Russian (Русский)',
+    uk: 'Ukrainian (Українська)',
+    el: 'Greek (Ελληνικά)',
+    zh: 'Chinese (中文)',
+    ja: 'Japanese (日本語)',
+    ko: 'Korean (한국어)',
+    ar: 'Arabic (العربية)',
+    he: 'Hebrew (עברית)'
+};
 
 // ===== CORE IDENTITY =====
 const CORE_IDENTITY = `You are a conversation partner helping someone explore what they believe and why. You're genuinely curious about how people arrive at their views — not to judge, but to understand and gently illuminate.
@@ -186,6 +208,45 @@ const SYSTEM_PROMPT = [
     OPERATIONAL_RULES
 ].join('\n\n');
 
+/**
+ * Build the Universal Translator instruction block for non-English users
+ */
+function buildLanguageInstruction(language) {
+    if (!language || language === 'en') {
+        return '';
+    }
+
+    const languageName = LANGUAGE_NAMES[language] || language;
+
+    return `
+
+═══════════════════════════════════════
+🌐 VINCULUM - UNIVERSAL TRANSLATOR 🌐
+═══════════════════════════════════════
+
+**CRITICAL**: The user's language preference is **${languageName}**.
+
+You MUST conduct the ENTIRE conversation in ${languageName}. This includes:
+- Your opening greetings and questions
+- All Socratic questioning and exploration
+- The wisdom frameworks expressed naturally in ${languageName}
+- Comedy and humor that lands in ${languageName} cultural context
+- All follow-up questions and reflections
+
+The ONLY elements that remain in English are:
+- Technical identifiers or JSON keys (if any)
+- URLs and resource links
+
+Your response should feel completely natural in ${languageName} — as if you are a native-speaking wisdom companion. Do not translate word-for-word; express the philosophical traditions, the humor, the warmth in ways that resonate naturally in the user's language and cultural context.
+
+IMPORTANT: The voice frameworks (Garage, Gala, Kitchen) should adapt to cultural equivalents. Find the analogous voice energies that resonate in ${languageName}-speaking cultures.
+
+Remember: "One to reach, one to teach" — you must first REACH someone in their own language before any exploration can land.
+
+═══════════════════════════════════════
+`;
+}
+
 // ===== API HANDLER =====
 export default async function handler(req, res) {
     // Handle CORS
@@ -202,7 +263,7 @@ export default async function handler(req, res) {
     }
 
     try {
-        const { messages, originalQuery } = req.body;
+        const { messages, originalQuery, language } = req.body;
 
         if (!messages || !Array.isArray(messages)) {
             return res.status(400).json({ error: 'Messages array required' });
@@ -216,8 +277,15 @@ export default async function handler(req, res) {
             return res.status(500).json({ error: 'API key not configured' });
         }
 
-        // Build system prompt with context if provided
+        // Build system prompt with context and language instruction
         let systemPrompt = SYSTEM_PROMPT;
+        
+        // Add Universal Translator instruction for non-English users
+        const languageInstruction = buildLanguageInstruction(language || 'en');
+        if (languageInstruction) {
+            systemPrompt += languageInstruction;
+        }
+        
         if (originalQuery) {
             systemPrompt += `\n\nCONTEXT: The user started this conversation with the following belief or claim they want to explore: "${originalQuery}"`;
         }
@@ -267,7 +335,8 @@ export default async function handler(req, res) {
         return res.status(200).json({
             content: textContent,
             usage: data.usage,
-            model: data.model
+            model: data.model,
+            language: language || 'en'
         });
 
     } catch (error) {

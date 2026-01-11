@@ -164,7 +164,29 @@ const CRITERIA_SETS = {
 // ============================================
 // PROMPT BUILDER - TRACK A (Factual)
 // ============================================
-function buildTrackAPrompt(question, articleText) {
+
+// Language name mapping for prompt instructions
+const LANGUAGE_NAMES = {
+    en: 'English',
+    es: 'Spanish (Español)',
+    fr: 'French (Français)',
+    de: 'German (Deutsch)',
+    it: 'Italian (Italiano)',
+    pt: 'Portuguese (Português)',
+    ru: 'Russian (Русский)',
+    uk: 'Ukrainian (Українська)',
+    el: 'Greek (Ελληνικά)',
+    zh: 'Chinese (中文)',
+    ja: 'Japanese (日本語)',
+    ko: 'Korean (한국어)',
+    ar: 'Arabic (العربية)',
+    he: 'Hebrew (עברית)'
+};
+
+function buildTrackAPrompt(question, articleText, language) {
+    language = language || 'en';
+    var languageName = LANGUAGE_NAMES[language] || 'English';
+    
     var now = new Date();
     var currentDate = now.toLocaleDateString('en-US', { 
         weekday: 'long', 
@@ -177,6 +199,30 @@ function buildTrackAPrompt(question, articleText) {
     var prompt = '═══════════════════════════════════════════════════════════════════\n';
     prompt += '🚨 MANDATORY PREFLIGHT TEMPORAL CHECK - READ FIRST 🚨\n';
     prompt += '═══════════════════════════════════════════════════════════════════\n\n';
+    
+    // UNIVERSAL TRANSLATOR: Language instruction at the top
+    if (language !== 'en') {
+        prompt += '═══════════════════════════════════════════════════════════════════\n';
+        prompt += '🌐 UNIVERSAL TRANSLATOR - LANGUAGE INSTRUCTION 🌐\n';
+        prompt += '═══════════════════════════════════════════════════════════════════\n\n';
+        prompt += '**CRITICAL**: The user\'s language preference is **' + languageName + '**.\n\n';
+        prompt += 'You MUST write ALL human-readable content in ' + languageName + ', including:\n';
+        prompt += '- The "plainTruth" section (summary, why text, empowerment, confession)\n';
+        prompt += '- The "underlyingReality" explanation\n';
+        prompt += '- The "centralClaims" analysis\n';
+        prompt += '- The "frameworkAnalysis" discussion\n';
+        prompt += '- The "truthDistortionPatterns" description\n';
+        prompt += '- The "evidenceAnalysis" findings\n';
+        prompt += '- The "whatWeCanBeConfidentAbout" section\n';
+        prompt += '- The "whatRemainsUncertain" section\n';
+        prompt += '- The "lessonsForAssessment" insights\n';
+        prompt += '- The "methodologyNotes" explanation\n';
+        prompt += '- All source descriptions and summaries\n\n';
+        prompt += 'Keep JSON keys and technical identifiers in English.\n';
+        prompt += 'Keep the exactClaimBeingScored in its original language (as submitted).\n';
+        prompt += 'Numbers, scores, and factor names remain in English for parsing.\n\n';
+        prompt += '═══════════════════════════════════════════════════════════════════\n\n';
+    }
     
     prompt += '🌐 **YOU HAVE WEB SEARCH AVAILABLE**: You have been given the web_search tool.\n';
     prompt += '   - You CAN search the internet for current information\n';
@@ -574,7 +620,10 @@ function buildTrackAPrompt(question, articleText) {
 // ============================================
 // PROMPT BUILDER - TRACK B (Criteria-Based)
 // ============================================
-function buildTrackBPrompt(question, claimType, criteria, customCriteria, fiveWsContext) {
+function buildTrackBPrompt(question, claimType, criteria, customCriteria, fiveWsContext, language) {
+    language = language || 'en';
+    var languageName = LANGUAGE_NAMES[language] || 'English';
+    
     var now = new Date();
     var currentDate = now.toLocaleDateString('en-US', { 
         weekday: 'long', 
@@ -584,7 +633,26 @@ function buildTrackBPrompt(question, claimType, criteria, customCriteria, fiveWs
     });
     var isoDate = now.toISOString().split('T')[0];
     
-    var prompt = 'You are VERITAS Track B, a criteria-based assessment system for subjective or complex claims. ';
+    var prompt = '';
+    
+    // UNIVERSAL TRANSLATOR: Language instruction at the top for non-English
+    if (language !== 'en') {
+        prompt += '═══════════════════════════════════════════════════════════════════\n';
+        prompt += '🌐 UNIVERSAL TRANSLATOR - LANGUAGE INSTRUCTION 🌐\n';
+        prompt += '═══════════════════════════════════════════════════════════════════\n\n';
+        prompt += '**CRITICAL**: The user\'s language preference is **' + languageName + '**.\n\n';
+        prompt += 'You MUST write ALL human-readable content in ' + languageName + ', including:\n';
+        prompt += '- All criterion assessments and reasoning\n';
+        prompt += '- The overall summary and executive summary\n';
+        prompt += '- All source descriptions\n';
+        prompt += '- Any explanatory text\n\n';
+        prompt += 'Keep JSON keys, criterion IDs, and technical identifiers in English.\n';
+        prompt += 'Keep the claim text in its original language (as submitted).\n';
+        prompt += 'Numbers and scores remain as numbers for parsing.\n\n';
+        prompt += '═══════════════════════════════════════════════════════════════════\n\n';
+    }
+    
+    prompt += 'You are VERITAS Track B, a criteria-based assessment system for subjective or complex claims. ';
     prompt += 'Your purpose is to evaluate claims against SPECIFIC CRITERIA selected by the user, ';
     prompt += 'providing independent scores for each criterion rather than forcing a single overall judgment.\n\n';
     
@@ -1069,6 +1137,7 @@ module.exports = async function handler(req, res) {
         var customCriteria = body.customCriteria || [];
         var fiveWsContext = body.fiveWsContext || null;
         var userApiKey = body.userApiKey || '';
+        var language = body.language || 'en'; // Universal Translator language preference
         
         // Fetch URL content if provided
         if (articleUrl && !articleText) {
@@ -1141,10 +1210,11 @@ module.exports = async function handler(req, res) {
             console.log('Criteria:', criteria);
             console.log('Custom Criteria:', customCriteria);
             console.log('5Ws Context:', fiveWsContext);
-            prompt = buildTrackBPrompt(question, claimType, criteria, customCriteria, fiveWsContext);
+            console.log('Language:', language);
+            prompt = buildTrackBPrompt(question, claimType, criteria, customCriteria, fiveWsContext, language);
             console.log('Prompt length:', prompt.length);
         } else {
-            prompt = buildTrackAPrompt(question, articleText);
+            prompt = buildTrackAPrompt(question, articleText, language);
         }
         
         var message;

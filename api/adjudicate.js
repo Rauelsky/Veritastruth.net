@@ -7,6 +7,26 @@ const Anthropic = require('@anthropic-ai/sdk');
 // Adjudication must weigh this appropriately.
 // ============================================
 
+// ============================================
+// UNIVERSAL TRANSLATOR - LANGUAGE SUPPORT
+// ============================================
+const LANGUAGE_NAMES = {
+    en: 'English',
+    es: 'Spanish (Español)',
+    fr: 'French (Français)',
+    de: 'German (Deutsch)',
+    pt: 'Portuguese (Português)',
+    it: 'Italian (Italiano)',
+    ru: 'Russian (Русский)',
+    uk: 'Ukrainian (Українська)',
+    el: 'Greek (Ελληνικά)',
+    zh: 'Chinese (中文)',
+    ja: 'Japanese (日本語)',
+    ko: 'Korean (한국어)',
+    ar: 'Arabic (العربية)',
+    he: 'Hebrew (עברית)'
+};
+
 module.exports = async function handler(req, res) {
     res.setHeader('Content-Type', 'application/json');
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -37,6 +57,7 @@ module.exports = async function handler(req, res) {
         // NEW: Accept structured data for smarter adjudication
         var initialStructured = body.initialStructured || null;
         var verifyStructured = body.verifyStructured || null;
+        var language = body.language || 'en'; // Universal Translator language preference
         
         if (!initialAssessment || !verifyAssessment) {
             return res.status(400).json({ error: 'Both initial and verify assessments required' });
@@ -58,7 +79,8 @@ module.exports = async function handler(req, res) {
             initialScore, 
             verifyScore,
             initialStructured,
-            verifyStructured
+            verifyStructured,
+            language
         );
         
         var message = await anthropic.messages.create({
@@ -101,7 +123,10 @@ module.exports = async function handler(req, res) {
 // ============================================
 // ENHANCED PROMPT BUILDER
 // ============================================
-function buildAdjudicationPrompt(question, initialAssessment, verifyAssessment, initialScore, verifyScore, initialStructured, verifyStructured) {
+function buildAdjudicationPrompt(question, initialAssessment, verifyAssessment, initialScore, verifyScore, initialStructured, verifyStructured, language) {
+    language = language || 'en';
+    var languageName = LANGUAGE_NAMES[language] || 'English';
+    
     var now = new Date();
     var currentDate = now.toLocaleDateString('en-US', { 
         weekday: 'long', 
@@ -110,7 +135,25 @@ function buildAdjudicationPrompt(question, initialAssessment, verifyAssessment, 
         day: 'numeric' 
     });
     
-    var prompt = `You are VERITAS ADJUDICATOR — an independent arbiter synthesizing two philosophical perspectives on truth.
+    var prompt = '';
+    
+    // UNIVERSAL TRANSLATOR: Language instruction for non-English
+    if (language !== 'en') {
+        prompt += '═══════════════════════════════════════════════════════════════════\n';
+        prompt += '🌐 UNIVERSAL TRANSLATOR - LANGUAGE INSTRUCTION 🌐\n';
+        prompt += '═══════════════════════════════════════════════════════════════════\n\n';
+        prompt += '**CRITICAL**: The user\'s language preference is **' + languageName + '**.\n\n';
+        prompt += 'You MUST write ALL human-readable content in ' + languageName + ', including:\n';
+        prompt += '- The "reasoning" explanations in the JSON (all "notes" fields)\n';
+        prompt += '- The "synthesis" explanations (agreementPoints, disagreementPoints, resolutionRationale)\n';
+        prompt += '- The entire ADJUDICATION SUMMARY narrative section\n';
+        prompt += '- Key Factors, Research Impact, Convergence Analysis, and Justification\n\n';
+        prompt += 'Keep JSON keys in English (winner, confidence, recommendedScore, etc.).\n';
+        prompt += 'Keep the original claim text in its original language.\n\n';
+        prompt += '═══════════════════════════════════════════════════════════════════\n\n';
+    }
+    
+    prompt += `You are VERITAS ADJUDICATOR — an independent arbiter synthesizing two philosophical perspectives on truth.
 
 ## YOUR ROLE
 

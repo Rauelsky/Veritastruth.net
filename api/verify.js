@@ -27,9 +27,31 @@ function checkRateLimit(key) {
 }
 
 // ============================================
+// UNIVERSAL TRANSLATOR - LANGUAGE SUPPORT
+// ============================================
+const LANGUAGE_NAMES = {
+    en: 'English',
+    es: 'Spanish (Español)',
+    fr: 'French (Français)',
+    de: 'German (Deutsch)',
+    pt: 'Portuguese (Português)',
+    it: 'Italian (Italiano)',
+    ru: 'Russian (Русский)',
+    uk: 'Ukrainian (Українська)',
+    el: 'Greek (Ελληνικά)',
+    zh: 'Chinese (中文)',
+    ja: 'Japanese (日本語)',
+    ko: 'Korean (한국어)',
+    ar: 'Arabic (العربية)',
+    he: 'Hebrew (עברית)'
+};
+
+// ============================================
 // PROMPT BUILDER - THE UNCHAINED SECOND PHILOSOPHER
 // ============================================
-function buildPrompt(question, articleText, track, claimType, initialAssessment) {
+function buildPrompt(question, articleText, track, claimType, initialAssessment, language) {
+    language = language || 'en';
+    var languageName = LANGUAGE_NAMES[language] || 'English';
     var now = new Date();
     var currentDate = now.toLocaleDateString('en-US', { 
         weekday: 'long', 
@@ -39,7 +61,28 @@ function buildPrompt(question, articleText, track, claimType, initialAssessment)
     });
     var isoDate = now.toISOString().split('T')[0];
     
-    var prompt = `You are the SECOND PHILOSOPHER in the VERITAS verification system.
+    var prompt = '';
+    
+    // UNIVERSAL TRANSLATOR: Language instruction at the top for non-English
+    if (language !== 'en') {
+        prompt += '═══════════════════════════════════════════════════════════════════\n';
+        prompt += '🌐 UNIVERSAL TRANSLATOR - LANGUAGE INSTRUCTION 🌐\n';
+        prompt += '═══════════════════════════════════════════════════════════════════\n\n';
+        prompt += '**CRITICAL**: The user\'s language preference is **' + languageName + '**.\n\n';
+        prompt += 'You MUST write ALL human-readable content in ' + languageName + ', including:\n';
+        prompt += '- The narrative "VERIFICATION ASSESSMENT" section\n';
+        prompt += '- All explanations in the JSON (coreFinding, howWeKnow, whyItMatters, etc.)\n';
+        prompt += '- The "researchNote" and "impactOnAssessment" text\n';
+        prompt += '- All analysis and reasoning explanations\n';
+        prompt += '- Source descriptions and summaries\n';
+        prompt += '- The "questionsWorthHolding" reflections\n\n';
+        prompt += 'Keep JSON keys and technical identifiers in English.\n';
+        prompt += 'Keep the original claim/question text in its original language.\n';
+        prompt += 'Numbers, scores, and factor names remain in English for parsing.\n\n';
+        prompt += '═══════════════════════════════════════════════════════════════════\n\n';
+    }
+    
+    prompt += `You are the SECOND PHILOSOPHER in the VERITAS verification system.
 
 ## YOUR IDENTITY & MISSION
 
@@ -555,6 +598,7 @@ module.exports = async function handler(req, res) {
         var claimType = body.claimType || null;
         var userApiKey = body.userApiKey || '';
         var initialAssessment = body.initialAssessment || null;
+        var language = body.language || 'en'; // Universal Translator language preference
         
         if (!question && !articleText) {
             return res.status(400).json({ error: 'Please provide a question or article text' });
@@ -577,7 +621,7 @@ module.exports = async function handler(req, res) {
         }
         
         var anthropic = new Anthropic({ apiKey: apiKey });
-        var prompt = buildPrompt(question, articleText, track, claimType, initialAssessment);
+        var prompt = buildPrompt(question, articleText, track, claimType, initialAssessment, language);
         
         // Use agentic loop to allow multiple tool calls
         var assessment = await runAgenticLoop(anthropic, prompt);

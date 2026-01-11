@@ -1,5 +1,25 @@
 const Anthropic = require('@anthropic-ai/sdk');
 
+// ============================================
+// UNIVERSAL TRANSLATOR - LANGUAGE SUPPORT
+// ============================================
+const LANGUAGE_NAMES = {
+    en: 'English',
+    es: 'Spanish (Español)',
+    fr: 'French (Français)',
+    de: 'German (Deutsch)',
+    pt: 'Portuguese (Português)',
+    it: 'Italian (Italiano)',
+    ru: 'Russian (Русский)',
+    uk: 'Ukrainian (Українська)',
+    el: 'Greek (Ελληνικά)',
+    zh: 'Chinese (中文)',
+    ja: 'Japanese (日本語)',
+    ko: 'Korean (한국어)',
+    ar: 'Arabic (العربية)',
+    he: 'Hebrew (עברית)'
+};
+
 module.exports = async function handler(req, res) {
     res.setHeader('Content-Type', 'application/json');
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -25,6 +45,8 @@ module.exports = async function handler(req, res) {
         var realityScore = body.realityScore;
         var integrityScore = body.integrityScore;
         var userApiKey = body.userApiKey || '';
+        var language = body.language || 'en'; // Universal Translator language preference
+        var languageName = LANGUAGE_NAMES[language] || 'English';
         
         if (!initialAssessment) {
             return res.status(400).json({ error: 'No assessment provided to amplify' });
@@ -49,6 +71,23 @@ module.exports = async function handler(req, res) {
         var prompt = '═══════════════════════════════════════════════════════════════════\n';
         prompt += '🚨 MANDATORY PREFLIGHT TEMPORAL CHECK - READ FIRST 🚨\n';
         prompt += '═══════════════════════════════════════════════════════════════════\n\n';
+        
+        // UNIVERSAL TRANSLATOR: Language instruction for non-English
+        if (language !== 'en') {
+            prompt += '═══════════════════════════════════════════════════════════════════\n';
+            prompt += '🌐 UNIVERSAL TRANSLATOR - LANGUAGE INSTRUCTION 🌐\n';
+            prompt += '═══════════════════════════════════════════════════════════════════\n\n';
+            prompt += '**CRITICAL**: The user\'s language preference is **' + languageName + '**.\n\n';
+            prompt += 'You MUST write ALL human-readable content in ' + languageName + ', including:\n';
+            prompt += '- The "amplificationSummary" text\n';
+            prompt += '- All items in "challengedAssumptions" and "alternativeInterpretations"\n';
+            prompt += '- All items in "blindSpots", "wouldChangeAssessment", "epistemicVulnerabilities"\n';
+            prompt += '- The "confidenceAdjustment" reason and "bottomLine" conclusion\n';
+            prompt += '- The entire narrative explanation section\n\n';
+            prompt += 'Keep JSON keys in English.\n';
+            prompt += 'Keep the original claim/question text in its original language.\n\n';
+            prompt += '═══════════════════════════════════════════════════════════════════\n\n';
+        }
         
         prompt += '🌐 **YOU HAVE WEB SEARCH AVAILABLE**: You have been given the web_search tool.\n';
         prompt += '   - You CAN search the internet for current information\n';
