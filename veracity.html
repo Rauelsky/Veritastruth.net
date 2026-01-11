@@ -3276,29 +3276,39 @@ Respond ONLY with valid JSON (no markdown, no code blocks):
                 testToggle.textContent = t.hideTests;
             }
             
-            // Update sidebar labels
+            // Update sidebar labels - use CSS class as stable key
             const sidebarLabels = document.querySelectorAll('.sidebar-label');
             const labelMap = {
-                'HISTORY': t.history, 'SCIENCES': t.sciences, 'PHILOSOPHY': t.philosophy,
-                'LOGIC': t.logic, 'RHETORIC': t.rhetoric, 'MEDIA': t.media,
-                'PSYCHOLOGY': t.psychology, 'STATISTICS': t.statistics, 'SOURCES': t.sources,
-                'EXPORT': t.export
+                'history': t.history, 'science': t.sciences, 'philosophy': t.philosophy,
+                'logic': t.logic, 'rhetoric': t.rhetoric, 'media': t.media,
+                'psychology': t.psychology, 'statistics': t.statistics, 'sources': t.sources,
+                'export': t.export
             };
             sidebarLabels.forEach(label => {
-                const key = label.textContent.trim().toUpperCase();
-                if (labelMap[key]) label.textContent = labelMap[key];
+                // Find which key matches a class on this element
+                for (const [key, value] of Object.entries(labelMap)) {
+                    if (label.classList.contains(key)) {
+                        label.textContent = value;
+                        break;
+                    }
+                }
             });
             
-            // Update sidebar actions
+            // Update sidebar actions - use CSS class as stable key
             const sidebarActions = document.querySelectorAll('.sidebar-action');
             const actionMap = {
-                'ARCHIVES': t.archives, 'RESEARCH': t.research, 'ETHICS': t.ethics,
-                'FALLACIES': t.fallacies, 'PERSUASION': t.persuasion, 'LITERACY': t.literacy,
-                'BIAS': t.bias, 'DATA': t.data, 'VERIFY': t.verify, 'REPORTS': t.reports
+                'archives': t.archives, 'research': t.research, 'ethics': t.ethics,
+                'fallacies': t.fallacies, 'persuasion': t.persuasion, 'literacy': t.literacy,
+                'bias': t.bias, 'data': t.data, 'verify': t.verify, 'reports': t.reports
             };
             sidebarActions.forEach(action => {
-                const key = action.textContent.trim().toUpperCase();
-                if (actionMap[key]) action.textContent = actionMap[key];
+                // Find which key matches a class on this element
+                for (const [key, value] of Object.entries(actionMap)) {
+                    if (action.classList.contains(key)) {
+                        action.textContent = value;
+                        break;
+                    }
+                }
             });
             
             // Set text direction for RTL languages
