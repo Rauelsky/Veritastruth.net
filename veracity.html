@@ -3278,16 +3278,26 @@ Respond ONLY with valid JSON (no markdown, no code blocks):
             
             // Update sidebar labels - use CSS class as stable key
             const sidebarLabels = document.querySelectorAll('.sidebar-label');
+            console.log('Found sidebar labels:', sidebarLabels.length);
             const labelMap = {
-                'history': t.history, 'science': t.sciences, 'philosophy': t.philosophy,
-                'logic': t.logic, 'rhetoric': t.rhetoric, 'media': t.media,
-                'psychology': t.psychology, 'statistics': t.statistics, 'sources': t.sources,
+                'history': t.history, 
+                'science': t.sciences,      // CSS class is 'science', translation key is 'sciences'
+                'philosophy': t.philosophy,
+                'logic': t.logic, 
+                'rhetoric': t.rhetoric, 
+                'media': t.media,
+                'psychology': t.psychology, 
+                'statistics': t.statistics, 
+                'sources': t.sources,
                 'export': t.export
             };
+            console.log('Label map:', labelMap);
             sidebarLabels.forEach(label => {
+                console.log('Label classes:', label.classList.toString());
                 // Find which key matches a class on this element
                 for (const [key, value] of Object.entries(labelMap)) {
                     if (label.classList.contains(key)) {
+                        console.log(`Matched ${key} -> ${value}`);
                         label.textContent = value;
                         break;
                     }
