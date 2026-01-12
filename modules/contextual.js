@@ -1,21 +1,27 @@
 /**
- * VERACITY v5.0 — CONTEXTUAL MODULE
+ * VERACITY v5.2 — CONTEXTUAL MODULE
  * ===================================
  * Module: contextual.js
- * Version: 1.0.0
- * Last Modified: 2025-12-30
+ * Version: 1.1.0
+ * Last Modified: 2026-01-11
  * 
  * PURPOSE:
  * 1. Compound question decomposition and clarification flow
  * 2. Two-state discipline button behavior (idle vs. active)
  * 3. Contextual information display based on query content
  * 
+ * VINCULUM INTEGRATION:
+ * getDisciplineContext() is now async and supports multilingual output.
+ * When a non-English language is selected, explanations and suggestions
+ * are translated via VINCULUM. Use sync.getDisciplineContext() for
+ * synchronous English-only access when needed.
+ * 
  * PHILOSOPHY:
  * "Not telling people what to think, but giving them frameworks to think with."
  * When a question contains multiple claims, help users see the layers
  * and choose which to explore first.
  * 
- * DEPENDENCIES: classifier.js (salience scores, compound detection)
+ * DEPENDENCIES: classifier.js (salience scores), vinculum.js (optional)
  * DEPENDED ON BY: main.html
  * 
  * CHANGE IMPACT: MEDIUM — Requires salience data from classifier
@@ -23,10 +29,12 @@
  * EXPORTS:
  * - decomposeCompoundQuestion(input, classificationResult) → DecompositionResult
  * - generateClarificationPrompt(decomposition) → ClarificationPrompt
- * - getDisciplineContext(discipline, query, salience) → ContextualInfo
+ * - getDisciplineContext(discipline, query, salience) → Promise<ContextualInfo>
+ * - sync.getDisciplineContext(discipline, query, salience) → ContextualInfo (English)
  * - getButtonState(hasInput, salience) → 'idle' | 'active'
  * 
- * ⚠️ IMMUTABLE until change protocol executed
+ * VERITAS LLC — Prairie du Sac, Wisconsin
+ * 🖖 Infinite Diversity in Infinite Combinations
  */
 
 const VeracityContextual = (function() {
@@ -411,13 +419,13 @@ const VeracityContextual = (function() {
     };
 
     /**
-     * Gets contextual information for a discipline given current query
+     * Gets contextual information for a discipline given current query (internal, English)
      * @param {string} discipline - Discipline name
      * @param {string} query - Current user query
      * @param {Object} salience - Salience scores
      * @returns {Object} - { discipline, relevance, explanation, suggestions }
      */
-    function getDisciplineContext(discipline, query, salience) {
+    function _getDisciplineContextInternal(discipline, query, salience) {
         const score = salience[discipline] || 0;
         const level = score >= 0.7 ? 'high' : score >= 0.3 ? 'medium' : 'low';
         const template = disciplineContextTemplates[discipline];
@@ -439,6 +447,26 @@ const VeracityContextual = (function() {
             explanation: template[level],
             suggestions: getSpecificSuggestions(discipline, query, level)
         };
+    }
+
+    /**
+     * Gets contextual information for a discipline given current query
+     * Returns translated context if non-English language selected
+     * @param {string} discipline - Discipline name
+     * @param {string} query - Current user query
+     * @param {Object} salience - Salience scores
+     * @returns {Promise<Object>} - { discipline, relevance, explanation, suggestions }
+     */
+    async function getDisciplineContext(discipline, query, salience) {
+        const context = _getDisciplineContextInternal(discipline, query, salience);
+        
+        if (typeof Vinculum !== 'undefined') {
+            const lang = Vinculum.getCurrentLanguage();
+            if (lang !== 'en') {
+                return Vinculum.translateDisciplineContext(context, lang);
+            }
+        }
+        return context;
     }
 
     /**
@@ -494,6 +522,13 @@ const VeracityContextual = (function() {
         return suggestions;
     }
 
+    /**
+     * Synchronous English-only access (for backward compatibility)
+     */
+    const sync = {
+        getDisciplineContext: _getDisciplineContextInternal
+    };
+
     // ==================== PUBLIC API ====================
     
     return {
@@ -508,6 +543,9 @@ const VeracityContextual = (function() {
         
         // Contextual information
         getDisciplineContext,
+        
+        // Synchronous English-only access
+        sync,
         
         // Templates (for customization if needed)
         disciplineContextTemplates,

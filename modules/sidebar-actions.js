@@ -1,6 +1,8 @@
 /**
  * VERACITY v5.2 — Sidebar Actions Module
  * =======================================
+ * Version: 1.1.0
+ * Last Modified: 2026-01-11
  * 
  * Provides interactive functionality for sidebar action buttons:
  * - LITERACY: Information literacy guide
@@ -9,10 +11,17 @@
  * - VERIFY: Source verification checklist
  * - REPORTS: Assessment archive/history
  * 
+ * VINCULUM INTEGRATION:
+ * All show*() methods are now async and support multilingual output.
+ * When a non-English language is selected, educational content is
+ * translated via VINCULUM before display. Each guide has an internal
+ * _get*HTML() method that returns English content, which is then
+ * translated if needed.
+ * 
  * Features:
  * - Context-aware (different behavior when idle vs assessment active)
  * - Live examples from current assessment
- * - Educational content
+ * - Educational content in 14+ languages
  * - Modal-based UI
  * 
  * VERITAS LLC — Prairie du Sac, Wisconsin
@@ -94,7 +103,12 @@ const SidebarActions = {
    * BIAS GUIDE (Primary Feature)
    * =============================================
    */
-  showBiasGuide() {
+  
+  /**
+   * Build Bias Guide HTML (internal, English)
+   * @returns {string} HTML content
+   */
+  _buildBiasGuideHTML() {
     const biases = BiasKnowledgeBase.getAllBiases();
     const examples = this.detectedBiases;
     const hasLiveExamples = Object.keys(examples).length > 0;
@@ -183,9 +197,30 @@ const SidebarActions = {
     }
     
     html += '</div>'; // bias-guide
+    return html;
+  },
+  
+  /**
+   * Show Bias Guide modal
+   * Translates content if non-English language selected
+   */
+  async showBiasGuide() {
+    const englishHtml = this._buildBiasGuideHTML();
+    let html = englishHtml;
+    let title = '🧠 Cognitive Bias Reference';
+    
+    if (typeof Vinculum !== 'undefined') {
+      const lang = Vinculum.getCurrentLanguage();
+      if (lang !== 'en') {
+        html = await Vinculum.toUserLanguage(englishHtml, {
+          context: 'an educational reference guide about cognitive biases in critical thinking'
+        });
+        title = await Vinculum.toUserLanguage(title, { context: 'modal title' });
+      }
+    }
     
     this._showModal({
-      title: '🧠 Cognitive Bias Reference',
+      title: title,
       content: html,
       size: 'large'
     });
@@ -196,8 +231,13 @@ const SidebarActions = {
    * LITERACY GUIDE
    * =============================================
    */
-  showLiteracyGuide() {
-    const html = `
+  
+  /**
+   * Get Literacy Guide HTML content (internal, English)
+   * @returns {string} HTML content
+   */
+  _getLiteracyGuideHTML() {
+    return `
       <div class="literacy-guide">
         <div class="guide-intro">
           <p>Information literacy is the ability to identify, find, evaluate, and use information effectively. 
@@ -269,9 +309,30 @@ const SidebarActions = {
         </div>
       </div>
     `;
+  },
+  
+  /**
+   * Show Literacy Guide modal
+   * Translates content if non-English language selected
+   */
+  async showLiteracyGuide() {
+    const englishHtml = this._getLiteracyGuideHTML();
+    let html = englishHtml;
+    let title = '📖 Information Literacy Guide';
+    
+    // Translate if VINCULUM available and non-English
+    if (typeof Vinculum !== 'undefined') {
+      const lang = Vinculum.getCurrentLanguage();
+      if (lang !== 'en') {
+        html = await Vinculum.toUserLanguage(englishHtml, {
+          context: 'an educational guide about information literacy and source evaluation'
+        });
+        title = await Vinculum.toUserLanguage(title, { context: 'modal title' });
+      }
+    }
     
     this._showModal({
-      title: '📖 Information Literacy Guide',
+      title: title,
       content: html,
       size: 'large'
     });
@@ -282,8 +343,13 @@ const SidebarActions = {
    * DATA/STATISTICS GUIDE
    * =============================================
    */
-  showDataGuide() {
-    const html = `
+  
+  /**
+   * Get Data Guide HTML content (internal, English)
+   * @returns {string} HTML content
+   */
+  _getDataGuideHTML() {
+    return `
       <div class="data-guide">
         <div class="guide-intro">
           <p>Statistics can illuminate truth or obscure it. Understanding how to interpret data 
@@ -358,9 +424,29 @@ const SidebarActions = {
         </div>
       </div>
     `;
+  },
+  
+  /**
+   * Show Data Guide modal
+   * Translates content if non-English language selected
+   */
+  async showDataGuide() {
+    const englishHtml = this._getDataGuideHTML();
+    let html = englishHtml;
+    let title = '📊 Understanding Statistics';
+    
+    if (typeof Vinculum !== 'undefined') {
+      const lang = Vinculum.getCurrentLanguage();
+      if (lang !== 'en') {
+        html = await Vinculum.toUserLanguage(englishHtml, {
+          context: 'an educational guide about understanding statistics and data interpretation'
+        });
+        title = await Vinculum.toUserLanguage(title, { context: 'modal title' });
+      }
+    }
     
     this._showModal({
-      title: '📊 Understanding Statistics',
+      title: title,
       content: html,
       size: 'large'
     });
@@ -371,8 +457,13 @@ const SidebarActions = {
    * VERIFY/SOURCE EVALUATION GUIDE
    * =============================================
    */
-  showVerifyGuide() {
-    const html = `
+  
+  /**
+   * Get Verify Guide HTML content (internal, English)
+   * @returns {string} HTML content
+   */
+  _getVerifyGuideHTML() {
+    return `
       <div class="verify-guide">
         <div class="guide-intro">
           <p>Not all sources are created equal. This checklist helps you evaluate the reliability 
@@ -454,9 +545,29 @@ const SidebarActions = {
         </div>
       </div>
     `;
+  },
+  
+  /**
+   * Show Verify Guide modal
+   * Translates content if non-English language selected
+   */
+  async showVerifyGuide() {
+    const englishHtml = this._getVerifyGuideHTML();
+    let html = englishHtml;
+    let title = '✓ Source Verification Checklist';
+    
+    if (typeof Vinculum !== 'undefined') {
+      const lang = Vinculum.getCurrentLanguage();
+      if (lang !== 'en') {
+        html = await Vinculum.toUserLanguage(englishHtml, {
+          context: 'an educational guide about source verification and evaluating information reliability'
+        });
+        title = await Vinculum.toUserLanguage(title, { context: 'modal title' });
+      }
+    }
     
     this._showModal({
-      title: '✓ Source Verification Checklist',
+      title: title,
       content: html,
       size: 'large'
     });
@@ -467,10 +578,13 @@ const SidebarActions = {
    * REPORTS/HISTORY
    * =============================================
    */
-  showReports() {
-    // Check for stored assessments
-    const history = this._getAssessmentHistory();
-    
+  
+  /**
+   * Build Reports HTML (internal, English)
+   * @param {Array} history - Assessment history items
+   * @returns {string} HTML content
+   */
+  _buildReportsHTML(history) {
     let html = `
       <div class="reports-panel">
         <div class="guide-intro">
@@ -513,9 +627,31 @@ const SidebarActions = {
     }
     
     html += `</div>`;
+    return html;
+  },
+  
+  /**
+   * Show Reports modal
+   * Translates content if non-English language selected
+   */
+  async showReports() {
+    const history = this._getAssessmentHistory();
+    const englishHtml = this._buildReportsHTML(history);
+    let html = englishHtml;
+    let title = '📁 Assessment Reports';
+    
+    if (typeof Vinculum !== 'undefined') {
+      const lang = Vinculum.getCurrentLanguage();
+      if (lang !== 'en') {
+        html = await Vinculum.toUserLanguage(englishHtml, {
+          context: 'a panel showing assessment history and saved reports'
+        });
+        title = await Vinculum.toUserLanguage(title, { context: 'modal title' });
+      }
+    }
     
     this._showModal({
-      title: '📁 Assessment Reports',
+      title: title,
       content: html,
       size: 'medium'
     });

@@ -1,9 +1,9 @@
 /**
- * VERACITY v5.0 — MICRO-DISCOVERY MODULE
+ * VERACITY v5.2 — MICRO-DISCOVERY MODULE
  * ========================================
  * Module: microdiscovery.js
- * Version: 1.0.0
- * Last Modified: 2025-12-30
+ * Version: 1.1.0
+ * Last Modified: 2026-01-11
  * 
  * PURPOSE:
  * Powers the number column on the left sidebar—transforming decorative LCARS
@@ -15,21 +15,28 @@
  * - Hover reveals tooltip with context
  * - Numbers are discipline-appropriate (years for history, atomic numbers for science, etc.)
  * 
+ * VINCULUM INTEGRATION:
+ * All public getter functions are now async and support multilingual output.
+ * When a non-English language is selected, tooltips are translated via VINCULUM.
+ * Use the `sync` object for synchronous English-only access when needed.
+ * 
  * PHILOSOPHY:
  * "Every number has a story. Every story teaches without lecturing."
  * 
- * DEPENDENCIES: None (data module)
+ * DEPENDENCIES: vinculum.js (optional, for translation)
  * DEPENDED ON BY: main.html
  * 
  * CHANGE IMPACT: LOW — Data only, no logic dependencies
  * 
  * EXPORTS:
- * - getRandomEntry(discipline) → MicroDiscoveryEntry
- * - getEntryByValue(discipline, value) → MicroDiscoveryEntry
- * - getAllEntries(discipline) → Array of entries
+ * - getRandomEntry(discipline) → Promise<MicroDiscoveryEntry>
+ * - getEntryByValue(discipline, value) → Promise<MicroDiscoveryEntry>
+ * - getAllEntries(discipline) → Promise<Array<Entry>>
+ * - sync.getRandomEntry(discipline) → MicroDiscoveryEntry (English only)
  * - MICRO_DATA → Raw data database
  * 
- * ⚠️ IMMUTABLE until change protocol executed
+ * VERITAS LLC — Prairie du Sac, Wisconsin
+ * 🖖 Infinite Diversity in Infinite Combinations
  */
 
 const VeracityMicroDiscovery = (function() {
@@ -293,14 +300,14 @@ const VeracityMicroDiscovery = (function() {
         ]
     };
 
-    // ==================== PUBLIC API ====================
+    // ==================== INTERNAL FUNCTIONS (English only) ====================
 
     /**
-     * Get a random entry for a discipline
+     * Get a random entry for a discipline (internal, English)
      * @param {string} discipline - Discipline name
-     * @returns {Object|null} Entry object with displayValue, tooltip, category, discipline
+     * @returns {Object|null} Entry object
      */
-    function getRandomEntry(discipline) {
+    function _getRandomEntryInternal(discipline) {
         const entries = MICRO_DATA[discipline.toLowerCase()];
         if (!entries || entries.length === 0) return null;
         
@@ -312,12 +319,12 @@ const VeracityMicroDiscovery = (function() {
     }
 
     /**
-     * Get entry by display value
+     * Get entry by display value (internal, English)
      * @param {string} discipline - Discipline name
      * @param {string} value - Display value to find
      * @returns {Object|null} Entry object or null
      */
-    function getEntryByValue(discipline, value) {
+    function _getEntryByValueInternal(discipline, value) {
         const entries = MICRO_DATA[discipline.toLowerCase()];
         if (!entries) return null;
         
@@ -329,14 +336,74 @@ const VeracityMicroDiscovery = (function() {
     }
 
     /**
-     * Get all entries for a discipline
+     * Get all entries for a discipline (internal, English)
      * @param {string} discipline - Discipline name
      * @returns {Array} Array of entry objects
      */
-    function getAllEntries(discipline) {
+    function _getAllEntriesInternal(discipline) {
         const entries = MICRO_DATA[discipline.toLowerCase()];
         if (!entries) return [];
         return entries.map(e => ({ ...e, discipline: discipline.toLowerCase() }));
+    }
+
+    // ==================== PUBLIC API (with VINCULUM translation) ====================
+
+    /**
+     * Get a random entry for a discipline
+     * Returns translated entry if non-English language selected
+     * @param {string} discipline - Discipline name
+     * @returns {Promise<Object|null>} Entry object with displayValue, tooltip, category, discipline
+     */
+    async function getRandomEntry(discipline) {
+        const entry = _getRandomEntryInternal(discipline);
+        if (!entry) return null;
+        
+        if (typeof Vinculum !== 'undefined') {
+            const lang = Vinculum.getCurrentLanguage();
+            if (lang !== 'en') {
+                return Vinculum.translateTooltip(entry, lang);
+            }
+        }
+        return entry;
+    }
+
+    /**
+     * Get entry by display value
+     * Returns translated entry if non-English language selected
+     * @param {string} discipline - Discipline name
+     * @param {string} value - Display value to find
+     * @returns {Promise<Object|null>} Entry object or null
+     */
+    async function getEntryByValue(discipline, value) {
+        const entry = _getEntryByValueInternal(discipline, value);
+        if (!entry) return null;
+        
+        if (typeof Vinculum !== 'undefined') {
+            const lang = Vinculum.getCurrentLanguage();
+            if (lang !== 'en') {
+                return Vinculum.translateTooltip(entry, lang);
+            }
+        }
+        return entry;
+    }
+
+    /**
+     * Get all entries for a discipline
+     * Returns translated entries if non-English language selected
+     * @param {string} discipline - Discipline name
+     * @returns {Promise<Array>} Array of entry objects
+     */
+    async function getAllEntries(discipline) {
+        const entries = _getAllEntriesInternal(discipline);
+        if (entries.length === 0) return [];
+        
+        if (typeof Vinculum !== 'undefined') {
+            const lang = Vinculum.getCurrentLanguage();
+            if (lang !== 'en') {
+                return Promise.all(entries.map(e => Vinculum.translateTooltip(e, lang)));
+            }
+        }
+        return entries;
     }
 
     /**
@@ -349,16 +416,26 @@ const VeracityMicroDiscovery = (function() {
 
     /**
      * Get entries by category
+     * Returns translated entries if non-English language selected
      * @param {string} category - Category (year, atomic, constant, percentage, count, duration, easter-egg)
-     * @returns {Array} Array of matching entries with discipline
+     * @returns {Promise<Array>} Array of matching entries with discipline
      */
-    function getByCategory(category) {
+    async function getByCategory(category) {
         const results = [];
         for (const [discipline, entries] of Object.entries(MICRO_DATA)) {
             for (const entry of entries) {
                 if (entry.category === category) {
                     results.push({ ...entry, discipline });
                 }
+            }
+        }
+        
+        if (results.length === 0) return [];
+        
+        if (typeof Vinculum !== 'undefined') {
+            const lang = Vinculum.getCurrentLanguage();
+            if (lang !== 'en') {
+                return Promise.all(results.map(e => Vinculum.translateTooltip(e, lang)));
             }
         }
         return results;
@@ -374,11 +451,12 @@ const VeracityMicroDiscovery = (function() {
 
     /**
      * Get formatted display object for a discipline number
+     * Returns translated tooltip if non-English language selected
      * @param {string} discipline - Discipline name
-     * @returns {Object} { display: '1215', tooltip: '...', category: '...' }
+     * @returns {Promise<Object>} { display: '1215', tooltip: '...', category: '...' }
      */
-    function getDisplayForDiscipline(discipline) {
-        const entry = getRandomEntry(discipline);
+    async function getDisplayForDiscipline(discipline) {
+        const entry = await getRandomEntry(discipline);
         if (!entry) {
             return { display: '---', tooltip: 'No data', category: 'none' };
         }
@@ -391,15 +469,30 @@ const VeracityMicroDiscovery = (function() {
 
     /**
      * Get a full set of random displays for all disciplines
-     * @returns {Object} Keyed by discipline name
+     * Returns translated tooltips if non-English language selected
+     * @returns {Promise<Object>} Keyed by discipline name
      */
-    function getFullRandomSet() {
+    async function getFullRandomSet() {
+        const disciplines = Object.keys(MICRO_DATA);
+        const entries = await Promise.all(
+            disciplines.map(d => getDisplayForDiscipline(d))
+        );
+        
         const set = {};
-        for (const discipline of Object.keys(MICRO_DATA)) {
-            set[discipline] = getDisplayForDiscipline(discipline);
-        }
+        disciplines.forEach((d, i) => {
+            set[d] = entries[i];
+        });
         return set;
     }
+
+    /**
+     * Synchronous English-only access (for backward compatibility or performance)
+     */
+    const sync = {
+        getRandomEntry: _getRandomEntryInternal,
+        getEntryByValue: _getEntryByValueInternal,
+        getAllEntries: _getAllEntriesInternal
+    };
 
     return {
         getRandomEntry,
@@ -410,6 +503,7 @@ const VeracityMicroDiscovery = (function() {
         getTotalCount,
         getDisplayForDiscipline,
         getFullRandomSet,
+        sync,  // Synchronous English-only access
         MICRO_DATA
     };
 

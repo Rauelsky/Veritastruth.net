@@ -1,30 +1,37 @@
 /**
- * VERACITY v5.0 — FACTOIDS MODULE
+ * VERACITY v5.2 — FACTOIDS MODULE
  * =================================
  * Module: factoids.js
- * Version: 1.0.0
- * Last Modified: 2025-12-30
+ * Version: 1.1.0
+ * Last Modified: 2026-01-11
  * 
  * PURPOSE:
  * Provides educational factoids for discipline buttons in IDLE state.
  * "Did you know?" moments that build media literacy while users consider what to ask.
  * 
+ * VINCULUM INTEGRATION:
+ * All public getter functions are now async and support multilingual output.
+ * When a non-English language is selected, factoids are translated via VINCULUM.
+ * Use the `sync` object for synchronous English-only access when needed.
+ * 
  * PHILOSOPHY:
  * "Not telling people what to think, but giving them frameworks to think with."
  * Each factoid plants seeds for critical thinking without being preachy.
  * 
- * DEPENDENCIES: None (data module)
+ * DEPENDENCIES: vinculum.js (optional, for translation)
  * DEPENDED ON BY: main.html, export.js
  * 
  * CHANGE IMPACT: LOW — Data only, no logic dependencies
  * 
  * EXPORTS:
- * - getRandomFactoid(discipline) → Factoid object
- * - getFactoidById(id) → Factoid object
- * - getAllFactoids(discipline) → Array of Factoid objects
+ * - getRandomFactoid(discipline) → Promise<Factoid>
+ * - getFactoidById(id) → Promise<Factoid>
+ * - getAllFactoids(discipline) → Promise<Array<Factoid>>
+ * - sync.getRandomFactoid(discipline) → Factoid (English only)
  * - FACTOID_DATA → Raw factoid database
  * 
- * ⚠️ IMMUTABLE until change protocol executed
+ * VERITAS LLC — Prairie du Sac, Wisconsin
+ * 🖖 Infinite Diversity in Infinite Combinations
  */
 
 const VeracityFactoids = (function() {
@@ -720,14 +727,14 @@ const VeracityFactoids = (function() {
         ]
     };
 
-    // ==================== PUBLIC API ====================
+    // ==================== INTERNAL FUNCTIONS (English only) ====================
 
     /**
-     * Get a random factoid from a specific discipline
-     * @param {string} discipline - One of: history, sciences, philosophy, logic, rhetoric, media, psychology, statistics, sources
-     * @returns {Object|null} Factoid object or null if discipline not found
+     * Get a random factoid from a specific discipline (internal, English)
+     * @param {string} discipline - Discipline name
+     * @returns {Object|null} Factoid object or null
      */
-    function getRandomFactoid(discipline) {
+    function _getRandomFactoidInternal(discipline) {
         const factoids = FACTOID_DATA[discipline.toLowerCase()];
         if (!factoids || factoids.length === 0) return null;
         
@@ -739,11 +746,11 @@ const VeracityFactoids = (function() {
     }
 
     /**
-     * Get a specific factoid by ID
-     * @param {string} id - Factoid ID (e.g., 'hist_001')
-     * @returns {Object|null} Factoid object or null if not found
+     * Get a specific factoid by ID (internal, English)
+     * @param {string} id - Factoid ID
+     * @returns {Object|null} Factoid object or null
      */
-    function getFactoidById(id) {
+    function _getFactoidByIdInternal(id) {
         for (const [discipline, factoids] of Object.entries(FACTOID_DATA)) {
             const found = factoids.find(f => f.id === id);
             if (found) {
@@ -754,14 +761,75 @@ const VeracityFactoids = (function() {
     }
 
     /**
-     * Get all factoids for a discipline
+     * Get all factoids for a discipline (internal, English)
      * @param {string} discipline - Discipline name
      * @returns {Array} Array of factoid objects
      */
-    function getAllFactoids(discipline) {
+    function _getAllFactoidsInternal(discipline) {
         const factoids = FACTOID_DATA[discipline.toLowerCase()];
         if (!factoids) return [];
         return factoids.map(f => ({ ...f, discipline: discipline.toLowerCase() }));
+    }
+
+    // ==================== PUBLIC API (with VINCULUM translation) ====================
+
+    /**
+     * Get a random factoid from a specific discipline
+     * Returns translated factoid if non-English language selected
+     * @param {string} discipline - One of: history, sciences, philosophy, logic, rhetoric, media, psychology, statistics, sources
+     * @returns {Promise<Object|null>} Factoid object or null if discipline not found
+     */
+    async function getRandomFactoid(discipline) {
+        const factoid = _getRandomFactoidInternal(discipline);
+        if (!factoid) return null;
+        
+        // Check if VINCULUM is available and language is not English
+        if (typeof Vinculum !== 'undefined') {
+            const lang = Vinculum.getCurrentLanguage();
+            if (lang !== 'en') {
+                return Vinculum.translateFactoid(factoid, lang);
+            }
+        }
+        return factoid;
+    }
+
+    /**
+     * Get a specific factoid by ID
+     * Returns translated factoid if non-English language selected
+     * @param {string} id - Factoid ID (e.g., 'hist_001')
+     * @returns {Promise<Object|null>} Factoid object or null if not found
+     */
+    async function getFactoidById(id) {
+        const factoid = _getFactoidByIdInternal(id);
+        if (!factoid) return null;
+        
+        if (typeof Vinculum !== 'undefined') {
+            const lang = Vinculum.getCurrentLanguage();
+            if (lang !== 'en') {
+                return Vinculum.translateFactoid(factoid, lang);
+            }
+        }
+        return factoid;
+    }
+
+    /**
+     * Get all factoids for a discipline
+     * Returns translated factoids if non-English language selected
+     * @param {string} discipline - Discipline name
+     * @returns {Promise<Array>} Array of factoid objects
+     */
+    async function getAllFactoids(discipline) {
+        const factoids = _getAllFactoidsInternal(discipline);
+        if (factoids.length === 0) return [];
+        
+        if (typeof Vinculum !== 'undefined') {
+            const lang = Vinculum.getCurrentLanguage();
+            if (lang !== 'en') {
+                // Translate all factoids in parallel
+                return Promise.all(factoids.map(f => Vinculum.translateFactoid(f, lang)));
+            }
+        }
+        return factoids;
     }
 
     /**
@@ -782,10 +850,11 @@ const VeracityFactoids = (function() {
 
     /**
      * Search factoids by tag
+     * Returns translated factoids if non-English language selected
      * @param {string} tag - Tag to search for
-     * @returns {Array} Array of matching factoids
+     * @returns {Promise<Array>} Array of matching factoids
      */
-    function searchByTag(tag) {
+    async function searchByTag(tag) {
         const results = [];
         for (const [discipline, factoids] of Object.entries(FACTOID_DATA)) {
             for (const factoid of factoids) {
@@ -794,8 +863,27 @@ const VeracityFactoids = (function() {
                 }
             }
         }
+        
+        if (results.length === 0) return [];
+        
+        if (typeof Vinculum !== 'undefined') {
+            const lang = Vinculum.getCurrentLanguage();
+            if (lang !== 'en') {
+                return Promise.all(results.map(f => Vinculum.translateFactoid(f, lang)));
+            }
+        }
         return results;
     }
+
+    /**
+     * Synchronous English-only access (for backward compatibility or performance)
+     * Use these when you specifically need English or can't use async
+     */
+    const sync = {
+        getRandomFactoid: _getRandomFactoidInternal,
+        getFactoidById: _getFactoidByIdInternal,
+        getAllFactoids: _getAllFactoidsInternal
+    };
 
     return {
         getRandomFactoid,
@@ -804,6 +892,7 @@ const VeracityFactoids = (function() {
         getDisciplines,
         getTotalCount,
         searchByTag,
+        sync,  // Synchronous English-only access
         FACTOID_DATA
     };
 
