@@ -1470,60 +1470,60 @@
             <div class="sidebar-spine"></div>
             <div class="sidebar-buttons">
                 <div class="sidebar-row">
-                    <div class="sidebar-label history" data-factoid="history">HISTORY</div>
+                    <div class="sidebar-label history" data-factoid="history" data-i18n="history">HISTORY</div>
                     <div class="sidebar-number">247</div>
-                    <div class="sidebar-action archives">ARCHIVES</div>
+                    <div class="sidebar-action archives" data-i18n="archives">ARCHIVES</div>
                 </div>
                 <div class="sidebar-row">
-                    <div class="sidebar-label science" data-factoid="science">SCIENCES</div>
+                    <div class="sidebar-label science" data-factoid="science" data-i18n="sciences">SCIENCES</div>
                     <div class="sidebar-number">182</div>
-                    <div class="sidebar-action research">RESEARCH</div>
+                    <div class="sidebar-action research" data-i18n="research">RESEARCH</div>
                 </div>
                 <div class="sidebar-row">
-                    <div class="sidebar-label philosophy" data-factoid="philosophy">PHILOSOPHY</div>
+                    <div class="sidebar-label philosophy" data-factoid="philosophy" data-i18n="philosophy">PHILOSOPHY</div>
                     <div class="sidebar-number">093</div>
-                    <div class="sidebar-action ethics">ETHICS</div>
+                    <div class="sidebar-action ethics" data-i18n="ethics">ETHICS</div>
                 </div>
                 <div class="sidebar-row">
-                    <div class="sidebar-label logic" data-factoid="logic">LOGIC</div>
+                    <div class="sidebar-label logic" data-factoid="logic" data-i18n="logic">LOGIC</div>
                     <div class="sidebar-number">156</div>
-                    <div class="sidebar-action fallacies">FALLACIES</div>
+                    <div class="sidebar-action fallacies" data-i18n="fallacies">FALLACIES</div>
                 </div>
                 
                 <div class="sidebar-divider"></div>
 
                 <div class="sidebar-row">
-                    <div class="sidebar-label rhetoric" data-factoid="rhetoric">RHETORIC</div>
+                    <div class="sidebar-label rhetoric" data-factoid="rhetoric" data-i18n="rhetoric">RHETORIC</div>
                     <div class="sidebar-number">078</div>
-                    <div class="sidebar-action persuasion">PERSUASION</div>
+                    <div class="sidebar-action persuasion" data-i18n="persuasion">PERSUASION</div>
                 </div>
                 <div class="sidebar-row">
-                    <div class="sidebar-label media" data-factoid="media">MEDIA</div>
+                    <div class="sidebar-label media" data-factoid="media" data-i18n="media">MEDIA</div>
                     <div class="sidebar-number">412</div>
-                    <div class="sidebar-action literacy">LITERACY</div>
+                    <div class="sidebar-action literacy" data-i18n="literacy">LITERACY</div>
                 </div>
                 <div class="sidebar-row">
-                    <div class="sidebar-label psychology" data-factoid="psych">PSYCHOLOGY</div>
+                    <div class="sidebar-label psychology" data-factoid="psych" data-i18n="psychology">PSYCHOLOGY</div>
                     <div class="sidebar-number">067</div>
-                    <div class="sidebar-action bias">BIAS</div>
+                    <div class="sidebar-action bias" data-i18n="bias">BIAS</div>
                 </div>
                 <div class="sidebar-row">
-                    <div class="sidebar-label statistics" data-factoid="stats">STATISTICS</div>
+                    <div class="sidebar-label statistics" data-factoid="stats" data-i18n="statistics">STATISTICS</div>
                     <div class="sidebar-number">234</div>
-                    <div class="sidebar-action data">DATA</div>
+                    <div class="sidebar-action data" data-i18n="data">DATA</div>
                 </div>
 
                 <div class="sidebar-divider"></div>
 
                 <div class="sidebar-row">
-                    <div class="sidebar-label sources">SOURCES</div>
+                    <div class="sidebar-label sources" data-i18n="sources">SOURCES</div>
                     <div class="sidebar-number">089</div>
-                    <div class="sidebar-action verify">VERIFY</div>
+                    <div class="sidebar-action verify" data-i18n="verify">VERIFY</div>
                 </div>
                 <div class="sidebar-row">
-                    <div class="sidebar-label export" id="btnExport">EXPORT</div>
+                    <div class="sidebar-label export" id="btnExport" data-i18n="export">EXPORT</div>
                     <div class="sidebar-number" id="exportCount">000</div>
-                    <div class="sidebar-action reports" id="btnReports">REPORTS</div>
+                    <div class="sidebar-action reports" id="btnReports" data-i18n="reports">REPORTS</div>
                 </div>
             </div>
             <div class="sidebar-bottom-curve"></div>
@@ -1565,42 +1565,42 @@
             <!-- Main Content Panel -->
             <div class="content-panel">
                 <div class="content-header">
-                    <h2>VERACITY™ SEARCH</h2>
-                    <span class="version">VERITAS LLC</span>
+                    <h2 id="searchTitle" data-i18n="searchTitle">VERACITY™ SEARCH</h2>
+                    <span class="version" id="companyName" data-i18n="companyName">VERITAS LLC</span>
                 </div>
                 <div class="content-body">
                     <!-- Factoid Display -->
                     <div class="factoid-display" id="factoidDisplay">
                         <div class="factoid-category" id="factoidCategory">CATEGORY</div>
                         <div class="factoid-text" id="factoidText">Factoid content here...</div>
-                        <div class="factoid-close" onclick="hideFactoid()">[ DISMISS ]</div>
+                        <div class="factoid-close" id="factoidDismiss" data-i18n="dismiss" onclick="hideFactoid()">[ DISMISS ]</div>
                     </div>
 
                     <!-- Input Section -->
                     <div class="input-section" id="inputSection">
-                        <div class="input-label">WHAT WOULD YOU LIKE TO EXPLORE?</div>
+                        <div class="input-label" id="inputLabel" data-i18n="inputLabel">WHAT WOULD YOU LIKE TO EXPLORE?</div>
                         <div class="input-wrapper">
                             <input type="text" class="input-field" id="userInput" 
                                    placeholder="Enter a claim, question, belief, or situation...">
                             <button class="submit-btn" id="submitBtn">ANALYZE</button>
                         </div>
                         <div class="input-helper">
-                            <div class="helper-text">Try one of these examples to see how Veracity works:</div>
+                            <div class="helper-text" id="helperText" data-i18n="helperText">Try one of these examples to see how Veracity works:</div>
                             <div class="quick-examples">
-                                <span class="example-chip" data-input="Is it true that vaccines cause autism?">vaccines &amp; autism</span>
-                                <span class="example-chip" data-input="Why do I feel anxious about the news?">news anxiety</span>
-                                <span class="example-chip" data-input="How do I know if a source is reliable?">source evaluation</span>
-                                <span class="example-chip" data-input="Did Einstein really fail math?">Einstein myth</span>
+                                <span class="example-chip" id="chip1" data-i18n="chip1" data-input="Is it true that vaccines cause autism?">vaccines &amp; autism</span>
+                                <span class="example-chip" id="chip2" data-i18n="chip2" data-input="Why do I feel anxious about the news?">news anxiety</span>
+                                <span class="example-chip" id="chip3" data-i18n="chip3" data-input="How do I know if a source is reliable?">source evaluation</span>
+                                <span class="example-chip" id="chip4" data-i18n="chip4" data-input="Did Einstein really fail math?">Einstein myth</span>
                             </div>
                         </div>
 
                         <!-- Research Article/URL Section -->
-                        <div class="research-divider">OR</div>
+                        <div class="research-divider" id="researchDivider" data-i18n="researchDivider">OR</div>
                         <div class="research-section">
-                            <div class="research-hint">Have a news article, social media post, or URL you want to fact-check?</div>
+                            <div class="research-hint" id="researchHint" data-i18n="researchHint">Have a news article, social media post, or URL you want to fact-check?</div>
                             <button class="research-btn" id="researchBtn">
                                 <span class="icon">🔍</span>
-                                RESEARCH AN ARTICLE OR POST
+                                <span data-i18n="researchBtn">RESEARCH AN ARTICLE OR POST</span>
                             </button>
                         </div>
                     </div>
@@ -1784,6 +1784,7 @@
     <script src="modules/contextual.js"></script>
     <script src="modules/animations.js"></script>
     <script src="modules/export.js"></script>
+    <script src="modules/vinculum.js"></script>
     <script>
         // ==================== CLOCK ====================
         function updateClock() {
@@ -2777,7 +2778,35 @@ Respond ONLY with valid JSON (no markdown, no code blocks):
                 faith: "FAITH",
                 mind: "MIND",
                 digital: "DIGITAL",
-                health: "HEALTH"
+                health: "HEALTH",
+                // New sidebar keys (v5.0)
+                logic: "LOGIC",
+                rhetoric: "RHETORIC",
+                media: "MEDIA",
+                statistics: "STATISTICS",
+                sources: "SOURCES",
+                export: "EXPORT",
+                ethics: "ETHICS",
+                fallacies: "FALLACIES",
+                persuasion: "PERSUASION",
+                literacy: "LITERACY",
+                bias: "BIAS",
+                data: "DATA",
+                verify: "VERIFY",
+                reports: "REPORTS",
+                // Content panel keys (v5.1)
+                searchTitle: "VERACITY™ SEARCH",
+                companyName: "VERITAS LLC",
+                inputLabel: "WHAT WOULD YOU LIKE TO EXPLORE?",
+                helperText: "Try one of these examples to see how Veracity works:",
+                chip1: "vaccines & autism",
+                chip2: "news anxiety",
+                chip3: "source evaluation",
+                chip4: "Einstein myth",
+                researchDivider: "OR",
+                researchHint: "Have a news article, social media post, or URL you want to fact-check?",
+                researchBtn: "RESEARCH AN ARTICLE OR POST",
+                dismiss: "[ DISMISS ]"
             },
             es: {
                 mainTitle: "VERITAS - La Verdad a Través de la Transparencia",
@@ -2808,7 +2837,34 @@ Respond ONLY with valid JSON (no markdown, no code blocks):
                 faith: "FE",
                 mind: "MENTE",
                 digital: "DIGITAL",
-                health: "SALUD"
+                health: "SALUD",
+                logic: "LÓGICA",
+                rhetoric: "RETÓRICA",
+                media: "MEDIOS",
+                statistics: "ESTADÍSTICA",
+                sources: "FUENTES",
+                export: "EXPORTAR",
+                ethics: "ÉTICA",
+                fallacies: "FALACIAS",
+                persuasion: "PERSUASIÓN",
+                literacy: "ALFABETIZACIÓN",
+                bias: "SESGO",
+                data: "DATOS",
+                verify: "VERIFICAR",
+                reports: "INFORMES",
+                // Content panel keys (v5.1)
+                searchTitle: "BÚSQUEDA VERACITY™",
+                companyName: "VERITAS LLC",
+                inputLabel: "¿QUÉ TE GUSTARÍA EXPLORAR?",
+                helperText: "Prueba uno de estos ejemplos para ver cómo funciona Veracity:",
+                chip1: "vacunas y autismo",
+                chip2: "ansiedad por noticias",
+                chip3: "evaluación de fuentes",
+                chip4: "mito de Einstein",
+                researchDivider: "O",
+                researchHint: "¿Tienes un artículo, publicación en redes o URL que quieras verificar?",
+                researchBtn: "INVESTIGAR UN ARTÍCULO O PUBLICACIÓN",
+                dismiss: "[ CERRAR ]"
             },
             fr: {
                 mainTitle: "VERITAS - La Vérité par la Transparence",
@@ -2839,7 +2895,34 @@ Respond ONLY with valid JSON (no markdown, no code blocks):
                 faith: "FOI",
                 mind: "ESPRIT",
                 digital: "NUMÉRIQUE",
-                health: "SANTÉ"
+                health: "SANTÉ",
+                logic: "LOGIQUE",
+                rhetoric: "RHÉTORIQUE",
+                media: "MÉDIAS",
+                statistics: "STATISTIQUES",
+                sources: "SOURCES",
+                export: "EXPORTER",
+                ethics: "ÉTHIQUE",
+                fallacies: "SOPHISMES",
+                persuasion: "PERSUASION",
+                literacy: "LITTÉRATIE",
+                bias: "BIAIS",
+                data: "DONNÉES",
+                verify: "VÉRIFIER",
+                reports: "RAPPORTS",
+                // Content panel keys (v5.1)
+                searchTitle: "RECHERCHE VERACITY™",
+                companyName: "VERITAS LLC",
+                inputLabel: "QUE SOUHAITEZ-VOUS EXPLORER ?",
+                helperText: "Essayez l'un de ces exemples pour voir comment Veracity fonctionne :",
+                chip1: "vaccins et autisme",
+                chip2: "anxiété médiatique",
+                chip3: "évaluation des sources",
+                chip4: "mythe d'Einstein",
+                researchDivider: "OU",
+                researchHint: "Avez-vous un article, une publication ou une URL à vérifier ?",
+                researchBtn: "ANALYSER UN ARTICLE OU UNE PUBLICATION",
+                dismiss: "[ FERMER ]"
             },
             de: {
                 mainTitle: "VERITAS - Wahrheit durch Transparenz",
@@ -2870,7 +2953,34 @@ Respond ONLY with valid JSON (no markdown, no code blocks):
                 faith: "GLAUBE",
                 mind: "GEIST",
                 digital: "DIGITAL",
-                health: "GESUNDHEIT"
+                health: "GESUNDHEIT",
+                logic: "LOGIK",
+                rhetoric: "RHETORIK",
+                media: "MEDIEN",
+                statistics: "STATISTIK",
+                sources: "QUELLEN",
+                export: "EXPORTIEREN",
+                ethics: "ETHIK",
+                fallacies: "FEHLSCHLÜSSE",
+                persuasion: "ÜBERZEUGUNG",
+                literacy: "KOMPETENZ",
+                bias: "VORURTEIL",
+                data: "DATEN",
+                verify: "PRÜFEN",
+                reports: "BERICHTE",
+                // Content panel keys (v5.1)
+                searchTitle: "VERACITY™ SUCHE",
+                companyName: "VERITAS LLC",
+                inputLabel: "WAS MÖCHTEST DU ERKUNDEN?",
+                helperText: "Probiere eines dieser Beispiele, um zu sehen, wie Veracity funktioniert:",
+                chip1: "Impfstoffe & Autismus",
+                chip2: "Nachrichtenangst",
+                chip3: "Quellenprüfung",
+                chip4: "Einstein-Mythos",
+                researchDivider: "ODER",
+                researchHint: "Hast du einen Artikel, Social-Media-Post oder eine URL zum Faktencheck?",
+                researchBtn: "ARTIKEL ODER BEITRAG RECHERCHIEREN",
+                dismiss: "[ SCHLIEẞEN ]"
             },
             zh: {
                 mainTitle: "VERITAS - 透明见真理",
@@ -2901,7 +3011,34 @@ Respond ONLY with valid JSON (no markdown, no code blocks):
                 faith: "信仰",
                 mind: "心智",
                 digital: "数字",
-                health: "健康"
+                health: "健康",
+                logic: "逻辑",
+                rhetoric: "修辞",
+                media: "媒体",
+                statistics: "统计",
+                sources: "来源",
+                export: "导出",
+                ethics: "伦理",
+                fallacies: "谬误",
+                persuasion: "说服",
+                literacy: "素养",
+                bias: "偏见",
+                data: "数据",
+                verify: "验证",
+                reports: "报告",
+                // Content panel keys (v5.1)
+                searchTitle: "VERACITY™ 搜索",
+                companyName: "VERITAS LLC",
+                inputLabel: "您想探索什么？",
+                helperText: "试试这些例子，看看 Veracity 如何工作：",
+                chip1: "疫苗与自闭症",
+                chip2: "新闻焦虑",
+                chip3: "来源评估",
+                chip4: "爱因斯坦神话",
+                researchDivider: "或者",
+                researchHint: "有新闻文章、社交媒体帖子或网址需要核实吗？",
+                researchBtn: "研究文章或帖子",
+                dismiss: "[ 关闭 ]"
             },
             ja: {
                 mainTitle: "VERITAS - 透明性を通じた真実",
@@ -2932,7 +3069,34 @@ Respond ONLY with valid JSON (no markdown, no code blocks):
                 faith: "信仰",
                 mind: "心",
                 digital: "デジタル",
-                health: "健康"
+                health: "健康",
+                logic: "論理",
+                rhetoric: "修辞学",
+                media: "メディア",
+                statistics: "統計",
+                sources: "情報源",
+                export: "エクスポート",
+                ethics: "倫理",
+                fallacies: "誤謬",
+                persuasion: "説得",
+                literacy: "リテラシー",
+                bias: "バイアス",
+                data: "データ",
+                verify: "検証",
+                reports: "レポート",
+                // Content panel keys (v5.1)
+                searchTitle: "VERACITY™ 検索",
+                companyName: "VERITAS LLC",
+                inputLabel: "何を探求しますか？",
+                helperText: "Veracityの動作を確認するには、これらの例を試してください：",
+                chip1: "ワクチンと自閉症",
+                chip2: "ニュース不安",
+                chip3: "ソース評価",
+                chip4: "アインシュタイン神話",
+                researchDivider: "または",
+                researchHint: "ニュース記事、SNS投稿、またはURLをファクトチェックしますか？",
+                researchBtn: "記事または投稿を調査",
+                dismiss: "[ 閉じる ]"
             },
             ko: {
                 mainTitle: "VERITAS - 투명성을 통한 진실",
@@ -2963,7 +3127,34 @@ Respond ONLY with valid JSON (no markdown, no code blocks):
                 faith: "신앙",
                 mind: "마음",
                 digital: "디지털",
-                health: "건강"
+                health: "건강",
+                logic: "논리",
+                rhetoric: "수사학",
+                media: "미디어",
+                statistics: "통계",
+                sources: "출처",
+                export: "내보내기",
+                ethics: "윤리",
+                fallacies: "오류",
+                persuasion: "설득",
+                literacy: "리터러시",
+                bias: "편향",
+                data: "데이터",
+                verify: "검증",
+                reports: "보고서",
+                // Content panel keys (v5.1)
+                searchTitle: "VERACITY™ 검색",
+                companyName: "VERITAS LLC",
+                inputLabel: "무엇을 탐구하고 싶으신가요?",
+                helperText: "Veracity 작동 방식을 보려면 다음 예제를 시도해 보세요:",
+                chip1: "백신과 자폐증",
+                chip2: "뉴스 불안",
+                chip3: "출처 평가",
+                chip4: "아인슈타인 신화",
+                researchDivider: "또는",
+                researchHint: "팩트체크가 필요한 뉴스 기사, SNS 게시물 또는 URL이 있으신가요?",
+                researchBtn: "기사 또는 게시물 조사",
+                dismiss: "[ 닫기 ]"
             },
             ar: {
                 mainTitle: "VERITAS - الحقيقة من خلال الشفافية",
@@ -2994,38 +3185,34 @@ Respond ONLY with valid JSON (no markdown, no code blocks):
                 faith: "الإيمان",
                 mind: "العقل",
                 digital: "رقمي",
-                health: "الصحة"
-            },
-            hi: {
-                mainTitle: "VERITAS - पारदर्शिता से सत्य",
-                home: "🏠 होम",
-                settings: "सेटिंग्स",
-                refresh: "रीफ्रेश",
-                placeholder: "अपने विचार साझा करें, सवाल पूछें, या लेख पेस्ट करें...",
-                submit: "VERITAS शुरू करें",
-                clear: "साफ़ करें",
-                testHarness: "परीक्षण",
-                hideTests: "छुपाएं",
-                history: "इतिहास",
-                sciences: "विज्ञान",
-                philosophy: "दर्शन",
-                arts: "कला",
-                economics: "अर्थशास्त्र",
-                politics: "राजनीति",
-                religion: "धर्म",
-                psychology: "मनोविज्ञान",
-                technology: "प्रौद्योगिकी",
-                medicine: "चिकित्सा",
-                archives: "संग्रह",
-                research: "शोध",
-                wisdom: "ज्ञान",
-                culture: "संस्कृति",
-                markets: "बाज़ार",
-                policy: "नीति",
-                faith: "आस्था",
-                mind: "मन",
-                digital: "डिजिटल",
-                health: "स्वास्थ्य"
+                health: "الصحة",
+                logic: "المنطق",
+                rhetoric: "البلاغة",
+                media: "الإعلام",
+                statistics: "الإحصاء",
+                sources: "المصادر",
+                export: "تصدير",
+                ethics: "الأخلاق",
+                fallacies: "المغالطات",
+                persuasion: "الإقناع",
+                literacy: "الوعي",
+                bias: "التحيز",
+                data: "البيانات",
+                verify: "تحقق",
+                reports: "التقارير",
+                // Content panel keys (v5.1)
+                searchTitle: "بحث VERACITY™",
+                companyName: "VERITAS LLC",
+                inputLabel: "ماذا تريد أن تستكشف؟",
+                helperText: "جرّب أحد هذه الأمثلة لترى كيف يعمل Veracity:",
+                chip1: "اللقاحات والتوحد",
+                chip2: "قلق الأخبار",
+                chip3: "تقييم المصادر",
+                chip4: "أسطورة أينشتاين",
+                researchDivider: "أو",
+                researchHint: "هل لديك مقال أو منشور أو رابط تريد التحقق منه؟",
+                researchBtn: "البحث في مقال أو منشور",
+                dismiss: "[ إغلاق ]"
             },
             ru: {
                 mainTitle: "VERITAS - Истина через прозрачность",
@@ -3056,7 +3243,34 @@ Respond ONLY with valid JSON (no markdown, no code blocks):
                 faith: "ВЕРА",
                 mind: "РАЗУМ",
                 digital: "ЦИФРОВЫЕ",
-                health: "ЗДОРОВЬЕ"
+                health: "ЗДОРОВЬЕ",
+                logic: "ЛОГИКА",
+                rhetoric: "РИТОРИКА",
+                media: "СМИ",
+                statistics: "СТАТИСТИКА",
+                sources: "ИСТОЧНИКИ",
+                export: "ЭКСПОРТ",
+                ethics: "ЭТИКА",
+                fallacies: "ЗАБЛУЖДЕНИЯ",
+                persuasion: "УБЕЖДЕНИЕ",
+                literacy: "ГРАМОТНОСТЬ",
+                bias: "ПРЕДВЗЯТОСТЬ",
+                data: "ДАННЫЕ",
+                verify: "ПРОВЕРИТЬ",
+                reports: "ОТЧЁТЫ",
+                // Content panel keys (v5.1)
+                searchTitle: "ПОИСК VERACITY™",
+                companyName: "VERITAS LLC",
+                inputLabel: "ЧТО ВЫ ХОТИТЕ ИССЛЕДОВАТЬ?",
+                helperText: "Попробуйте один из этих примеров, чтобы увидеть, как работает Veracity:",
+                chip1: "вакцины и аутизм",
+                chip2: "тревога от новостей",
+                chip3: "оценка источников",
+                chip4: "миф об Эйнштейне",
+                researchDivider: "ИЛИ",
+                researchHint: "Есть статья, пост или ссылка для проверки фактов?",
+                researchBtn: "ИССЛЕДОВАТЬ СТАТЬЮ ИЛИ ПОСТ",
+                dismiss: "[ ЗАКРЫТЬ ]"
             },
             pt: {
                 mainTitle: "VERITAS - Verdade Através da Transparência",
@@ -3087,7 +3301,34 @@ Respond ONLY with valid JSON (no markdown, no code blocks):
                 faith: "FÉ",
                 mind: "MENTE",
                 digital: "DIGITAL",
-                health: "SAÚDE"
+                health: "SAÚDE",
+                logic: "LÓGICA",
+                rhetoric: "RETÓRICA",
+                media: "MÍDIA",
+                statistics: "ESTATÍSTICA",
+                sources: "FONTES",
+                export: "EXPORTAR",
+                ethics: "ÉTICA",
+                fallacies: "FALÁCIAS",
+                persuasion: "PERSUASÃO",
+                literacy: "LITERACIA",
+                bias: "VIÉS",
+                data: "DADOS",
+                verify: "VERIFICAR",
+                reports: "RELATÓRIOS",
+                // Content panel keys (v5.1)
+                searchTitle: "PESQUISA VERACITY™",
+                companyName: "VERITAS LLC",
+                inputLabel: "O QUE GOSTARIA DE EXPLORAR?",
+                helperText: "Experimente um destes exemplos para ver como o Veracity funciona:",
+                chip1: "vacinas e autismo",
+                chip2: "ansiedade com notícias",
+                chip3: "avaliação de fontes",
+                chip4: "mito de Einstein",
+                researchDivider: "OU",
+                researchHint: "Tem um artigo, post ou URL que deseja verificar?",
+                researchBtn: "PESQUISAR ARTIGO OU POST",
+                dismiss: "[ FECHAR ]"
             },
             it: {
                 mainTitle: "VERITAS - Verità Attraverso la Trasparenza",
@@ -3118,38 +3359,34 @@ Respond ONLY with valid JSON (no markdown, no code blocks):
                 faith: "FEDE",
                 mind: "MENTE",
                 digital: "DIGITALE",
-                health: "SALUTE"
-            },
-            sw: {
-                mainTitle: "VERITAS - Ukweli Kupitia Uwazi",
-                home: "🏠 NYUMBANI",
-                settings: "MIPANGILIO",
-                refresh: "SASISHA",
-                placeholder: "Shiriki mawazo yako, uliza swali, au bandika makala kuchunguza...",
-                submit: "ANZISHA VERITAS",
-                clear: "FUTA",
-                testHarness: "MAJARIBIO",
-                hideTests: "FICHA",
-                history: "HISTORIA",
-                sciences: "SAYANSI",
-                philosophy: "FALSAFA",
-                arts: "SANAA",
-                economics: "UCHUMI",
-                politics: "SIASA",
-                religion: "DINI",
-                psychology: "SAIKOLOJIA",
-                technology: "TEKNOLOJIA",
-                medicine: "DAWA",
-                archives: "KUMBUKUMBU",
-                research: "UTAFITI",
-                wisdom: "HEKIMA",
-                culture: "UTAMADUNI",
-                markets: "MASOKO",
-                policy: "SERA",
-                faith: "IMANI",
-                mind: "AKILI",
-                digital: "DIJITALI",
-                health: "AFYA"
+                health: "SALUTE",
+                logic: "LOGICA",
+                rhetoric: "RETORICA",
+                media: "MEDIA",
+                statistics: "STATISTICA",
+                sources: "FONTI",
+                export: "ESPORTA",
+                ethics: "ETICA",
+                fallacies: "FALLACIE",
+                persuasion: "PERSUASIONE",
+                literacy: "ALFABETIZZAZIONE",
+                bias: "PREGIUDIZIO",
+                data: "DATI",
+                verify: "VERIFICA",
+                reports: "RAPPORTI",
+                // Content panel keys (v5.1)
+                searchTitle: "RICERCA VERACITY™",
+                companyName: "VERITAS LLC",
+                inputLabel: "COSA VORRESTI ESPLORARE?",
+                helperText: "Prova uno di questi esempi per vedere come funziona Veracity:",
+                chip1: "vaccini e autismo",
+                chip2: "ansia da notizie",
+                chip3: "valutazione fonti",
+                chip4: "mito di Einstein",
+                researchDivider: "OPPURE",
+                researchHint: "Hai un articolo, post o URL da verificare?",
+                researchBtn: "ANALIZZA ARTICOLO O POST",
+                dismiss: "[ CHIUDI ]"
             },
             he: {
                 mainTitle: "VERITAS - אמת דרך שקיפות",
@@ -3180,38 +3417,34 @@ Respond ONLY with valid JSON (no markdown, no code blocks):
                 faith: "אמונה",
                 mind: "נפש",
                 digital: "דיגיטלי",
-                health: "בריאות"
-            },
-            vi: {
-                mainTitle: "VERITAS - Sự Thật Qua Minh Bạch",
-                home: "🏠 TRANG CHỦ",
-                settings: "CÀI ĐẶT",
-                refresh: "LÀM MỚI",
-                placeholder: "Chia sẻ suy nghĩ, đặt câu hỏi, hoặc dán bài viết để khám phá...",
-                submit: "KÍCH HOẠT VERITAS",
-                clear: "XÓA",
-                testHarness: "KIỂM TRA",
-                hideTests: "ẨN",
-                history: "LỊCH SỬ",
-                sciences: "KHOA HỌC",
-                philosophy: "TRIẾT HỌC",
-                arts: "NGHỆ THUẬT",
-                economics: "KINH TẾ",
-                politics: "CHÍNH TRỊ",
-                religion: "TÔN GIÁO",
-                psychology: "TÂM LÝ",
-                technology: "CÔNG NGHỆ",
-                medicine: "Y HỌC",
-                archives: "LƯU TRỮ",
-                research: "NGHIÊN CỨU",
-                wisdom: "TRÍ TUỆ",
-                culture: "VĂN HÓA",
-                markets: "THỊ TRƯỜNG",
-                policy: "CHÍNH SÁCH",
-                faith: "ĐỨC TIN",
-                mind: "TÂM TRÍ",
-                digital: "SỐ",
-                health: "SỨC KHỎE"
+                health: "בריאות",
+                logic: "לוגיקה",
+                rhetoric: "רטוריקה",
+                media: "תקשורת",
+                statistics: "סטטיסטיקה",
+                sources: "מקורות",
+                export: "ייצוא",
+                ethics: "אתיקה",
+                fallacies: "כשלים",
+                persuasion: "שכנוע",
+                literacy: "אוריינות",
+                bias: "הטיה",
+                data: "נתונים",
+                verify: "אימות",
+                reports: "דוחות",
+                // Content panel keys (v5.1)
+                searchTitle: "חיפוש VERACITY™",
+                companyName: "VERITAS LLC",
+                inputLabel: "מה תרצה לחקור?",
+                helperText: "נסה אחת מהדוגמאות האלה לראות איך Veracity עובד:",
+                chip1: "חיסונים ואוטיזם",
+                chip2: "חרדת חדשות",
+                chip3: "הערכת מקורות",
+                chip4: "המיתוס של איינשטיין",
+                researchDivider: "או",
+                researchHint: "יש לך כתבה, פוסט או קישור לבדיקת עובדות?",
+                researchBtn: "לחקור כתבה או פוסט",
+                dismiss: "[ סגור ]"
             },
             uk: {
                 mainTitle: "VERITAS - Правда через прозорість",
@@ -3242,7 +3475,34 @@ Respond ONLY with valid JSON (no markdown, no code blocks):
                 faith: "ВІРА",
                 mind: "РОЗУМ",
                 digital: "ЦИФРОВІ",
-                health: "ЗДОРОВ'Я"
+                health: "ЗДОРОВ'Я",
+                logic: "ЛОГІКА",
+                rhetoric: "РИТОРИКА",
+                media: "ЗМІ",
+                statistics: "СТАТИСТИКА",
+                sources: "ДЖЕРЕЛА",
+                export: "ЕКСПОРТ",
+                ethics: "ЕТИКА",
+                fallacies: "ПОМИЛКИ",
+                persuasion: "ПЕРЕКОНАННЯ",
+                literacy: "ГРАМОТНІСТЬ",
+                bias: "УПЕРЕДЖЕННЯ",
+                data: "ДАНІ",
+                verify: "ПЕРЕВІРИТИ",
+                reports: "ЗВІТИ",
+                // Content panel keys (v5.1)
+                searchTitle: "ПОШУК VERACITY™",
+                companyName: "VERITAS LLC",
+                inputLabel: "ЩО ВИ ХОЧЕТЕ ДОСЛІДИТИ?",
+                helperText: "Спробуйте один із цих прикладів, щоб побачити, як працює Veracity:",
+                chip1: "вакцини та аутизм",
+                chip2: "тривога від новин",
+                chip3: "оцінка джерел",
+                chip4: "міф про Ейнштейна",
+                researchDivider: "АБО",
+                researchHint: "Маєте статтю, пост або посилання для перевірки фактів?",
+                researchBtn: "ДОСЛІДИТИ СТАТТЮ АБО ПОСТ",
+                dismiss: "[ ЗАКРИТИ ]"
             },
             el: {
                 mainTitle: "VERITAS - Αλήθεια Μέσω Διαφάνειας",
@@ -3273,7 +3533,34 @@ Respond ONLY with valid JSON (no markdown, no code blocks):
                 faith: "ΠΙΣΤΗ",
                 mind: "ΝΟΥΣ",
                 digital: "ΨΗΦΙΑΚΑ",
-                health: "ΥΓΕΙΑ"
+                health: "ΥΓΕΙΑ",
+                logic: "ΛΟΓΙΚΗ",
+                rhetoric: "ΡΗΤΟΡΙΚΗ",
+                media: "ΜΕΣΑ",
+                statistics: "ΣΤΑΤΙΣΤΙΚΗ",
+                sources: "ΠΗΓΕΣ",
+                export: "ΕΞΑΓΩΓΗ",
+                ethics: "ΗΘΙΚΗ",
+                fallacies: "ΠΛΑΝΕΣ",
+                persuasion: "ΠΕΙΘΩ",
+                literacy: "ΕΓΓΡΑΜΜΑΤΟΣΥΝΗ",
+                bias: "ΠΡΟΚΑΤΑΛΗΨΗ",
+                data: "ΔΕΔΟΜΕΝΑ",
+                verify: "ΕΠΑΛΗΘΕΥΣΗ",
+                reports: "ΑΝΑΦΟΡΕΣ",
+                // Content panel keys (v5.1)
+                searchTitle: "ΑΝΑΖΗΤΗΣΗ VERACITY™",
+                companyName: "VERITAS LLC",
+                inputLabel: "ΤΙ ΘΑ ΘΕΛΑΤΕ ΝΑ ΕΞΕΡΕΥΝΗΣΕΤΕ;",
+                helperText: "Δοκιμάστε ένα από αυτά τα παραδείγματα για να δείτε πώς λειτουργεί το Veracity:",
+                chip1: "εμβόλια και αυτισμός",
+                chip2: "άγχος ειδήσεων",
+                chip3: "αξιολόγηση πηγών",
+                chip4: "μύθος του Αϊνστάιν",
+                researchDivider: "Ή",
+                researchHint: "Έχετε άρθρο, ανάρτηση ή URL για έλεγχο;",
+                researchBtn: "ΕΡΕΥΝΑ ΑΡΘΡΟΥ Ή ΑΝΑΡΤΗΣΗΣ",
+                dismiss: "[ ΚΛΕΙΣΙΜΟ ]"
             }
         };
         
@@ -3308,29 +3595,10 @@ Respond ONLY with valid JSON (no markdown, no code blocks):
                 testToggle.textContent = t.hideTests;
             }
             
-            // Update sidebar labels
-            const sidebarLabels = document.querySelectorAll('.sidebar-label');
-            const labelMap = {
-                'HISTORY': t.history, 'SCIENCES': t.sciences, 'PHILOSOPHY': t.philosophy,
-                'ARTS': t.arts, 'ECONOMICS': t.economics, 'POLITICS': t.politics,
-                'RELIGION': t.religion, 'PSYCHOLOGY': t.psychology, 'TECHNOLOGY': t.technology,
-                'MEDICINE': t.medicine
-            };
-            sidebarLabels.forEach(label => {
-                const key = label.textContent.trim().toUpperCase();
-                if (labelMap[key]) label.textContent = labelMap[key];
-            });
-            
-            // Update sidebar actions
-            const sidebarActions = document.querySelectorAll('.sidebar-action');
-            const actionMap = {
-                'ARCHIVES': t.archives, 'RESEARCH': t.research, 'WISDOM': t.wisdom,
-                'CULTURE': t.culture, 'MARKETS': t.markets, 'POLICY': t.policy,
-                'FAITH': t.faith, 'MIND': t.mind, 'DIGITAL': t.digital, 'HEALTH': t.health
-            };
-            sidebarActions.forEach(action => {
-                const key = action.textContent.trim().toUpperCase();
-                if (actionMap[key]) action.textContent = actionMap[key];
+            // Update sidebar labels and actions using data-i18n attribute
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (t[key]) el.textContent = t[key];
             });
             
             // Set text direction for RTL languages - only affect text content, not layout
