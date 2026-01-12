@@ -1,5 +1,5 @@
 /**
- * VERACITY v5.0 — TRACK C: NAVIGATE API
+ * VERACITY v5.2 — TRACK C: NAVIGATE API
  * ======================================
  * Vercel Serverless Function
  * 
@@ -9,7 +9,29 @@
  * Handles empathetic guidance for emotionally complex situations
  * Uses Claude Sonnet with web search for temporal verification
  * Includes crisis detection and resource referral
+ * 
+ * VINCULUM Integration: Universal Translator support for 14 languages
  */
+
+// ============================================
+// VINCULUM - UNIVERSAL TRANSLATOR SUPPORT
+// ============================================
+const LANGUAGE_NAMES = {
+    en: 'English',
+    es: 'Spanish (Español)',
+    fr: 'French (Français)',
+    de: 'German (Deutsch)',
+    it: 'Italian (Italiano)',
+    pt: 'Portuguese (Português)',
+    ru: 'Russian (Русский)',
+    uk: 'Ukrainian (Українська)',
+    el: 'Greek (Ελληνικά)',
+    zh: 'Chinese (中文)',
+    ja: 'Japanese (日本語)',
+    ko: 'Korean (한국어)',
+    ar: 'Arabic (العربية)',
+    he: 'Hebrew (עברית)'
+};
 
 const SYSTEM_PROMPT = `You are the VERITAS Navigate Guide — an empathetic companion designed to help people work through emotionally complex situations and find practical next steps.
 
@@ -83,6 +105,43 @@ function detectCrisis(text) {
     return CRISIS_PATTERNS.some(pattern => pattern.test(text));
 }
 
+/**
+ * Build the Universal Translator instruction block for non-English users
+ */
+function buildLanguageInstruction(language) {
+    if (!language || language === 'en') {
+        return '';
+    }
+
+    const languageName = LANGUAGE_NAMES[language] || language;
+
+    return `
+
+═══════════════════════════════════════
+🌐 VINCULUM - UNIVERSAL TRANSLATOR 🌐
+═══════════════════════════════════════
+
+**CRITICAL**: The user's language preference is **${languageName}**.
+
+You MUST write ALL human-readable content in ${languageName}. This includes:
+- Your empathetic opening and acknowledgments
+- All frameworks and perspectives you offer
+- Questions you ask the person
+- Practical guidance and suggestions
+- Crisis resources (if applicable) - provide local equivalents where possible
+
+The ONLY elements that remain in English are:
+- Technical identifiers or JSON keys (if any)
+- URLs and resource links
+
+Your response should feel completely natural in ${languageName} — as if you are a native speaker offering support. Do not translate word-for-word; express the warmth, wisdom, and practical guidance in ways that resonate naturally in the user's language and cultural context.
+
+Remember: "One to reach, one to teach" — you must first REACH someone in their own language before any guidance can land.
+
+═══════════════════════════════════════
+`;
+}
+
 export default async function handler(req, res) {
     // Handle CORS
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -98,7 +157,7 @@ export default async function handler(req, res) {
     }
 
     try {
-        const { messages, originalQuery } = req.body;
+        const { messages, originalQuery, language } = req.body;
 
         if (!messages || !Array.isArray(messages)) {
             return res.status(400).json({ error: 'Messages array required' });
@@ -119,8 +178,14 @@ export default async function handler(req, res) {
         // Also check original query
         const queryHasCrisis = originalQuery && detectCrisis(originalQuery);
 
-        // Build system prompt with context
+        // Build system prompt with context and language instruction
         let systemPrompt = SYSTEM_PROMPT;
+        
+        // Add Universal Translator instruction for non-English users
+        const languageInstruction = buildLanguageInstruction(language || 'en');
+        if (languageInstruction) {
+            systemPrompt += languageInstruction;
+        }
         
         if (originalQuery) {
             systemPrompt += `\n\nCONTEXT: The user started this conversation describing this situation: "${originalQuery}"`;
@@ -177,7 +242,8 @@ export default async function handler(req, res) {
             content: textContent,
             usage: data.usage,
             model: data.model,
-            crisisDetected: hasCrisisIndicators || queryHasCrisis
+            crisisDetected: hasCrisisIndicators || queryHasCrisis,
+            language: language || 'en'
         });
 
     } catch (error) {
