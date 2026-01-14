@@ -2,33 +2,36 @@
  * VERACITY v5.2 — FACTOIDS MODULE
  * =================================
  * Module: factoids.js
- * Version: 1.1.0
- * Last Modified: 2026-01-11
+ * Version: 2.0.0
+ * Last Modified: 2026-01-14
  * 
  * PURPOSE:
  * Provides educational factoids for discipline buttons in IDLE state.
- * "Did you know?" moments that build media literacy while users consider what to ask.
+ * Now API-powered: fresh, improvised, culturally-attuned factoids every time.
+ * 
+ * ARCHITECTURE:
+ * PRIMARY: Calls /api/factoids-api for Claude-generated content
+ * FALLBACK: Static FACTOID_DATA when API unavailable
+ * 
+ * Every click is a new improvisation - dinner party brilliance, not database lookup.
  * 
  * VINCULUM INTEGRATION:
- * All public getter functions are now async and support multilingual output.
- * When a non-English language is selected, factoids are translated via VINCULUM.
- * Use the `sync` object for synchronous English-only access when needed.
+ * API generates culturally-resonant content based on language.
+ * Fallback uses client-side VINCULUM translation if available.
  * 
  * PHILOSOPHY:
  * "Not telling people what to think, but giving them frameworks to think with."
  * Each factoid plants seeds for critical thinking without being preachy.
  * 
- * DEPENDENCIES: vinculum.js (optional, for translation)
- * DEPENDED ON BY: main.html, export.js
- * 
- * CHANGE IMPACT: LOW — Data only, no logic dependencies
+ * DEPENDENCIES: /api/factoids-api (primary), vinculum.js (fallback)
+ * DEPENDED ON BY: veracity.html, export.js
  * 
  * EXPORTS:
- * - getRandomFactoid(discipline) → Promise<Factoid>
- * - getFactoidById(id) → Promise<Factoid>
- * - getAllFactoids(discipline) → Promise<Array<Factoid>>
- * - sync.getRandomFactoid(discipline) → Factoid (English only)
- * - FACTOID_DATA → Raw factoid database
+ * - getRandomFactoid(discipline) → Promise<Factoid> (API-first)
+ * - getFactoidById(id) → Promise<Factoid> (static only)
+ * - getAllFactoids(discipline) → Promise<Array<Factoid>> (static only)
+ * - sync.getRandomFactoid(discipline) → Factoid (English only, static)
+ * - FACTOID_DATA → Raw factoid database (fallback)
  * 
  * VERITAS LLC — Prairie du Sac, Wisconsin
  * 🖖 Infinite Diversity in Infinite Combinations
@@ -774,23 +777,61 @@ const VeracityFactoids = (function() {
     // ==================== PUBLIC API (with VINCULUM translation) ====================
 
     /**
+     * Get current language from VINCULUM or localStorage
+     * @returns {string} Language code (e.g., 'en', 'es', 'ja')
+     */
+    function _getCurrentLanguage() {
+        if (typeof Vinculum !== 'undefined' && Vinculum.getCurrentLanguage) {
+            return Vinculum.getCurrentLanguage();
+        }
+        return localStorage.getItem('veritasLanguage') || 'en';
+    }
+
+    /**
      * Get a random factoid from a specific discipline
-     * Returns translated factoid if non-English language selected
+     * PRIMARY: Calls /api/factoids-api for fresh, improvised content
+     * FALLBACK: Uses static FACTOID_DATA if API unavailable
      * @param {string} discipline - One of: history, sciences, philosophy, logic, rhetoric, media, psychology, statistics, sources
      * @returns {Promise<Object|null>} Factoid object or null if discipline not found
      */
     async function getRandomFactoid(discipline) {
+        const lang = _getCurrentLanguage();
+        
+        // Try API first for fresh, improvised content
+        try {
+            const response = await fetch('/api/factoids-api', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    discipline: discipline,
+                    language: lang 
+                })
+            });
+            
+            if (response.ok) {
+                const data = await response.json();
+                if (data.success && data.factoid) {
+                    return {
+                        ...data.factoid,
+                        discipline: discipline.toLowerCase(),
+                        _source: 'api'
+                    };
+                }
+            }
+        } catch (err) {
+            console.log('Factoids API unavailable, using fallback:', err.message);
+        }
+        
+        // Fallback to static data
         const factoid = _getRandomFactoidInternal(discipline);
         if (!factoid) return null;
         
-        // Check if VINCULUM is available and language is not English
-        if (typeof Vinculum !== 'undefined') {
-            const lang = Vinculum.getCurrentLanguage();
-            if (lang !== 'en') {
-                return Vinculum.translateFactoid(factoid, lang);
-            }
+        // Apply VINCULUM translation for fallback if available
+        if (typeof Vinculum !== 'undefined' && lang !== 'en') {
+            return Vinculum.translateFactoid(factoid, lang);
         }
-        return factoid;
+        
+        return { ...factoid, _source: 'static' };
     }
 
     /**

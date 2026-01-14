@@ -2,38 +2,41 @@
  * VERACITY v5.2 — MICRO-DISCOVERY MODULE
  * ========================================
  * Module: microdiscovery.js
- * Version: 1.1.0
- * Last Modified: 2026-01-11
+ * Version: 2.0.0
+ * Last Modified: 2026-01-14
  * 
  * PURPOSE:
  * Powers the number column on the left sidebar—transforming decorative LCARS
- * numbers into "little portals of curiosity." Each number has substance;
- * playful but never trivial.
+ * numbers into "little portals of curiosity." Each number has a soul.
+ * 
+ * ARCHITECTURE:
+ * PRIMARY: Calls /api/microdiscovery-api for Claude-generated numbers with stories
+ * FALLBACK: Static MICRO_DATA when API unavailable
+ * 
+ * Every hover reveals a new story - numbers aren't data, they're frozen moments
+ * of human experience.
  * 
  * BEHAVIOR:
- * - Numbers randomize on load (or every 30 seconds)
- * - Hover reveals tooltip with context
- * - Numbers are discipline-appropriate (years for history, atomic numbers for science, etc.)
+ * - Numbers refresh via API for endless variety
+ * - Hover reveals tooltip with evocative context
+ * - Culturally attuned via VINCULUM for each language
  * 
  * VINCULUM INTEGRATION:
- * All public getter functions are now async and support multilingual output.
- * When a non-English language is selected, tooltips are translated via VINCULUM.
- * Use the `sync` object for synchronous English-only access when needed.
+ * API generates culturally-resonant content based on language.
+ * Fallback uses client-side VINCULUM translation if available.
  * 
  * PHILOSOPHY:
  * "Every number has a story. Every story teaches without lecturing."
  * 
- * DEPENDENCIES: vinculum.js (optional, for translation)
- * DEPENDED ON BY: main.html
- * 
- * CHANGE IMPACT: LOW — Data only, no logic dependencies
+ * DEPENDENCIES: /api/microdiscovery-api (primary), vinculum.js (fallback)
+ * DEPENDED ON BY: veracity.html
  * 
  * EXPORTS:
- * - getRandomEntry(discipline) → Promise<MicroDiscoveryEntry>
- * - getEntryByValue(discipline, value) → Promise<MicroDiscoveryEntry>
- * - getAllEntries(discipline) → Promise<Array<Entry>>
- * - sync.getRandomEntry(discipline) → MicroDiscoveryEntry (English only)
- * - MICRO_DATA → Raw data database
+ * - getRandomEntry(discipline) → Promise<MicroDiscoveryEntry> (API-first)
+ * - getEntryByValue(discipline, value) → Promise<MicroDiscoveryEntry> (static)
+ * - getAllEntries(discipline) → Promise<Array<Entry>> (static)
+ * - sync.getRandomEntry(discipline) → MicroDiscoveryEntry (English only, static)
+ * - MICRO_DATA → Raw data database (fallback)
  * 
  * VERITAS LLC — Prairie du Sac, Wisconsin
  * 🖖 Infinite Diversity in Infinite Combinations
@@ -346,25 +349,64 @@ const VeracityMicroDiscovery = (function() {
         return entries.map(e => ({ ...e, discipline: discipline.toLowerCase() }));
     }
 
-    // ==================== PUBLIC API (with VINCULUM translation) ====================
+    // ==================== PUBLIC API (API-first with fallback) ====================
+
+    /**
+     * Get current language from VINCULUM or localStorage
+     * @returns {string} Language code (e.g., 'en', 'es', 'ja')
+     */
+    function _getCurrentLanguage() {
+        if (typeof Vinculum !== 'undefined' && Vinculum.getCurrentLanguage) {
+            return Vinculum.getCurrentLanguage();
+        }
+        return localStorage.getItem('veritasLanguage') || 'en';
+    }
 
     /**
      * Get a random entry for a discipline
-     * Returns translated entry if non-English language selected
+     * PRIMARY: Calls /api/microdiscovery-api for fresh, improvised numbers
+     * FALLBACK: Uses static MICRO_DATA if API unavailable
      * @param {string} discipline - Discipline name
      * @returns {Promise<Object|null>} Entry object with displayValue, tooltip, category, discipline
      */
     async function getRandomEntry(discipline) {
+        const lang = _getCurrentLanguage();
+        
+        // Try API first for fresh, improvised content
+        try {
+            const response = await fetch('/api/microdiscovery-api', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    discipline: discipline,
+                    language: lang 
+                })
+            });
+            
+            if (response.ok) {
+                const data = await response.json();
+                if (data.success && data.entry) {
+                    return {
+                        ...data.entry,
+                        discipline: discipline.toLowerCase(),
+                        _source: 'api'
+                    };
+                }
+            }
+        } catch (err) {
+            console.log('Microdiscovery API unavailable, using fallback:', err.message);
+        }
+        
+        // Fallback to static data
         const entry = _getRandomEntryInternal(discipline);
         if (!entry) return null;
         
-        if (typeof Vinculum !== 'undefined') {
-            const lang = Vinculum.getCurrentLanguage();
-            if (lang !== 'en') {
-                return Vinculum.translateTooltip(entry, lang);
-            }
+        // Apply VINCULUM translation for fallback if available
+        if (typeof Vinculum !== 'undefined' && lang !== 'en') {
+            return Vinculum.translateTooltip(entry, lang);
         }
-        return entry;
+        
+        return { ...entry, _source: 'static' };
     }
 
     /**
