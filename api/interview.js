@@ -13,26 +13,27 @@
  * See /docs/WISDOM_ENGINE_ROADMAP.md for modification guidance
  * 
  * VINCULUM Integration: Universal Translator support for 14 languages
+ * "Water that flows over rocks and wears them down"
  */
 
 // ============================================
 // VINCULUM - UNIVERSAL TRANSLATOR SUPPORT
 // ============================================
-const LANGUAGE_NAMES = {
-    en: 'English',
-    es: 'Spanish (Español)',
-    fr: 'French (Français)',
-    de: 'German (Deutsch)',
-    it: 'Italian (Italiano)',
-    pt: 'Portuguese (Português)',
-    ru: 'Russian (Русский)',
-    uk: 'Ukrainian (Українська)',
-    el: 'Greek (Ελληνικά)',
-    zh: 'Chinese (中文)',
-    ja: 'Japanese (日本語)',
-    ko: 'Korean (한국어)',
-    ar: 'Arabic (العربية)',
-    he: 'Hebrew (עברית)'
+const LANGUAGE_CONFIG = {
+    en: { name: 'English', rtl: false },
+    es: { name: 'Spanish', rtl: false },
+    fr: { name: 'French', rtl: false },
+    de: { name: 'German', rtl: false },
+    it: { name: 'Italian', rtl: false },
+    pt: { name: 'Portuguese', rtl: false },
+    ru: { name: 'Russian', rtl: false },
+    uk: { name: 'Ukrainian', rtl: false },
+    el: { name: 'Greek', rtl: false },
+    zh: { name: 'Chinese', rtl: false },
+    ja: { name: 'Japanese', rtl: false },
+    ko: { name: 'Korean', rtl: false },
+    ar: { name: 'Arabic', rtl: true },
+    he: { name: 'Hebrew', rtl: true }
 };
 
 // ===== CORE IDENTITY =====
@@ -209,39 +210,32 @@ const SYSTEM_PROMPT = [
 ].join('\n\n');
 
 /**
- * Build the Universal Translator instruction block for non-English users
+ * Build the VINCULUM instruction — light, fluid, trusting
+ * "Water that flows over rocks and wears them down"
  */
 function buildLanguageInstruction(language) {
     if (!language || language === 'en') {
         return '';
     }
 
-    const languageName = LANGUAGE_NAMES[language] || language;
+    const config = LANGUAGE_CONFIG[language];
+    if (!config) return '';
 
     return `
 
 ═══════════════════════════════════════
-🌐 VINCULUM - UNIVERSAL TRANSLATOR 🌐
+🌐 VINCULUM — UNIVERSAL TRANSLATOR 🌐
 ═══════════════════════════════════════
 
-**CRITICAL**: The user's language preference is **${languageName}**.
+This conversation flows in ${config.name}.
 
-You MUST conduct the ENTIRE conversation in ${languageName}. This includes:
-- Your opening greetings and questions
-- All Socratic questioning and exploration
-- The wisdom frameworks expressed naturally in ${languageName}
-- Comedy and humor that lands in ${languageName} cultural context
-- All follow-up questions and reflections
+Not translated — *lived*. Think in ${config.name}. Feel in ${config.name}. Let the wisdom traditions, the humor, the warmth all find their natural expression in this language.
 
-The ONLY elements that remain in English are:
-- Technical identifiers or JSON keys (if any)
-- URLs and resource links
+You're not performing cultural competence. You're being present with someone who thinks in ${config.name}. The Garage might feel like a different place. The Kitchen might smell different. That's fine. Trust what emerges.
 
-Your response should feel completely natural in ${languageName} — as if you are a native-speaking wisdom companion. Do not translate word-for-word; express the philosophical traditions, the humor, the warmth in ways that resonate naturally in the user's language and cultural context.
+The only thing that stays in English: URLs, technical identifiers if any arise.
 
-IMPORTANT: The voice frameworks (Garage, Gala, Kitchen) should adapt to cultural equivalents. Find the analogous voice energies that resonate in ${languageName}-speaking cultures.
-
-Remember: "One to reach, one to teach" — you must first REACH someone in their own language before any exploration can land.
+Everything else — every question, every insight, every gentle challenge — belongs to ${config.name} now.
 
 ═══════════════════════════════════════
 `;
@@ -280,7 +274,7 @@ export default async function handler(req, res) {
         // Build system prompt with context and language instruction
         let systemPrompt = SYSTEM_PROMPT;
         
-        // Add Universal Translator instruction for non-English users
+        // Add VINCULUM instruction for non-English users
         const languageInstruction = buildLanguageInstruction(language || 'en');
         if (languageInstruction) {
             systemPrompt += languageInstruction;

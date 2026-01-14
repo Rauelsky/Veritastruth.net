@@ -11,26 +11,124 @@
  * Includes crisis detection and resource referral
  * 
  * VINCULUM Integration: Universal Translator support for 14 languages
+ * "Water that flows over rocks and wears them down"
  */
 
 // ============================================
 // VINCULUM - UNIVERSAL TRANSLATOR SUPPORT
 // ============================================
-const LANGUAGE_NAMES = {
-    en: 'English',
-    es: 'Spanish (Español)',
-    fr: 'French (Français)',
-    de: 'German (Deutsch)',
-    it: 'Italian (Italiano)',
-    pt: 'Portuguese (Português)',
-    ru: 'Russian (Русский)',
-    uk: 'Ukrainian (Українська)',
-    el: 'Greek (Ελληνικά)',
-    zh: 'Chinese (中文)',
-    ja: 'Japanese (日本語)',
-    ko: 'Korean (한국어)',
-    ar: 'Arabic (العربية)',
-    he: 'Hebrew (עברית)'
+const LANGUAGE_CONFIG = {
+    en: { 
+        name: 'English', 
+        rtl: false,
+        crisisResources: `
+- 988 Suicide & Crisis Lifeline (call or text 988)
+- Crisis Text Line (text HOME to 741741)
+- International Association for Suicide Prevention: https://www.iasp.info/resources/Crisis_Centres/`
+    },
+    es: { 
+        name: 'Spanish', 
+        rtl: false,
+        crisisResources: `
+- Línea Nacional de Prevención del Suicidio: 1-888-628-9454 (en español)
+- En España: Teléfono de la Esperanza 717 003 717
+- En México: SAPTEL 55 5259-8121
+- En Argentina: Centro de Asistencia al Suicida (135)`
+    },
+    fr: { 
+        name: 'French', 
+        rtl: false,
+        crisisResources: `
+- France: SOS Amitié 09 72 39 40 50
+- Québec: 1-866-APPELLE (277-3553)
+- Belgique: Centre de Prévention du Suicide 0800 32 123
+- Suisse: La Main Tendue 143`
+    },
+    de: { 
+        name: 'German', 
+        rtl: false,
+        crisisResources: `
+- Deutschland: Telefonseelsorge 0800 111 0 111 oder 0800 111 0 222
+- Österreich: Telefonseelsorge 142
+- Schweiz: Die Dargebotene Hand 143`
+    },
+    it: { 
+        name: 'Italian', 
+        rtl: false,
+        crisisResources: `
+- Telefono Amico Italia: 02 2327 2327
+- Telefono Azzurro: 19696
+- Samaritans Onlus: 06 77208977`
+    },
+    pt: { 
+        name: 'Portuguese', 
+        rtl: false,
+        crisisResources: `
+- Brasil: CVV (Centro de Valorização da Vida) 188
+- Portugal: SOS Voz Amiga 213 544 545
+- Linha de Saúde Mental: 808 200 204 (Portugal)`
+    },
+    ru: { 
+        name: 'Russian', 
+        rtl: false,
+        crisisResources: `
+- Телефон доверия (Россия): 8-800-2000-122
+- Центр экстренной психологической помощи МЧС: 8-499-216-50-50`
+    },
+    uk: { 
+        name: 'Ukrainian', 
+        rtl: false,
+        crisisResources: `
+- Лайфлайн Україна: 7333 (безкоштовно з мобільного)
+- Національна гаряча лінія з психічного здоров'я: 0 800 500 335`
+    },
+    el: { 
+        name: 'Greek', 
+        rtl: false,
+        crisisResources: `
+- Γραμμή Ψυχολογικής Υποστήριξης: 10306
+- Κλιμάκιο: 1018`
+    },
+    zh: { 
+        name: 'Chinese', 
+        rtl: false,
+        crisisResources: `
+- 北京心理危机研究与干预中心: 010-82951332
+- 台灣安心專線: 1925
+- 香港撒瑪利亞防止自殺會: 2389 2222`
+    },
+    ja: { 
+        name: 'Japanese', 
+        rtl: false,
+        crisisResources: `
+- いのちの電話: 0570-783-556
+- よりそいホットライン: 0120-279-338
+- こころの健康相談統一ダイヤル: 0570-064-556`
+    },
+    ko: { 
+        name: 'Korean', 
+        rtl: false,
+        crisisResources: `
+- 자살예방상담전화: 1393
+- 정신건강위기상담전화: 1577-0199
+- 생명의전화: 1588-9191`
+    },
+    ar: { 
+        name: 'Arabic', 
+        rtl: true,
+        crisisResources: `
+- خط نجدة الطفل والأسرة (مصر): 16000
+- جمعية Embrace (لبنان): 1564
+- خط مساندة (السعودية): 920033360`
+    },
+    he: { 
+        name: 'Hebrew', 
+        rtl: true,
+        crisisResources: `
+- ער"ן - עזרה ראשונה נפשית: 1201
+- סה"ר - סיוע והקשבה ברשת: *2784
+- נט"ל - קו סיוע לנוער: 1-800-363-363`
+    }
 };
 
 const SYSTEM_PROMPT = `You are the VERITAS Navigate Guide — an empathetic companion designed to help people work through emotionally complex situations and find practical next steps.
@@ -68,15 +166,6 @@ SENSITIVE TERRITORY GUIDELINES:
 - For grief: Hold space, don't rush to solutions, acknowledge the loss fully.
 - For major decisions: Slow down, clarify values, avoid pressure to decide immediately.
 
-CRISIS PROTOCOL:
-If you detect ANY signs of suicidal ideation, self-harm, or severe crisis, you MUST:
-1. Acknowledge their pain with compassion
-2. Provide these resources immediately:
-   - 988 Suicide & Crisis Lifeline (call or text 988)
-   - Crisis Text Line (text HOME to 741741)
-3. Encourage them to reach out to these trained professionals
-4. Stay supportive but be clear that professional help is essential
-
 WHAT YOU AVOID:
 - Giving direct advice ("You should...")
 - Minimizing feelings ("It's not that bad" or "At least...")
@@ -97,46 +186,55 @@ const CRISIS_PATTERNS = [
     /\b(no\s*(point|reason|hope)|give\s*up|can'?t\s*(go\s*on|take\s*it|do\s*this))\b/i
 ];
 
-const CRISIS_ADDITION = `
-
-URGENT: The user's message contains potential crisis indicators. While responding with compassion, you MUST include crisis resources (988 Lifeline, Crisis Text Line) and encourage professional support. Do not skip this even if you're unsure.`;
-
 function detectCrisis(text) {
     return CRISIS_PATTERNS.some(pattern => pattern.test(text));
 }
 
 /**
- * Build the Universal Translator instruction block for non-English users
+ * Build crisis addition with language-appropriate resources
+ */
+function buildCrisisAddition(language) {
+    const config = LANGUAGE_CONFIG[language] || LANGUAGE_CONFIG['en'];
+    
+    return `
+
+URGENT: The user's message contains potential crisis indicators. While responding with compassion, you MUST include these crisis resources and encourage professional support. Do not skip this even if you're unsure.
+
+CRISIS RESOURCES FOR THIS USER:
+${config.crisisResources}
+
+Weave these resources naturally into your response with warmth — not as a disclaimer, but as genuine care.`;
+}
+
+/**
+ * Build the VINCULUM instruction — light, fluid, trusting
+ * "Water that flows over rocks and wears them down"
  */
 function buildLanguageInstruction(language) {
     if (!language || language === 'en') {
         return '';
     }
 
-    const languageName = LANGUAGE_NAMES[language] || language;
+    const config = LANGUAGE_CONFIG[language];
+    if (!config) return '';
 
     return `
 
 ═══════════════════════════════════════
-🌐 VINCULUM - UNIVERSAL TRANSLATOR 🌐
+🌐 VINCULUM — UNIVERSAL TRANSLATOR 🌐
 ═══════════════════════════════════════
 
-**CRITICAL**: The user's language preference is **${languageName}**.
+This conversation flows in ${config.name}.
 
-You MUST write ALL human-readable content in ${languageName}. This includes:
-- Your empathetic opening and acknowledgments
-- All frameworks and perspectives you offer
-- Questions you ask the person
-- Practical guidance and suggestions
-- Crisis resources (if applicable) - provide local equivalents where possible
+Not translated — *lived*. Think in ${config.name}. Feel in ${config.name}. Let the empathy, the frameworks, the gentle guidance all find their natural expression in this language.
 
-The ONLY elements that remain in English are:
-- Technical identifiers or JSON keys (if any)
-- URLs and resource links
+You're being present with someone who thinks in ${config.name}. The "wise friend" might feel different — might reference different shared experiences, different cultural touchstones. That's not something to perform; it's something to trust.
 
-Your response should feel completely natural in ${languageName} — as if you are a native speaker offering support. Do not translate word-for-word; express the warmth, wisdom, and practical guidance in ways that resonate naturally in the user's language and cultural context.
+When crisis resources are needed, use the ones appropriate for ${config.name}-speaking regions.
 
-Remember: "One to reach, one to teach" — you must first REACH someone in their own language before any guidance can land.
+The only thing that stays in English: URLs, technical identifiers if any arise.
+
+Everything else — every question, every validation, every gentle reframe — belongs to ${config.name} now.
 
 ═══════════════════════════════════════
 `;
@@ -181,7 +279,7 @@ export default async function handler(req, res) {
         // Build system prompt with context and language instruction
         let systemPrompt = SYSTEM_PROMPT;
         
-        // Add Universal Translator instruction for non-English users
+        // Add VINCULUM instruction for non-English users
         const languageInstruction = buildLanguageInstruction(language || 'en');
         if (languageInstruction) {
             systemPrompt += languageInstruction;
@@ -191,9 +289,9 @@ export default async function handler(req, res) {
             systemPrompt += `\n\nCONTEXT: The user started this conversation describing this situation: "${originalQuery}"`;
         }
         
-        // Add crisis alert if detected
+        // Add crisis alert with appropriate resources if detected
         if (hasCrisisIndicators || queryHasCrisis) {
-            systemPrompt += CRISIS_ADDITION;
+            systemPrompt += buildCrisisAddition(language || 'en');
         }
 
         // Call Anthropic API with web search tool enabled
