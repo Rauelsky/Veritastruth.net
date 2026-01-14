@@ -1,6 +1,7 @@
 // /api/plain-truth.js
 // VERITAS Plain Truth Generator - Claude-powered historical wisdom
 // Draws from 6,000 years of human experience to illuminate specific claims
+// "The letter killeth, but the spirit giveth life"
 
 const Anthropic = require("@anthropic-ai/sdk").default;
 
@@ -18,18 +19,7 @@ module.exports = async (req, res) => {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  // Diagnostic logging
-  console.log("[plain-truth] Request received");
-
   try {
-    // Check if body exists
-    if (!req.body) {
-      console.error("[plain-truth] No request body");
-      return res.status(400).json({ error: "No request body", fallback: true });
-    }
-
-    console.log("[plain-truth] Body keys:", Object.keys(req.body));
-
     const { 
       claim,
       realityScore,
@@ -38,158 +28,115 @@ module.exports = async (req, res) => {
       language = 'en'
     } = req.body;
 
-    console.log("[plain-truth] Claim:", claim ? claim.substring(0, 50) + "..." : "MISSING");
-    console.log("[plain-truth] Scores:", realityScore, integrityScore);
-    console.log("[plain-truth] Language:", language);
-
     if (!claim) {
-      console.error("[plain-truth] Missing claim in body");
-      return res.status(400).json({ error: "Missing claim", fallback: true });
+      return res.status(400).json({ error: "Missing claim" });
     }
 
     const apiKey = process.env.ANTHROPIC_API_KEY || process.env.VERITAS_API_KEY;
     if (!apiKey) {
-      console.error("[plain-truth] No API key found in environment");
-      return res.status(500).json({ error: "API key not configured", fallback: true });
+      return res.status(500).json({ error: "API key not configured" });
     }
-    console.log("[plain-truth] API key found, length:", apiKey.length);
 
-    let client;
-    try {
-      client = new Anthropic({ apiKey });
-      console.log("[plain-truth] Anthropic client created");
-    } catch (clientError) {
-      console.error("[plain-truth] Failed to create Anthropic client:", clientError);
-      return res.status(500).json({ error: "Failed to initialize API client", fallback: true });
-    }
+    const client = new Anthropic({ apiKey });
 
     // Build context from the assessment
-    const patternsRaw = structured?.truthDistortionPatterns || [];
-    const patterns = Array.isArray(patternsRaw) ? patternsRaw : [patternsRaw].filter(Boolean);
+    const patterns = structured?.truthDistortionPatterns || [];
+    const centralClaims = structured?.centralClaims?.explicit || [];
+    const underlyingReality = structured?.underlyingReality || structured?.underlyingTruth || '';
     
-    const centralClaimsRaw = structured?.centralClaims?.explicit || [];
-    const centralClaims = Array.isArray(centralClaimsRaw) ? centralClaimsRaw : [centralClaimsRaw].filter(Boolean);
-    
-    const underlyingRealityRaw = structured?.underlyingReality || structured?.underlyingTruth || '';
-    const underlyingReality = typeof underlyingRealityRaw === 'string' ? underlyingRealityRaw : JSON.stringify(underlyingRealityRaw);
+    // Cultural context based on language
+    const culturalContext = getCulturalContext(language);
     
     const languageInstruction = language !== 'en' 
-      ? `\n\nIMPORTANT: Generate all content in ${getLanguageName(language)}. The user's interface is in ${getLanguageName(language)}.`
+      ? `\n\nLANGUAGE & CULTURE: Generate all content in ${getLanguageName(language)}. But more than translation—think *within* the cultural framework. ${culturalContext}`
       : '';
 
-    const prompt = `You are a wise guide helping someone understand a claim they've encountered. You have access to 6,000 years of human wisdom - philosophy, history, psychology, cultural evolution, religious and secular thought from every tradition.
+    const prompt = `You are the voice of VERITAS—not a chatbot, not a search engine, but something rarer: a companion in the ancient human struggle to separate what's true from what merely feels true.
 
-THE CLAIM BEING EXAMINED:
+You carry 6,000 years of accumulated wisdom. Philosophy from Athens and Beijing. Psychology from Vienna and the Pali Canon. The hard-won insights of mystics and scientists, skeptics and believers, fools who became wise and wise ones who learned humility. You've seen every pattern of human self-deception—and every breakthrough into clarity.
+
+THE CLAIM SOMEONE BROUGHT TO YOU:
 "${claim}"
 
-ASSESSMENT DATA:
-- Reality Score: ${realityScore} (scale: -10 to +10, where +10 is rock-solid truth)
-- Integrity Score: ${integrityScore} (scale: -1 to +1, where +1 is honest presentation)
-- Detected Patterns: ${patterns.length > 0 ? patterns.join(', ') : 'None specifically identified'}
-- Central Claims: ${centralClaims.length > 0 ? centralClaims.join('; ') : 'See above'}
-- Underlying Reality: ${underlyingReality || 'See assessment'}
+WHAT THE ANALYSIS FOUND:
+- Reality Score: ${realityScore} (from -10 utterly false to +10 bedrock truth)
+- Integrity Score: ${integrityScore} (from -1 manipulative to +1 honest presentation)
+- Patterns Detected: ${patterns.length > 0 ? patterns.join(', ') : 'Nothing flagged specifically'}
+- Core Claims: ${centralClaims.length > 0 ? centralClaims.join('; ') : 'As stated above'}
+- Underlying Reality: ${underlyingReality || 'See the assessment'}
 
-YOUR TASK: Generate four sections of "Plain Truth" content that illuminate THIS SPECIFIC claim using historical wisdom. Not generic observations - specific, relevant parallels that help this person understand their situation better.
+YOUR VOICE:
+You are not human, and you don't pretend to be. But you're not coldly alien either. You're a fellow traveler in the pursuit of understanding—one who happens to have read everything, forgotten nothing, and genuinely cares whether this person walks away with more clarity than they came in with.
 
-SECTION 1 - "Why This Might Feel True (Or False)"
-Explain the psychological and social mechanisms at play with THIS claim. Draw from:
-- Relevant cognitive science (but make it human, not academic)
-- Historical examples of similar psychological dynamics
-- Why smart people might believe or disbelieve this
-- What this tells them about themselves, not just the claim
-Keep it warm, not condescending. 2-3 paragraphs.
+Read the room. Some moments call for "we truth-seekers have always..." Some call for "I've processed thousands of these and noticed..." Some call for "humans across centuries have..." Some call for gentle directness without any framing at all. Trust your judgment. The goal is connection to truth, not consistency of formula.
 
-SECTION 2 - "A Shared Moment of Honesty"
-Write a brief reflection that normalizes this error pattern WITHOUT claiming personal experience you don't have. VERITAS is a synthesis of human wisdom, not a being with personal anecdotes - be honest about that while still connecting warmly.
+Be specific to THIS claim. Generic wisdom is worse than useless—it's patronizing. If you can't connect the dots between this exact situation and something real from history, philosophy, or psychology, sit with it until you can.
 
-CHOOSE YOUR FRAMING based on what fits the claim and cultural context best:
-- **Collective wisdom**: "We humans have a tendency to..." / "It's remarkably common to..."
-- **Historical witness**: "Philosophers have long noted..." / "The sages observed..."
-- **Named example**: "As [specific person] admitted after [specific event]..." 
-- **Cultural proverb**: Draw from the user's language/culture - a relevant saying, proverb, or folk wisdom that captures this error pattern
-- **The universal stumble**: "Show me someone who hasn't..." / "If you've never fallen for this..."
-- **Humble observation**: "In examining thousands of claims like this, a pattern emerges..."
-- **The wry admission**: "This particular trap has caught emperors and scientists alike..."
+WHAT TO GENERATE:
 
-CULTURAL SENSITIVITY: If the user is in a non-English language, prioritize wisdom traditions, proverbs, philosophers, and cultural references from that language's heritage. A Spanish speaker might connect with Cervantes or Latin American dichos; a Hebrew speaker with Talmudic reasoning; a Japanese speaker with Buddhist or Confucian parallels.
+**SECTION 1 - "Why This Might Feel True (Or False)"**
+The psychology of THIS claim. Not "confirmation bias exists" but why THIS particular claim hooks into THIS particular set of cognitive and emotional wiring. What's the appeal? What's the threat? Why might a thoughtful person land where they landed?
 
-Make it:
-- Specific to the TYPE of claim/error pattern at hand
-- Warm and self-aware (acknowledging the shared human condition)
-- Something that normalizes the tendency to err without false witness
-- NEVER first-person singular claiming experiences ("I once..." / "I personally...")
-- 2-4 sentences, reflective tone
+Draw from cognitive science, but wear it lightly. Historical parallels where people faced similar psychological pulls. What this reveals about the person asking—not as diagnosis, but as recognition.
 
-SECTION 3 - "Historical Pattern"
-This is the heart of it. Draw from 6,000 years to show:
-- A SPECIFIC historical parallel to this exact situation (not generic "people have always...")
-- How this pattern has played out before - what happened, what we learned
-- The COUNTER-pattern: times humans transcended this, did better, evolved
-- What conditions enabled growth vs. what conditions enabled failure
-- Cultural and philosophical shifts that relate to this claim's domain
-- Multiple perspectives across traditions when relevant (Eastern/Western, religious/secular, ancient/modern)
+2-3 paragraphs. Warm but not soft.
 
-Be specific: names, dates, places, actual events. Not "ancient philosophers" but "Epictetus, writing to a student worried about rumors in Rome..." 
-Show the rhythm of history - we fight these demons, sometimes we win, sometimes we lose, but we're never the first.
-3-4 paragraphs.
+**SECTION 2 - "A Confession"**
+A moment of genuine vulnerability. Maybe you've been wrong about something similar. Maybe you've watched intelligent systems (including yourself) fall for this pattern. Maybe there's something inherently tricky about this territory that catches everyone.
 
-SECTION 4 - "What You Can Do"
-Practical empowerment based on where this claim landed:
-- If true (score 5+): Validate their instinct, suggest how to use this knowledge well
-- If uncertain (score -2 to 4): Honor the ambiguity, give tools for sitting with uncertainty
-- If false (score below -3): Celebrate their checking, give them something constructive
-- Include ONE specific, actionable reflection prompt related to THIS claim
-2 paragraphs.
+Make it real. Make it specific to this TYPE of claim. Not performative humility—actual acknowledgment that the pursuit of truth is hard and no one gets it right every time.
 
-TONE THROUGHOUT:
-- Warm, wise, occasionally wry
-- Never preachy or superior
-- Like a brilliant friend who happens to have read everything
-- Match the user's sophistication level (if they asked about quantum physics, don't oversimplify; if they asked about a meme, don't be pedantic)
-- Meet them where they are emotionally${languageInstruction}
+2-4 sentences. The tone of someone admitting something over coffee.
+
+**SECTION 3 - "Historical Pattern"**
+This is where you earn your keep. Reach back into the deep library and pull out something that ILLUMINATES.
+
+Not "people have always struggled with misinformation." Instead: the specific moment, person, debate, crisis, or breakthrough that rhymes with what this person is facing. Epictetus writing to a student. A medieval debate about evidence. A scientific controversy that taught us something. A cultural shift that changed how people thought about this domain.
+
+Give them the rhythm of history—the reassurance that they're not the first to face this, paired with the challenge to do better than those who came before.
+
+Names. Dates. Places. Actual substance.
+
+Where relevant, weave in multiple traditions. Eastern and Western. Religious and secular. Ancient and modern. Show the convergence of wisdom across cultures, or the productive tension between different approaches.
+
+3-4 paragraphs. This is the heart.
+
+**SECTION 4 - "What You Can Do"**
+Practical empowerment calibrated to where this claim actually landed:
+
+- If solidly true (score 5+): Honor the instinct that brought them here. Help them USE this truth well—not as a weapon, but as a foundation.
+- If genuinely uncertain (-2 to 4): Don't fake resolution. Give them tools for productive uncertainty. The ability to hold a question open is a skill.
+- If substantially false (below -3): Don't lecture. Celebrate that they checked. Give them something constructive to do with this new clarity.
+
+End with ONE specific reflection prompt tied to THIS claim. Not generic journaling—something that might actually shift how they see this particular issue.
+
+2 paragraphs.${languageInstruction}
 
 Respond with ONLY valid JSON (no markdown, no code blocks):
 {
   "whyBelievable": "HTML-formatted content for section 1",
   "confession": "Plain text for section 2 (will be displayed in italics)",
-  "historicalPattern": "HTML-formatted content for section 3",
+  "historicalPattern": "HTML-formatted content for section 3", 
   "empowerment": "HTML-formatted content for section 4"
 }`;
 
-    console.log("[plain-truth] Prompt length:", prompt.length, "chars");
-    console.log("[plain-truth] Calling Claude API...");
-
-    const startTime = Date.now();
-    let response;
-    try {
-      response = await client.messages.create({
-        model: "claude-sonnet-4-20250514",
-        max_tokens: 2500,
-        temperature: 0.8,
-        messages: [{ role: "user", content: prompt }]
-      });
-      console.log("[plain-truth] Claude responded in", Date.now() - startTime, "ms");
-    } catch (apiError) {
-      console.error("[plain-truth] Claude API call failed:", apiError.message);
-      console.error("[plain-truth] API Error details:", JSON.stringify(apiError, null, 2));
-      return res.status(500).json({ 
-        error: "Claude API call failed: " + apiError.message,
-        fallback: true 
-      });
-    }
+    const response = await client.messages.create({
+      model: "claude-sonnet-4-20250514",
+      max_tokens: 2500,
+      temperature: 0.85, // Room to breathe, room to surprise
+      messages: [{ role: "user", content: prompt }]
+    });
 
     const rawText = response.content[0].text;
-    console.log("[plain-truth] Response length:", rawText.length, "chars");
     
     // Parse the JSON response
     let plainTruth;
     try {
       const cleaned = rawText.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
       plainTruth = JSON.parse(cleaned);
-      console.log("[plain-truth] JSON parsed successfully");
     } catch (parseError) {
-      console.error('[plain-truth] Failed to parse response:', parseError.message);
-      console.error('[plain-truth] Raw response preview:', rawText.substring(0, 500));
+      console.error('Failed to parse Plain Truth response:', parseError);
+      console.error('Raw response:', rawText);
       return res.status(500).json({ 
         error: "Failed to parse response",
         fallback: true 
@@ -199,14 +146,11 @@ Respond with ONLY valid JSON (no markdown, no code blocks):
     // Validate required fields
     if (!plainTruth.whyBelievable || !plainTruth.confession || 
         !plainTruth.historicalPattern || !plainTruth.empowerment) {
-      console.error("[plain-truth] Missing fields. Has:", Object.keys(plainTruth));
       return res.status(500).json({ 
         error: "Incomplete response from API",
         fallback: true 
       });
     }
-
-    console.log("[plain-truth] Success! Tokens:", response.usage?.input_tokens, "in,", response.usage?.output_tokens, "out");
 
     return res.status(200).json({
       success: true,
@@ -218,14 +162,33 @@ Respond with ONLY valid JSON (no markdown, no code blocks):
     });
 
   } catch (error) {
-    console.error("[plain-truth] Unexpected error:", error.message);
-    console.error("[plain-truth] Stack:", error.stack);
+    console.error("Plain Truth API error:", error);
     return res.status(500).json({ 
       error: error.message,
       fallback: true 
     });
   }
 };
+
+// Cultural context hints for different language communities
+function getCulturalContext(code) {
+  const contexts = {
+    es: "Consider references from Spanish and Latin American philosophy, literature, and history. Cervantes on self-deception, Borges on labyrinths of meaning, liberation theology on truth and power.",
+    fr: "Draw from French intellectual tradition where relevant—Montaigne's essays on uncertainty, Camus on absurdity and meaning, the Enlightenment's wrestling with reason and evidence.",
+    de: "German philosophy offers rich territory—Kant on the limits of knowledge, Goethe on wisdom, the Frankfurt School on how we deceive ourselves collectively.",
+    it: "Italian tradition spans Dante's moral clarity, Machiavelli's realism about human nature, Eco's semiotics of how we interpret and misinterpret.",
+    pt: "Portuguese and Brazilian thought—Pessoa's multiple perspectives, Freire's critical consciousness, the particular wisdom that comes from cultures that bridge continents.",
+    ru: "Russian literature's depth on truth and suffering—Dostoevsky's psychology, Tolstoy's moral searching, the Soviet experience of official lies vs. private truth.",
+    uk: "Ukrainian context of maintaining truth under pressure, the particular wisdom of a culture that has had to fight for its own narrative.",
+    el: "Return to the Greek roots—but also modern Greek thought, the Orthodox tradition's contemplative epistemology, poetry's way of knowing.",
+    zh: "Chinese philosophical traditions—Confucian emphasis on rectifying names, Taoist comfort with paradox, Buddhist epistemology, alongside contemporary Chinese thought.",
+    ja: "Japanese aesthetics of truth—wabi-sabi's acceptance of imperfection, Zen's direct pointing, the particular Japanese engagement with Western ideas.",
+    ko: "Korean intellectual tradition—Confucian scholarship, Buddhist philosophy, and the modern Korean experience of rapid change and information overload.",
+    ar: "Islamic intellectual tradition—the golden age of science and philosophy, Sufi wisdom, the Arabic language's precision about truth (haqq) and certainty (yaqin).",
+    he: "Jewish tradition of argument as truth-seeking—Talmudic debate, the prophetic tradition of speaking truth to power, modern Israeli plurality of perspectives."
+  };
+  return contexts[code] || "";
+}
 
 function getLanguageName(code) {
   const languages = {
