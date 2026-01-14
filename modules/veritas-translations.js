@@ -218,9 +218,9 @@ es: {
     researchBtn: "INVESTIGAR UN ARTÍCULO O PUBLICACIÓN",
     history: "HISTORIA", sciences: "CIENCIAS", philosophy: "FILOSOFÍA",
     logic: "LÓGICA", rhetoric: "RETÓRICA", media: "MEDIOS",
-    psychology: "PSICOLOGÍA", statistics: "ESTADÍSTICAS", sources: "FUENTES", export: "EXPORTAR",
+    psychology: "PSICOLOGÍA", statistics: "ESTADÍST.", sources: "FUENTES", export: "EXPORTAR",
     archives: "ARCHIVOS", research: "INVESTIGAR", ethics: "ÉTICA",
-    fallacies: "FALACIAS", persuasion: "PERSUASIÓN", literacy: "ALFABETIZACIÓN",
+    fallacies: "FALACIAS", persuasion: "PERSUASIÓN", literacy: "CRÍTICA",
     bias: "SESGO", data: "DATOS", verify: "VERIFICAR", reports: "INFORMES",
     arts: "ARTES", economics: "ECONOMÍA", politics: "POLÍTICA", religion: "RELIGIÓN",
     technology: "TECNOLOGÍA", medicine: "MEDICINA", wisdom: "SABIDURÍA", culture: "CULTURA",
@@ -327,11 +327,11 @@ fr: {
     chip1: "vaccins et autisme", chip2: "anxiété médiatique", chip3: "évaluation des sources", chip4: "mythe d'Einstein",
     researchDivider: "OU", researchHint: "Avez-vous un article, une publication ou une URL à vérifier ?",
     researchBtn: "ANALYSER UN ARTICLE OU UNE PUBLICATION",
-    history: "HISTOIRE", sciences: "SCIENCES", philosophy: "PHILOSOPHIE",
+    history: "HISTOIRE", sciences: "SCIENCES", philosophy: "PHILO.",
     logic: "LOGIQUE", rhetoric: "RHÉTORIQUE", media: "MÉDIAS",
-    psychology: "PSYCHOLOGIE", statistics: "STATISTIQUES", sources: "SOURCES", export: "EXPORTER",
+    psychology: "PSYCHO.", statistics: "STATS", sources: "SOURCES", export: "EXPORTER",
     archives: "ARCHIVES", research: "RECHERCHE", ethics: "ÉTHIQUE",
-    fallacies: "SOPHISMES", persuasion: "PERSUASION", literacy: "LITTÉRATIE",
+    fallacies: "SOPHISMES", persuasion: "PERSUASION", literacy: "CRITIQUE",
     bias: "BIAIS", data: "DONNÉES", verify: "VÉRIFIER", reports: "RAPPORTS",
     arts: "ARTS", economics: "ÉCONOMIE", politics: "POLITIQUE", religion: "RELIGION",
     technology: "TECHNOLOGIE", medicine: "MÉDECINE", wisdom: "SAGESSE", culture: "CULTURE",
@@ -437,11 +437,11 @@ de: {
     chip1: "Impfstoffe & Autismus", chip2: "Nachrichtenangst", chip3: "Quellenbewertung", chip4: "Einstein-Mythos",
     researchDivider: "ODER", researchHint: "Haben Sie einen Artikel, Beitrag oder URL zur Überprüfung?",
     researchBtn: "ARTIKEL ODER BEITRAG RECHERCHIEREN",
-    history: "GESCHICHTE", sciences: "WISSENSCHAFTEN", philosophy: "PHILOSOPHIE",
+    history: "GESCHICHTE", sciences: "WISSEN.", philosophy: "PHILO.",
     logic: "LOGIK", rhetoric: "RHETORIK", media: "MEDIEN",
-    psychology: "PSYCHOLOGIE", statistics: "STATISTIK", sources: "QUELLEN", export: "EXPORTIEREN",
+    psychology: "PSYCHO.", statistics: "STATISTIK", sources: "QUELLEN", export: "EXPORT",
     archives: "ARCHIVE", research: "FORSCHUNG", ethics: "ETHIK",
-    fallacies: "FEHLSCHLÜSSE", persuasion: "ÜBERZEUGUNG", literacy: "KOMPETENZ",
+    fallacies: "TRUGSCHL.", persuasion: "ÜBERZG.", literacy: "KOMPETENZ",
     bias: "VORURTEIL", data: "DATEN", verify: "PRÜFEN", reports: "BERICHTE",
     arts: "KUNST", economics: "WIRTSCHAFT", politics: "POLITIK", religion: "RELIGION",
     technology: "TECHNOLOGIE", medicine: "MEDIZIN", wisdom: "WEISHEIT", culture: "KULTUR",
@@ -551,7 +551,7 @@ it: {
     logic: "LOGICA", rhetoric: "RETORICA", media: "MEDIA",
     psychology: "PSICOLOGIA", statistics: "STATISTICHE", sources: "FONTI", export: "ESPORTA",
     archives: "ARCHIVI", research: "RICERCA", ethics: "ETICA",
-    fallacies: "FALLACIE", persuasion: "PERSUASIONE", literacy: "ALFABETIZZAZIONE",
+    fallacies: "FALLACIE", persuasion: "PERSUASIONE", literacy: "CRITICA",
     bias: "PREGIUDIZIO", data: "DATI", verify: "VERIFICA", reports: "RAPPORTI",
     arts: "ARTI", economics: "ECONOMIA", politics: "POLITICA", religion: "RELIGIONE",
     technology: "TECNOLOGIA", medicine: "MEDICINA", wisdom: "SAGGEZZA", culture: "CULTURA",
@@ -659,7 +659,7 @@ pt: {
     researchBtn: "PESQUISAR UM ARTIGO OU POST",
     history: "HISTÓRIA", sciences: "CIÊNCIAS", philosophy: "FILOSOFIA",
     logic: "LÓGICA", rhetoric: "RETÓRICA", media: "MÍDIA",
-    psychology: "PSICOLOGIA", statistics: "ESTATÍSTICAS", sources: "FONTES", export: "EXPORTAR",
+    psychology: "PSICOLOGIA", statistics: "ESTATS.", sources: "FONTES", export: "EXPORTAR",
     archives: "ARQUIVOS", research: "PESQUISA", ethics: "ÉTICA",
     fallacies: "FALÁCIAS", persuasion: "PERSUASÃO", literacy: "LETRAMENTO",
     bias: "VIÉS", data: "DADOS", verify: "VERIFICAR", reports: "RELATÓRIOS",
@@ -770,9 +770,9 @@ ru: {
     history: "ИСТОРИЯ", sciences: "НАУКИ", philosophy: "ФИЛОСОФИЯ",
     logic: "ЛОГИКА", rhetoric: "РИТОРИКА", media: "МЕДИА",
     psychology: "ПСИХОЛОГИЯ", statistics: "СТАТИСТИКА", sources: "ИСТОЧНИКИ", export: "ЭКСПОРТ",
-    archives: "АРХИВЫ", research: "ИССЛЕДОВАНИЯ", ethics: "ЭТИКА",
-    fallacies: "ЗАБЛУЖДЕНИЯ", persuasion: "УБЕЖДЕНИЕ", literacy: "ГРАМОТНОСТЬ",
-    bias: "ПРЕДВЗЯТОСТЬ", data: "ДАННЫЕ", verify: "ПРОВЕРИТЬ", reports: "ОТЧЁТЫ",
+    archives: "АРХИВЫ", research: "ИССЛЕД.", ethics: "ЭТИКА",
+    fallacies: "ОШИБКИ", persuasion: "УБЕЖДЕНИЕ", literacy: "КРИТИКА",
+    bias: "ПРЕДВЗ.", data: "ДАННЫЕ", verify: "ПРОВЕРИТЬ", reports: "ОТЧЁТЫ",
     arts: "ИСКУССТВО", economics: "ЭКОНОМИКА", politics: "ПОЛИТИКА", religion: "РЕЛИГИЯ",
     technology: "ТЕХНОЛОГИИ", medicine: "МЕДИЦИНА", wisdom: "МУДРОСТЬ", culture: "КУЛЬТУРА",
     markets: "РЫНКИ", policy: "ПОЛИТИКИ", faith: "ВЕРА", mind: "РАЗУМ", digital: "ЦИФРОВОЕ", health: "ЗДОРОВЬЕ",
@@ -880,9 +880,9 @@ uk: {
     history: "ІСТОРІЯ", sciences: "НАУКИ", philosophy: "ФІЛОСОФІЯ",
     logic: "ЛОГІКА", rhetoric: "РИТОРИКА", media: "МЕДІА",
     psychology: "ПСИХОЛОГІЯ", statistics: "СТАТИСТИКА", sources: "ДЖЕРЕЛА", export: "ЕКСПОРТ",
-    archives: "АРХІВИ", research: "ДОСЛІДЖЕННЯ", ethics: "ЕТИКА",
-    fallacies: "ПОМИЛКИ", persuasion: "ПЕРЕКОНАННЯ", literacy: "ГРАМОТНІСТЬ",
-    bias: "УПЕРЕДЖЕНІСТЬ", data: "ДАНІ", verify: "ПЕРЕВІРИТИ", reports: "ЗВІТИ",
+    archives: "АРХІВИ", research: "ДОСЛІД.", ethics: "ЕТИКА",
+    fallacies: "ПОМИЛКИ", persuasion: "ПЕРЕКОНАН.", literacy: "КРИТИКА",
+    bias: "УПЕРЕДЖ.", data: "ДАНІ", verify: "ПЕРЕВІРИТИ", reports: "ЗВІТИ",
     arts: "МИСТЕЦТВО", economics: "ЕКОНОМІКА", politics: "ПОЛІТИКА", religion: "РЕЛІГІЯ",
     technology: "ТЕХНОЛОГІЇ", medicine: "МЕДИЦИНА", wisdom: "МУДРІСТЬ", culture: "КУЛЬТУРА",
     markets: "РИНКИ", policy: "ПОЛІТИКИ", faith: "ВІРА", mind: "РОЗУМ", digital: "ЦИФРОВЕ", health: "ЗДОРОВ'Я",
@@ -1627,6 +1627,47 @@ he: {
 }; // End VERITAS_TRANSLATIONS
 
 // ===========================================
+// FULL-WORD TOOLTIPS FOR ABBREVIATED LABELS
+// When button labels are abbreviated, these provide the full term on hover
+// ===========================================
+const VERITAS_TOOLTIPS = {
+    es: {
+        statistics: "Estadísticas",
+        literacy: "Alfabetización Mediática"
+    },
+    fr: {
+        philosophy: "Philosophie",
+        psychology: "Psychologie", 
+        statistics: "Statistiques",
+        literacy: "Littératie Médiatique"
+    },
+    de: {
+        sciences: "Wissenschaften",
+        philosophy: "Philosophie",
+        psychology: "Psychologie",
+        fallacies: "Fehlschlüsse",
+        persuasion: "Überzeugung"
+    },
+    it: {
+        literacy: "Alfabetizzazione Mediatica"
+    },
+    pt: {
+        statistics: "Estatísticas"
+    },
+    ru: {
+        research: "Исследования",
+        literacy: "Медиаграмотность",
+        bias: "Предвзятость"
+    },
+    uk: {
+        research: "Дослідження",
+        persuasion: "Переконання",
+        literacy: "Медіаграмотність",
+        bias: "Упередженість"
+    }
+};
+
+// ===========================================
 // RTL LANGUAGES
 // ===========================================
 const RTL_LANGUAGES = ['ar', 'he', 'fa'];
@@ -1649,6 +1690,13 @@ function applyTranslations(lang) {
         var key = el.getAttribute('data-i18n');
         var t = getTranslation(key, lang);
         if (t) el.textContent = t;
+        
+        // Apply full-word tooltip if this is an abbreviated term
+        if (VERITAS_TOOLTIPS[lang] && VERITAS_TOOLTIPS[lang][key]) {
+            el.title = VERITAS_TOOLTIPS[lang][key];
+        } else {
+            el.title = ''; // Clear tooltip for non-abbreviated terms
+        }
     });
     
     // Placeholders
