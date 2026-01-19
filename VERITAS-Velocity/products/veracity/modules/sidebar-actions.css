@@ -1,0 +1,624 @@
+/**
+ * VERACITY v5.2 — Sidebar Actions Styles
+ * ======================================
+ * 
+ * Styles for sidebar action modals and educational content
+ * 
+ * VERITAS LLC — Prairie du Sac, Wisconsin
+ */
+
+/* =============================================
+   MODAL OVERLAY
+   ============================================= */
+
+.sidebar-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  padding: 20px;
+}
+
+.sidebar-modal-overlay.visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* =============================================
+   MODAL BOX
+   ============================================= */
+
+.sidebar-modal {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  transform: translateY(20px) scale(0.95);
+  transition: transform 0.3s ease;
+  overflow: hidden;
+}
+
+.sidebar-modal-overlay.visible .sidebar-modal {
+  transform: translateY(0) scale(1);
+}
+
+.sidebar-modal-small { width: 90%; max-width: 400px; }
+.sidebar-modal-medium { width: 90%; max-width: 600px; }
+.sidebar-modal-large { width: 95%; max-width: 900px; }
+
+/* =============================================
+   MODAL HEADER
+   ============================================= */
+
+.sidebar-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  border-bottom: 1px solid #e5e7eb;
+  background: linear-gradient(135deg, #0d9488 0%, #0891b2 100%);
+}
+
+.sidebar-modal-header h2 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.sidebar-modal-close {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: #ffffff;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  font-size: 1.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease;
+}
+
+.sidebar-modal-close:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* =============================================
+   MODAL CONTENT
+   ============================================= */
+
+.sidebar-modal-content {
+  padding: 24px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+/* =============================================
+   GUIDE INTRO
+   ============================================= */
+
+.guide-intro {
+  background: linear-gradient(135deg, #f0fdfa 0%, #ecfeff 100%);
+  padding: 16px 20px;
+  border-radius: 8px;
+  margin-bottom: 24px;
+  border-left: 4px solid #0d9488;
+}
+
+.guide-intro p {
+  margin: 0;
+  color: #134e4a;
+  line-height: 1.6;
+}
+
+/* =============================================
+   GUIDE SECTIONS
+   ============================================= */
+
+.guide-section {
+  margin-bottom: 28px;
+}
+
+.guide-section h3 {
+  color: #0d9488;
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0 0 12px 0;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.guide-section p {
+  color: #374151;
+  line-height: 1.6;
+  margin: 0 0 12px 0;
+}
+
+.guide-section ul, .guide-section ol {
+  margin: 0 0 12px 0;
+  padding-left: 24px;
+  color: #374151;
+}
+
+.guide-section li {
+  margin-bottom: 8px;
+  line-height: 1.5;
+}
+
+/* =============================================
+   BIAS GUIDE
+   ============================================= */
+
+.live-examples-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #fef3c7;
+  color: #92400e;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-top: 12px;
+}
+
+.bias-category { margin-bottom: 32px; }
+
+.category-title {
+  color: #6b7280;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0 0 16px 0;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.bias-entry {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 16px;
+  transition: box-shadow 0.2s ease;
+}
+
+.bias-entry:hover { box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); }
+
+.bias-entry.has-live-example {
+  border-color: #f59e0b;
+  background: linear-gradient(135deg, #fffbeb 0%, #ffffff 100%);
+}
+
+.bias-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.bias-name {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.live-indicator {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #f59e0b;
+  background: #fef3c7;
+  padding: 4px 10px;
+  border-radius: 12px;
+}
+
+.bias-definition {
+  color: #4b5563;
+  line-height: 1.6;
+  margin: 0 0 12px 0;
+}
+
+.bias-example {
+  background: #f9fafb;
+  padding: 12px 16px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  color: #6b7280;
+  margin-bottom: 12px;
+}
+
+.bias-details summary {
+  cursor: pointer;
+  color: #0d9488;
+  font-weight: 500;
+  font-size: 0.9rem;
+  padding: 8px 0;
+  list-style: none;
+}
+
+.bias-details summary::-webkit-details-marker { display: none; }
+
+.bias-details summary::before {
+  content: '▶ ';
+  font-size: 0.7rem;
+  display: inline-block;
+  transition: transform 0.2s ease;
+}
+
+.bias-details[open] summary::before { transform: rotate(90deg); }
+
+.bias-tips {
+  background: #f9fafb;
+  padding: 12px 16px;
+  border-radius: 6px;
+  margin-top: 12px;
+}
+
+.bias-tips strong {
+  display: block;
+  color: #374151;
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+}
+
+.bias-tips ul { margin: 0; padding-left: 20px; }
+.bias-tips li { color: #6b7280; font-size: 0.85rem; margin-bottom: 4px; }
+
+.live-example-panel {
+  margin-top: 16px;
+  background: #fffbeb;
+  border: 1px solid #fcd34d;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.live-example-header {
+  background: #fef3c7;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #92400e;
+}
+
+.live-example-content { padding: 16px; }
+
+.example-quote {
+  font-style: italic;
+  color: #78350f;
+  background: #ffffff;
+  padding: 12px;
+  border-radius: 6px;
+  margin: 0 0 12px 0;
+  border-left: 3px solid #f59e0b;
+}
+
+.example-explanation {
+  color: #92400e;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+/* =============================================
+   LITERACY GUIDE - CRAAP Grid
+   ============================================= */
+
+.craap-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.craap-item {
+  background: #f9fafb;
+  padding: 16px;
+  border-radius: 8px;
+  border-left: 4px solid #0d9488;
+}
+
+.craap-item h4 {
+  margin: 0 0 8px 0;
+  color: #0d9488;
+  font-size: 1rem;
+}
+
+.craap-item p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #6b7280;
+}
+
+.red-flags-list li { color: #dc2626; }
+.green-flags-list li { color: #059669; }
+
+/* =============================================
+   DATA GUIDE - Tricks & Tables
+   ============================================= */
+
+.trick-item {
+  background: #fef2f2;
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  border-left: 4px solid #ef4444;
+}
+
+.trick-item h4 {
+  margin: 0 0 8px 0;
+  color: #dc2626;
+  font-size: 0.95rem;
+}
+
+.trick-item p {
+  margin: 0;
+  color: #7f1d1d;
+  font-size: 0.9rem;
+}
+
+.risk-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 12px;
+  font-size: 0.9rem;
+}
+
+.risk-table th, .risk-table td {
+  border: 1px solid #e5e7eb;
+  padding: 10px 12px;
+  text-align: left;
+}
+
+.risk-table th {
+  background: #f3f4f6;
+  font-weight: 600;
+  color: #374151;
+}
+
+.risk-table td { color: #6b7280; }
+
+/* =============================================
+   VERIFY GUIDE - Checklist
+   ============================================= */
+
+.checklist { margin-top: 16px; }
+
+.checklist-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px;
+  background: #f9fafb;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  transition: background 0.2s ease;
+}
+
+.checklist-item:hover { background: #f3f4f6; }
+
+.checklist-item input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  margin-top: 2px;
+  accent-color: #0d9488;
+  cursor: pointer;
+}
+
+.checklist-item label {
+  cursor: pointer;
+  color: #374151;
+  line-height: 1.5;
+}
+
+.checklist-item label strong { color: #1f2937; }
+
+.source-hierarchy { margin-top: 16px; }
+
+.hierarchy-tier {
+  padding: 14px 16px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+}
+
+.hierarchy-tier strong {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.hierarchy-tier p {
+  margin: 0;
+  font-size: 0.85rem;
+}
+
+.tier-1 { background: #d1fae5; color: #065f46; }
+.tier-2 { background: #dbeafe; color: #1e40af; }
+.tier-3 { background: #fef3c7; color: #92400e; }
+.tier-4 { background: #fee2e2; color: #991b1b; }
+
+/* =============================================
+   REPORTS PANEL
+   ============================================= */
+
+.empty-state {
+  text-align: center;
+  padding: 48px 24px;
+}
+
+.empty-icon { font-size: 3rem; margin-bottom: 16px; }
+
+.empty-state h3 {
+  margin: 0 0 8px 0;
+  color: #374151;
+}
+
+.empty-state p { color: #6b7280; margin: 0; }
+.empty-hint { margin-top: 12px !important; font-size: 0.9rem; }
+
+.history-list { margin-top: 16px; }
+
+.history-item {
+  background: #f9fafb;
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  border: 1px solid #e5e7eb;
+}
+
+.history-meta {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 8px;
+  font-size: 0.8rem;
+}
+
+.history-date { color: #6b7280; }
+
+.history-track {
+  background: #0d9488;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.history-claim {
+  color: #374151;
+  font-size: 0.95rem;
+  margin-bottom: 8px;
+}
+
+.history-score {
+  color: #0d9488;
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin-bottom: 12px;
+}
+
+.history-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.history-actions button {
+  padding: 6px 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+  background: white;
+  color: #374151;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: all 0.2s ease;
+}
+
+.history-actions button:hover {
+  background: #f3f4f6;
+  border-color: #d1d5db;
+}
+
+.history-footer {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid #e5e7eb;
+  text-align: center;
+}
+
+.clear-btn {
+  padding: 8px 16px;
+  background: #fee2e2;
+  color: #dc2626;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.2s ease;
+}
+
+.clear-btn:hover { background: #fecaca; }
+
+/* =============================================
+   EXPORT ACTIONS BAR
+   ============================================= */
+
+.export-actions-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 20px;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border-radius: 10px;
+  margin-top: 24px;
+  border: 1px solid #e2e8f0;
+}
+
+.export-actions-bar .export-label {
+  flex-basis: 100%;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 4px;
+}
+
+.export-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  color: #475569;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.export-btn:hover {
+  background: #f8fafc;
+  border-color: #0d9488;
+  color: #0d9488;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(13, 148, 136, 0.15);
+}
+
+.export-btn .icon { font-size: 1.1rem; }
+
+/* =============================================
+   RESPONSIVE
+   ============================================= */
+
+@media (max-width: 640px) {
+  .sidebar-modal-overlay { padding: 10px; }
+  
+  .sidebar-modal { max-height: 90vh; }
+  
+  .sidebar-modal-header { padding: 16px 20px; }
+  .sidebar-modal-header h2 { font-size: 1.1rem; }
+  
+  .sidebar-modal-content { padding: 16px; }
+  
+  .craap-grid { grid-template-columns: 1fr; }
+  
+  .export-actions-bar { flex-direction: column; }
+  .export-btn { justify-content: center; }
+}

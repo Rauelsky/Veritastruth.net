@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VERITAS Velocity - Project Flow Diagram</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            color: #e0e0e0;
+            padding: 20px;
+        }
+        .header {
+            text-align: center;
+            padding: 30px 20px;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: #0D9488;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        .header h2 {
+            color: #9CA3AF;
+            font-size: 1.2em;
+            font-weight: normal;
+        }
+        .diagram-container {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 30px;
+            margin: 20px auto;
+            max-width: 1400px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+        .diagram-title {
+            color: #1a1a2e;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+        }
+        .section {
+            margin: 40px auto;
+            max-width: 1200px;
+        }
+        .section h3 {
+            color: #0D9488;
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #0D9488;
+        }
+        .timeline {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+        .phase-card {
+            background: linear-gradient(145deg, #252542, #1e1e38);
+            border-radius: 12px;
+            padding: 20px;
+            width: 280px;
+            border-left: 4px solid;
+            transition: transform 0.3s ease;
+        }
+        .phase-card:hover {
+            transform: translateY(-5px);
+        }
+        .phase-card.phase1 { border-color: #10B981; }
+        .phase-card.phase2 { border-color: #3B82F6; }
+        .phase-card.phase3 { border-color: #8B5CF6; }
+        .phase-card.phase4 { border-color: #F59E0B; }
+        .phase-card.phase5a { border-color: #EF4444; }
+        .phase-card.phase5b { border-color: #EC4899; }
+        .phase-card.phase5c { border-color: #06B6D4; }
+        .phase-card h4 {
+            font-size: 1.1em;
+            margin-bottom: 10px;
+        }
+        .phase-card.phase1 h4 { color: #10B981; }
+        .phase-card.phase2 h4 { color: #3B82F6; }
+        .phase-card.phase3 h4 { color: #8B5CF6; }
+        .phase-card.phase4 h4 { color: #F59E0B; }
+        .phase-card.phase5a h4 { color: #EF4444; }
+        .phase-card.phase5b h4 { color: #EC4899; }
+        .phase-card.phase5c h4 { color: #06B6D4; }
+        .phase-card .sessions {
+            font-size: 0.9em;
+            color: #9CA3AF;
+            margin-bottom: 10px;
+        }
+        .phase-card ul {
+            list-style: none;
+            font-size: 0.85em;
+        }
+        .phase-card ul li {
+            padding: 4px 0;
+            padding-left: 15px;
+            position: relative;
+        }
+        .phase-card ul li::before {
+            content: ">";
+            position: absolute;
+            left: 0;
+            color: #6B7280;
+        }
+        .summary-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .summary-table th, .summary-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #374151;
+        }
+        .summary-table th {
+            background: #0D9488;
+            color: white;
+        }
+        .summary-table tr:hover {
+            background: rgba(13, 148, 136, 0.1);
+        }
+        .total-row {
+            background: #1e1e38 !important;
+            font-weight: bold;
+        }
+        .neural-map {
+            background: #0f0f1a;
+            border-radius: 12px;
+            padding: 30px;
+            margin: 20px auto;
+            max-width: 1400px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85em;
+            line-height: 1.4;
+            overflow-x: auto;
+        }
+        .neural-map pre {
+            color: #10B981;
+        }
+        .neural-map h3 {
+            color: #0D9488;
+            margin-bottom: 20px;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 20px;
+            justify-content: center;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9em;
+        }
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+        }
+        .print-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #0D9488;
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            box-shadow: 0 4px 15px rgba(13, 148, 136, 0.4);
+        }
+        .print-btn:hover {
+            background: #0F766E;
+        }
+        @media print {
+            body {
+                background: white;
+                color: black;
+            }
+            .print-btn {
+                display: none;
+            }
+            .phase-card {
+                break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>VERITAS VELOCITY</h1>
+        <h2>Cybernetic Legos Architecture - Project Flow and Timeline</h2>
+    </div>
+
+    <!-- Main Development Flow Diagram -->
+    <div class="diagram-container">
+        <h3 class="diagram-title">Development Flow Diagram</h3>
+        <div class="mermaid">
+flowchart TD
+    LEGACY["LEGACY VERACITY - Stable"]
+    
+    LEGACY -->|Fork| P1A
+    
+    subgraph P1[Phase 1: Foundation - 4-6 sessions]
+        P1A[Velocity Fork] --> P1B[Streaming Renderer]
+        P1B --> P1C[Trace Logging]
+    end
+    
+    P1C --> P2A
+    
+    subgraph P2[Phase 2: Intelligence - 3-5 sessions]
+        P2A[Claim Classifier] --> P2B[Complexity Router]
+        P2B --> P2C{Simple?}
+        P2C -->|Yes| P2D[Haiku Fast Path]
+        P2C -->|No| P2E[Sonnet Thorough]
+    end
+    
+    P2D --> P3A
+    P2E --> P3A
+    
+    subgraph P3[Phase 3: Parallel - 6-8 sessions]
+        P3A[Parallel Orchestrator]
+        P3A --> P3B[Search]
+        P3A --> P3C[Analyze]
+        P3A --> P3D[Verify]
+        P3A --> P3E[Wisdom]
+        P3B --> P3F[Aggregator]
+        P3C --> P3F
+        P3D --> P3F
+        P3E --> P3F
+    end
+    
+    P3F --> P4A
+    
+    subgraph P4[Phase 4: CAT Scan - 4-6 sessions]
+        P4A[CAT Scan UI] --> P4B[Synapse Checker]
+        P4B --> P4C[Caching Layer]
+    end
+    
+    P4C --> P5A1
+    P4C --> P5B1
+    P4C --> P5C1
+    
+    subgraph P5A[Phase 5A: VENOM - 3-4 sessions]
+        P5A1[FeedMonitor] --> P5A2[PatternMatcher]
+        P5A2 --> P5A3[AlertRenderer]
+    end
+    
+    subgraph P5B[Phase 5B: VITAL - 2-3 sessions]
+        P5B1[NewsMonitor] --> P5B2[DigestFormatter]
+        P5B2 --> P5B3[WisdomSynth]
+    end
+    
+    subgraph P5C[Phase 5C: VALOR - 3-5 sessions]
+        P5C1[ArgumentMapper] --> P5C2[BridgeBuilder]
+        P5C2 --> P5C3[ProgressTracker]
+    end
+    
+    P5A3 --> FINAL
+    P5B3 --> FINAL
+    P5C3 --> FINAL
+    
+    FINAL["VERITAS PLATFORM COMPLETE"]
+    
+    style LEGACY fill:#1e3a5f,stroke:#0D9488,stroke-width:3px,color:#fff
+    style P1 fill:#064e3b,stroke:#10B981,stroke-width:2px
+    style P2 fill:#1e3a8a,stroke:#3B82F6,stroke-width:2px
+    style P3 fill:#4c1d95,stroke:#8B5CF6,stroke-width:2px
+    style P4 fill:#78350f,stroke:#F59E0B,stroke-width:2px
+    style P5A fill:#7f1d1d,stroke:#EF4444,stroke-width:2px
+    style P5B fill:#831843,stroke:#EC4899,stroke-width:2px
+    style P5C fill:#164e63,stroke:#06B6D4,stroke-width:2px
+    style FINAL fill:#0D9488,stroke:#ffffff,stroke-width:3px,color:#fff
+        </div>
+    </div>
+
+    <!-- Phase Cards -->
+    <div class="section">
+        <h3>Development Phases Overview</h3>
+        <div class="timeline">
+            <div class="phase-card phase1">
+                <h4>Phase 1: Foundation</h4>
+                <div class="sessions">4-6 sessions | 8-12 hours</div>
+                <ul>
+                    <li>Fork Legacy Veracity</li>
+                    <li>Implement SSE streaming</li>
+                    <li>Progressive UI rendering</li>
+                    <li>Trace logging infrastructure</li>
+                    <li>Initial CONNECTOME.md</li>
+                </ul>
+            </div>
+            <div class="phase-card phase2">
+                <h4>Phase 2: Intelligence</h4>
+                <div class="sessions">3-5 sessions | 6-10 hours</div>
+                <ul>
+                    <li>Extract ClaimClassifier</li>
+                    <li>Build ComplexityRouter</li>
+                    <li>Haiku fast-path integration</li>
+                    <li>Quality benchmark suite</li>
+                    <li>50%+ queries accelerated</li>
+                </ul>
+            </div>
+            <div class="phase-card phase3">
+                <h4>Phase 3: Parallel</h4>
+                <div class="sessions">6-8 sessions | 12-16 hours</div>
+                <ul>
+                    <li>ParallelOrchestrator neuron</li>
+                    <li>Decomposed analyzers</li>
+                    <li>Stream coordination</li>
+                    <li>Aggregation logic</li>
+                    <li>40-50% time reduction</li>
+                </ul>
+            </div>
+            <div class="phase-card phase4">
+                <h4>Phase 4: CAT Scan</h4>
+                <div class="sessions">4-6 sessions | 8-12 hours</div>
+                <ul>
+                    <li>Diagnostic interface</li>
+                    <li>Live signal visualization</li>
+                    <li>Synapse integrity checker</li>
+                    <li>Damage simulation</li>
+                    <li>Caching layer</li>
+                </ul>
+            </div>
+            <div class="phase-card phase5a">
+                <h4>Phase 5A: VENOM</h4>
+                <div class="sessions">3-4 sessions | 6-8 hours</div>
+                <ul>
+                    <li>FeedMonitor integration</li>
+                    <li>PatternMatcher for misinfo</li>
+                    <li>AlertRenderer system</li>
+                    <li>Subscriber management</li>
+                    <li>Proactive hunter launch</li>
+                </ul>
+            </div>
+            <div class="phase-card phase5b">
+                <h4>Phase 5B: VITAL</h4>
+                <div class="sessions">2-3 sessions | 4-6 hours</div>
+                <ul>
+                    <li>DigestFormatter layout</li>
+                    <li>Automated news monitoring</li>
+                    <li>WisdomSynth integration</li>
+                    <li>Delivery system</li>
+                    <li>Daily digest launch</li>
+                </ul>
+            </div>
+            <div class="phase-card phase5c">
+                <h4>Phase 5C: VALOR</h4>
+                <div class="sessions">3-5 sessions | 6-10 hours</div>
+                <ul>
+                    <li>BridgeBuilder neuron</li>
+                    <li>ProgressTracker system</li>
+                    <li>ArgumentMapper logic</li>
+                    <li>Red Flag Registry</li>
+                    <li>Advocacy coach launch</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gantt-style Timeline -->
+    <div class="diagram-container">
+        <h3 class="diagram-title">Project Timeline - Gantt View</h3>
+        <div class="mermaid">
+gantt
+    title VERITAS Velocity Development Timeline
+    dateFormat YYYY-MM-DD
+    section Phase 1
+        Foundation and Streaming     :p1, 2026-01-20, 21d
+    section Phase 2
+        Intelligence Layer           :p2, after p1, 14d
+    section Phase 3
+        Parallel Processing          :p3, after p2, 21d
+    section Phase 4
+        CAT Scan and Optimization    :p4, after p3, 14d
+    section Phase 5
+        VENOM Hunter                 :p5a, after p4, 14d
+        VITAL Digest                 :p5b, after p4, 14d
+        VALOR Coach                  :p5c, after p5a, 14d
+        </div>
+    </div>
+
+    <!-- Neural Architecture Diagram -->
+    <div class="diagram-container">
+        <h3 class="diagram-title">Neural Component Architecture</h3>
+        <div class="mermaid">
+flowchart LR
+    subgraph INGEST[INGEST - Green]
+        I1[ClaimExtractor]
+        I2[SourceScraper]
+        I3[FeedMonitor]
+        I4[UserQueryParser]
+    end
+    
+    subgraph ANALYZE[ANALYZE - Blue]
+        A1[RealityProfiler]
+        A2[IntegrityProfiler]
+        A3[BiasDetector]
+        A4[ClaimClassifier]
+    end
+    
+    subgraph VERIFY[VERIFY - Purple]
+        V1[WebSearcher]
+        V2[SourceCredibility]
+        V3[TemporalVerifier]
+    end
+    
+    subgraph WISDOM[WISDOM - Amber]
+        W1[PhilosophicalRouter]
+        W2[WisdomSynthesizer]
+        W3[BridgeBuilder]
+    end
+    
+    subgraph GUIDE[GUIDE - Pink]
+        G1[TrackRouter]
+        G2[ConversationManager]
+        G3[CrisisDetector]
+    end
+    
+    subgraph DISPLAY[DISPLAY - Cyan]
+        D1[StreamingRenderer]
+        D2[ProfileVisualizer]
+        D3[ExportEngine]
+        D4[VINCULUMBridge]
+    end
+    
+    I4 --> A4
+    A4 --> G1
+    G1 --> A1
+    I1 --> A1
+    V1 --> A1
+    A1 --> A2
+    A1 --> D1
+    A2 --> D1
+    W2 --> D1
+    D1 --> D4
+    
+    style INGEST fill:#064e3b,stroke:#10B981,color:#fff
+    style ANALYZE fill:#1e3a8a,stroke:#3B82F6,color:#fff
+    style VERIFY fill:#4c1d95,stroke:#8B5CF6,color:#fff
+    style WISDOM fill:#78350f,stroke:#F59E0B,color:#fff
+    style GUIDE fill:#831843,stroke:#EC4899,color:#fff
+    style DISPLAY fill:#164e63,stroke:#06B6D4,color:#fff
+        </div>
+        
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color" style="background: #10B981;"></div>
+                <span>INGEST - Information Entry</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #3B82F6;"></div>
+                <span>ANALYZE - Evaluation</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #8B5CF6;"></div>
+                <span>VERIFY - Reality Check</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #F59E0B;"></div>
+                <span>WISDOM - 6000 Years</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #EC4899;"></div>
+                <span>GUIDE - User Help</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #06B6D4;"></div>
+                <span>DISPLAY - Presentation</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Summary Table -->
+    <div class="section">
+        <h3>Session and Resource Summary</h3>
+        <table class="summary-table">
+            <thead>
+                <tr>
+                    <th>Phase</th>
+                    <th>Sessions</th>
+                    <th>Hours</th>
+                    <th>Neurons</th>
+                    <th>Weeks</th>
+                    <th>Key Deliverable</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Phase 1: Foundation</td>
+                    <td>4-6</td>
+                    <td>8-12</td>
+                    <td>3-5</td>
+                    <td>2-3</td>
+                    <td>Velocity v0.1 with streaming</td>
+                </tr>
+                <tr>
+                    <td>Phase 2: Intelligence</td>
+                    <td>3-5</td>
+                    <td>6-10</td>
+                    <td>2-3</td>
+                    <td>1-2</td>
+                    <td>Haiku fast-path routing</td>
+                </tr>
+                <tr>
+                    <td>Phase 3: Parallel</td>
+                    <td>6-8</td>
+                    <td>12-16</td>
+                    <td>4-6</td>
+                    <td>2-3</td>
+                    <td>Concurrent processing</td>
+                </tr>
+                <tr>
+                    <td>Phase 4: CAT Scan</td>
+                    <td>4-6</td>
+                    <td>8-12</td>
+                    <td>3-4</td>
+                    <td>2</td>
+                    <td>Diagnostic system</td>
+                </tr>
+                <tr>
+                    <td>Phase 5A: VENOM</td>
+                    <td>3-4</td>
+                    <td>6-8</td>
+                    <td>3-4</td>
+                    <td>2</td>
+                    <td>Proactive misinfo hunter</td>
+                </tr>
+                <tr>
+                    <td>Phase 5B: VITAL</td>
+                    <td>2-3</td>
+                    <td>4-6</td>
+                    <td>2-3</td>
+                    <td>1-2</td>
+                    <td>Daily news digest</td>
+                </tr>
+                <tr>
+                    <td>Phase 5C: VALOR</td>
+                    <td>3-5</td>
+                    <td>6-10</td>
+                    <td>4-5</td>
+                    <td>2</td>
+                    <td>Advocacy coaching</td>
+                </tr>
+                <tr class="total-row">
+                    <td>TOTAL</td>
+                    <td>25-37</td>
+                    <td>50-74</td>
+                    <td>21-30</td>
+                    <td>10-14</td>
+                    <td>Complete Platform</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Speed Metrics -->
+    <div class="section">
+        <h3>Target Performance Metrics</h3>
+        <table class="summary-table">
+            <thead>
+                <tr>
+                    <th>Metric</th>
+                    <th>Legacy Veracity</th>
+                    <th>Velocity Target</th>
+                    <th>Improvement</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Time to first content</td>
+                    <td>90-120 sec</td>
+                    <td>3-5 sec</td>
+                    <td style="color: #10B981;">96% faster</td>
+                </tr>
+                <tr>
+                    <td>Simple query total time</td>
+                    <td>90-120 sec</td>
+                    <td>8-12 sec</td>
+                    <td style="color: #10B981;">90% faster</td>
+                </tr>
+                <tr>
+                    <td>Complex query total time</td>
+                    <td>90-120 sec</td>
+                    <td>45-60 sec</td>
+                    <td style="color: #10B981;">50% faster</td>
+                </tr>
+                <tr>
+                    <td>Assessment quality</td>
+                    <td>Baseline</td>
+                    <td>No regression</td>
+                    <td style="color: #3B82F6;">Maintained</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- ASCII Neural Map -->
+    <div class="neural-map">
+        <h3>Signal Flow Architecture</h3>
+        <pre>
+USER INPUT
+    |
+    v
++------------------+
+| UserQueryParser  | ---------------------------------------+
+|     [INGEST]     |                                        |
++--------+---------+                                        |
+         | rawQuery, language                               |
+         v                                                  |
++------------------+      +------------------+              |
+| ClaimClassifier  |----->| ComplexityRouter |              |
+|    [ANALYZE]     |      |     [GUIDE]      |              |
++--------+---------+      +--------+---------+              |
+         |                         |                        |
+         | classification          | route                  |
+         v                         v                        |
++------------------+      +------------------+              |
+|StreamingRenderer |<-----|   TrackRouter    |              |
+|    [DISPLAY]     |      |     [GUIDE]      |              |
++--------+---------+      +--------+---------+              |
+         |                         |                        |
+         | progressive UI          | Track A/B/C            |
+         v                         v                        |
+    [USER SEES]           [ASSESSMENT PIPELINE]             |
+         ^                         |                        |
+         |                         v                        |
+         |                +------------------+              |
+         |                |   WebSearcher    |<-------------+
+         |                |     [VERIFY]     |
+         |                +--------+---------+
+         |                         |
+         |                         v
+         |                +------------------+
+         |                | RealityProfiler  |
+         |                |    [ANALYZE]     |
+         |                +--------+---------+
+         |                         |
+         |                         v
+         |                +------------------+
+         |                |IntegrityProfiler |
+         |                |    [ANALYZE]     |
+         |                +--------+---------+
+         |                         |
+         |                         v
+         |                +------------------+
+         |                |WisdomSynthesizer |
+         |                |    [WISDOM]      |
+         |                +--------+---------+
+         |                         |
+         +-------------------------+
+
+        </pre>
+    </div>
+
+    <button class="print-btn" onclick="window.print()">Print / Save PDF</button>
+
+    <script>
+        mermaid.initialize({ 
+            startOnLoad: true,
+            theme: 'default',
+            flowchart: {
+                useMaxWidth: true,
+                htmlLabels: true,
+                curve: 'basis'
+            },
+            gantt: {
+                titleTopMargin: 25,
+                barHeight: 30,
+                barGap: 8,
+                topPadding: 50,
+                leftPadding: 75
+            }
+        });
+    </script>
+</body>
+</html>
