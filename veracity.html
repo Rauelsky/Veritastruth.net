@@ -577,6 +577,15 @@
             border: 1px solid var(--border-medium);
             overflow: hidden;
             white-space: nowrap;
+            text-overflow: ellipsis;
+            cursor: help;
+            position: relative;
+        }
+        
+        /* Auto-scale font for longer numbers */
+        .sidebar-number.compact {
+            font-size: 12px;
+            letter-spacing: -0.5px;
         }
 
         .sidebar-action {
@@ -590,11 +599,12 @@
             font-weight: 600;
             color: var(--text-primary);
             letter-spacing: 0.5px;
-            cursor: pointer;
+            cursor: help;
             transition: filter 0.2s;
             border-radius: 0 6px 6px 0;
             border: 1px solid rgba(255,255,255,0.05);
             border-left: none;
+            position: relative;
         }
 
         .sidebar-action:hover { filter: brightness(1.3); }
@@ -1986,55 +1996,55 @@
             <div class="sidebar-buttons">
                 <div class="sidebar-row">
                     <div class="sidebar-label history" data-factoid="history" data-i18n="history">HISTORY</div>
-                    <div class="sidebar-number">247</div>
-                    <div class="sidebar-action archives" data-i18n="archives">ARCHIVES</div>
+                    <div class="sidebar-number" title="Knowledge Sources: Historical texts, archives, and documented events available for analysis">247</div>
+                    <div class="sidebar-action archives" data-i18n="archives" title="ACCESS HISTORICAL ARCHIVES: Browse documented events, primary sources, and historical context">ARCHIVES</div>
                 </div>
                 <div class="sidebar-row">
                     <div class="sidebar-label science" data-factoid="science" data-i18n="sciences">SCIENCES</div>
-                    <div class="sidebar-number">182</div>
-                    <div class="sidebar-action research" data-i18n="research">RESEARCH</div>
+                    <div class="sidebar-number" title="Knowledge Sources: Scientific studies, peer-reviewed papers, and empirical research available">182</div>
+                    <div class="sidebar-action research" data-i18n="research" title="SCIENTIFIC RESEARCH: Access peer-reviewed studies, experimental data, and scientific consensus">RESEARCH</div>
                 </div>
                 <div class="sidebar-row">
                     <div class="sidebar-label philosophy" data-factoid="philosophy" data-i18n="philosophy">PHILOSOPHY</div>
-                    <div class="sidebar-number">093</div>
-                    <div class="sidebar-action ethics" data-i18n="ethics">ETHICS</div>
+                    <div class="sidebar-number" title="Knowledge Sources: Philosophical traditions, ethical frameworks, and wisdom teachings">093</div>
+                    <div class="sidebar-action ethics" data-i18n="ethics" title="ETHICAL ANALYSIS: Explore moral frameworks, value systems, and philosophical perspectives">ETHICS</div>
                 </div>
                 <div class="sidebar-row">
                     <div class="sidebar-label logic" data-factoid="logic" data-i18n="logic">LOGIC</div>
-                    <div class="sidebar-number">156</div>
-                    <div class="sidebar-action fallacies" data-i18n="fallacies">FALLACIES</div>
+                    <div class="sidebar-number" title="Knowledge Sources: Logical principles, reasoning patterns, and critical thinking frameworks">156</div>
+                    <div class="sidebar-action fallacies" data-i18n="fallacies" title="LOGICAL FALLACIES: Identify flawed reasoning, invalid arguments, and cognitive errors">FALLACIES</div>
                 </div>
                 <div class="sidebar-divider"></div>
                 <div class="sidebar-row">
                     <div class="sidebar-label rhetoric" data-factoid="rhetoric" data-i18n="rhetoric">RHETORIC</div>
-                    <div class="sidebar-number">078</div>
-                    <div class="sidebar-action persuasion" data-i18n="persuasion">PERSUASION</div>
+                    <div class="sidebar-number" title="Knowledge Sources: Rhetorical devices, persuasive techniques, and communication patterns">078</div>
+                    <div class="sidebar-action persuasion" data-i18n="persuasion" title="PERSUASION TECHNIQUES: Analyze rhetorical strategies, influence tactics, and communication methods">PERSUASION</div>
                 </div>
                 <div class="sidebar-row">
                     <div class="sidebar-label media" data-factoid="media" data-i18n="media">MEDIA</div>
-                    <div class="sidebar-number">412</div>
-                    <div class="sidebar-action literacy" data-i18n="literacy">LITERACY</div>
+                    <div class="sidebar-number" title="Knowledge Sources: Media analysis techniques, literacy frameworks, and information evaluation">412</div>
+                    <div class="sidebar-action literacy" data-i18n="literacy" title="MEDIA LITERACY: Evaluate information sources, detect manipulation, and assess credibility">LITERACY</div>
                 </div>
                 <div class="sidebar-row">
                     <div class="sidebar-label psychology" data-factoid="psych" data-i18n="psychology">PSYCHOLOGY</div>
-                    <div class="sidebar-number">067</div>
-                    <div class="sidebar-action bias" data-i18n="bias">BIAS</div>
+                    <div class="sidebar-number" title="Knowledge Sources: Cognitive biases, behavioral patterns, and psychological research">067</div>
+                    <div class="sidebar-action bias" data-i18n="bias" title="COGNITIVE BIAS: Detect systematic thinking errors, mental shortcuts, and judgment distortions">BIAS</div>
                 </div>
                 <div class="sidebar-row">
                     <div class="sidebar-label statistics" data-factoid="stats" data-i18n="statistics">STATISTICS</div>
-                    <div class="sidebar-number">234</div>
-                    <div class="sidebar-action data" data-i18n="data">DATA</div>
+                    <div class="sidebar-number" title="Knowledge Sources: Statistical methods, data analysis techniques, and quantitative research">234</div>
+                    <div class="sidebar-action data" data-i18n="data" title="DATA ANALYSIS: Examine statistical claims, interpret quantitative evidence, and validate findings">DATA</div>
                 </div>
                 <div class="sidebar-divider"></div>
                 <div class="sidebar-row">
                     <div class="sidebar-label sources" data-i18n="sources">SOURCES</div>
-                    <div class="sidebar-number">089</div>
-                    <div class="sidebar-action verify" data-i18n="verify">VERIFY</div>
+                    <div class="sidebar-number" title="Knowledge Sources: Source evaluation criteria, citation databases, and verification tools">089</div>
+                    <div class="sidebar-action verify" data-i18n="verify" title="SOURCE VERIFICATION: Cross-reference claims, check citations, and validate authenticity">VERIFY</div>
                 </div>
                 <div class="sidebar-row">
                     <div class="sidebar-label export" id="btnExport" data-i18n="export">EXPORT</div>
-                    <div class="sidebar-number" id="exportCount">000</div>
-                    <div class="sidebar-action reports" id="btnReports" data-i18n="reports">REPORTS</div>
+                    <div class="sidebar-number" id="exportCount" title="Reports Generated: Number of analyses exported for external use">000</div>
+                    <div class="sidebar-action reports" id="btnReports" data-i18n="reports" title="GENERATE REPORTS: Create comprehensive analysis documents for sharing and archival">REPORTS</div>
                 </div>
             </div>
             <div class="sidebar-bottom-curve"></div>
@@ -2939,6 +2949,32 @@ Respond ONLY with valid JSON (no markdown, no code blocks):
         });
         
         console.log('💡 TIP: Double-click any sidebar button to test salience glow states');
+
+        // ==================== NUMBER SCALING FOR SIDEBAR ====================
+        // Auto-scale font size for numbers that are too long
+        function scaleNumberDisplays() {
+            document.querySelectorAll('.sidebar-number').forEach(numEl => {
+                const text = numEl.textContent.trim();
+                // If number is 4+ digits, make font smaller
+                if (text.length >= 4) {
+                    numEl.classList.add('compact');
+                } else {
+                    numEl.classList.remove('compact');
+                }
+            });
+        }
+        
+        // Run on page load
+        scaleNumberDisplays();
+        
+        // Re-run whenever numbers change (e.g., export count updates)
+        const numberObserver = new MutationObserver(scaleNumberDisplays);
+        document.querySelectorAll('.sidebar-number').forEach(numEl => {
+            numberObserver.observe(numEl, { childList: true, characterData: true, subtree: true });
+        });
+        
+        console.log('🔢 Number display scaling initialized');
+
 
         // ==================== MOBILE HAMBURGER MENU ====================
         const hamburgerBtn = document.getElementById('hamburgerBtn');
