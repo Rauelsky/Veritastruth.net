@@ -94,13 +94,55 @@ const CLARIFICATION_PROMPTS = {
 };
 
 // ============================================
-// SENSITIVITY THRESHOLDS
+// SENSITIVITY THRESHOLDS (raised significantly to reduce false positives)
 // ============================================
 const SENSITIVITY_THRESHOLDS = {
-    gentle: 0.70,
-    balanced: 0.50,
-    vigilant: 0.35
+    gentle: 0.92,
+    balanced: 0.85,
+    vigilant: 0.75
 };
+
+// ============================================
+// QUESTION PATTERNS (detect if assistant asked something)
+// ============================================
+const QUESTION_ENDINGS = [
+    /\?\s*$/,                           // Ends with question mark
+    /what do you think\??/i,
+    /what does .+ mean to you/i,
+    /can you (tell|say|explain|share)/i,
+    /how do you (feel|see|think)/i,
+    /what (led|brought) you/i,
+    /would you (say|agree|mind)/i
+];
+
+// ============================================
+// CLARIFICATION LOOP DETECTION
+// ============================================
+const CLARIFICATION_PATTERNS = [
+    /make sure I'm fully hearing you/i,
+    /seems like it might be a new topic/i,
+    /missing a connection/i,
+    /are we starting a new/i,
+    /shifting to a different topic/i
+];
+
+/**
+ * Check if we've recently asked for clarification (prevents loops)
+ */
+function recentlyAskedForClarification(conversationHistory) {
+    // Check the last 3 assistant messages for clarification patterns
+    let assistantCount = 0;
+    for (let i = conversationHistory.length - 1; i >= 0 && assistantCount < 3; i--) {
+        if (conversationHistory[i].role === 'assistant') {
+            assistantCount++;
+            const content = conversationHistory[i].content;
+            if (CLARIFICATION_PATTERNS.some(pattern => pattern.test(content))) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
 
 // ============================================
 // HELPER FUNCTIONS
@@ -127,6 +169,20 @@ function detectDomains(text) {
     }
     
     return detected;
+}
+
+/**
+ * Check if the last assistant message asked a question
+ */
+function lastAssistantAskedQuestion(conversationHistory) {
+    // Find the last assistant message
+    for (let i = conversationHistory.length - 1; i >= 0; i--) {
+        if (conversationHistory[i].role === 'assistant') {
+            const content = conversationHistory[i].content;
+            return QUESTION_ENDINGS.some(pattern => pattern.test(content));
+        }
+    }
+    return false;
 }
 
 /**
@@ -190,15 +246,37 @@ function analyzeForDrift(newMessage, conversationHistory = [], options = {}) {
         windowSize = 6
     } = options;
     
-    const threshold = SENSITIVITY_THRESHOLDS[sensitivity] || 0.50;
+    const threshold = SENSITIVITY_THRESHOLDS[sensitivity] || 0.85;
     
-    // Need at least 2 prior turns to assess drift meaningfully
-    if (conversationHistory.length < 2) {
+    // Need at least 4 prior turns to assess drift meaningfully (raised from 2)
+    if (conversationHistory.length < 4) {
         return {
             driftScore: 0,
             shouldClarify: false,
             clarificationPrompt: null,
             details: { reason: 'insufficient_history' }
+        };
+    }
+    
+    // CRITICAL: If we've recently asked for clarification, DO NOT ask again
+    // This prevents the infinite loop problem
+    if (recentlyAskedForClarification(conversationHistory)) {
+        return {
+            driftScore: 0,
+            shouldClarify: false,
+            clarificationPrompt: null,
+            details: { reason: 'already_clarified_recently' }
+        };
+    }
+    
+    // KEY CHECK: If the assistant just asked a question, user is probably answering it
+    // Don't flag this as drift - it's the natural flow of conversation
+    if (lastAssistantAskedQuestion(conversationHistory)) {
+        return {
+            driftScore: 0,
+            shouldClarify: false,
+            clarificationPrompt: null,
+            details: { reason: 'responding_to_question' }
         };
     }
     
