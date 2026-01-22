@@ -12,7 +12,14 @@
  * 
  * VINCULUM Integration: Universal Translator support for 14 languages
  * "Water that flows over rocks and wears them down"
+ * 
+ * DRIFT DETECTION: "Listening AND Hearing" - clarifies topic shifts
  */
+
+// ============================================
+// DRIFT DETECTOR - "Listening AND Hearing"
+// ============================================
+const { analyzeForDrift } = require('./driftDetector');
 
 // ============================================
 // VINCULUM - UNIVERSAL TRANSLATOR SUPPORT
@@ -275,6 +282,33 @@ export default async function handler(req, res) {
         
         // Also check original query
         const queryHasCrisis = originalQuery && detectCrisis(originalQuery);
+
+        // ============================================
+        // DRIFT DETECTION - "Listening AND Hearing"
+        // ============================================
+        // Only check for drift if NOT in crisis (crisis takes absolute priority)
+        // Navigate uses 'vigilant' sensitivity - people seeking guidance
+        // benefit from ensuring we're addressing the right concern
+        if (!hasCrisisIndicators && !queryHasCrisis && latestUserMessage && messages.length >= 3) {
+            const driftAnalysis = analyzeForDrift(
+                latestUserMessage.content,
+                messages.slice(0, -1), // All messages except the latest
+                { track: 'navigate', sensitivity: 'vigilant' }
+            );
+            
+            // If significant drift detected, return clarification request
+            if (driftAnalysis.shouldClarify) {
+                return res.status(200).json({
+                    content: driftAnalysis.clarificationPrompt,
+                    driftDetected: true,
+                    driftScore: driftAnalysis.driftScore,
+                    driftDetails: driftAnalysis.details,
+                    crisisDetected: false,
+                    language: language || 'en'
+                });
+            }
+        }
+        // ============================================
 
         // Build system prompt with context and language instruction
         let systemPrompt = SYSTEM_PROMPT;

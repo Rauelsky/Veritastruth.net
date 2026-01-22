@@ -14,7 +14,14 @@
  * 
  * VINCULUM Integration: Universal Translator support for 14 languages
  * "Water that flows over rocks and wears them down"
+ * 
+ * DRIFT DETECTION: "Listening AND Hearing" - clarifies topic shifts
  */
+
+// ============================================
+// DRIFT DETECTOR - "Listening AND Hearing"
+// ============================================
+const { analyzeForDrift } = require('./driftDetector');
 
 // ============================================
 // VINCULUM - UNIVERSAL TRANSLATOR SUPPORT
@@ -270,6 +277,32 @@ export default async function handler(req, res) {
             console.error('No API key found in environment variables');
             return res.status(500).json({ error: 'API key not configured' });
         }
+
+        // ============================================
+        // DRIFT DETECTION - "Listening AND Hearing"
+        // ============================================
+        // Check if the latest message represents a topic shift
+        const latestUserMessage = messages.filter(m => m.role === 'user').pop();
+        
+        if (latestUserMessage && messages.length >= 3) {
+            const driftAnalysis = analyzeForDrift(
+                latestUserMessage.content,
+                messages.slice(0, -1), // All messages except the latest
+                { track: 'interview', sensitivity: 'balanced' }
+            );
+            
+            // If significant drift detected, return clarification request
+            if (driftAnalysis.shouldClarify) {
+                return res.status(200).json({
+                    content: driftAnalysis.clarificationPrompt,
+                    driftDetected: true,
+                    driftScore: driftAnalysis.driftScore,
+                    driftDetails: driftAnalysis.details,
+                    language: language || 'en'
+                });
+            }
+        }
+        // ============================================
 
         // Build system prompt with context and language instruction
         let systemPrompt = SYSTEM_PROMPT;
