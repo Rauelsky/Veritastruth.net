@@ -1997,49 +1997,49 @@
                 <div class="sidebar-row">
                     <div class="sidebar-label history" data-factoid="history" data-i18n="history">HISTORY</div>
                     <div class="sidebar-number" title="Knowledge Sources: Historical texts, archives, and documented events available for analysis">247</div>
-                    <div class="sidebar-action archives" data-i18n="archives" title="ACCESS HISTORICAL ARCHIVES: Browse documented events, primary sources, and historical context">ARCHIVES</div>
+                    <div class="sidebar-action archives" data-action="archives" data-i18n="archives" title="ACCESS HISTORICAL ARCHIVES: Browse documented events, primary sources, and historical context">ARCHIVES</div>
                 </div>
                 <div class="sidebar-row">
                     <div class="sidebar-label science" data-factoid="science" data-i18n="sciences">SCIENCES</div>
                     <div class="sidebar-number" title="Knowledge Sources: Scientific studies, peer-reviewed papers, and empirical research available">182</div>
-                    <div class="sidebar-action research" data-i18n="research" title="SCIENTIFIC RESEARCH: Access peer-reviewed studies, experimental data, and scientific consensus">RESEARCH</div>
+                    <div class="sidebar-action research" data-action="research" data-i18n="research" title="SCIENTIFIC RESEARCH: Access peer-reviewed studies, experimental data, and scientific consensus">RESEARCH</div>
                 </div>
                 <div class="sidebar-row">
                     <div class="sidebar-label philosophy" data-factoid="philosophy" data-i18n="philosophy">PHILOSOPHY</div>
                     <div class="sidebar-number" title="Knowledge Sources: Philosophical traditions, ethical frameworks, and wisdom teachings">093</div>
-                    <div class="sidebar-action ethics" data-i18n="ethics" title="ETHICAL ANALYSIS: Explore moral frameworks, value systems, and philosophical perspectives">ETHICS</div>
+                    <div class="sidebar-action ethics" data-action="ethics" data-i18n="ethics" title="ETHICAL ANALYSIS: Explore moral frameworks, value systems, and philosophical perspectives">ETHICS</div>
                 </div>
                 <div class="sidebar-row">
                     <div class="sidebar-label logic" data-factoid="logic" data-i18n="logic">LOGIC</div>
                     <div class="sidebar-number" title="Knowledge Sources: Logical principles, reasoning patterns, and critical thinking frameworks">156</div>
-                    <div class="sidebar-action fallacies" data-i18n="fallacies" title="LOGICAL FALLACIES: Identify flawed reasoning, invalid arguments, and cognitive errors">FALLACIES</div>
+                    <div class="sidebar-action fallacies" data-action="fallacies" data-i18n="fallacies" title="LOGICAL FALLACIES: Identify flawed reasoning, invalid arguments, and cognitive errors">FALLACIES</div>
                 </div>
                 <div class="sidebar-divider"></div>
                 <div class="sidebar-row">
                     <div class="sidebar-label rhetoric" data-factoid="rhetoric" data-i18n="rhetoric">RHETORIC</div>
                     <div class="sidebar-number" title="Knowledge Sources: Rhetorical devices, persuasive techniques, and communication patterns">078</div>
-                    <div class="sidebar-action persuasion" data-i18n="persuasion" title="PERSUASION TECHNIQUES: Analyze rhetorical strategies, influence tactics, and communication methods">PERSUASION</div>
+                    <div class="sidebar-action persuasion" data-action="persuasion" data-i18n="persuasion" title="PERSUASION TECHNIQUES: Analyze rhetorical strategies, influence tactics, and communication methods">PERSUASION</div>
                 </div>
                 <div class="sidebar-row">
                     <div class="sidebar-label media" data-factoid="media" data-i18n="media">MEDIA</div>
                     <div class="sidebar-number" title="Knowledge Sources: Media analysis techniques, literacy frameworks, and information evaluation">412</div>
-                    <div class="sidebar-action literacy" data-i18n="literacy" title="MEDIA LITERACY: Evaluate information sources, detect manipulation, and assess credibility">LITERACY</div>
+                    <div class="sidebar-action literacy" data-action="literacy" data-i18n="literacy" title="MEDIA LITERACY: Evaluate information sources, detect manipulation, and assess credibility">LITERACY</div>
                 </div>
                 <div class="sidebar-row">
                     <div class="sidebar-label psychology" data-factoid="psych" data-i18n="psychology">PSYCHOLOGY</div>
                     <div class="sidebar-number" title="Knowledge Sources: Cognitive biases, behavioral patterns, and psychological research">067</div>
-                    <div class="sidebar-action bias" data-i18n="bias" title="COGNITIVE BIAS: Detect systematic thinking errors, mental shortcuts, and judgment distortions">BIAS</div>
+                    <div class="sidebar-action bias" data-action="bias" data-i18n="bias" title="COGNITIVE BIAS: Detect systematic thinking errors, mental shortcuts, and judgment distortions">BIAS</div>
                 </div>
                 <div class="sidebar-row">
                     <div class="sidebar-label statistics" data-factoid="stats" data-i18n="statistics">STATISTICS</div>
                     <div class="sidebar-number" title="Knowledge Sources: Statistical methods, data analysis techniques, and quantitative research">234</div>
-                    <div class="sidebar-action data" data-i18n="data" title="DATA ANALYSIS: Examine statistical claims, interpret quantitative evidence, and validate findings">DATA</div>
+                    <div class="sidebar-action data" data-action="data" data-i18n="data" title="DATA ANALYSIS: Examine statistical claims, interpret quantitative evidence, and validate findings">DATA</div>
                 </div>
                 <div class="sidebar-divider"></div>
                 <div class="sidebar-row">
                     <div class="sidebar-label sources" data-i18n="sources">SOURCES</div>
                     <div class="sidebar-number" title="Knowledge Sources: Source evaluation criteria, citation databases, and verification tools">089</div>
-                    <div class="sidebar-action verify" data-i18n="verify" title="SOURCE VERIFICATION: Cross-reference claims, check citations, and validate authenticity">VERIFY</div>
+                    <div class="sidebar-action verify" data-action="verify" data-i18n="verify" title="SOURCE VERIFICATION: Cross-reference claims, check citations, and validate authenticity">VERIFY</div>
                 </div>
                 <div class="sidebar-row">
                     <div class="sidebar-label export" id="btnExport" data-i18n="export">EXPORT</div>
@@ -2294,6 +2294,7 @@
     <script src="modules/classifier.js"></script>
     <script src="modules/factoids.js"></script>
     <script src="modules/microdiscovery.js"></script>
+    <script src="modules/action-factoids.js"></script>
     <script src="modules/contextual.js"></script>
     <script src="modules/animations.js"></script>
     <script src="modules/export.js"></script>
@@ -2348,7 +2349,37 @@
             btn.addEventListener('click', () => showFactoid(btn.dataset.factoid));
         });
 
-        // Micro-discovery
+        // ==================== ACTION FACTOIDS (Right Column) ====================
+        // Maps action buttons to their category labels
+        const actionLabels = {
+            'archives': 'ARCHIVAL RESEARCH',
+            'research': 'SCIENTIFIC METHOD',
+            'ethics': 'ETHICAL REASONING',
+            'fallacies': 'LOGICAL REASONING',
+            'persuasion': 'RHETORICAL AWARENESS',
+            'literacy': 'MEDIA LITERACY',
+            'bias': 'COGNITIVE AWARENESS',
+            'data': 'STATISTICAL LITERACY',
+            'verify': 'VERIFICATION METHODS'
+        };
+
+        function showActionFactoid(action) {
+            if (typeof VeracityActionFactoids !== 'undefined') {
+                const factoid = VeracityActionFactoids.sync.getRandomActionFactoid(action);
+                if (factoid) {
+                    document.getElementById('factoidCategory').textContent = actionLabels[action] || action.toUpperCase();
+                    document.getElementById('factoidText').textContent = factoid.text;
+                    document.getElementById('factoidDisplay').classList.add('visible');
+                }
+            }
+        }
+
+        // Add click handlers for sidebar-action buttons
+        document.querySelectorAll('.sidebar-action[data-action]').forEach(btn => {
+            btn.addEventListener('click', () => showActionFactoid(btn.dataset.action));
+        });
+
+        // ==================== MICRO-DISCOVERY (Numbers Column) ====================
         const microDisciplines = ['history', 'sciences', 'philosophy', 'logic', 'rhetoric', 'media', 'psychology', 'statistics', 'sources', 'export'];
         let tooltipEl = null;
 
@@ -2360,11 +2391,84 @@
                     if (entry) {
                         el.textContent = entry.displayValue;
                         el.dataset.tooltip = entry.tooltip;
+                        el.dataset.discipline = microDisciplines[i];
+                        el.title = entry.tooltip; // Native tooltip as backup
                     }
                 }
             });
         }
         initMicroDiscovery();
+
+        // Custom tooltip for numbers on hover
+        function showNumberTooltip(el, event) {
+            if (!el.dataset.tooltip) return;
+            
+            // Remove any existing tooltip
+            hideNumberTooltip();
+            
+            // Create tooltip element
+            tooltipEl = document.createElement('div');
+            tooltipEl.className = 'micro-tooltip';
+            tooltipEl.textContent = el.dataset.tooltip;
+            tooltipEl.style.cssText = `
+                position: fixed;
+                background: var(--bg-tertiary, #2d4a6f);
+                color: var(--text-primary, #fff);
+                padding: 8px 12px;
+                border-radius: 6px;
+                font-size: 12px;
+                max-width: 280px;
+                z-index: 10000;
+                pointer-events: none;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+                border: 1px solid var(--accent-amber, #d4a853);
+                line-height: 1.4;
+            `;
+            document.body.appendChild(tooltipEl);
+            
+            // Position tooltip
+            const rect = el.getBoundingClientRect();
+            tooltipEl.style.left = (rect.right + 10) + 'px';
+            tooltipEl.style.top = rect.top + 'px';
+            
+            // Adjust if off-screen
+            const tooltipRect = tooltipEl.getBoundingClientRect();
+            if (tooltipRect.right > window.innerWidth - 10) {
+                tooltipEl.style.left = (rect.left - tooltipRect.width - 10) + 'px';
+            }
+            if (tooltipRect.bottom > window.innerHeight - 10) {
+                tooltipEl.style.top = (window.innerHeight - tooltipRect.height - 10) + 'px';
+            }
+        }
+
+        function hideNumberTooltip() {
+            if (tooltipEl) {
+                tooltipEl.remove();
+                tooltipEl = null;
+            }
+        }
+
+        // Add hover handlers for number tooltips
+        document.querySelectorAll('.sidebar-number').forEach(el => {
+            el.addEventListener('mouseenter', (e) => showNumberTooltip(el, e));
+            el.addEventListener('mouseleave', hideNumberTooltip);
+            
+            // Make numbers clickable to refresh with new content
+            el.style.cursor = 'pointer';
+            el.addEventListener('click', () => {
+                if (typeof VeracityMicroDiscovery !== 'undefined' && el.dataset.discipline) {
+                    const entry = VeracityMicroDiscovery.sync.getRandomEntry(el.dataset.discipline);
+                    if (entry) {
+                        el.textContent = entry.displayValue;
+                        el.dataset.tooltip = entry.tooltip;
+                        el.title = entry.tooltip;
+                        // Show the new tooltip briefly
+                        showNumberTooltip(el);
+                        setTimeout(hideNumberTooltip, 2000);
+                    }
+                }
+            });
+        });
 
         // UI State
         const trackInfo = {
