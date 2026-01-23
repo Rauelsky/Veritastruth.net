@@ -250,6 +250,7 @@
                     <button class="export-btn" onclick="exportPDF()">📄 PDF</button>
                     <button class="export-btn" onclick="exportJSON()">📋 JSON</button>
                     <button class="export-btn" onclick="exportMD()">📝 MD</button>
+                    <button class="export-btn" onclick="printConversation()">🖨️ Print</button>
                 </div>
                 <div class="footer-motto" data-i18n="footerMotto">SEEK · QUESTION · UNDERSTAND</div>
             </div>
@@ -390,6 +391,135 @@
             conversationHistory.forEach(msg => { md += (msg.role === 'user' ? '**You:** ' : '**VERITAS:** ') + msg.content + '\n\n'; });
             const blob = new Blob([md], { type: 'text/markdown' });
             const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'veritas-interview.md'; a.click();
+        }
+
+        function printConversation() {
+            if (conversationHistory.length === 0) {
+                alert('No conversation to print. Start a conversation first.');
+                return;
+            }
+            
+            const context = document.getElementById('contextText').textContent;
+            const printWindow = window.open('', '_blank');
+            
+            let html = `
+<!DOCTYPE html>
+<html>
+<head>
+    <title>VERITAS Interview - Print</title>
+    <style>
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            line-height: 1.6;
+            color: #333;
+        }
+        .header {
+            text-align: center;
+            border-bottom: 2px solid #764ba2;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            font-size: 24px;
+            color: #764ba2;
+            margin: 0 0 10px 0;
+            letter-spacing: 2px;
+        }
+        .header .subtitle {
+            font-size: 12px;
+            color: #666;
+            letter-spacing: 1px;
+        }
+        .context {
+            background: #f8f6ff;
+            border-left: 4px solid #764ba2;
+            padding: 15px 20px;
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+        .context-label {
+            font-size: 11px;
+            font-weight: bold;
+            color: #764ba2;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+        .message {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        .message:last-child {
+            border-bottom: none;
+        }
+        .message-role {
+            font-weight: bold;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+        .message-role.user {
+            color: #2196F3;
+        }
+        .message-role.assistant {
+            color: #764ba2;
+        }
+        .message-content {
+            font-size: 14px;
+        }
+        .footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+            text-align: center;
+            font-size: 11px;
+            color: #999;
+        }
+        @media print {
+            body { margin: 20px; }
+            .message { page-break-inside: avoid; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>VERITAS INTERVIEW</h1>
+        <div class="subtitle">Track B: Wisdom Through Dialogue</div>
+    </div>
+    <div class="context">
+        <div class="context-label">Starting Point</div>
+        ${context}
+    </div>
+`;
+            
+            conversationHistory.forEach(msg => {
+                const roleClass = msg.role === 'user' ? 'user' : 'assistant';
+                const roleLabel = msg.role === 'user' ? 'You' : 'VERITAS';
+                html += `
+    <div class="message">
+        <div class="message-role ${roleClass}">${roleLabel}</div>
+        <div class="message-content">${msg.content.replace(/\n/g, '<br>')}</div>
+    </div>
+`;
+            });
+            
+            html += `
+    <div class="footer">
+        Exported from VERITAS • ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}
+    </div>
+</body>
+</html>`;
+            
+            printWindow.document.write(html);
+            printWindow.document.close();
+            printWindow.onload = function() {
+                printWindow.print();
+            };
         }
     </script>
 </body>
