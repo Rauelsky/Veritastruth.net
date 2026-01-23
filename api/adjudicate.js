@@ -108,10 +108,21 @@ module.exports = async function handler(req, res) {
             confidence: parsed.confidence,
             recommendedScore: parsed.recommendedScore,
             finalScore: parsed.finalScore,
+            // Frontend expects these field names:
+            finalRealityScore: parsed.finalScore,
+            finalIntegrityScore: null, // Adjudication doesn't determine integrity separately
             initialScore: initialScore,
             verifyScore: verifyScore,
             researchImpact: parsed.researchImpact,
-            convergenceStrength: parsed.convergenceStrength
+            convergenceStrength: parsed.convergenceStrength,
+            // Structured data for frontend rendering
+            structured: {
+                adjudication: {
+                    justification: parsed.justification,
+                    keyFactors: parsed.keyFactors,
+                    reasoning: parsed.reasoning
+                }
+            }
         });
         
     } catch (err) {
@@ -338,7 +349,10 @@ function parseAdjudicationResponse(adjudication, initialScore, verifyScore) {
         recommendedScore: null,
         finalScore: null,
         researchImpact: 'unknown',
-        convergenceStrength: 'unknown'
+        convergenceStrength: 'unknown',
+        justification: null,
+        keyFactors: [],
+        reasoning: null
     };
     
     // Try to parse JSON block first
@@ -351,6 +365,12 @@ function parseAdjudicationResponse(adjudication, initialScore, verifyScore) {
             result.recommendedScore = parsed.recommendedScore;
             result.researchImpact = parsed.researchImpact || 'unknown';
             result.convergenceStrength = parsed.convergenceStrength || 'unknown';
+            result.reasoning = parsed.reasoning || null;
+            
+            // Extract synthesis for justification if available
+            if (parsed.synthesis && parsed.synthesis.resolutionRationale) {
+                result.justification = parsed.synthesis.resolutionRationale;
+            }
         } catch (e) {
             console.error('Adjudication JSON parse error:', e);
         }
@@ -379,6 +399,50 @@ function parseAdjudicationResponse(adjudication, initialScore, verifyScore) {
         if (scoreMatch) {
             result.recommendedScore = parseFloat(scoreMatch[1]);
         }
+    }
+    
+    // Extract justification from narrative summary if not already found
+    if (!result.justification) {
+        // Look for the Justification section in the narrative
+        var justificationMatch = adjudication.match(/\*?\*?Justification:?\*?\*?\s*([^\n*]+(?:\n(?!\*\*)[^\n*]+)*)/i);
+        if (justificationMatch) {
+            result.justification = justificationMatch[1].trim();
+        }
+    }
+    
+    // If still no justification, try to extract from Final Recommendation section
+    if (!result.justification) {
+        var finalRecMatch = adjudication.match(/\*?\*?Final\s+Recommendation:?\*?\*?\s*([\s\S]*?)(?=\n\n|\n\*\*|$)/i);
+        if (finalRecMatch) {
+            // Extract justification line from within Final Recommendation
+            var innerJustMatch = finalRecMatch[1].match(/\*?\*?Justification:?\*?\*?\s*(.+)/i);
+            if (innerJustMatch) {
+                result.justification = innerJustMatch[1].trim();
+            } else {
+                // Use the whole Final Recommendation section as justification
+                result.justification = finalRecMatch[1].replace(/\*?\*?Recommended\s+Score:?\*?\*?[^\n]+\n?/i, '').trim();
+            }
+        }
+    }
+    
+    // Extract key factors
+    var keyFactorsMatch = adjudication.match(/\*?\*?Key\s+Factors:?\*?\*?\s*([\s\S]*?)(?=\n\n\*\*|\n\*\*Research|$)/i);
+    if (keyFactorsMatch) {
+        var factorsText = keyFactorsMatch[1];
+        var factorLines = factorsText.match(/[-•]\s*(.+)/g);
+        if (factorLines) {
+            result.keyFactors = factorLines.map(function(f) {
+                return f.replace(/^[-•]\s*/, '').trim();
+            });
+        }
+    }
+    
+    // If still no justification, build one from available data
+    if (!result.justification && result.winner) {
+        var winnerName = result.winner === 'A' ? 'Initial Assessment' : 'Verification Assessment';
+        result.justification = winnerName + ' prevailed with ' + 
+            (result.confidence * 100).toFixed(0) + '% confidence. ' +
+            (result.keyFactors.length > 0 ? 'Key factors: ' + result.keyFactors.join('; ') + '.' : '');
     }
     
     // Calculate final score
