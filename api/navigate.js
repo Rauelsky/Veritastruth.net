@@ -262,7 +262,7 @@ export default async function handler(req, res) {
     }
 
     try {
-        const { messages, originalQuery, language } = req.body;
+        const { messages, originalQuery, language, characterPrompt } = req.body;
 
         if (!messages || !Array.isArray(messages)) {
             return res.status(400).json({ error: 'Messages array required' });
@@ -312,6 +312,11 @@ export default async function handler(req, res) {
 
         // Build system prompt with context and language instruction
         let systemPrompt = SYSTEM_PROMPT;
+        
+        // Add character/conversation style if provided
+        if (characterPrompt) {
+            systemPrompt = characterPrompt + '\n\n' + systemPrompt;
+        }
         
         // Add VINCULUM instruction for non-English users
         const languageInstruction = buildLanguageInstruction(language || 'en');

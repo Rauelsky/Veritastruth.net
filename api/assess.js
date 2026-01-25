@@ -1138,6 +1138,7 @@ module.exports = async function handler(req, res) {
         var fiveWsContext = body.fiveWsContext || null;
         var userApiKey = body.userApiKey || '';
         var language = body.language || 'en'; // Universal Translator language preference
+        var characterPrompt = body.characterPrompt || ''; // Conversation style
         
         // Fetch URL content if provided
         if (articleUrl && !articleText) {
@@ -1215,6 +1216,11 @@ module.exports = async function handler(req, res) {
             console.log('Prompt length:', prompt.length);
         } else {
             prompt = buildTrackAPrompt(question, articleText, language);
+        }
+        
+        // Add character/conversation style if provided
+        if (characterPrompt) {
+            prompt = characterPrompt + '\n\n' + prompt;
         }
         
         var message;
