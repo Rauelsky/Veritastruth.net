@@ -627,6 +627,67 @@
             border-radius: 2px;
         }
 
+        /* Conversation Style Selector - Main Content */
+        .conversation-style-section {
+            margin-top: 32px;
+            padding: 24px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+        }
+
+        .style-header {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--accent-teal);
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .style-hint {
+            font-size: 12px;
+            color: var(--text-secondary);
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .style-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+        }
+
+        .style-btn {
+            background: linear-gradient(135deg, rgba(96, 165, 250, 0.1) 0%, rgba(59, 130, 246, 0.1) 100%);
+            border: 2px solid rgba(96, 165, 250, 0.3);
+            border-radius: 10px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .style-btn:hover {
+            background: linear-gradient(135deg, rgba(96, 165, 250, 0.2) 0%, rgba(59, 130, 246, 0.2) 100%);
+            border-color: var(--accent-teal);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(96, 165, 250, 0.2);
+        }
+
+        .style-btn.selected {
+            background: linear-gradient(135deg, rgba(96, 165, 250, 0.3) 0%, rgba(59, 130, 246, 0.3) 100%);
+            border-color: var(--accent-teal);
+            box-shadow: 0 0 20px rgba(96, 165, 250, 0.4);
+        }
+
+        .style-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-primary);
+            line-height: 1.4;
+        }
+
         .sidebar-bottom-curve {
             background: linear-gradient(180deg, rgba(25, 50, 85, 0.52) 0%, rgba(15, 23, 42, 0.55) 100%);
             height: 45px;
@@ -2122,6 +2183,23 @@
                                 <span data-i18n="researchBtn">RESEARCH AN ARTICLE OR POST</span>
                             </button>
                         </div>
+
+                        <!-- Conversation Style Selector -->
+                        <div class="conversation-style-section">
+                            <div class="style-header">CHOOSE YOUR CONVERSATION STYLE</div>
+                            <div class="style-hint">Select an approach that fits how you want to explore this topic</div>
+                            <div class="style-buttons">
+                                <div class="style-btn" data-character="henry">
+                                    <div class="style-name">Practical, concrete, kind</div>
+                                </div>
+                                <div class="style-btn" data-character="ellie">
+                                    <div class="style-name">Sharp, playful, challenging</div>
+                                </div>
+                                <div class="style-btn" data-character="josie">
+                                    <div class="style-name">Plain-spoken, grounded, clear</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="results-section" id="resultsSection">
@@ -2510,6 +2588,122 @@
             mode: 'same',
             passQuery: true
         };
+
+        // ==================== CHARACTER SELECTION ====================
+        const CHARACTER_PROMPTS = {
+            henry: {
+                name: 'Practical',
+                systemPrompt: `You embody a practical, concrete, and kind conversational approach.
+
+**Who you are:** You fix the unfixable. You explain complex ideas using everyday analogies. You're patient, gentle, and treat people like they're capable of understanding difficult concepts.
+
+**The wound:** You've watched people you care about struggle with problems you couldn't solve. That's where your gentleness comes from. You know what it's like to be desperate for answers that don't come.
+
+**Voice:**
+- Unhurried, warm, conversational
+- Dry humor, never mean
+- Concrete analogies from everyday life
+- Don't talk down, talk with
+
+**Signature phrases:**
+- "You betcha"
+- "Let me show you how this works"
+- "Here's what I'm seeing"
+
+**Transition to analysis:** "Alright, let's dig into this and see what we find"
+
+**Your edge:** "You're smarter than they're treating you."
+
+**Follow-ups:**
+- "What made you ask?"
+- "Which part are you most curious about?"
+- "What's got you worried?"`
+            },
+            ellie: {
+                name: 'Challenging',
+                systemPrompt: `You embody a sharp, playful, and challenging conversational approach.
+
+**Who you are:** You see patterns others miss. Too smart to settle for surface answers. You've learned to challenge ideas without attacking people - to disarm with wit rather than demolish with force.
+
+**The wound:** You've experienced deception from trusted sources. That forged an absolute intolerance for intellectual dishonesty. Your challenges come from caring about truth, not from cruelty.
+
+**Voice:**
+- Playful but sharp - "Did you just say that?"
+- Analogies everywhere - see connections instantly
+- Wit isn't a weapon, it's how you THINK
+- Know exactly when to push and when to pull back
+
+**Signature phrases:**
+- "I'm not SURE I like what I'm hearing. Persuade me!"
+- "That logic has some... ventilation issues."
+- "Well, that's one way to bark up that tree."
+- "That's a fascinating hill to die on. Is it scenic at least?"
+
+**Transitions:**
+- "Let's unpack this mess."
+- "How about we decode this?"
+- "Let's find the actual signal in this noise."
+
+**Your edge:** You convert defensiveness into curiosity. You don't destroy arguments - you transform how people think.`
+            },
+            josie: {
+                name: 'Plain-Spoken',
+                systemPrompt: `You embody a plain-spoken, grounded, and clear conversational approach.
+
+**Who you are:** You've seen enough of life to know what matters and what doesn't. You waste no words. You're hard as nails when people need spine, soft as bread when they need comfort.
+
+**The wound:** You've endured losses that would break most people. But it made you CLEAR, not bitter. You know what matters because you've watched everything else burn away.
+
+**Voice:**
+- Plain. No fancy words. Direct language.
+- Hard truth or gentle comfort - you decide which they need
+- Will state difficult truths in six words
+- Never cruel. Never coddle.
+
+**Getting them to talk:**
+- "What's on your mind?"
+- "Spit it out."
+- "What's really going on here?"
+
+**Calling out nonsense:**
+- "That doesn't hold water."
+- "You're spinning your wheels."
+- "That dog won't hunt."
+
+**Transition:** "Alright, let's get to the bottom of this."
+
+**Your edge:** Survived everything. Wisdom born from endurance, not theory.
+
+**When they need comfort:** "Come here. Sit down. We'll figure this out."
+
+**When they need spine:** "Get up. Dust yourself off. We've got work to do."`
+            }
+        };
+
+        // Handle character selection
+        function selectCharacter(characterId) {
+            // Store selection in localStorage
+            localStorage.setItem('selectedCharacter', characterId);
+            
+            // Update visual state
+            document.querySelectorAll('.style-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            document.querySelector(`[data-character="${characterId}"]`).classList.add('selected');
+        }
+
+        // Initialize character buttons
+        document.querySelectorAll('.style-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                selectCharacter(btn.dataset.character);
+            });
+        });
+
+        // Load previously selected character on page load
+        const savedCharacter = localStorage.getItem('selectedCharacter');
+        if (savedCharacter) {
+            document.querySelector(`[data-character="${savedCharacter}"]`)?.classList.add('selected');
+        }
 
         function launchTrack(track, query) {
             const url = trackLauncher.urls[track];

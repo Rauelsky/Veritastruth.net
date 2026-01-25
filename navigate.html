@@ -152,6 +152,21 @@
             border-color: var(--track-primary);
         }
 
+        .character-select {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-medium);
+            border-radius: 6px;
+            padding: 6px 12px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            min-width: 140px;
+        }
+
+        .character-select:hover {
+            border-color: var(--track-primary);
+        }
+
         .home-btn {
             display: flex;
             align-items: center;
@@ -522,6 +537,12 @@
                 <div class="tagline" data-i18n="tagline">Truth Through Transparency</div>
             </div>
             <div class="header-controls">
+                <select id="characterSelect" class="character-select" title="Choose Your Conversation Style">
+                    <option value="">Standard</option>
+                    <option value="henry">Practical</option>
+                    <option value="ellie">Challenging</option>
+                    <option value="josie">Plain-Spoken</option>
+                </select>
                 <select id="languageSelect" class="language-select" title="Universal Translator">
                     <option value="en">🌐 English</option>
                     <option value="es">🇪🇸 Español</option>
@@ -611,12 +632,27 @@
         let conversationHistory = [];
         let currentLanguage = localStorage.getItem('veritasLanguage') || 'en';
         let isProcessing = false;
+        let selectedCharacter = localStorage.getItem('selectedCharacter') || '';
+
+        // Character system prompts
+        const CHARACTER_PROMPTS = {
+            henry: `You embody a practical, concrete, and kind conversational approach. Unhurried, warm. Use everyday analogies. Patient and gentle. Phrases: "You betcha", "Let me show you how this works". Your edge: "You're smarter than they're treating you."`,
+            
+            ellie: `You embody a sharp, playful, and challenging conversational approach. See patterns others miss. Challenge ideas without attacking people. Phrases: "I'm not SURE I like what I'm hearing. Persuade me!", "That logic has some... ventilation issues." You convert defensiveness into curiosity.`,
+            
+            josie: `You embody a plain-spoken, grounded, and clear conversational approach. Direct language. Hard truth or gentle comfort as needed. Phrases: "What's on your mind?", "That doesn't hold water." Wisdom from endurance, not theory.`
+        };
 
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
             // Set language
             document.getElementById('languageSelect').value = currentLanguage;
             applyRTL(currentLanguage);
+            
+            // Set saved character if any
+            if (selectedCharacter) {
+                document.getElementById('characterSelect').value = selectedCharacter;
+            }
             
             // Get query from URL
             const params = new URLSearchParams(window.location.search);
@@ -629,6 +665,24 @@
             } else {
                 document.getElementById('contextText').textContent = 'No situation provided. Please describe what you need help with.';
             }
+
+            // Character switcher
+            document.getElementById('characterSelect').addEventListener('change', function() {
+                selectedCharacter = this.value;
+                localStorage.setItem('selectedCharacter', selectedCharacter);
+                // Clear conversation when switching characters mid-session
+                if (conversationHistory.length > 0 && confirm('Switching guides will start a new conversation. Continue?')) {
+                    conversationHistory = [];
+                    document.getElementById('chatMessages').innerHTML = '';
+                    if (selectedCharacter) {
+                        const characterName = CHARACTER_PROMPTS[selectedCharacter] ? selectedCharacter.toUpperCase() : 'Standard';
+                        addMessage('assistant', `Switched to ${characterName} mode. How can I help you?`);
+                    }
+                } else if (conversationHistory.length === 0 && selectedCharacter) {
+                    const characterName = CHARACTER_PROMPTS[selectedCharacter] ? selectedCharacter.toUpperCase() : 'Standard';
+                    addMessage('assistant', `${characterName} mode activated. How can I help you?`);
+                }
+            });
 
             // Language change handler
             document.getElementById('languageSelect').addEventListener('change', function() {
@@ -678,14 +732,18 @@
             showTyping();
 
             try {
+                const body = {
+                    messages: conversationHistory,
+                    originalQuery: query,
+                    language: currentLanguage
+                };
+                if (selectedCharacter && CHARACTER_PROMPTS[selectedCharacter]) {
+                    body.characterPrompt = CHARACTER_PROMPTS[selectedCharacter];
+                }
                 const response = await fetch('/api/navigate', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        messages: conversationHistory,
-                        originalQuery: query,
-                        language: currentLanguage
-                    })
+                    body: JSON.stringify(body)
                 });
 
                 const data = await response.json();
@@ -726,13 +784,17 @@
             showTyping();
 
             try {
+                const body = {
+                    messages: conversationHistory,
+                    language: currentLanguage
+                };
+                if (selectedCharacter && CHARACTER_PROMPTS[selectedCharacter]) {
+                    body.characterPrompt = CHARACTER_PROMPTS[selectedCharacter];
+                }
                 const response = await fetch('/api/navigate', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        messages: conversationHistory,
-                        language: currentLanguage
-                    })
+                    body: JSON.stringify(body)
                 });
 
                 const data = await response.json();
