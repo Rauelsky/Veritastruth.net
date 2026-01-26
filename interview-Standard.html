@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VERITAS — Interview Mode</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        :root {
+            --bg-primary: #0a0f1a;
+            --bg-secondary: #111827;
+            --bg-card: #1a2332;
+            --bg-tertiary: #1e293b;
+            --bg-input: #0d1117;
+            --track-primary: #8b5cf6;
+            --track-secondary: #7c3aed;
+            --track-glow: rgba(139, 92, 246, 0.3);
+            --accent-blue: #3b82f6;
+            --text-primary: #e2e8f0;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --border-subtle: #1e293b;
+            --border-medium: #334155;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'IBM Plex Sans', -apple-system, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+        }
+        body.rtl { direction: rtl; }
+        .site-header {
+            background: linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
+            border-bottom: 1px solid var(--track-primary);
+            padding: 16px 24px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header-content {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .logo-section { display: flex; flex-direction: column; }
+        .logo-row { display: flex; align-items: center; gap: 12px; }
+        .logo-img { height: 36px; width: auto; }
+        .logo-fallback { display: flex; align-items: center; gap: 12px; }
+        .logo-mark {
+            width: 36px; height: 36px;
+            background: linear-gradient(135deg, var(--track-primary) 0%, #22d3ee 100%);
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 1.1rem; color: var(--bg-primary);
+        }
+        .logo-text { font-size: 1.25rem; font-weight: 700; letter-spacing: 2px; }
+        .tagline { font-size: 0.7rem; color: var(--text-muted); margin-left: 48px; margin-top: -4px; }
+        .header-controls { display: flex; align-items: center; gap: 12px; }
+        .language-select {
+            background: var(--bg-tertiary); color: var(--text-primary);
+            border: 1px solid var(--border-medium); border-radius: 6px;
+            padding: 6px 12px; font-size: 0.8rem; cursor: pointer;
+        }
+        .language-select:hover { border-color: var(--track-primary); }
+        .home-btn {
+            display: flex; align-items: center; gap: 6px;
+            padding: 6px 14px; background: var(--bg-tertiary);
+            border: 1px solid var(--border-medium); border-radius: 20px;
+            color: var(--text-secondary); text-decoration: none; font-size: 0.8rem;
+            transition: all 0.2s ease;
+        }
+        .home-btn:hover { border-color: var(--track-primary); color: var(--text-primary); }
+        .version-badge {
+            font-size: 0.7rem; color: var(--track-primary);
+            background: var(--bg-tertiary); padding: 6px 12px;
+            border-radius: 20px; border: 1px solid var(--track-primary);
+        }
+        .container {
+            max-width: 900px; margin: 0 auto; padding: 24px;
+            flex: 1; display: flex; flex-direction: column;
+        }
+        .context-card {
+            background: var(--bg-card); border: 1px solid var(--border-subtle);
+            border-radius: 12px; padding: 16px 20px; margin-bottom: 20px;
+        }
+        .context-label {
+            font-size: 0.75rem; color: var(--track-primary);
+            text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;
+        }
+        .context-text { font-size: 0.95rem; line-height: 1.5; }
+        .chat-card {
+            background: var(--bg-card); border: 1px solid var(--border-subtle);
+            border-radius: 12px; flex: 1; display: flex;
+            flex-direction: column; min-height: 450px;
+        }
+        .chat-header {
+            background: var(--bg-tertiary); padding: 16px 20px;
+            border-bottom: 1px solid var(--border-subtle);
+            border-radius: 12px 12px 0 0;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .chat-title { font-size: 1rem; font-weight: 600; }
+        .chat-badge {
+            font-size: 0.7rem; color: white; background: var(--track-primary);
+            padding: 4px 10px; border-radius: 12px; font-weight: 500;
+        }
+        .chat-messages {
+            flex: 1; overflow-y: auto; padding: 20px;
+            display: flex; flex-direction: column; gap: 16px;
+        }
+        .message { display: flex; gap: 12px; max-width: 85%; }
+        .message.user { align-self: flex-end; flex-direction: row-reverse; }
+        .message.assistant { align-self: flex-start; }
+        .message-avatar {
+            width: 32px; height: 32px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.9rem; flex-shrink: 0;
+        }
+        .message.user .message-avatar { background: var(--accent-blue); }
+        .message.assistant .message-avatar { background: var(--track-primary); }
+        .message-content {
+            background: var(--bg-tertiary); padding: 12px 16px;
+            border-radius: 12px; font-size: 0.9rem; line-height: 1.6;
+        }
+        .message.user .message-content {
+            background: var(--accent-blue); color: white;
+            border-radius: 12px 12px 4px 12px;
+        }
+        .message.assistant .message-content { border-radius: 12px 12px 12px 4px; }
+        .typing-indicator { display: flex; gap: 4px; padding: 8px 0; }
+        .typing-indicator span {
+            width: 8px; height: 8px; background: var(--text-muted);
+            border-radius: 50%; animation: typing 1.4s infinite ease-in-out;
+        }
+        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes typing {
+            0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+            30% { transform: translateY(-4px); opacity: 1; }
+        }
+        .chat-input-area {
+            padding: 16px 20px; border-top: 1px solid var(--border-subtle);
+            display: flex; gap: 12px;
+        }
+        .chat-input {
+            flex: 1; background: var(--bg-input);
+            border: 1px solid var(--border-medium); border-radius: 8px;
+            padding: 12px 16px; color: var(--text-primary);
+            font-family: inherit; font-size: 0.9rem;
+            resize: none; min-height: 44px; max-height: 120px;
+        }
+        .chat-input:focus {
+            outline: none; border-color: var(--track-primary);
+            box-shadow: 0 0 0 3px var(--track-glow);
+        }
+        .chat-input::placeholder { color: var(--text-muted); }
+        .send-btn {
+            background: var(--track-primary); border: none; border-radius: 8px;
+            padding: 12px 16px; color: white; cursor: pointer; transition: all 0.2s;
+        }
+        .send-btn:hover { background: var(--track-secondary); transform: translateY(-1px); }
+        .send-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .footer-actions {
+            padding: 16px 20px; border-top: 1px solid var(--border-subtle);
+            display: flex; align-items: center; justify-content: space-between;
+            flex-wrap: wrap; gap: 12px;
+        }
+        .export-buttons { display: flex; gap: 8px; }
+        .export-btn {
+            background: var(--bg-tertiary); border: 1px solid var(--border-medium);
+            border-radius: 6px; padding: 8px 12px; color: var(--text-secondary);
+            font-size: 0.8rem; cursor: pointer; transition: all 0.2s;
+        }
+        .export-btn:hover { border-color: var(--track-primary); color: var(--text-primary); }
+        .footer-motto { font-size: 0.75rem; color: var(--text-muted); letter-spacing: 2px; }
+        @media (max-width: 768px) {
+            .header-content { flex-direction: column; gap: 12px; align-items: flex-start; }
+            .header-controls { width: 100%; justify-content: space-between; }
+            .container { padding: 16px; }
+            .message { max-width: 95%; }
+        }
+    </style>
+</head>
+<body>
+    <header class="site-header">
+        <div class="header-content">
+            <div class="logo-section">
+                <div class="logo-row">
+                    <img src="/veritas-logo-horizontal.png" alt="VERITAS" class="logo-img" onerror="this.style.display='none'; document.getElementById('fallbackLogo').style.display='flex';">
+                    <div id="fallbackLogo" class="logo-fallback" style="display: none;">
+                        <div class="logo-mark">V</div>
+                        <div class="logo-text">VERITAS</div>
+                    </div>
+                </div>
+                <div class="tagline" data-i18n="tagline">Truth Through Transparency</div>
+            </div>
+            <div class="header-controls">
+                <select id="languageSelect" class="language-select" title="Universal Translator">
+                    <option value="en">🌐 English</option>
+                    <option value="es">🇪🇸 Español</option>
+                    <option value="fr">🇫🇷 Français</option>
+                    <option value="de">🇩🇪 Deutsch</option>
+                    <option value="it">🇮🇹 Italiano</option>
+                    <option value="pt">🇧🇷 Português</option>
+                    <option value="ru">🇷🇺 Русский</option>
+                    <option value="uk">🇺🇦 Українська</option>
+                    <option value="el">🇬🇷 Ελληνικά</option>
+                    <option value="zh">🇨🇳 中文</option>
+                    <option value="ja">🇯🇵 日本語</option>
+                    <option value="ko">🇰🇷 한국어</option>
+                    <option value="ar">🇸🇦 العربية</option>
+                    <option value="he">🇮🇱 עברית</option>
+                </select>
+                <a href="veracity.html" class="home-btn"><span>🏠</span> <span data-i18n="home">Home</span></a>
+                <div class="version-badge">Track B — Interview</div>
+            </div>
+        </div>
+    </header>
+    <div class="container">
+        <div class="context-card" id="contextCard">
+            <div class="context-label" data-i18n="yourStartingPoint">Your Starting Point</div>
+            <div class="context-text" id="contextText">Loading...</div>
+        </div>
+        <div class="chat-card">
+            <div class="chat-header">
+                <div class="chat-title" data-i18n="beliefExploration">Belief Exploration</div>
+                <div class="chat-badge" data-i18n="poweredByClaude">Powered by Claude</div>
+            </div>
+            <div class="chat-messages" id="chatMessages"></div>
+            <div class="chat-input-area">
+                <textarea id="userInput" class="chat-input" placeholder="Share your thoughts..." data-i18n-placeholder="interviewPlaceholder" rows="1"></textarea>
+                <button class="send-btn" id="sendBtn" onclick="sendMessage()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="22" y1="2" x2="11" y2="13"></line>
+                        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                    </svg>
+                </button>
+            </div>
+            <div class="footer-actions">
+                <div class="export-buttons">
+                    <button class="export-btn" onclick="exportPDF()">📄 PDF</button>
+                    <button class="export-btn" onclick="exportJSON()">📋 JSON</button>
+                    <button class="export-btn" onclick="exportMD()">📝 MD</button>
+                    <button class="export-btn" onclick="printConversation()">🖨️ Print</button>
+                </div>
+                <div class="footer-motto" data-i18n="footerMotto">SEEK · QUESTION · UNDERSTAND</div>
+            </div>
+        </div>
+    </div>
+    <script src="api/veritas-translations.js"></script>
+    <script>
+        let conversationHistory = [];
+        let currentLanguage = localStorage.getItem('veritasLanguage') || 'en';
+        let isProcessing = false;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('languageSelect').value = currentLanguage;
+            if (currentLanguage === 'ar' || currentLanguage === 'he') document.body.classList.add('rtl');
+            
+            const params = new URLSearchParams(window.location.search);
+            const query = params.get('q') || params.get('query');
+            if (query) {
+                document.getElementById('contextText').textContent = decodeURIComponent(query);
+                startConversation(decodeURIComponent(query));
+            } else {
+                document.getElementById('contextText').textContent = 'What belief would you like to explore?';
+            }
+
+            document.getElementById('languageSelect').addEventListener('change', function() {
+                currentLanguage = this.value;
+                localStorage.setItem('veritasLanguage', currentLanguage);
+                document.body.classList.toggle('rtl', currentLanguage === 'ar' || currentLanguage === 'he');
+                if (typeof applyTranslations === 'function') applyTranslations(currentLanguage);
+            });
+
+            document.getElementById('userInput').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+            });
+        });
+
+        async function startConversation(query) {
+            conversationHistory.push({ role: 'user', content: query });
+            showTyping();
+            try {
+                const response = await fetch('/api/interview', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ messages: conversationHistory, originalQuery: query, language: currentLanguage })
+                });
+                const data = await response.json();
+                hideTyping();
+                if (data.content) {
+                    conversationHistory.push({ role: 'assistant', content: data.content });
+                    addMessage('assistant', data.content);
+                }
+            } catch (error) {
+                hideTyping();
+                addMessage('assistant', 'I encountered an error. Please try again.');
+            }
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('userInput');
+            const message = input.value.trim();
+            if (!message || isProcessing) return;
+            
+            isProcessing = true;
+            input.value = '';
+            document.getElementById('sendBtn').disabled = true;
+            addMessage('user', message);
+            conversationHistory.push({ role: 'user', content: message });
+            showTyping();
+
+            try {
+                const response = await fetch('/api/interview', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ messages: conversationHistory, language: currentLanguage })
+                });
+                const data = await response.json();
+                hideTyping();
+                if (data.content) {
+                    conversationHistory.push({ role: 'assistant', content: data.content });
+                    addMessage('assistant', data.content);
+                }
+            } catch (error) {
+                hideTyping();
+                addMessage('assistant', 'I encountered an error. Please try again.');
+            }
+            isProcessing = false;
+            document.getElementById('sendBtn').disabled = false;
+        }
+
+        function addMessage(role, content) {
+            const container = document.getElementById('chatMessages');
+            const msg = document.createElement('div');
+            msg.className = 'message ' + role;
+            msg.innerHTML = '<div class="message-avatar">' + (role === 'user' ? '👤' : '🔮') + '</div>' +
+                '<div class="message-content">' + content.replace(/\n/g, '<br>') + '</div>';
+            container.appendChild(msg);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function showTyping() {
+            const container = document.getElementById('chatMessages');
+            const typing = document.createElement('div');
+            typing.className = 'message assistant';
+            typing.id = 'typingIndicator';
+            typing.innerHTML = '<div class="message-avatar">🔮</div><div class="message-content"><div class="typing-indicator"><span></span><span></span><span></span></div></div>';
+            container.appendChild(typing);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function hideTyping() {
+            const el = document.getElementById('typingIndicator');
+            if (el) el.remove();
+        }
+
+        function exportPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            doc.setFontSize(16);
+            doc.text('VERITAS Interview Export', 20, 20);
+            let y = 40;
+            conversationHistory.forEach(msg => {
+                const lines = doc.splitTextToSize((msg.role === 'user' ? 'You: ' : 'VERITAS: ') + msg.content, 170);
+                if (y + lines.length * 7 > 280) { doc.addPage(); y = 20; }
+                doc.setFontSize(10);
+                doc.text(lines, 20, y);
+                y += lines.length * 7 + 10;
+            });
+            doc.save('veritas-interview.pdf');
+        }
+
+        function exportJSON() {
+            const blob = new Blob([JSON.stringify({ track: 'B', context: document.getElementById('contextText').textContent, conversation: conversationHistory }, null, 2)], { type: 'application/json' });
+            const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'veritas-interview.json'; a.click();
+        }
+
+        function exportMD() {
+            let md = '# VERITAS Interview\n\n**Starting Point:** ' + document.getElementById('contextText').textContent + '\n\n---\n\n';
+            conversationHistory.forEach(msg => { md += (msg.role === 'user' ? '**You:** ' : '**VERITAS:** ') + msg.content + '\n\n'; });
+            const blob = new Blob([md], { type: 'text/markdown' });
+            const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'veritas-interview.md'; a.click();
+        }
+
+        function printConversation() {
+            if (conversationHistory.length === 0) {
+                alert('No conversation to print. Start a conversation first.');
+                return;
+            }
+            
+            const context = document.getElementById('contextText').textContent;
+            const printWindow = window.open('', '_blank');
+            
+            let html = `
+<!DOCTYPE html>
+<html>
+<head>
+    <title>VERITAS Interview - Print</title>
+    <style>
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            line-height: 1.6;
+            color: #333;
+        }
+        .header {
+            text-align: center;
+            border-bottom: 2px solid #764ba2;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            font-size: 24px;
+            color: #764ba2;
+            margin: 0 0 10px 0;
+            letter-spacing: 2px;
+        }
+        .header .subtitle {
+            font-size: 12px;
+            color: #666;
+            letter-spacing: 1px;
+        }
+        .context {
+            background: #f8f6ff;
+            border-left: 4px solid #764ba2;
+            padding: 15px 20px;
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+        .context-label {
+            font-size: 11px;
+            font-weight: bold;
+            color: #764ba2;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+        .message {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        .message:last-child {
+            border-bottom: none;
+        }
+        .message-role {
+            font-weight: bold;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+        .message-role.user {
+            color: #2196F3;
+        }
+        .message-role.assistant {
+            color: #764ba2;
+        }
+        .message-content {
+            font-size: 14px;
+        }
+        .footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+            text-align: center;
+            font-size: 11px;
+            color: #999;
+        }
+        @media print {
+            body { margin: 20px; }
+            .message { page-break-inside: avoid; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>VERITAS INTERVIEW</h1>
+        <div class="subtitle">Track B: Wisdom Through Dialogue</div>
+    </div>
+    <div class="context">
+        <div class="context-label">Starting Point</div>
+        ${context}
+    </div>
+`;
+            
+            conversationHistory.forEach(msg => {
+                const roleClass = msg.role === 'user' ? 'user' : 'assistant';
+                const roleLabel = msg.role === 'user' ? 'You' : 'VERITAS';
+                html += `
+    <div class="message">
+        <div class="message-role ${roleClass}">${roleLabel}</div>
+        <div class="message-content">${msg.content.replace(/\n/g, '<br>')}</div>
+    </div>
+`;
+            });
+            
+            html += `
+    <div class="footer">
+        Exported from VERITAS • ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}
+    </div>
+</body>
+</html>`;
+            
+            printWindow.document.write(html);
+            printWindow.document.close();
+            printWindow.onload = function() {
+                printWindow.print();
+            };
+        }
+    </script>
+</body>
+</html>
