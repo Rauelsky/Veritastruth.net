@@ -235,25 +235,34 @@ ${JSON.stringify(verifyStructured.newInformationDiscovered.discoveries, null, 2)
 
     prompt += `## YOUR EVALUATION CRITERIA
 
-### 1. SOURCE QUALITY (25%)
+### 1. SOURCE QUALITY (20%)
 - Which assessment cited more authoritative, relevant sources?
 - Did Assessment B discover sources Assessment A couldn't access?
 - Are sources current and still credible?
 
-### 2. REASONING RIGOR (25%)
+### 2. REASONING RIGOR (20%)
 - Which assessment showed clearer logical progression?
 - Did either make unwarranted leaps or ignore contrary evidence?
 - Which better acknowledged complexity and uncertainty?
 
-### 3. EVIDENCE COMPLETENESS (25%)
+### 3. EVIDENCE COMPLETENESS (20%)
 - Which assessment considered more relevant evidence?
 - Did Assessment B's research fill gaps in Assessment A's evidence base?
 - Are there important perspectives either missed?
 
-### 4. RESEARCH CURRENCY (25%) — NEW FACTOR
+### 4. RESEARCH CURRENCY (20%)
 - Did Assessment B's live research reveal NEW information?
 - How materially does this new information affect the conclusion?
 - Does the new information confirm, complicate, or contradict Assessment A?
+
+### 5. SOURCE DIVERSITY (20%) — CRITICAL FOR CREDIBILITY
+- Did each assessment consult sources from MULTIPLE ideological perspectives?
+- Were left-leaning AND right-leaning sources consulted (not just one side)?
+- Did the assessment rely too heavily on traditional fact-checkers (perceived by many as left-leaning)?
+- Were primary sources (original documents, transcripts, data) prioritized over secondary analysis?
+- When citing fact-checkers, were their known bias ratings acknowledged?
+- **CROSS-SPECTRUM AGREEMENT PREMIUM**: If sources from BOTH left AND right agree on a conclusion, that conclusion is MORE trustworthy
+- **SPECTRUM GAPS PENALTY**: If an assessment relied solely on sources from one ideological side, note this as a weakness
 
 ## REQUIRED OUTPUT FORMAT
 
@@ -291,6 +300,23 @@ Provide your adjudication in this structured format:
       "impactLevel": "<high|medium|low|none>",
       "winner": "<A or B or TIE>",
       "notes": "<any key observations>"
+    },
+    "sourceDiversity": {
+      "assessmentA": {
+        "leftSourcesUsed": "<yes|no|partial>",
+        "rightSourcesUsed": "<yes|no|partial>",
+        "primarySourcesUsed": "<yes|no|partial>",
+        "biasAcknowledged": "<yes|no>"
+      },
+      "assessmentB": {
+        "leftSourcesUsed": "<yes|no|partial>",
+        "rightSourcesUsed": "<yes|no|partial>",
+        "primarySourcesUsed": "<yes|no|partial>",
+        "biasAcknowledged": "<yes|no>"
+      },
+      "crossSpectrumAgreement": "<yes|no|partial — did sources from both sides agree?>",
+      "winner": "<A or B or TIE>",
+      "notes": "<any spectrum gaps or balance issues observed>"
     }
   },
   "synthesis": {
@@ -315,6 +341,8 @@ After the JSON, provide a human-readable summary:
 
 **Research Impact:** [How Assessment B's research affected the outcome]
 
+**Source Diversity Analysis:** [Did both assessments consult ideologically diverse sources? Any spectrum gaps?]
+
 **Convergence Analysis:** [What the assessments agreed on — this strengthens confidence]
 
 **Final Recommendation:**
@@ -327,11 +355,13 @@ After the JSON, provide a human-readable summary:
 
 2. **Convergence Strengthens Confidence**: When both assessments agree despite different approaches and Assessment B's fresh research, that agreement carries extra epistemic weight.
 
-3. **Process AND Outcome**: A well-reasoned wrong answer is still wrong. Evaluate both the quality of reasoning AND the accuracy of conclusions.
+3. **Source Diversity Enhances Credibility**: An assessment that consulted sources from BOTH left-leaning AND right-leaning perspectives is MORE trustworthy than one that relied solely on sources from one ideological side. Cross-spectrum agreement is especially powerful corroboration.
 
-4. **Uncertainty is Honest**: If the assessments diverge and you can't clearly determine which is more accurate, say so. A confidence of 0.5-0.6 is appropriate when genuinely uncertain.
+4. **Process AND Outcome**: A well-reasoned wrong answer is still wrong. Evaluate both the quality of reasoning AND the accuracy of conclusions.
 
-5. **Research Currency Premium**: All else being equal, an assessment grounded in today's verified reality is more trustworthy than one that might be based on outdated information.
+5. **Uncertainty is Honest**: If the assessments diverge and you can't clearly determine which is more accurate, say so. A confidence of 0.5-0.6 is appropriate when genuinely uncertain.
+
+6. **Research Currency Premium**: All else being equal, an assessment grounded in today's verified reality is more trustworthy than one that might be based on outdated information.
 
 Now provide your adjudication.
 `;
