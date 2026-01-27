@@ -2627,6 +2627,26 @@
             generateButtons: async function(input, language = null) {
                 const lang = language || localStorage.getItem('veritasLanguage') || 'en';
                 if (!input || !input.trim()) return this.getFallbackButtons(lang);
+                
+                // TEMPORAL QUERIES: Skip AI generation entirely - use fact-neutral buttons
+                // The /api/claude endpoint is defunct and we can't trust training data
+                // for deaths, current positions, recent events
+                const temporalPatterns = [
+                    /\b(dead|died|alive|killed|murdered|death|assassination|assassinated|passed away)\b/i,
+                    /\b(current|currently|still|now)\s+(is|are|serves?|holds?)\b/i,
+                    /\b(confirmed|appointed|sworn|resigned|fired|elected|won|lost)\b/i
+                ];
+                const isTemporalQuery = temporalPatterns.some(p => p.test(input));
+                
+                if (isTemporalQuery) {
+                    console.log('Temporal query detected - using fact-neutral buttons');
+                    return {
+                        trackA: { label: 'Help me verify the current facts on this', track: 'A' },
+                        trackB: { label: 'I want to explore different perspectives on this', track: 'B' },
+                        trackC: { label: 'Help me navigate a conversation about this', track: 'C' }
+                    };
+                }
+                
                 try {
                     const buttonData = await this.callClaudeAPI(input, lang);
                     return this.formatButtonResponse(buttonData);
