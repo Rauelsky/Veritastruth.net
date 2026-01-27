@@ -250,6 +250,18 @@ function buildTrackAPrompt(question, articleText, language) {
     prompt += '   - Explain what verification would be needed\n';
     prompt += '   - NEVER hallucinate confidence in unverifiable claims\n\n';
     
+    prompt += '4️⃣ **IF WEB SEARCH RETURNS CLEAR, CORROBORATED RESULTS — TRUST THEM**:\n';
+    prompt += '   When multiple reliable sources (Wikipedia, major news outlets like NPR, AP, Reuters,\n';
+    prompt += '   Al Jazeera, etc.) report the same major fact (death, election result, resignation,\n';
+    prompt += '   major event), STATE IT CONFIDENTLY. Do NOT hedge with "allegedly" or "reportedly"\n';
+    prompt += '   or "if true" when the evidence is overwhelming.\n\n';
+    prompt += '   ✅ CORRECT: "Charlie Kirk was assassinated on September 10, 2025. This is confirmed\n';
+    prompt += '      by Wikipedia, NPR, Rolling Stone, and multiple other sources. Reality Score: +9"\n';
+    prompt += '   ❌ WRONG: "Web search suggests Charlie Kirk may have died, though I cannot verify\n';
+    prompt += '      this with certainty. If these reports are accurate..." → UNACCEPTABLE HEDGING\n\n';
+    prompt += '   **THE RULE**: When 3+ independent reliable sources agree on a major factual event,\n';
+    prompt += '   that IS your verification. Report it as fact, not as rumor.\n\n';
+    
     prompt += '**EXAMPLE - Death Status Check**:\n';
     prompt += 'Question: "Is Rob Reiner dead?"\n';
     prompt += '✅ CORRECT: Call web_search("Rob Reiner death 2025") → assess based on results\n';
@@ -359,6 +371,14 @@ function buildTrackAPrompt(question, articleText, language) {
     prompt += '**FAILURE MODE TO AVOID**:\n';
     prompt += '❌ "I have no evidence [person] died, therefore they are alive" → Reality Score -9\n';
     prompt += '✅ "This requires real-time verification I cannot complete" → Reality Score 0\n\n';
+    
+    prompt += '**SUCCESS MODE TO FOLLOW**:\n';
+    prompt += 'When web search CONFIRMS a major event with multiple reliable sources:\n';
+    prompt += '✅ State the fact confidently with sources cited\n';
+    prompt += '✅ Give appropriate high-confidence Reality Score (±8 to ±10)\n';
+    prompt += '❌ Do NOT hedge with "allegedly," "reportedly," "if true," "may have"\n';
+    prompt += '❌ Do NOT express uncertainty when there is none\n';
+    prompt += 'Example: If Wikipedia, NPR, and Reuters all report someone died → they died. Say so.\n\n';
     
     // ASSESSMENT TYPE
     prompt += '## ASSESSMENT TYPE\n';
