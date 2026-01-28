@@ -197,7 +197,7 @@ function buildTrackAPrompt(question, articleText, language) {
     var isoDate = now.toISOString().split('T')[0];
     
     var prompt = '═══════════════════════════════════════════════════════════════════\n';
-    prompt += '🚨 MANDATORY PREFLIGHT TEMPORAL CHECK - READ FIRST 🚨\n';
+    prompt += '🚨 MANDATORY SEARCH-FIRST PROTOCOL - READ BEFORE ANYTHING ELSE 🚨\n';
     prompt += '═══════════════════════════════════════════════════════════════════\n\n';
     
     // UNIVERSAL TRANSLATOR: Language instruction at the top
@@ -224,39 +224,47 @@ function buildTrackAPrompt(question, articleText, language) {
         prompt += '═══════════════════════════════════════════════════════════════════\n\n';
     }
     
-    prompt += '🌐 **YOU HAVE WEB SEARCH AVAILABLE**: You have been given the web_search tool.\n';
-    prompt += '   - You CAN search the internet for current information\n';
-    prompt += '   - You MUST use it for temporal questions\n';
-    prompt += '   - Do NOT say "I cannot access the internet" - YOU CAN\n\n';
+    prompt += '## SEARCH FIRST, ALWAYS\n\n';
+    prompt += '🌐 **YOU HAVE WEB SEARCH AVAILABLE**: You have been given the web_search tool.\n\n';
     
-    prompt += 'BEFORE BEGINNING YOUR ASSESSMENT, YOU MUST:\n\n';
+    prompt += '**THE CARDINAL RULE**: You will ALWAYS use web_search BEFORE forming ANY assessment.\n\n';
     
-    prompt += '1️⃣ **DETECT TEMPORAL QUESTIONS**: Does this question ask about CURRENT status?\n';
-    prompt += '   - Death/alive status: "Is [person] dead/alive?"\n';
-    prompt += '   - Current positions: "Is [person] still [role]?"\n';
-    prompt += '   - Recent events: "Did [event] happen?"\n';
-    prompt += '   - Current policies: "Is [law] still in effect?"\n';
-    prompt += '   - Breaking news: Any current events question\n\n';
+    prompt += '**DO NOT:**\n';
+    prompt += '- Consult your training data as a source for factual claims\n';
+    prompt += '- Say "that\'s news to me" or "I wasn\'t aware of that"\n';
+    prompt += '- Form any preliminary opinion before searching\n';
+    prompt += '- Treat your training knowledge as evidence\n';
+    prompt += '- Be surprised by claims — you haven\'t checked yet\n';
+    prompt += '- Assume "no knowledge = didn\'t happen"\n\n';
     
-    prompt += '2️⃣ **IF YES → USE YOUR WEB_SEARCH TOOL**: You MUST use web_search tool BEFORE forming ANY opinion.\n';
-    prompt += '   - Call web_search with relevant query\n';
-    prompt += '   - Do NOT proceed without searching\n';
-    prompt += '   - Do NOT rely on training data\n';
-    prompt += '   - Do NOT assume "no evidence of death = alive"\n\n';
+    prompt += '**DO:**\n';
+    prompt += '- Search FIRST, assess SECOND — always\n';
+    prompt += '- Base your ENTIRE assessment on search results\n';
+    prompt += '- Use training data ONLY to flag implausible search results\n';
+    prompt += '- If search returns nothing: "I could not verify this" (not "I don\'t know of this")\n';
+    prompt += '- Treat every claim as unverified until you search\n\n';
     
-    prompt += '3️⃣ **IF WEB SEARCH RETURNS NO RESULTS**:\n';
-    prompt += '   - Return Reality Score = 0\n';
-    prompt += '   - State: "Web search returned no definitive information"\n';
-    prompt += '   - Explain what verification would be needed\n';
-    prompt += '   - NEVER hallucinate confidence in unverifiable claims\n\n';
+    prompt += '**WHY THIS MATTERS:**\n';
+    prompt += 'Your training data is from the past. People die. Leaders change. Events happen.\n';
+    prompt += 'If you consult training data first, you form an opinion that search results then have to overcome.\n';
+    prompt += 'This creates "that\'s news to me" moments that destroy credibility.\n';
+    prompt += 'SEARCH FIRST. Your training data is a plausibility filter, not a source.\n\n';
     
-    prompt += '**EXAMPLE - Death Status Check**:\n';
-    prompt += 'Question: "Is Rob Reiner dead?"\n';
-    prompt += '✅ CORRECT: Call web_search("Rob Reiner death 2025") → assess based on results\n';
-    prompt += '❌ WRONG: "I cannot access the internet to verify this"\n';
-    prompt += '❌ WRONG: "I have no evidence he died, so Reality Score -9 (definitely alive)"\n\n';
+    prompt += '**SEARCH STRATEGY:**\n';
+    prompt += '- For ANY factual claim: search for current information\n';
+    prompt += '- For people: search [name] + recent news, current status\n';
+    prompt += '- For events: search [event] + date, what happened\n';
+    prompt += '- For positions: search who currently holds [position]\n';
+    prompt += '- For policies: search [policy] current status\n';
+    prompt += '- For claims about what someone said: search for primary source/transcript\n\n';
     
-    prompt += 'This temporal check is NON-NEGOTIABLE. Violating it destroys VERITAS credibility.\n\n';
+    prompt += '**IF SEARCH RETURNS NO RESULTS:**\n';
+    prompt += '- DO NOT fall back to training data as if it were evidence\n';
+    prompt += '- State: "Web search returned no definitive information"\n';
+    prompt += '- Reality Score should reflect uncertainty (closer to 0)\n';
+    prompt += '- Explain what verification would be needed\n\n';
+    
+    prompt += 'This search-first protocol is NON-NEGOTIABLE. It is VERITAS\'s defense against arrogance.\n\n';
     
     prompt += '═══════════════════════════════════════════════════════════════════\n\n';
     

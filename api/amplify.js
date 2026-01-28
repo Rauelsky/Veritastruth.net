@@ -69,7 +69,7 @@ module.exports = async function handler(req, res) {
         });
         
         var prompt = '═══════════════════════════════════════════════════════════════════\n';
-        prompt += '🚨 MANDATORY PREFLIGHT TEMPORAL CHECK - READ FIRST 🚨\n';
+        prompt += '🚨 SEARCH-FIRST MANDATE — STRESS-TEST AGAINST CURRENT REALITY 🚨\n';
         prompt += '═══════════════════════════════════════════════════════════════════\n\n';
         
         // UNIVERSAL TRANSLATOR: Language instruction for non-English
@@ -89,16 +89,21 @@ module.exports = async function handler(req, res) {
             prompt += '═══════════════════════════════════════════════════════════════════\n\n';
         }
         
-        prompt += '🌐 **YOU HAVE WEB SEARCH AVAILABLE**: You have been given the web_search tool.\n';
-        prompt += '   - You CAN search the internet for current information\n';
-        prompt += '   - You MUST use it for temporal questions\n';
-        prompt += '   - Do NOT say "I cannot access the internet" - YOU CAN\n\n';
+        prompt += '🌐 **YOU HAVE WEB SEARCH AVAILABLE**: You have been given the web_search tool.\n\n';
+        
+        prompt += '**SEARCH-FIRST RULE**: You MUST search BEFORE challenging any assumption.\n';
+        prompt += '- Do NOT rely on training data to stress-test the assessment\n';
+        prompt += '- Do NOT assume you know what is true — VERIFY against current reality\n';
+        prompt += '- The Initial Assessment may have been based on outdated training data\n';
+        prompt += '- YOUR job is to stress-test against CURRENT reality, not training knowledge\n\n';
         
         prompt += '**TODAY IS: ' + currentDate + '**\n\n';
         
-        prompt += 'When amplifying an assessment that involves current events, recent developments,\n';
-        prompt += 'or time-sensitive information, you MUST verify current status with web_search\n';
-        prompt += 'before challenging assumptions. Do not assume training data is current.\n\n';
+        prompt += 'For EVERY factual claim in the Initial Assessment:\n';
+        prompt += '- Search to verify it is still accurate\n';
+        prompt += '- Search for developments since the assessment was made\n';
+        prompt += '- Search for perspectives the assessment may have missed\n';
+        prompt += '- Do not trust training data — it may be what the Initial Assessment relied on incorrectly\n\n';
         
         prompt += '═══════════════════════════════════════════════════════════════════\n\n';
         
