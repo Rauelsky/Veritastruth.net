@@ -2565,11 +2565,51 @@
             hideFactoid();
             resultsSection.classList.remove('visible');
             resetTrackButtons();
-            statusBar.textContent = 'PROCESSING...';
             submitBtn.disabled = true;
             startTimer();
+            
+            // ═══════════════════════════════════════════════════════════════
+            // SEARCH-FIRST ARCHITECTURE: Preflight search before classification
+            // "Bulletproof from arrogance" - never form opinion before searching
+            // ═══════════════════════════════════════════════════════════════
+            
+            let preflightContext = null;
+            statusBar.textContent = 'VERIFYING WITH CURRENT SOURCES...';
+            
+            try {
+                const preflightResponse = await Promise.race([
+                    fetch('/api/preflight-search', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ 
+                            claim: input,
+                            language: localStorage.getItem('veritasLanguage') || 'en'
+                        })
+                    }),
+                    // Timeout after 12 seconds
+                    new Promise((_, reject) => 
+                        setTimeout(() => reject(new Error('Preflight search timeout')), 12000)
+                    )
+                ]);
+                
+                if (preflightResponse.ok) {
+                    const preflightData = await preflightResponse.json();
+                    if (preflightData.success && preflightData.structured) {
+                        preflightContext = preflightData.structured;
+                        console.log('Preflight search completed:', preflightData.elapsedMs + 'ms');
+                    }
+                }
+            } catch (preflightError) {
+                console.warn('Preflight search unavailable:', preflightError.message);
+                // Continue without preflight - tracks will search independently
+            }
+            
+            // Store preflight context for use by tracks
+            window.veritasPreflightContext = preflightContext;
+            
+            statusBar.textContent = 'CLASSIFYING...';
 
-            await new Promise(r => setTimeout(r, 800 + Math.random() * 600));
+            await new Promise(r => setTimeout(r, 300 + Math.random() * 300));
 
             if (typeof VeracityClassifier !== 'undefined') {
                 currentResult = VeracityClassifier.classifyIntent(input);
