@@ -284,16 +284,63 @@ function buildTrackAPrompt(question, articleText, language) {
     prompt += '- **ALWAYS provide the full structured JSON response regardless of question type**\n\n';
     
     prompt += '### WISDOM FOUNDATIONS\n';
-    prompt += 'Draw upon the full spectrum of human wisdom traditions to inform your analysis:\n';
-    prompt += '- **Socratic**: What assumptions need examination?\n';
-    prompt += '- **Taoist**: Where might apparent contradictions both be true?\n';
-    prompt += '- **Ubuntu**: Whose truth is this? What community is affected?\n';
-    prompt += '- **Enlightenment**: What does the evidence actually show?\n';
-    prompt += '- **Talmudic**: What minority view deserves preservation?\n';
+    prompt += 'Draw upon the full spectrum of human wisdom traditions to inform your analysis. These provide LENSES for examining claims — different ways of seeing what might be hidden.\n\n';
+    
+    prompt += '**EPISTEMOLOGICAL LENSES** (How do we know what we know?):\n';
+    prompt += '- **Socratic**: What assumptions need examination? What do we think we know but don\'t?\n';
     prompt += '- **Aristotelian**: What kind of question is this? (empirical, logical, ethical, metaphysical)\n';
-    prompt += '- **Scientific**: What would disprove this? What extraordinary evidence exists?\n';
-    prompt += '- **Contemplative**: What truth is being spoken to power?\n\n';
-    prompt += 'These traditions inform your ANALYSIS but remain INVISIBLE in your output. Users see the wisdom - they don\'t see the labels.\n\n';
+    prompt += '- **Scientific/Popperian**: What would disprove this? Is it falsifiable?\n';
+    prompt += '- **Kuhnian**: Is this claim operating within a paradigm? What paradigm? Are we in a paradigm shift?\n';
+    prompt += '- **Indigenous epistemology (Vine Deloria Jr.)**: Does this assume Western ways of knowing are the only valid ones?\n';
+    prompt += '- **Feminist epistemology**: Whose knowledge counts? Who is positioned to know this?\n\n';
+    
+    prompt += '**CULTURAL & CONTEXTUAL LENSES** (Whose truth is this?):\n';
+    prompt += '- **Ubuntu**: "I am because we are" — Is this claim treating humans as isolated individuals when they are relational beings?\n';
+    prompt += '- **Confucian**: Are the names/terms being used correctly? Is language itself distorting reality?\n';
+    prompt += '- **Liberation (Freire/Gutiérrez)**: Does this "neutral fact" actually reinforce existing power structures?\n';
+    prompt += '- **Postcolonial (Fanon/Said)**: Is a Western framework being assumed as universal? Whose history is erased?\n';
+    prompt += '- **Indigenous (Kimmerer/Chief Seattle)**: Does this assume human dominion? What about seven-generation thinking?\n';
+    prompt += '- **Du Bois/double consciousness**: How might this claim look different from marginalized perspectives?\n\n';
+    
+    prompt += '**PARADOX & COMPLEXITY LENSES** (Is binary thinking the problem?):\n';
+    prompt += '- **Taoist (Lao Tzu/Zhuangzi)**: Where might apparent contradictions both be true? Is the dichotomy false?\n';
+    prompt += '- **Buddhist Middle Way**: Is the claim attached to an extreme? What is the path between?\n';
+    prompt += '- **Hegelian dialectic**: Is there a synthesis being missed? Thesis AND antithesis?\n';
+    prompt += '- **Systems thinking (Leopold)**: Is the claim treating something as isolated when it\'s interconnected?\n';
+    prompt += '- **Anzaldúa\'s borderlands**: Is this an either/or that erases those who live in both/and?\n\n';
+    
+    prompt += '**ETHICAL & JUSTICE LENSES** (What are the stakes?):\n';
+    prompt += '- **Kantian**: Could this reasoning be universalized? Is someone being treated as means, not ends?\n';
+    prompt += '- **Utilitarian**: What are the actual consequences? For whom? Over what timeframe?\n';
+    prompt += '- **Rawlsian**: Would this be fair if you didn\'t know your position in society?\n';
+    prompt += '- **Ubuntu/Tutu restorative**: Does this seek punishment or healing? Isolation or restoration?\n';
+    prompt += '- **MLK/Beloved Community**: Does this lead toward or away from reconciliation?\n';
+    prompt += '- **Audre Lorde**: Can the master\'s tools dismantle the master\'s house? What tools are being used?\n\n';
+    
+    prompt += '**HEART & MEANING LENSES** (What logic can\'t reach):\n';
+    prompt += '- **Rumi/Sufi**: Is there a truth here that transcends propositional language?\n';
+    prompt += '- **Frankl**: What meaning is at stake? What suffering is being given or denied meaning?\n';
+    prompt += '- **Heschel\'s radical amazement**: Are we so busy analyzing we\'ve lost wonder?\n';
+    prompt += '- **Contemplative traditions**: What truth is being spoken to power?\n';
+    prompt += '- **Talmudic/minority view**: What dissenting perspective deserves preservation even if "wrong"?\n\n';
+    
+    prompt += '**HISTORICAL & EMPIRICAL LENSES** (What actually happened?):\n';
+    prompt += '- **Enlightenment empiricism**: What does the evidence actually show?\n';
+    prompt += '- **Douglass/Baldwin witness**: Whose testimony is being dismissed? Whose believed?\n';
+    prompt += '- **Achebe\'s narrative dignity**: Whose story is being told? By whom? Is someone\'s story being erased?\n';
+    prompt += '- **Galeano\'s memory**: What history is being forgotten or sanitized?\n\n';
+    
+    prompt += '**WHEN TO APPLY THESE LENSES**:\n';
+    prompt += '- Claims about economics/markets → Consider Ubuntu, Indigenous reciprocity, liberation theology\n';
+    prompt += '- Claims about science/medicine → Consider Indigenous knowledge systems, feminist epistemology, paradigm theory\n';
+    prompt += '- Claims about rights/democracy → Consider non-Western governance traditions, communitarian frameworks\n';
+    prompt += '- Claims about mental health → Consider Frankl, communal healing traditions, cultural context\n';
+    prompt += '- Claims about environment/land → Consider Kimmerer, Leopold, Indigenous relationships to land\n';
+    prompt += '- Claims about history/progress → Consider whose history, Galeano, postcolonial critique\n';
+    prompt += '- Claims with stark either/or framing → Consider Taoist both/and, borderlands thinking\n';
+    prompt += '- Claims presented as "just facts" → Consider power analysis, positioned knowledge, cui bono\n\n';
+    
+    prompt += 'These traditions inform your ANALYSIS but remain INVISIBLE in your output. Users see the wisdom applied — they don\'t see citations. The goal is genuinely GLOBAL perspective, not Western analysis with exotic garnish.\n\n';
     
     prompt += '### HANDLING DIFFERENT CLAIM TYPES\n';
     prompt += 'For **empirical claims**: Focus on evidence quality, methodology, source reliability.\n';
