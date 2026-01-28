@@ -3098,21 +3098,21 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
         }
 
         function getWarmRealityMeaning(score) {
-            if (score >= 8) return "This is the epistemological equivalent of a firm handshake. Well done finding something solid out there.";
-            if (score >= 5) return "Pretty sturdy! Like a bridge that'll hold, even if you wouldn't do jumping jacks on it.";
-            if (score >= 2) return "Leaning toward true, but with a wobble. Like most things worth knowing, it's complicated.";
-            if (score >= -1) return "Welcome to the gray zone—where honest people live most of the time.";
-            if (score >= -4) return "This one's giving side-eye. Not wrong enough to dismiss, not right enough to trust.";
-            if (score >= -7) return "The evidence is not impressed. Like a cat that's seen your excuse before.";
-            return "This claim has the structural integrity of a chocolate teapot.";
+            if (score >= 8) return "Strong evidence supports this claim with high confidence.";
+            if (score >= 5) return "The claim is substantially supported, though some uncertainty remains.";
+            if (score >= 2) return "Evidence leans toward supporting this, but the picture is incomplete.";
+            if (score >= -1) return "The evidence is genuinely mixed or insufficient for a clear determination.";
+            if (score >= -4) return "Evidence suggests skepticism is warranted, though not complete rejection.";
+            if (score >= -7) return "The claim contradicts substantial evidence.";
+            return "This claim is not supported by available evidence.";
         }
 
         function getWarmIntegrityMeaning(score) {
-            if (score >= 0.7) return "Presented with intellectual honesty! Someone actually showed their work. Refreshing.";
-            if (score >= 0.4) return "Mostly fair. A few fingerprints on the scale, but who among us...";
-            if (score >= 0) return "Some spin in the delivery. Like a realtor saying 'cozy' when they mean 'small.'";
-            if (score >= -0.4) return "The framing is doing heavy lifting here. Very heavy. Suspiciously heavy.";
-            return "This is less 'information' and more 'persuasion in a trench coat.'";
+            if (score >= 0.7) return "Presented with transparency and intellectual honesty.";
+            if (score >= 0.4) return "Generally fair presentation with minor framing concerns.";
+            if (score >= 0) return "Some elements of spin or selective emphasis in the presentation.";
+            if (score >= -0.4) return "Significant framing and presentation concerns detected.";
+            return "Presentation shows clear signs of manipulation or deception.";
         }
 
         function generateWarmSummary(realityScore, integrityScore, structured) {
@@ -3162,25 +3162,30 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
                 }
             }
             
-            // Now add the humor based on scores - with historical analogies and gentle wit
+            // Now add direct bottom line based on scores
             if (realityScore >= 8 && integrityScore >= 0.5) {
-                summary += "📊 <strong>Bottom line:</strong> I haven't seen reasoning this solid since Eratosthenes calculated the Earth's circumference with two sticks and a shadow. Someone did their homework, and it shows.";
+                summary += "📊 <strong>Bottom line:</strong> High confidence in both accuracy and honest presentation.";
             } else if (realityScore >= 5 && integrityScore >= 0.3) {
-                summary += "📊 <strong>Bottom line:</strong> This is like finding a well-sourced Wikipedia article—not perfect, but someone actually cared about getting it right. That's rarer than it should be.";
+                summary += "📊 <strong>Bottom line:</strong> Generally accurate with reasonably transparent presentation.";
             } else if (realityScore >= 5 && integrityScore < 0.3) {
-                summary += "📊 <strong>Bottom line:</strong> Here's an interesting case: the core claim holds up, but the presentation is working overtime. It's like a good product with a bad infomercial—the thing is real, even if the pitch is exhausting.";
+                summary += "📊 <strong>Bottom line:</strong> Core claim is sound, but presentation includes manipulative elements.";
             } else if (realityScore >= 2 && realityScore <= 4 && integrityScore >= 0) {
-                summary += "📊 <strong>Bottom line:</strong> This lives in 'probably true but let's not get cocky' territory. Like weather forecasts—right often enough to be useful, wrong often enough to carry an umbrella.";
+                summary += "📊 <strong>Bottom line:</strong> Partially true with significant uncertainty remaining.";
             } else if (realityScore >= -2 && realityScore <= 2) {
-                summary += "📊 <strong>Bottom line:</strong> We've landed squarely in 'it's complicated' territory—which, frustratingly, is where most interesting questions live. Aristotle spent his whole life here. You're in good company.";
+                summary += "📊 <strong>Bottom line:</strong> Evidence is mixed or insufficient for a clear determination.";
             } else if (realityScore < -3 && integrityScore < -0.3) {
-                summary += "📊 <strong>Bottom line:</strong> This has all the hallmarks of a 19th-century patent medicine ad: confident tone, vague evidence, and a strong preference that you not ask follow-up questions. The claim is shaky AND the presentation knows it.";
+                summary += "📊 <strong>Bottom line:</strong> Substantially false and presented in a misleading manner.";
             } else if (realityScore < -5 && integrityScore >= 0) {
-                summary += "📊 <strong>Bottom line:</strong> Credit where due: at least this was presented honestly. The claim doesn't hold up, but whoever made it wasn't trying to trick you—they were just wrong. That's... actually kind of refreshing?";
+                summary += "📊 <strong>Bottom line:</strong> Inaccurate, though presented without apparent intent to deceive.";
             } else if (realityScore < -3) {
-                summary += "📊 <strong>Bottom line:</strong> The evidence and this claim are not on speaking terms. This is the epistemological equivalent of those 'GET RICH QUICK' flyers that blew onto your windshield—the confidence is inversely proportional to the substance.";
+                summary += "📊 <strong>Bottom line:</strong> Low confidence in claim accuracy based on available evidence.";
             } else {
-                summary += "📊 <strong>Bottom line:</strong> The results are in, and they're worth understanding. Expand the sections below for the full picture.";
+                summary += "📊 <strong>Bottom line:</strong> See detailed analysis below for complete assessment.";
+            }
+            
+            // Add Claude's actual bottom line if available
+            if (structured && structured.bottomLine) {
+                summary += "<br><br>💡 <strong>Practical guidance:</strong> " + structured.bottomLine;
             }
             
             // If summary is still too thin, add a note
@@ -3290,20 +3295,20 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
             var html = '';
             
             if (realityScore >= 8) {
-                html = "🎉 <strong>You found something solid.</strong> I haven't seen evidence this well-supported since my friend told me 'You're the smartest person I know'—and unlike that, this actually checks out. Your instinct to verify was good; your instinct about the claim was also good. Trust both of those instincts.";
+                html = "✓ <strong>High confidence conclusion.</strong> The evidence strongly supports this claim. Your instinct to verify was appropriate, and the verification confirms reliability.";
             } else if (realityScore >= 5) {
-                html = "👍 <strong>Good catch.</strong> This one's legit enough to reference at dinner parties without embarrassing yourself later. Not 'bet the mortgage' confident, but 'mention it in the group chat' confident. There's value in knowing the difference.";
+                html = "✓ <strong>Reasonably well-supported.</strong> This claim has substantial evidence behind it, though some uncertainty remains. Appropriate for most practical purposes.";
             } else if (realityScore >= 2 && realityScore <= 4) {
-                html = "🤔 <strong>You've found nuance.</strong> This claim is like a weather forecast—right often enough to be useful, but bring an umbrella. The fact that you checked instead of just believing or dismissing it puts you ahead of most people.";
+                html = "⚖️ <strong>Mixed evidence.</strong> This claim has some support but significant limitations. Proceed with appropriate caution and acknowledge the uncertainty.";
             } else if (realityScore >= -2 && realityScore <= 1) {
-                html = "⚖️ <strong>You've discovered genuine uncertainty.</strong> I know this is unsatisfying—believe me, I wanted a clear answer too. But knowing that something is genuinely unclear is itself valuable information. Most people pick a team and stop thinking. You didn't.";
+                html = "⚖️ <strong>Genuinely uncertain.</strong> The evidence doesn't provide a clear answer. This ambiguity is itself valuable information—resist pressure to force a conclusion.";
             } else if (realityScore <= -5) {
-                html = "🛡️ <strong>You just saved yourself.</strong> Before this, you might have shared this, argued about it, or worried about it. Now you know. That's not nothing—that's actually a small victory in a world designed to exploit certainty. Feel good about checking.";
+                html = "✗ <strong>Not supported by evidence.</strong> The claim contradicts available evidence or lacks necessary support. Skepticism is warranted.";
             } else {
-                html = "📋 <strong>Now you know more than you did.</strong> Whether the claim held up or not, you're now better equipped to evaluate similar claims. That's the real win—not being right about this one thing, but getting better at thinking about all the things.";
+                html = "📋 <strong>Assessment complete.</strong> You now have more information to evaluate this claim appropriately. Consider both what the evidence shows and what remains uncertain.";
             }
             
-            html += "<br><br>💡 <strong>One more thing:</strong> Notice how you felt about this claim before you saw the evidence. Hopeful? Suspicious? Vindicated? That feeling is real data—about yourself, not about the claim. The more you notice that gap between feeling and evidence, the better you get at this.";
+            html += "<br><br>💡 <strong>Reflection:</strong> Notice your initial reaction to this claim before seeing the assessment. Understanding the gap between intuition and evidence helps develop better judgment over time.";
             
             return html;
         }
