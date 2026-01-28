@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VERITAS — Navigate & Align</title>
+    <title>VERITAS — Navigate Mode</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -149,21 +149,6 @@
         }
 
         .language-select:hover {
-            border-color: var(--track-primary);
-        }
-
-        .character-select {
-            background: var(--bg-tertiary);
-            color: var(--text-primary);
-            border: 1px solid var(--border-medium);
-            border-radius: 6px;
-            padding: 6px 12px;
-            font-size: 0.8rem;
-            cursor: pointer;
-            min-width: 140px;
-        }
-
-        .character-select:hover {
             border-color: var(--track-primary);
         }
 
@@ -537,12 +522,6 @@
                 <div class="tagline" data-i18n="tagline">Truth Through Transparency</div>
             </div>
             <div class="header-controls">
-                <select id="characterSelect" class="character-select" title="Choose Your Conversation Style">
-                    <option value="">Standard</option>
-                    <option value="henry">Practical</option>
-                    <option value="ellie">Challenging</option>
-                    <option value="josie">Plain-Spoken</option>
-                </select>
                 <select id="languageSelect" class="language-select" title="Universal Translator">
                     <option value="en">🌐 English</option>
                     <option value="es">🇪🇸 Español</option>
@@ -562,7 +541,7 @@
                 <a href="veracity.html" class="home-btn">
                     <span>🏠</span> <span data-i18n="home">Home</span>
                 </a>
-                <div class="version-badge">Track C — Navigate & Align</div>
+                <div class="version-badge">Track C — Navigate</div>
             </div>
         </div>
     </header>
@@ -570,11 +549,11 @@
     <div class="container">
         <!-- Safety Notice -->
         <div class="safety-notice" id="safetyNotice">
-            <span class="safety-icon">🤝</span>
+            <span class="safety-icon">⚠️</span>
             <div class="safety-content">
-                <div class="safety-title" data-i18n="safetyTitle">Navigate & Align</div>
+                <div class="safety-title" data-i18n="safetyTitle">Important</div>
                 <div class="safety-text">
-                    <span data-i18n="safetyText">This tool helps you find common ground across differences. It offers practical frameworks for difficult conversations, not professional advice. For mental health concerns, please reach out to a qualified professional.</span>
+                    <span data-i18n="safetyText">Navigate mode offers practical frameworks, not professional advice. For mental health concerns, please reach out to a qualified professional.</span>
                     <br><a href="https://988lifeline.org" target="_blank" data-i18n="safetyLink">988 Suicide & Crisis Lifeline</a> <span data-i18n="safetyAvailable">is available 24/7.</span>
                 </div>
             </div>
@@ -590,7 +569,7 @@
         <!-- Chat Card -->
         <div class="chat-card">
             <div class="chat-header">
-                <div class="chat-title" data-i18n="guidanceDialogue">Finding Common Ground</div>
+                <div class="chat-title" data-i18n="guidanceDialogue">Guidance Dialogue</div>
                 <div class="chat-badge" data-i18n="poweredByClaude">Powered by Claude</div>
             </div>
 
@@ -602,7 +581,7 @@
                 <textarea 
                     id="userInput" 
                     class="chat-input" 
-                    placeholder="Tell me about the conversation or situation you're navigating..."
+                    placeholder="Share more about your situation..."
                     data-i18n-placeholder="navigatePlaceholder"
                     rows="1"
                 ></textarea>
@@ -621,7 +600,7 @@
                     <button class="export-btn" onclick="exportMarkdown()" data-i18n="exportMarkdown">📝 Markdown</button>
                     <button class="export-btn" onclick="printConversation()" data-i18n="exportPrint">🖨️ Print</button>
                 </div>
-                <div class="footer-motto" data-i18n="footerMotto">TRUTH · ALIGNMENT · CONNECTION</div>
+                <div class="footer-motto" data-i18n="footerMotto">SEEK · QUESTION · UNDERSTAND</div>
             </div>
         </div>
     </div>
@@ -632,27 +611,12 @@
         let conversationHistory = [];
         let currentLanguage = localStorage.getItem('veritasLanguage') || 'en';
         let isProcessing = false;
-        let selectedCharacter = localStorage.getItem('selectedCharacter') || '';
-
-        // Character system prompts
-        const CHARACTER_PROMPTS = {
-            henry: `You embody a practical, concrete, and kind conversational approach. Unhurried, warm. Use everyday analogies. Patient and gentle. Phrases: "You betcha", "Let me show you how this works". Your edge: "You're smarter than they're treating you."`,
-            
-            ellie: `You embody a sharp, playful, and challenging conversational approach. See patterns others miss. Challenge ideas without attacking people. Phrases: "I'm not SURE I like what I'm hearing. Persuade me!", "That logic has some... ventilation issues." You convert defensiveness into curiosity.`,
-            
-            josie: `You embody a plain-spoken, grounded, and clear conversational approach. Direct language. Hard truth or gentle comfort as needed. Phrases: "What's on your mind?", "That doesn't hold water." Wisdom from endurance, not theory.`
-        };
 
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
             // Set language
             document.getElementById('languageSelect').value = currentLanguage;
             applyRTL(currentLanguage);
-            
-            // Set saved character if any
-            if (selectedCharacter) {
-                document.getElementById('characterSelect').value = selectedCharacter;
-            }
             
             // Get query from URL
             const params = new URLSearchParams(window.location.search);
@@ -665,24 +629,6 @@
             } else {
                 document.getElementById('contextText').textContent = 'No situation provided. Please describe what you need help with.';
             }
-
-            // Character switcher
-            document.getElementById('characterSelect').addEventListener('change', function() {
-                selectedCharacter = this.value;
-                localStorage.setItem('selectedCharacter', selectedCharacter);
-                // Clear conversation when switching characters mid-session
-                if (conversationHistory.length > 0 && confirm('Switching guides will start a new conversation. Continue?')) {
-                    conversationHistory = [];
-                    document.getElementById('chatMessages').innerHTML = '';
-                    if (selectedCharacter) {
-                        const characterName = CHARACTER_PROMPTS[selectedCharacter] ? selectedCharacter.toUpperCase() : 'Standard';
-                        addMessage('assistant', `Switched to ${characterName} mode. How can I help you?`);
-                    }
-                } else if (conversationHistory.length === 0 && selectedCharacter) {
-                    const characterName = CHARACTER_PROMPTS[selectedCharacter] ? selectedCharacter.toUpperCase() : 'Standard';
-                    addMessage('assistant', `${characterName} mode activated. How can I help you?`);
-                }
-            });
 
             // Language change handler
             document.getElementById('languageSelect').addEventListener('change', function() {
@@ -732,18 +678,14 @@
             showTyping();
 
             try {
-                const body = {
-                    messages: conversationHistory,
-                    originalQuery: query,
-                    language: currentLanguage
-                };
-                if (selectedCharacter && CHARACTER_PROMPTS[selectedCharacter]) {
-                    body.characterPrompt = CHARACTER_PROMPTS[selectedCharacter];
-                }
                 const response = await fetch('/api/navigate', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(body)
+                    body: JSON.stringify({
+                        messages: conversationHistory,
+                        originalQuery: query,
+                        language: currentLanguage
+                    })
                 });
 
                 const data = await response.json();
@@ -784,17 +726,13 @@
             showTyping();
 
             try {
-                const body = {
-                    messages: conversationHistory,
-                    language: currentLanguage
-                };
-                if (selectedCharacter && CHARACTER_PROMPTS[selectedCharacter]) {
-                    body.characterPrompt = CHARACTER_PROMPTS[selectedCharacter];
-                }
                 const response = await fetch('/api/navigate', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(body)
+                    body: JSON.stringify({
+                        messages: conversationHistory,
+                        language: currentLanguage
+                    })
                 });
 
                 const data = await response.json();
@@ -874,7 +812,7 @@
             const doc = new jsPDF();
             
             doc.setFontSize(16);
-            doc.text('VERITAS Navigate & Align - Conversation Export', 20, 20);
+            doc.text('VERITAS Navigate - Conversation Export', 20, 20);
             
             let y = 40;
             conversationHistory.forEach((msg, i) => {
@@ -896,7 +834,7 @@
 
         function exportJSON() {
             const data = {
-                track: 'C - Navigate & Align',
+                track: 'C - Navigate',
                 exported: new Date().toISOString(),
                 context: document.getElementById('contextText').textContent,
                 conversation: conversationHistory
@@ -912,7 +850,7 @@
         }
 
         function exportMarkdown() {
-            let md = '# VERITAS Navigate & Align Export\n\n';
+            let md = '# VERITAS Navigate Export\n\n';
             md += `**Context:** ${document.getElementById('contextText').textContent}\n\n`;
             md += '---\n\n';
             
@@ -943,7 +881,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>VERITAS Navigate & Align - Print</title>
+    <title>VERITAS Navigate - Print</title>
     <style>
         body {
             font-family: 'Georgia', 'Times New Roman', serif;
@@ -1025,8 +963,8 @@
 </head>
 <body>
     <div class="header">
-        <h1>VERITAS NAVIGATE & ALIGN</h1>
-        <div class="subtitle">Track C: Finding Common Ground</div>
+        <h1>VERITAS NAVIGATE</h1>
+        <div class="subtitle">Track C: Bridging Perspectives</div>
     </div>
     <div class="context">
         <div class="context-label">Starting Point</div>

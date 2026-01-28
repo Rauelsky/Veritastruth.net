@@ -2383,6 +2383,12 @@
                 <div class="tagline" data-i18n="tagline">Truth Through Transparency</div>
             </div>
             <div style="display: flex; align-items: center; gap: 16px;">
+                <select id="characterSelect" title="Choose Your Conversation Style" style="background: var(--bg-tertiary); color: var(--text-primary); border: 1px solid var(--border-medium); border-radius: 6px; padding: 6px 12px; font-size: 0.8rem; cursor: pointer; min-width: 140px;">
+                    <option value="">Standard</option>
+                    <option value="henry">Practical</option>
+                    <option value="ellie">Challenging</option>
+                    <option value="josie">Plain-Spoken</option>
+                </select>
                 <select id="languageSelect" title="Universal Translator - Select Your Language" style="background: var(--bg-tertiary); color: var(--text-primary); border: 1px solid var(--border-medium); border-radius: 6px; padding: 6px 12px; font-size: 0.8rem; cursor: pointer;">
                     <option value="en">🌐 English</option>
                     <option value="es">🇪🇸 Español</option>
@@ -2822,6 +2828,20 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
         var processingSeconds = 0;
         var cooldownTimer = null;
         var cooldownSeconds = 0;
+
+        // Initialize character selector
+        (function() {
+            var characterSelect = document.getElementById('characterSelect');
+            var savedCharacter = localStorage.getItem('selectedCharacter') || '';
+            if (savedCharacter && characterSelect) {
+                characterSelect.value = savedCharacter;
+            }
+            if (characterSelect) {
+                characterSelect.addEventListener('change', function() {
+                    localStorage.setItem('selectedCharacter', this.value);
+                });
+            }
+        })();
 
         // ================================
         // UTILITY FUNCTIONS
@@ -3970,16 +3990,31 @@ Example: 'The Earth is approximately 4.5 billion years old'" oninput="updateChar
             // Get current language from Universal Translator
             var currentLanguage = localStorage.getItem('veritasLanguage') || 'en';
             
+            // Get selected character
+            var selectedCharacter = localStorage.getItem('selectedCharacter') || '';
+            var characterPrompts = {
+                henry: 'Practical, concrete, kind approach. Unhurried, warm. Everyday analogies. Phrases: "You betcha", "Let me show you how this works". Your edge: "You\'re smarter than they\'re treating you."',
+                ellie: 'Sharp, playful, challenging approach. See patterns others miss. Challenge ideas without attacking. Phrases: "I\'m not SURE I like what I\'m hearing. Persuade me!", "That logic has some... ventilation issues."',
+                josie: 'Plain-spoken, grounded, clear approach. Direct language. Hard truth or gentle comfort. Phrases: "What\'s on your mind?", "That doesn\'t hold water." Wisdom from endurance.'
+            };
+            
+            var requestBody = {
+                question: question,
+                articleText: articleText,
+                articleUrl: articleUrl,
+                userApiKey: userApiKey,
+                track: 'a',
+                language: currentLanguage
+            };
+            
+            if (selectedCharacter && characterPrompts[selectedCharacter]) {
+                requestBody.characterPrompt = characterPrompts[selectedCharacter];
+            }
+            
             fetch('/api/assess', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    question: question,
-                    articleText: articleText,
-                    articleUrl: articleUrl,
-                    userApiKey: userApiKey,
-                    track: 'a',
-                    language: currentLanguage
+                body: JSON.stringify(requestBody)
                 })
             })
             .then(function(res) {
