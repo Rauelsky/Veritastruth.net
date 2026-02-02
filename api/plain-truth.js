@@ -190,7 +190,16 @@ Respond with ONLY valid JSON (no markdown, no code blocks):
       messages: [{ role: "user", content: prompt }]
     });
 
-    const rawText = response.content[0].text;
+    // Handle web search responses - find the text block (may not be first)
+    const textBlock = response.content.find(block => block.type === 'text');
+    if (!textBlock || !textBlock.text) {
+      console.error('No text block found in response:', JSON.stringify(response.content, null, 2));
+      return res.status(500).json({ 
+        error: "No text content in API response",
+        fallback: true 
+      });
+    }
+    const rawText = textBlock.text;
     
     let plainTruth;
     try {
