@@ -684,12 +684,21 @@
       line-height: 1.7;
     }
 
+    .ecosystem-box {
+      border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 20px;
+      padding: 50px 40px;
+      margin: 0 auto;
+      max-width: 1150px;
+      background: rgba(255,255,255,0.03);
+    }
+
     .product-matrix {
       display: grid;
       grid-template-columns: auto 1fr 1fr;
       gap: 0;
       max-width: 900px;
-      margin: 0 auto 50px;
+      margin: 80px auto 50px;
       background: rgba(255,255,255,0.05);
       border-radius: 16px;
       overflow: hidden;
@@ -880,7 +889,42 @@
       }
       
       .product-matrix {
+        grid-template-columns: 1fr;
+        max-width: 500px;
+      }
+      
+      .matrix-header {
         display: none;
+      }
+      
+      .matrix-header:first-child {
+        display: none;
+      }
+      
+      .matrix-row-label {
+        border-right: none;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        padding: 16px 20px;
+      }
+      
+      .matrix-cell {
+        border-right: none;
+        position: relative;
+      }
+      
+      .matrix-cell::before {
+        content: attr(data-focus);
+        display: block;
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: rgba(255,255,255,0.5);
+        margin-bottom: 8px;
+      }
+      
+      .matrix-cell.live {
+        border-left: 3px solid #22c55e;
       }
     }
 
@@ -1710,24 +1754,24 @@
         <div class="matrix-header">Collective Focus</div>
         
         <div class="matrix-row-label">Reactive<br><small style="opacity:0.7;font-weight:400;text-transform:none;">(responding to content)</small></div>
-        <div class="matrix-cell live">
+        <div class="matrix-cell live" data-focus="Individual / Reactive">
           <div class="product-name">VERACITY™ <span class="status-badge live">Live</span></div>
           <div class="product-tagline">"Your thinking partner"</div>
           <div class="product-desc">Clarify your questions, assess claims, explore beliefs through dialogue</div>
         </div>
-        <div class="matrix-cell">
+        <div class="matrix-cell" data-focus="Collective / Reactive">
           <div class="product-name">VITAL™ <span class="status-badge coming">Soon</span></div>
           <div class="product-tagline">"Signal from noise"</div>
           <div class="product-desc">Daily news analysis—what happened vs. what they're telling you</div>
         </div>
         
         <div class="matrix-row-label">Proactive<br><small style="opacity:0.7;font-weight:400;text-transform:none;">(taking action)</small></div>
-        <div class="matrix-cell">
+        <div class="matrix-cell" data-focus="Individual / Proactive">
           <div class="product-name">VALOR™ <span class="status-badge coming">Soon</span></div>
           <div class="product-tagline">"Fight without lying"</div>
           <div class="product-desc">Make your best case, not your worst—responsible advocacy tools</div>
         </div>
-        <div class="matrix-cell">
+        <div class="matrix-cell" data-focus="Collective / Proactive">
           <div class="product-name">VENOM™ <span class="status-badge coming">Soon</span></div>
           <div class="product-tagline">"We hunt the poison"</div>
           <div class="product-desc">Proactive exposure of misinformation—shine light on darkness</div>
